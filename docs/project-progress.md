@@ -1,12 +1,14 @@
 # 项目进度记录
 
-更新时间：2026-06-05 03:34:27 CST
+更新时间：2026-06-05 03:43:36 CST
 
 ## 当前阶段
 
 项目第 2 批已启动并完成首个可运行后端 Mock 业务闭环：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API 和本地 smoke 已跑通。当前仍不接真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
+
+音乐生成 Provider 工程边界已根据用户要求预置：统一 `MusicProvider` 合约、`MockMusicProvider`、`SunoMusicProvider` 和 `MiniMaxMusicProvider` 均已建好；当前 Suno/MiniMax 只暴露边界和测试，不调用真实 API。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -55,6 +57,10 @@
 - 新增第 2 批 Gemini 前端任务包，明确移动端优先 + PC Web 的页面、接口、状态、错误和验收范围。
 - 根据用户补充，记录音乐生成后续需同时接入 Suno 与 MiniMax，并预留可配置开放策略；飞书资料链接当前需要登录权限，待可读后补真实协议细节。
 - 实现 `Idempotency-Key` 基础语义，覆盖当前所有 POST 主路径，成功响应写入 `idempotency_keys`，重复提交可重放响应，参数冲突返回 `IDEMPOTENCY_CONFLICT`。
+- 新增 `modules:music-provider`，定义音乐生成统一 Provider 合约、请求、结果、状态、Provider 类型和注册选择器。
+- 新增 `modules:suno`，预置 `SunoMusicProvider` 边界；当前真实调用显式未实现，自动化测试验证不会调用真实 Suno API。
+- 扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 边界；当前真实调用显式未实现，自动化测试验证不会调用真实 MiniMax API。
+- `.env.example` 增加 `MUSIC_PROVIDER=mock`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY` 等变量名，不包含真实凭据。
 
 ## 当前关键判断
 
@@ -116,10 +122,17 @@
 - HTTP smoke 成功：同一 `Idempotency-Key`、不同请求内容调用 `POST /api/v1/works/lyrics`，返回 HTTP 409，错误码为 `IDEMPOTENCY_CONFLICT`。
 - `music-api` 已在 smoke 后停止，未留下占用 `8080` 的 API 进程。
 
+## 第 2 批音乐 Provider 边界验证结果
+
+- `./gradlew spotlessApply spotlessCheck test` 成功。
+- `MockMusicProviderTest` 成功：Mock Provider 返回 `SUCCEEDED`、音频对象 key 和模拟时长。
+- `MiniMaxMusicProviderTest` 成功：Provider 类型为 `MINIMAX`，本地阶段调用真实提交方法会抛出未实现异常，避免自动化误触真实 API。
+- `SunoMusicProviderTest` 成功：Provider 类型为 `SUNO`，本地阶段调用真实提交方法会抛出未实现异常，避免自动化误触真实 API。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
-- Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
+- Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：工程 Provider 边界已预置，但飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - 当前 `Workflow` 仍为接口骨架，API 通过同步 Mock 服务推进状态；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
 - 当前发布包 URL 为 Mock MinIO 风格 URL，尚未写入真实对象存储文件。
@@ -128,7 +141,7 @@
 
 1. 将同步 Mock 推进逻辑拆入 Workflow/Job 层，为 Temporal `SongProductionWorkflow` 接入做准备。
 2. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
-3. 补 `MusicProvider` 抽象：`MockMusicProvider`、`SunoMusicProvider`、`MiniMaxMusicProvider` 的接口、配置和测试边界，真实调用暂不进自动化测试。
+3. 将 `MockMusicProvider` 接入当前 Mock 生成服务，替代 `WorkService` 内硬编码的音频对象 key。
 4. 后续增强幂等：补并发冲突处理、过期键清理、更多集成测试。
 5. 第 2 批完成更完整快照后继续运行构建、测试、Docker/应用 smoke，并更新本进度文档。
 
@@ -162,3 +175,4 @@
 | 2026-06-05 03:20 CST | 输出 Gemini 前端任务包 | 新增 `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`，供后续前端实现使用 |
 | 2026-06-05 03:20 CST | 记录 Suno + MiniMax 双模型要求 | 音乐生成后续需同时接入 Suno 与 MiniMax，并通过配置/运营策略选择对用户开放的模型；飞书资料待可读后补细节 |
 | 2026-06-05 03:34 CST | 补齐基础幂等语义 | `Idempotency-Key` 成功响应可重放，同 key 不同请求返回 `IDEMPOTENCY_CONFLICT`，已通过单元测试和 HTTP smoke |
+| 2026-06-05 03:43 CST | 预置音乐 Provider 工程边界 | 新增统一 `MusicProvider` 合约、`MockMusicProvider`、`SunoMusicProvider`、`MiniMaxMusicProvider` 和配置变量，真实 API 调用仍保持关闭 |

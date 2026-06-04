@@ -152,6 +152,13 @@ version INTEGER NOT NULL DEFAULT 0
 - `real` 模式只能手动联调使用。
 - Provider 抽象需覆盖 `SunoMusicProvider` 与 `MiniMaxMusicProvider`，并在配置中心预留 `MUSIC_PROVIDER=suno|minimax|mock` 或等价开关。
 
+当前进展：
+
+- 已新增 `modules:music-provider`，预置统一 Provider 合约和 `MockMusicProvider`。
+- 已新增 `modules:suno`，预置 `SunoMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
+- 已扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
+- 已在 `.env.example` 预留 `MUSIC_PROVIDER`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY`、`MINIMAX_API_KEY`。
+
 ### 2.8 Remotion 商用许可与字体授权
 
 现状：
