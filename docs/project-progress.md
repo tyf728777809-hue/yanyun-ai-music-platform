@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-05 03:50:49 CST
+更新时间：2026-06-05 04:19 CST
 
 ## 当前阶段
 
@@ -11,6 +11,8 @@
 音乐生成 Provider 工程边界已根据用户要求预置：统一 `MusicProvider` 合约、`MockMusicProvider`、`SunoMusicProvider` 和 `MiniMaxMusicProvider` 均已建好；当前 Suno/MiniMax 只暴露边界和测试，不调用真实 API。
 
 当前 Mock 出歌流程已接入 `MockMusicProvider`，不再在 `WorkService` 内直接硬编码音频生成结果；后续切换 Suno 或 MiniMax 时已有主链路落点。
+
+`confirmWork` 已进一步拆到 `MockSongProductionWorkflow`：`WorkService` 只负责状态校验和接口返回，出歌编排集中处理权益锁定、音乐 Provider、媒体资产、发布包、发布包审核、权益扣减、失败释放和 generation job 收口。当前仍是同步 Mock Workflow，为后续 Temporal Workflow 接入做准备。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -65,6 +67,9 @@
 - `.env.example` 增加 `MUSIC_PROVIDER=mock`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY` 等变量名，不包含真实凭据。
 - `music-api` 已依赖 `modules:music-provider`，通过 Spring 配置注册 `MockMusicProvider` 和 `MusicProviderRegistry`。
 - `WorkService.confirmWork` 已通过 `MusicProviderRegistry.require(MOCK)` 生成 Mock 音频结果，再继续封面、视频、发布包链路。
+- 新增 `MockSongProductionWorkflow`，将确认出歌后的生成编排从 `WorkService` 中拆出，集中处理权益锁定、Provider 调用、媒体资产、发布包、发布包审核、权益提交和失败释放。
+- `generation_jobs` 已增加完成状态更新方法，`SONG_PRODUCTION` job 成功后会收口到 `SUCCEEDED / PACKAGE_READY`，失败后会收口到 `FAILED / FAILED` 并记录失败码。
+- 新增 `MockSongProductionWorkflowTest`，覆盖成功出发布包和音乐 Provider 失败时释放已锁权益两个关键路径。
 
 ## 当前关键判断
 
@@ -141,21 +146,31 @@
 - HTTP smoke 成功：作品详情中的 `media_assets.audio_url` 使用 `MockMusicProvider` 返回的 `audio/{work_id}.mp3` 对象 key，`video_duration_ms` 为 180000。
 - `music-api` 已在 smoke 后停止，未留下占用 `8080` 的 API 进程。
 
+## 第 2 批 Mock Workflow 编排验证结果
+
+- `./gradlew spotlessApply spotlessCheck test` 成功。
+- `MockSongProductionWorkflowTest` 成功：成功路径会写入 4 类媒体资产、发布包 JSON、提交权益，并将 `SONG_PRODUCTION` job 更新为 `SUCCEEDED / PACKAGE_READY`。
+- `MockSongProductionWorkflowTest` 成功：音乐 Provider 失败路径会释放已锁权益、记录 `MUSIC_GENERATION_FAILED`、标记作品失败，并将 job 更新为 `FAILED / FAILED`。
+- `./gradlew :apps:music-api:bootJar` 成功。
+- 新 JAR HTTP smoke 成功：`POST /api/v1/works/lyrics` 创建作品后，`POST /api/v1/works/{work_id}/confirm` 通过 `MockSongProductionWorkflow` 推进到 `GENERATED` / `PACKAGE_READY`。
+- 新 JAR HTTP smoke 成功：`GET /api/v1/works/{work_id}/publish-package` 返回发布包 URL、Mock MP4 URL、封面、歌词和时间轴。
+- PostgreSQL 抽查成功：最新 smoke 作品的 `generation_jobs` 中 `SONG_PRODUCTION|SUCCEEDED|PACKAGE_READY|completed_at=true`，没有残留运行中的生成 job。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：工程 Provider 边界已预置，但飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
-- 当前 `Workflow` 仍为接口骨架，API 通过同步 Mock 服务推进状态；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
+- 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
 - 当前发布包 URL 为 Mock MinIO 风格 URL，尚未写入真实对象存储文件。
 
 ## 下一步建议
 
-1. 将同步 Mock 推进逻辑拆入 Workflow/Job 层，为 Temporal `SongProductionWorkflow` 接入做准备。
+1. 接入 Mock 对象存储/发布包文件写入边界，让本地阶段不仅返回 URL，也实际写出可检查的 package JSON。
 2. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 3. 后续增强幂等：补并发冲突处理、过期键清理、更多集成测试。
 4. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
-5. 第 2 批完成更完整快照后继续运行构建、测试、Docker/应用 smoke，并更新本进度文档。
+5. 进入真实模型链路前接入 Temporal `SongProductionWorkflow` 与 Outbox 或等价补偿机制。
 
 ## 工作日志
 
@@ -189,3 +204,4 @@
 | 2026-06-05 03:34 CST | 补齐基础幂等语义 | `Idempotency-Key` 成功响应可重放，同 key 不同请求返回 `IDEMPOTENCY_CONFLICT`，已通过单元测试和 HTTP smoke |
 | 2026-06-05 03:43 CST | 预置音乐 Provider 工程边界 | 新增统一 `MusicProvider` 合约、`MockMusicProvider`、`SunoMusicProvider`、`MiniMaxMusicProvider` 和配置变量，真实 API 调用仍保持关闭 |
 | 2026-06-05 03:50 CST | 接入 MockMusicProvider 到出歌流程 | `confirmWork` 已通过 Provider 结果写入音频媒体资产，主链路 smoke 通过 |
+| 2026-06-05 04:19 CST | 拆出 MockSongProductionWorkflow | 出歌编排从 `WorkService` 下沉到 Workflow，补齐 job 成功/失败收口和失败释放权益，单元测试、构建、HTTP smoke、DB 抽查均通过 |

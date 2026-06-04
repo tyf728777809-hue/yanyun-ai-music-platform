@@ -26,17 +26,10 @@ import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.api.work.WorkRepository.WorkRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
-import com.yanyun.music.musicprovider.MusicGenerationRequest;
-import com.yanyun.music.musicprovider.MusicGenerationResult;
-import com.yanyun.music.musicprovider.MusicGenerationStatus;
-import com.yanyun.music.musicprovider.MusicProviderRegistry;
-import com.yanyun.music.musicprovider.MusicProviderType;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
-import com.yanyun.music.quota.QuotaCommit;
 import com.yanyun.music.quota.QuotaDecision;
-import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
@@ -45,6 +38,9 @@ import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workdomain.WorkSnapshot;
 import com.yanyun.music.workdomain.WorkStateMachine;
 import com.yanyun.music.workdomain.WorkStatus;
+import com.yanyun.music.workflow.SongProductionWorkflow;
+import com.yanyun.music.workflow.SongProductionWorkflowInput;
+import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -71,7 +67,7 @@ public class WorkService {
   private final QuotaAdapter quotaAdapter;
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
-  private final MusicProviderRegistry musicProviderRegistry;
+  private final SongProductionWorkflow songProductionWorkflow;
   private final ObjectMapper objectMapper;
 
   public WorkService(
@@ -79,13 +75,13 @@ public class WorkService {
       QuotaAdapter quotaAdapter,
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
-      MusicProviderRegistry musicProviderRegistry,
+      SongProductionWorkflow songProductionWorkflow,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
-    this.musicProviderRegistry = musicProviderRegistry;
+    this.songProductionWorkflow = songProductionWorkflow;
     this.objectMapper = objectMapper;
   }
 
@@ -246,76 +242,23 @@ public class WorkService {
     }
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
 
-    UUID jobId =
-        workRepository.insertGenerationJob(
-            workId,
-            "SONG_PRODUCTION",
-            "RUNNING",
-            GenerationStage.QUOTA_LOCKING,
-            OffsetDateTime.now(),
-            null);
-    QuotaLock lock = quotaAdapter.lockGenerateQuota(userId, workId.toString());
-    if (!lock.locked()) {
-      workRepository.markFailure(workId, FailureCode.QUOTA_LOCK_FAILED, lock.message(), false);
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Quota lock failed");
+    SongProductionWorkflowResult workflowResult =
+        songProductionWorkflow.produce(
+            new SongProductionWorkflowInput(
+                workId.toString(),
+                userId,
+                draft.id().toString(),
+                draft.songTitle(),
+                draft.songSummary(),
+                draft.lyricsText(),
+                draft.musicPrompt(),
+                "AUTO"));
+    if (!workflowResult.packageReady()) {
+      throw workflowFailure(workflowResult);
     }
-    workRepository.insertQuotaTransaction(
-        workId, userId, lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
-
-    MusicGenerationResult musicResult =
-        musicProviderRegistry
-            .require(MusicProviderType.MOCK)
-            .submit(
-                new MusicGenerationRequest(
-                    workId.toString(), draft.lyricsText(), draft.musicPrompt(), "AUTO", Map.of()));
-    if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
-      workRepository.markFailure(
-          workId,
-          FailureCode.MUSIC_GENERATION_FAILED,
-          firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
-          true);
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Music generation failed");
-    }
-
-    createMockMediaAssets(workId, musicResult);
-    PublishHandoff handoff = publishAdapter.preparePackage(workId.toString());
-    ModerationDecision packageDecision =
-        moderationAdapter.preCheckPublishPackage(userId, workId.toString());
-    if (!packageDecision.allowed()) {
-      workRepository.markFailure(
-          workId, FailureCode.PACKAGE_BLOCKED, packageDecision.message(), false);
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, packageDecision.message());
-    }
-
-    String packageJson = writeJson(buildPackageJson(workId, draft));
-    workRepository.upsertPublishPackage(
-        new PublishPackageRow(
-            UUID.randomUUID(),
-            workId,
-            PackageStatus.PACKAGE_READY,
-            packageJson,
-            handoff.packageObjectKey(),
-            handoff.packageUrl(),
-            handoff.expiresAt(),
-            null,
-            null,
-            null));
-
-    QuotaCommit commit = quotaAdapter.commitGenerateQuota(userId, lock.lockId());
-    workRepository.insertQuotaTransaction(
-        workId, userId, lock.lockId(), "COMMIT_GENERATE", "COMMITTED", commit.message());
-    workRepository.markPackageReady(
-        workId, draft.songTitle(), draft.songSummary(), true, commit.committed());
-    workRepository.insertGenerationJob(
-        workId,
-        "SONG_PRODUCTION_COMPLETE",
-        "SUCCEEDED",
-        GenerationStage.PACKAGE_READY,
-        OffsetDateTime.now(),
-        OffsetDateTime.now());
 
     WorkRow updated = getRequiredWork(workId, userId);
-    return accepted(updated, jobId);
+    return accepted(updated, UUID.fromString(workflowResult.jobId()));
   }
 
   @Transactional
@@ -520,97 +463,6 @@ public class WorkService {
         OffsetDateTime.now());
   }
 
-  private void createMockMediaAssets(UUID workId, MusicGenerationResult musicResult) {
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "AUDIO",
-            firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".mp3"),
-            "audio/mpeg",
-            4_800_000L,
-            "mock-audio",
-            null,
-            null,
-            musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "COVER",
-            "covers/" + workId + ".png",
-            "image/png",
-            512_000L,
-            "mock-cover",
-            1080,
-            1920,
-            null,
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "VIDEO",
-            "videos/" + workId + ".mp4",
-            "video/mp4",
-            12_000_000L,
-            "mock-video",
-            1080,
-            1920,
-            180_000,
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "TIMELINE",
-            "timelines/" + workId + ".json",
-            "application/json",
-            64_000L,
-            "mock-timeline",
-            null,
-            null,
-            180_000,
-            "{}"));
-  }
-
-  private Map<String, Object> buildPackageJson(UUID workId, LyricsDraftRow draft) {
-    return Map.of(
-        "work_id",
-        workId.toString(),
-        "video",
-        Map.of(
-            "url",
-            ASSET_BASE_URL + "videos/" + workId + ".mp4",
-            "mime_type",
-            "video/mp4",
-            "file_size_bytes",
-            12_000_000,
-            "checksum",
-            "mock-video"),
-        "cover",
-        Map.of(
-            "url",
-            ASSET_BASE_URL + "covers/" + workId + ".png",
-            "mime_type",
-            "image/png",
-            "file_size_bytes",
-            512_000,
-            "checksum",
-            "mock-cover"),
-        "lyrics",
-        Map.of(
-            "text",
-            draft.lyricsText(),
-            "timeline_url",
-            ASSET_BASE_URL + "timelines/" + workId + ".json"),
-        "metadata",
-        Map.of(
-            "song_title",
-            draft.songTitle(),
-            "song_summary",
-            draft.songSummary(),
-            "source",
-            "mock-local"));
-  }
-
   private WorkSummary toSummary(WorkRow work) {
     MediaAssets mediaAssets = mediaAssets(work.id());
     return new WorkSummary(
@@ -737,6 +589,16 @@ public class WorkService {
   private JobAcceptedResponse accepted(WorkRow work, UUID jobId) {
     return new JobAcceptedResponse(
         work.id(), work.status(), work.generationStage(), jobId, availableActions(work));
+  }
+
+  private ResponseStatusException workflowFailure(SongProductionWorkflowResult workflowResult) {
+    String failureCode = workflowResult.failureCode();
+    HttpStatus status =
+        FailureCode.PACKAGE_BLOCKED.name().equals(failureCode)
+            ? HttpStatus.FORBIDDEN
+            : HttpStatus.CONFLICT;
+    return new ResponseStatusException(
+        status, firstNonBlank(workflowResult.failureMessage(), "Song production failed"));
   }
 
   private WorkRow getRequiredWork(UUID workId, String userId) {

@@ -154,6 +154,30 @@ public class WorkRepository {
     return jobId;
   }
 
+  public void completeGenerationJob(
+      UUID jobId,
+      String status,
+      GenerationStage stage,
+      FailureCode failureCode,
+      String failureMessage) {
+    jdbcTemplate.update(
+        """
+        UPDATE generation_jobs
+        SET status = ?,
+            stage = ?,
+            completed_at = now(),
+            failure_code = ?,
+            failure_message = ?,
+            updated_at = now()
+        WHERE id = ?
+        """,
+        status,
+        stage == null ? null : stage.name(),
+        failureCode == null ? null : failureCode.name(),
+        failureMessage,
+        jobId);
+  }
+
   public Optional<WorkRow> findWorkForUser(UUID workId, String userId) {
     try {
       return Optional.of(
