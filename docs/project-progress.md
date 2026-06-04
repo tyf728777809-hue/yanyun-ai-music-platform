@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-项目处于第 1 批仓库初始化收口阶段。PRD / 技术方案基线已升级，OpenAPI v0.1 已输出，商用级工程骨架和本地基础设施已搭建并通过基础验证。
+项目第 1 批仓库初始化已完成并形成 Git 快照。PRD / 技术方案基线已升级，OpenAPI v0.1 已输出，商用级工程骨架和本地基础设施已搭建并通过基础验证。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -42,6 +42,7 @@
 - 新增本地 Docker Compose 基础设施：PostgreSQL 16、Redis 7、Temporal、Temporal UI、MinIO、OpenSearch、Prometheus、Grafana。
 - 新增 `.gitignore`、`.dockerignore`、`.env.example`、README、本地运行手册、数据库/知识库预留目录。
 - 为 `music-worker` 增加 Temporal 启动连接探测，启动时会验证 `localhost:7233` 可连接，失败时输出明确 target/namespace/taskQueue。
+- 已提交第 1 批工程初始化快照：`992762a chore: initialize commercial-grade project scaffold`。
 
 ## 当前关键判断
 
@@ -89,10 +90,10 @@
 
 ## 下一步建议
 
-1. 形成第 1 批工程初始化 commit 快照。
-2. 启动第 2 批：数据库 migration、Work 状态机、Mock Adapter 边界、Workflow 骨架与最小 API 状态读写。
-3. 将 OpenAPI v0.1 与后端 DTO/Controller scaffold 对齐，优先不实现真实 Provider。
-4. 准备 Gemini 前端任务包，只覆盖第 2 批需要的页面结构和状态字段，不做高保真视觉。
+1. 启动第 2 批：数据库 migration、Work 状态机、Mock Adapter 边界、Workflow 骨架与最小 API 状态读写。
+2. 将 OpenAPI v0.1 与后端 DTO/Controller scaffold 对齐，优先不实现真实 Provider。
+3. 准备 Gemini 前端任务包，只覆盖第 2 批需要的页面结构和状态字段，不做高保真视觉。
+4. 第 2 批完成后继续运行构建、测试、Docker/应用 smoke，并更新本进度文档。
 
 ## 工作日志
 
@@ -116,3 +117,4 @@
 | 2026-06-05 02:39 CST | 初始化商用级工程骨架 | 新增 Gradle 多模块后端、`apps/web`、`apps/render-worker`、数据库/知识库/运行手册目录 |
 | 2026-06-05 02:39 CST | 搭建本地基础设施 | 新增 Docker Compose，PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana 已通过本地启动验证 |
 | 2026-06-05 02:39 CST | 完成基础构建和 smoke 验证 | Gradle、Web、Render Worker、Docker Compose、API health、Worker Temporal 连接验证均通过 |
+| 2026-06-05 02:43 CST | 提交第 1 批工程快照 | 已提交 `992762a chore: initialize commercial-grade project scaffold` |
