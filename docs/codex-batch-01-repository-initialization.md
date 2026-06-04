@@ -9,6 +9,7 @@
 第 1 批完成后，仓库应具备：
 
 - Java 21 + Spring Boot 3 多模块工程。
+- React + Vite + TypeScript 用户侧 Web scaffold，移动端优先，兼容 PC Web。
 - API 应用、Worker 应用、渲染 Worker 的基础启动能力。
 - 本地 Docker Compose 基础依赖。
 - 统一构建、测试、格式化、健康检查和项目说明。
@@ -16,10 +17,12 @@
 
 ## 2. 输入基线
 
-- `yanyun-ai-music-platform-prd-v0.2.md`
-- `yanyun-ai-music-platform-tech-design-v0.1.md`
+- `yanyun-ai-music-platform-prd-v0.3.md`
+- `yanyun-ai-music-platform-tech-design-v0.2.md`
 - `AGENTS.md`
 - `docs/project-progress.md`
+- `docs/adr/0001-user-web-scope.md`
+- `docs/adr/0002-commercial-grade-stack.md`
 
 ## 3. 明确不做
 
@@ -30,6 +33,7 @@
 - 不实现数据库业务表迁移。
 - 不实现 Work 状态机。
 - 不实现用户侧完整页面。
+- 不实现完整前端业务交互，只创建 `apps/web` scaffold、基础路由和构建能力。
 - 不接入网易大神账号、审核、发布、任务权益等真实公司系统。
 - 不提交真实 API Key、Token、Cookie、生产配置或密钥。
 - 不引入未在任务说明中列出的生产依赖，除非说明原因并得到确认。
@@ -42,7 +46,7 @@ yanyun-ai-music-platform/
     music-api/
     music-worker/
     render-worker/
-    web/                         # 待技术方案确认后纳入；若本批暂不实现，也要在文档中说明
+    web/                         # React + Vite + TypeScript，移动端优先，兼容 PC Web
 
   modules/
     common/
@@ -92,7 +96,7 @@ yanyun-ai-music-platform/
   README.md
 ```
 
-说明：`apps/web` 是技术方案 v0.1 的缺口。若第 1 批执行前尚未冻结前端栈，可先不生成实际前端工程，但必须在 README 和进度文档中标注该缺口。
+说明：`apps/web` 已在 PRD v0.3 和技术方案 v0.2 中确认。第 1 批必须创建 scaffold，但不实现完整业务页面。
 
 ## 5. Java 工程要求
 
@@ -153,7 +157,26 @@ yanyun-ai-music-platform/
 - 不生成大体积视频产物进入 Git。
 - 后续 MP4 生成、FFmpeg 参数、字幕模板在第 8 批处理。
 
-## 7. Docker Compose 要求
+## 7. web 要求
+
+`apps/web`：
+
+- React。
+- Vite。
+- TypeScript。
+- 移动端优先，兼容 PC Web。
+- 提供 `npm run build`。
+- 提供最小测试或 smoke check。
+- 可保留最小首页和健康/占位页面，证明工程能启动和构建。
+- 不实现完整创作、确认、生成中、成品页业务流程。
+
+注意：
+
+- 不直接访问数据库、对象存储或 Provider。
+- 只通过 `music-api` 获取数据。
+- 不实现社区发布、分享、点赞、评论、推荐流。
+
+## 8. Docker Compose 要求
 
 本批提供本地基础依赖：
 
@@ -162,9 +185,6 @@ yanyun-ai-music-platform/
 - Temporal local/auto-setup。
 - MinIO。
 - OpenSearch。
-
-可选：
-
 - Prometheus。
 - Grafana。
 
@@ -175,7 +195,7 @@ yanyun-ai-music-platform/
 - 不包含真实 Provider API Key。
 - `.env.example` 可提供变量名和本地默认值，不提供真实密钥。
 
-## 8. README 要求
+## 9. README 要求
 
 新增或更新 `README.md`，至少包含：
 
@@ -188,10 +208,11 @@ yanyun-ai-music-platform/
 - 格式化命令。
 - 启动基础依赖命令。
 - 启动 `music-api` 和 `music-worker` 的命令。
+- 启动/构建 `web` 的命令。
 - 启动/构建 `render-worker` 的命令。
 - 当前未实现范围。
 
-## 9. AGENTS.md 要求
+## 10. AGENTS.md 要求
 
 保留现有进度记录规则，并补充工程命令：
 
@@ -205,11 +226,16 @@ cd apps/render-worker
 npm install
 npm run build
 npm test
+
+cd apps/web
+npm install
+npm run build
+npm test
 ```
 
 如命令尚未可用，应在 README 和进度文档中说明原因。
 
-## 10. 验收标准
+## 11. 验收标准
 
 必须满足：
 
@@ -217,14 +243,16 @@ npm test
 - `./gradlew clean build` 成功。
 - `./gradlew test` 成功，至少包含最小测试。
 - `./gradlew spotlessCheck` 成功。
+- `cd apps/web && npm run build` 成功。
+- `cd apps/web && npm test` 成功，或提供等价 smoke check。
 - `cd apps/render-worker && npm run build` 成功。
 - `cd apps/render-worker && npm test` 成功，或提供等价 smoke check。
-- `docker compose up` 可启动 PostgreSQL、Redis、Temporal、MinIO、OpenSearch。
+- `docker compose up` 可启动 PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana。
 - `music-api` 启动后健康检查返回 OK。
 - `music-worker` 可连接 Temporal。
 - `docs/project-progress.md` 已追加本批执行结果和验证结果。
 
-## 11. 建议执行顺序
+## 12. 建议执行顺序
 
 1. 创建根 Gradle 工程和 Java 模块。
 2. 创建 `music-api` 最小 Spring Boot 应用和健康检查。
@@ -232,13 +260,14 @@ npm test
 4. 配置 Spotless、JUnit 5、基础测试。
 5. 配置 Flyway、jOOQ、Testcontainers、springdoc-openapi 的依赖或预留目录。
 6. 创建 `render-worker` TypeScript + Remotion 最小工程。
-7. 创建 Docker Compose 基础依赖。
-8. 创建 `.gitignore`、`.env.example`、README。
-9. 更新 `AGENTS.md` 工程命令。
-10. 运行验收命令。
-11. 更新 `docs/project-progress.md`。
+7. 创建 `apps/web` React + Vite + TypeScript 最小工程。
+8. 创建 Docker Compose 基础依赖。
+9. 创建 `.gitignore`、`.env.example`、README。
+10. 更新 `AGENTS.md` 工程命令。
+11. 运行验收命令。
+12. 更新 `docs/project-progress.md`。
 
-## 12. 交付物
+## 13. 交付物
 
 - 工程骨架文件。
 - 本地基础设施配置。
@@ -246,4 +275,3 @@ npm test
 - 更新后的 `AGENTS.md`。
 - 更新后的 `docs/project-progress.md`。
 - 验收命令输出摘要。
-
