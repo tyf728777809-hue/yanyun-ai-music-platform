@@ -21,6 +21,7 @@ import com.yanyun.music.musicprovider.MusicGenerationRequest;
 import com.yanyun.music.musicprovider.MusicGenerationResult;
 import com.yanyun.music.musicprovider.MusicProvider;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
+import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.musicprovider.MusicProviderType;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
@@ -191,6 +192,97 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void usesConfiguredMusicProviderSelection() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider(MusicProviderType.MINIMAX);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MINIMAX, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                "application/json",
+                512L));
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.MINIMAX).produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    verify(musicProvider).submit(any());
+    verify(workRepository).markPackageReady(workId, "Mock title", "Mock summary", true, true);
+  }
+
+  @Test
+  void releasesLockedQuotaAndFailsJobWhenConfiguredProviderThrows() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider(MusicProviderType.SUNO);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenThrow(new UnsupportedOperationException("Suno real music generation is not ready"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.SUNO).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.MUSIC_GENERATION_FAILED.name());
+    assertThat(result.failureMessage()).isEqualTo("Suno real music generation is not ready");
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(
+            workId,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            "Suno real music generation is not ready",
+            true);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            "Suno real music generation is not ready");
+    verifyNoInteractions(publishAdapter, moderationAdapter, objectStorageClient);
+  }
+
+  @Test
   void releasesLockedQuotaAndFailsJobWhenPackageStorageFails() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -247,19 +339,29 @@ class MockSongProductionWorkflowTest {
   }
 
   private MockSongProductionWorkflow workflowWith(MusicProvider musicProvider) {
+    return workflowWith(musicProvider, MusicProviderType.MOCK);
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider, MusicProviderType providerType) {
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,
         moderationAdapter,
         publishAdapter,
         new MusicProviderRegistry(List.of(musicProvider)),
+        new MusicProviderSelection(providerType),
         objectStorageClient,
         objectMapper);
   }
 
   private MusicProvider mockMusicProvider() {
+    return mockMusicProvider(MusicProviderType.MOCK);
+  }
+
+  private MusicProvider mockMusicProvider(MusicProviderType providerType) {
     MusicProvider musicProvider = mock(MusicProvider.class);
-    when(musicProvider.providerType()).thenReturn(MusicProviderType.MOCK);
+    when(musicProvider.providerType()).thenReturn(providerType);
     return musicProvider;
   }
 

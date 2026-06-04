@@ -30,6 +30,14 @@ docker compose -f deploy/docker-compose.yml ps
 ./gradlew :apps:music-api:bootRun
 ```
 
+音乐 Provider 默认走本地 Mock：
+
+```bash
+MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
+```
+
+也可以显式选择 `suno` 或 `minimax` 验证失败边界。当前两者真实提交尚未实现，确认出歌会返回 HTTP 409，并将作品持久化为可重试的 `MUSIC_GENERATION_FAILED`，不会调用真实 API。
+
 健康检查：
 
 ```bash
@@ -72,4 +80,4 @@ npm test
 
 ## Current Boundary
 
-第 1 批只验证工程启动、构建、测试和本地依赖边界，不调用真实 DeepSeek、MiniMax、Image 2 或公司系统。
+当前本地阶段只验证工程、Mock 业务链路、Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。

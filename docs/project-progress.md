@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-05 04:29 CST
+更新时间：2026-06-05 04:50 CST
 
 ## 当前阶段
 
@@ -15,6 +15,8 @@
 `confirmWork` 已进一步拆到 `MockSongProductionWorkflow`：`WorkService` 只负责状态校验和接口返回，出歌编排集中处理权益锁定、音乐 Provider、媒体资产、发布包、发布包审核、权益扣减、失败释放和 generation job 收口。当前仍是同步 Mock Workflow，为后续 Temporal Workflow 接入做准备。
 
 Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient` 写入本地 `build/local-object-storage/yanyun-works-local/packages/{work_id}.json`，接口返回的 `package_url` 与本地写出的对象 key 保持一致。当前仍不写入真实 MinIO/S3，公司对象存储协议待后续确认。
+
+音乐 Provider 选择已从硬编码 `MOCK` 改为配置驱动：`MUSIC_PROVIDER=mock|suno|minimax` 会映射到统一 `MusicProviderSelection`。当前默认 `mock` 可完整成功；`suno` / `minimax` 已注册边界但真实提交仍显式未实现，本地选择它们会进入 `MUSIC_GENERATION_FAILED` 可重试失败，并释放已锁权益，不会调用真实 API。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -75,6 +77,9 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - 新增 `modules:storage` 对象存储合约和 `LocalObjectStorageClient`，本地阶段可把发布包 JSON 写到 `build/local-object-storage/yanyun-works-local`。
 - `MockSongProductionWorkflow` 已接入对象存储写入；发布包准备或写入失败会进入 `PACKAGE_BUILD_FAILED`，释放已锁权益，并标记为可重试失败。
 - 本地运行手册已补充 package JSON 写入位置和检查方式。
+- 新增 `MusicProviderSelection`，解析 `MUSIC_PROVIDER=mock|suno|minimax`；`music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean。
+- `MockSongProductionWorkflow` 已按配置选择音乐 Provider；Provider 未实现或抛异常时会进入 `MUSIC_GENERATION_FAILED`，释放权益并关闭 job。
+- 修正 `IdempotencyService` 外层事务边界：`ResponseStatusException` 不再回滚业务失败状态，避免配置到未实现 Provider 时作品仍停留在 `LYRICS_READY`。
 
 ## 当前关键判断
 
@@ -171,6 +176,15 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - 本地文件 smoke 成功：`build/local-object-storage/yanyun-works-local/packages/{work_id}.json` 已真实写出，文件内 `work_id` 和 `video.url` 与接口返回一致。
 - PostgreSQL 抽查成功：最新 smoke 作品的 `SONG_PRODUCTION` job 为 `SUCCEEDED / PACKAGE_READY`，且 `completed_at` 非空。
 
+## 第 2 批 Provider 配置选择验证结果
+
+- `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar` 成功。
+- `MusicProviderSelectionTest` 成功：空配置默认 `MOCK`，`mock` / `suno` / `MINIMAX` 可解析，未知 Provider 会拒绝。
+- `MockSongProductionWorkflowTest` 成功：配置选择 `MINIMAX` 时会调用对应 Provider；配置选择 `SUNO` 且 Provider 抛未实现异常时，会释放权益、标记 `MUSIC_GENERATION_FAILED`，并关闭 job。
+- 默认 `MUSIC_PROVIDER=mock` HTTP smoke 成功：确认出歌后进入 `GENERATED / PACKAGE_READY`，发布包文件已写出。
+- `MUSIC_PROVIDER=suno` HTTP smoke 成功验证失败边界：确认出歌返回 HTTP 409，作品详情持久化为 `FAILED / FAILED / MUSIC_GENERATION_FAILED`，`retryable=true`，`package_status=PACKAGE_NOT_READY`。
+- PostgreSQL 抽查成功：`suno` 失败作品的 `SONG_PRODUCTION` job 为 `FAILED / FAILED / MUSIC_GENERATION_FAILED / completed_at=true`，权益流水包含 `LOCK_GENERATE|LOCKED` 和 `RELEASE_GENERATE|RELEASED`。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
@@ -181,7 +195,7 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 
 ## 下一步建议
 
-1. 补 Provider 配置选择，让本地可通过配置显式选择 `mock`，并为后续 `suno` / `minimax` 开放策略预留开关。
+1. 补更完整的失败后可执行动作和重试入口，尤其是 `MUSIC_GENERATION_FAILED` 后的用户侧重试/换模型策略。
 2. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 3. 后续增强幂等：补并发冲突处理、过期键清理、更多集成测试。
 4. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
@@ -221,3 +235,4 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 | 2026-06-05 03:50 CST | 接入 MockMusicProvider 到出歌流程 | `confirmWork` 已通过 Provider 结果写入音频媒体资产，主链路 smoke 通过 |
 | 2026-06-05 04:19 CST | 拆出 MockSongProductionWorkflow | 出歌编排从 `WorkService` 下沉到 Workflow，补齐 job 成功/失败收口和失败释放权益，单元测试、构建、HTTP smoke、DB 抽查均通过 |
 | 2026-06-05 04:29 CST | 接入 Mock 对象存储写入 | 新增 `ObjectStorageClient` 与本地文件实现，发布包 JSON 已可写入 `build/local-object-storage`，单元测试、构建、HTTP smoke、本地文件检查和 DB 抽查均通过 |
+| 2026-06-05 04:50 CST | 补 Provider 配置选择 | `MUSIC_PROVIDER=mock|suno|minimax` 已接入 Workflow；默认 mock 成功，suno 未实现边界会持久化失败并释放权益，测试、构建、HTTP smoke 和 DB 抽查均通过 |

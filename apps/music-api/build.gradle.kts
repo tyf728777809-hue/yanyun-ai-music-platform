@@ -11,6 +11,8 @@ dependencies {
     implementation(project(":modules:publish"))
     implementation(project(":modules:work-domain"))
     implementation(project(":modules:music-provider"))
+    implementation(project(":modules:suno"))
+    implementation(project(":modules:minimax"))
     implementation(project(":modules:workflow"))
     implementation(project(":modules:storage"))
     implementation(project(":modules:observability"))

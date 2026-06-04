@@ -12,6 +12,7 @@ import java.util.HexFormat;
 import java.util.function.Supplier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class IdempotencyService {
@@ -24,7 +25,7 @@ public class IdempotencyService {
     this.objectMapper = objectMapper;
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public <T> T execute(
       String userId,
       String idempotencyKey,

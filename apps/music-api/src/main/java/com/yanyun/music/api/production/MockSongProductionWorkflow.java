@@ -11,7 +11,7 @@ import com.yanyun.music.musicprovider.MusicGenerationRequest;
 import com.yanyun.music.musicprovider.MusicGenerationResult;
 import com.yanyun.music.musicprovider.MusicGenerationStatus;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
-import com.yanyun.music.musicprovider.MusicProviderType;
+import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
@@ -43,6 +43,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
   private final MusicProviderRegistry musicProviderRegistry;
+  private final MusicProviderSelection musicProviderSelection;
   private final ObjectStorageClient objectStorageClient;
   private final ObjectMapper objectMapper;
 
@@ -52,6 +53,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
       MusicProviderRegistry musicProviderRegistry,
+      MusicProviderSelection musicProviderSelection,
       ObjectStorageClient objectStorageClient,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
@@ -59,6 +61,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
     this.musicProviderRegistry = musicProviderRegistry;
+    this.musicProviderSelection = musicProviderSelection;
     this.objectStorageClient = objectStorageClient;
     this.objectMapper = objectMapper;
   }
@@ -91,16 +94,28 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     workRepository.insertQuotaTransaction(
         workId, input.userId(), lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
 
-    MusicGenerationResult musicResult =
-        musicProviderRegistry
-            .require(MusicProviderType.MOCK)
-            .submit(
-                new MusicGenerationRequest(
-                    input.workId(),
-                    input.lyricsText(),
-                    input.musicPrompt(),
-                    input.vocalPreference(),
-                    Map.of()));
+    MusicGenerationResult musicResult;
+    try {
+      musicResult =
+          musicProviderRegistry
+              .require(musicProviderSelection.providerType())
+              .submit(
+                  new MusicGenerationRequest(
+                      input.workId(),
+                      input.lyricsText(),
+                      input.musicPrompt(),
+                      input.vocalPreference(),
+                      Map.of()));
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_GENERATION_FAILED,
+          firstNonBlank(exception.getMessage(), "Music generation failed"),
+          true,
+          input.userId(),
+          lock.lockId());
+    }
     if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
       return fail(
           workId,

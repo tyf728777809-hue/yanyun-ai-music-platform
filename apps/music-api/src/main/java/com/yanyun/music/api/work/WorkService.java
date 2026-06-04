@@ -233,7 +233,7 @@ public class WorkService {
     return accepted(updated, jobId);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse confirmWork(String userId, UUID workId, ConfirmWorkRequest request) {
     WorkRow work = getRequiredWork(workId, userId);
     if (!WorkStateMachine.canConfirm(work.status())) {

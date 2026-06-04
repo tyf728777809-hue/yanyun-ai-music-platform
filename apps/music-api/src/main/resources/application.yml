@@ -23,3 +23,7 @@ management:
     health:
       probes:
         enabled: true
+
+yanyun:
+  music:
+    provider: ${MUSIC_PROVIDER:mock}

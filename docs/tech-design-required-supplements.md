@@ -158,6 +158,8 @@ version INTEGER NOT NULL DEFAULT 0
 - 已新增 `modules:suno`，预置 `SunoMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
 - 已扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
 - 已在 `.env.example` 预留 `MUSIC_PROVIDER`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY`、`MINIMAX_API_KEY`。
+- 已新增 `MusicProviderSelection` 并接入 `music-api` 配置：`MUSIC_PROVIDER=mock|suno|minimax` 可选择 Provider，默认 `mock`。
+- `music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean；当前 `suno` / `minimax` 真实提交仍显式未实现，本地选择它们会进入可重试失败并释放权益，不会调用真实 API。
 
 ### 2.8 Remotion 商用许可与字体授权
 
