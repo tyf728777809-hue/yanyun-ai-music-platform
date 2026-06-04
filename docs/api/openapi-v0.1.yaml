@@ -1,0 +1,820 @@
+openapi: 3.1.0
+info:
+  title: Yanyun AI Music Platform API
+  version: 0.1.0
+  description: |
+    燕云 AI 作曲平台 v0.1 接口契约。
+
+    本契约覆盖本地阶段的用户侧 Web、Mock Adapter 和公司系统后续接入所需的最小稳定边界。
+    账号、审核、权益、社区发布和分享系统在本平台内均使用 Mock 或 Adapter 边界，不实现真实公司系统。
+servers:
+  - url: http://localhost:8080
+    description: Local development
+tags:
+  - name: Me
+    description: 本地 Mock 用户信息
+  - name: Works
+    description: 作品创建、查询与生成状态
+  - name: Lyrics
+    description: 歌词草案、润色和续写
+  - name: Generation
+    description: 确认出歌与重试动作
+  - name: PublishPackage
+    description: 发布包交接接口
+paths:
+  /api/v1/me:
+    get:
+      tags: [Me]
+      summary: 获取当前用户
+      description: 本地阶段通过 Mock 用户 Header 识别用户；正式接入时由公司账号系统替换。
+      operationId: getCurrentUser
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+      responses:
+        "200":
+          description: 当前用户信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/inspiration:
+    post:
+      tags: [Works]
+      summary: 灵感成歌
+      description: 用户输入故事或灵感，平台生成歌词草案，等待用户确认。
+      operationId: createWorkFromInspiration
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InspirationCreateRequest"
+      responses:
+        "202":
+          description: 作品已创建，歌词生成任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateWorkResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/lyrics:
+    post:
+      tags: [Works]
+      summary: 填词成歌
+      description: 用户提供歌词，平台补齐音乐提示和封面提示，等待用户确认出歌。
+      operationId: createWorkFromLyrics
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LyricsCreateRequest"
+      responses:
+        "202":
+          description: 作品已创建，歌词处理任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateWorkResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works:
+    get:
+      tags: [Works]
+      summary: 查询当前用户作品列表
+      operationId: listWorks
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/WorkStatus"
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: 作品分页列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkListResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}:
+    get:
+      tags: [Works]
+      summary: 查询作品详情
+      operationId: getWork
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: 作品详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkDetail"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/lyrics/polish:
+    post:
+      tags: [Lyrics]
+      summary: 润色当前歌词草案
+      operationId: polishLyrics
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LyricsPolishRequest"
+      responses:
+        "202":
+          description: 润色任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/lyrics/continue:
+    post:
+      tags: [Lyrics]
+      summary: 续写当前歌词草案
+      operationId: continueLyrics
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LyricsContinueRequest"
+      responses:
+        "202":
+          description: 续写任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/confirm:
+    post:
+      tags: [Generation]
+      summary: 确认歌词并开始出歌
+      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。
+      operationId: confirmWork
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmWorkRequest"
+      responses:
+        "202":
+          description: 出歌工作流已启动
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/cover/regenerate:
+    post:
+      tags: [Generation]
+      summary: 重新生成封面
+      operationId: regenerateCover
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "202":
+          description: 封面生成任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/video/rerender:
+    post:
+      tags: [Generation]
+      summary: 重新渲染 MP4 视频
+      operationId: rerenderVideo
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "202":
+          description: 视频渲染任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/publish-package:
+    get:
+      tags: [PublishPackage]
+      summary: 获取发布包交接信息
+      description: 仅当 `package_status = PACKAGE_READY` 时返回可用下载 URL。
+      operationId: getPublishPackage
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: 发布包交接信息
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishPackage"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/publish-package/mark-fetched:
+    post:
+      tags: [PublishPackage]
+      summary: 标记发布包已被接入方获取
+      operationId: markPublishPackageFetched
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: 发布包状态已更新
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishPackage"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/publish-package/refresh-url:
+    post:
+      tags: [PublishPackage]
+      summary: 重新签发发布包下载 URL
+      operationId: refreshPublishPackageUrl
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: 发布包 URL 已重新签发
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishPackage"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+components:
+  parameters:
+    MockUserId:
+      name: X-Mock-User-Id
+      in: header
+      required: false
+      description: 本地 Mock 用户 ID；正式接入时由公司账号系统替换。
+      schema:
+        type: string
+        default: mock_user_001
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: 幂等键，建议使用 UUID。
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 128
+    WorkId:
+      name: work_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    ErrorResponse:
+      description: 统一错误响应
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    UserProfile:
+      type: object
+      required: [user_id, nickname, roles]
+      properties:
+        user_id:
+          type: string
+        nickname:
+          type: string
+        avatar_url:
+          type: [string, "null"]
+          format: uri
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [USER, OPERATOR, ADMIN]
+    InspirationCreateRequest:
+      type: object
+      required: [story_input]
+      properties:
+        story_input:
+          type: string
+          minLength: 1
+          maxLength: 3000
+        mood:
+          type: string
+          maxLength: 128
+        scene:
+          type: string
+          maxLength: 256
+        relationship:
+          type: string
+          maxLength: 256
+        music_style:
+          type: string
+          maxLength: 512
+        vocal_preference:
+          $ref: "#/components/schemas/VocalPreference"
+    LyricsCreateRequest:
+      type: object
+      required: [lyrics_input]
+      properties:
+        lyrics_input:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        song_title:
+          type: string
+          maxLength: 128
+        music_style:
+          type: string
+          maxLength: 512
+        vocal_preference:
+          $ref: "#/components/schemas/VocalPreference"
+    LyricsPolishRequest:
+      type: object
+      required: [instruction]
+      properties:
+        instruction:
+          type: string
+          minLength: 1
+          maxLength: 500
+    LyricsContinueRequest:
+      type: object
+      properties:
+        instruction:
+          type: string
+          maxLength: 500
+    ConfirmWorkRequest:
+      type: object
+      properties:
+        lyrics_draft_id:
+          type: string
+          format: uuid
+        user_confirmed_at:
+          type: string
+          format: date-time
+    CreateWorkResponse:
+      type: object
+      required: [work_id, work_code, status, generation_stage, job_id, quota_hint, available_actions]
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        work_code:
+          type: string
+        status:
+          $ref: "#/components/schemas/WorkStatus"
+        generation_stage:
+          $ref: "#/components/schemas/GenerationStage"
+        job_id:
+          type: string
+          format: uuid
+        quota_hint:
+          $ref: "#/components/schemas/QuotaHint"
+        available_actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableAction"
+    JobAcceptedResponse:
+      type: object
+      required: [work_id, status, generation_stage, job_id, available_actions]
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/WorkStatus"
+        generation_stage:
+          $ref: "#/components/schemas/GenerationStage"
+        job_id:
+          type: string
+          format: uuid
+        available_actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableAction"
+    WorkListResponse:
+      type: object
+      required: [items, pagination]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkSummary"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+    WorkSummary:
+      type: object
+      required: [work_id, work_code, status, generation_stage, package_status, updated_at]
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        work_code:
+          type: string
+        song_title:
+          type: [string, "null"]
+        status:
+          $ref: "#/components/schemas/WorkStatus"
+        generation_stage:
+          $ref: "#/components/schemas/GenerationStage"
+        package_status:
+          $ref: "#/components/schemas/PackageStatus"
+        cover_url:
+          type: [string, "null"]
+          format: uri
+        video_preview_url:
+          type: [string, "null"]
+          format: uri
+        updated_at:
+          type: string
+          format: date-time
+    WorkDetail:
+      type: object
+      required:
+        - work_id
+        - work_code
+        - creation_mode
+        - status
+        - generation_stage
+        - package_status
+        - polish_remaining_count
+        - quota_hint
+        - available_actions
+        - publish_handoff_hint
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        work_code:
+          type: string
+        creation_mode:
+          $ref: "#/components/schemas/CreationMode"
+        status:
+          $ref: "#/components/schemas/WorkStatus"
+        generation_stage:
+          $ref: "#/components/schemas/GenerationStage"
+        package_status:
+          $ref: "#/components/schemas/PackageStatus"
+        song_title:
+          type: [string, "null"]
+        song_summary:
+          type: [string, "null"]
+        lyrics_draft:
+          anyOf:
+            - $ref: "#/components/schemas/LyricsDraft"
+            - type: "null"
+        media_assets:
+          $ref: "#/components/schemas/MediaAssets"
+        polish_used_count:
+          type: integer
+          minimum: 0
+        polish_remaining_count:
+          type: integer
+          minimum: 0
+        quota_hint:
+          $ref: "#/components/schemas/QuotaHint"
+        failure:
+          anyOf:
+            - $ref: "#/components/schemas/FailureInfo"
+            - type: "null"
+        available_actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableAction"
+        publish_handoff_hint:
+          $ref: "#/components/schemas/PublishHandoffHint"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        generated_at:
+          type: [string, "null"]
+          format: date-time
+    LyricsDraft:
+      type: object
+      required: [lyrics_draft_id, version_no, lyrics_text, music_prompt]
+      properties:
+        lyrics_draft_id:
+          type: string
+          format: uuid
+        version_no:
+          type: integer
+          minimum: 1
+        song_title:
+          type: string
+        song_summary:
+          type: string
+        lyrics_text:
+          type: string
+        music_prompt:
+          type: string
+        risk_notes:
+          type: array
+          items:
+            type: string
+        yanyun_references:
+          type: array
+          items:
+            type: string
+    MediaAssets:
+      type: object
+      properties:
+        audio_url:
+          type: [string, "null"]
+          format: uri
+        cover_url:
+          type: [string, "null"]
+          format: uri
+        video_url:
+          type: [string, "null"]
+          format: uri
+        video_duration_ms:
+          type: [integer, "null"]
+          minimum: 0
+        video_file_size_bytes:
+          type: [integer, "null"]
+          minimum: 0
+    PublishPackage:
+      type: object
+      required: [work_id, package_status, available_actions]
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        package_status:
+          $ref: "#/components/schemas/PackageStatus"
+        package_url:
+          type: [string, "null"]
+          format: uri
+        package_url_expires_at:
+          type: [string, "null"]
+          format: date-time
+        package_json:
+          anyOf:
+            - $ref: "#/components/schemas/PublishPackageJson"
+            - type: "null"
+        available_actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableAction"
+        blocked_reason:
+          type: [string, "null"]
+    PublishPackageJson:
+      type: object
+      required: [work_id, video, cover, lyrics, metadata]
+      properties:
+        work_id:
+          type: string
+          format: uuid
+        video:
+          $ref: "#/components/schemas/PublishAsset"
+        cover:
+          $ref: "#/components/schemas/PublishAsset"
+        lyrics:
+          type: object
+          required: [text]
+          properties:
+            text:
+              type: string
+            timeline_url:
+              type: [string, "null"]
+              format: uri
+        metadata:
+          type: object
+          additionalProperties: true
+    PublishAsset:
+      type: object
+      required: [url, mime_type]
+      properties:
+        url:
+          type: string
+          format: uri
+        mime_type:
+          type: string
+        file_size_bytes:
+          type: integer
+          minimum: 0
+        checksum:
+          type: [string, "null"]
+    QuotaHint:
+      type: object
+      required: [locked, commit_timing, remaining_generate_count]
+      properties:
+        locked:
+          type: boolean
+          description: 当前作品是否已锁定生成权益。
+        commit_timing:
+          type: string
+          enum: [ON_PACKAGE_READY]
+        remaining_generate_count:
+          type: integer
+          minimum: 0
+        remaining_polish_count:
+          type: integer
+          minimum: 0
+        message:
+          type: string
+    FailureInfo:
+      type: object
+      required: [failure_code, failure_message, retryable]
+      properties:
+        failure_code:
+          $ref: "#/components/schemas/FailureCode"
+        failure_message:
+          type: string
+        retryable:
+          type: boolean
+        failed_at:
+          type: string
+          format: date-time
+    PublishHandoffHint:
+      type: object
+      required: [ready_for_handoff, message]
+      properties:
+        ready_for_handoff:
+          type: boolean
+        message:
+          type: string
+    Pagination:
+      type: object
+      required: [page, page_size, total_items, total_pages]
+      properties:
+        page:
+          type: integer
+        page_size:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, request_id, timestamp]
+          properties:
+            code:
+              $ref: "#/components/schemas/ErrorCode"
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+            request_id:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+    CreationMode:
+      type: string
+      enum: [INSPIRATION, LYRICS]
+    VocalPreference:
+      type: string
+      enum: [AUTO, MALE, FEMALE, CHORUS]
+      default: AUTO
+    WorkStatus:
+      type: string
+      enum:
+        - DRAFT
+        - LYRICS_GENERATING
+        - LYRICS_READY
+        - LYRICS_FAILED
+        - GENERATING
+        - GENERATED
+        - FAILED
+        - CANCELLED
+    GenerationStage:
+      type: string
+      enum:
+        - NONE
+        - USER_INPUT_PRECHECK
+        - LYRICS_GENERATING
+        - LYRICS_PRECHECK
+        - WAITING_CONFIRM
+        - QUOTA_LOCKING
+        - MUSIC_GENERATING
+        - COVER_GENERATING
+        - TIMELINE_BUILDING
+        - VIDEO_RENDERING
+        - PACKAGE_BUILDING
+        - PACKAGE_PRECHECK
+        - PACKAGE_READY
+        - FAILED
+    PackageStatus:
+      type: string
+      enum:
+        - PACKAGE_NOT_READY
+        - PACKAGE_READY
+        - PACKAGE_FETCHED
+        - PACKAGE_EXPIRED
+        - PACKAGE_BLOCKED
+    AvailableAction:
+      type: string
+      enum:
+        - POLISH_LYRICS
+        - CONTINUE_LYRICS
+        - CONFIRM_WORK
+        - RETRY_LYRICS
+        - RETRY_MUSIC
+        - RETRY_COVER
+        - RERENDER_VIDEO
+        - REFRESH_PACKAGE_URL
+        - MARK_PACKAGE_FETCHED
+        - RETURN_TO_EDIT
+        - CONTACT_SUPPORT
+    FailureCode:
+      type: string
+      enum:
+        - USER_INPUT_BLOCKED
+        - LYRICS_GENERATION_FAILED
+        - LYRICS_PRECHECK_FAILED
+        - QUOTA_LOCK_FAILED
+        - MUSIC_GENERATION_FAILED
+        - MUSIC_QUALITY_FAILED
+        - COVER_GENERATION_FAILED
+        - VIDEO_RENDER_FAILED
+        - PACKAGE_BUILD_FAILED
+        - PACKAGE_BLOCKED
+        - PROVIDER_TIMEOUT
+        - RATE_LIMITED
+        - UNKNOWN_ERROR
+    ErrorCode:
+      type: string
+      enum:
+        - VALIDATION_ERROR
+        - UNAUTHORIZED
+        - FORBIDDEN
+        - NOT_FOUND
+        - CONFLICT
+        - IDEMPOTENCY_CONFLICT
+        - RATE_LIMITED
+        - PROVIDER_UNAVAILABLE
+        - INTERNAL_ERROR

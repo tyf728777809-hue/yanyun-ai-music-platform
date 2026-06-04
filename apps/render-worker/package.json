@@ -1,0 +1,30 @@
+{
+  "name": "@yanyun-ai-music/render-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "node --test --import tsx src/smoke.test.ts",
+    "preview": "remotion preview src/index.ts",
+    "render:sample": "remotion render src/index.ts YanyunScaffold out/sample.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.472",
+    "@remotion/bundler": "4.0.472",
+    "@remotion/renderer": "4.0.472",
+    "remotion": "4.0.472",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "25.0.2",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "tsx": "4.21.0",
+    "typescript": "6.0.3"
+  }
+}

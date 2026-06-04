@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: music-worker
+
+server:
+  port: ${MUSIC_WORKER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+yanyun:
+  temporal:
+    target: ${TEMPORAL_TARGET:localhost:7233}
+    namespace: ${TEMPORAL_NAMESPACE:default}
+    task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}

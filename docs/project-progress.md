@@ -1,15 +1,16 @@
 # 项目进度记录
 
-更新时间：2026-06-05 01:30:45 CST
+更新时间：2026-06-05 02:39:37 CST
 
 ## 当前阶段
 
-项目处于启动准备阶段。当前目录尚未创建代码工程，当前基线文档已升级为：
+项目处于第 1 批仓库初始化收口阶段。PRD / 技术方案基线已升级，OpenAPI v0.1 已输出，商用级工程骨架和本地基础设施已搭建并通过基础验证。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
 - `docs/adr/0001-user-web-scope.md`：用户侧 Web 范围决策。
 - `docs/adr/0002-commercial-grade-stack.md`：商用级技术栈决策。
+- `docs/api/openapi-v0.1.yaml`：作品、生成阶段、失败动作、权益提示和发布包交接接口契约。
 
 ## 进度记录规则
 
@@ -34,6 +35,13 @@
 - 新增两份 ADR，固化用户侧 Web 范围和商用级技术栈不降级的决策。
 - 升级项目级 `AGENTS.md`，将项目身份、固定决策、外部系统边界、前后端规则、验证规则、进度记录、Git 和安全规则固化为后续 Agent 执行手册。
 - 补充前端和图片资产协作规则：需要图片资产时优先用 Image 生成；前端视觉实现优先整理任务包交给 Gemini，本 Agent 负责需求拆解、接口、状态、验收和 review。
+- 输出 OpenAPI v0.1 接口契约，覆盖用户信息、作品创建、作品状态、AI 改词/续写、确认出歌、封面重生、视频重渲、发布包获取/刷新/标记交接。
+- 初始化 Java 21 + Spring Boot 3 + Gradle Kotlin DSL 多模块工程，包含 `apps/music-api`、`apps/music-worker` 和 `modules/*` 商用级边界。
+- 初始化 `apps/web` React + Vite + TypeScript scaffold，移动端优先、兼容 PC Web，只做工程验证页。
+- 初始化 `apps/render-worker` Node.js 22 + TypeScript + Remotion scaffold，保留最小 16:9 composition 和 smoke test。
+- 新增本地 Docker Compose 基础设施：PostgreSQL 16、Redis 7、Temporal、Temporal UI、MinIO、OpenSearch、Prometheus、Grafana。
+- 新增 `.gitignore`、`.dockerignore`、`.env.example`、README、本地运行手册、数据库/知识库预留目录。
+- 为 `music-worker` 增加 Temporal 启动连接探测，启动时会验证 `localhost:7233` 可连接，失败时输出明确 target/namespace/taskQueue。
 
 ## 当前关键判断
 
@@ -44,8 +52,9 @@
 - 前端视觉和页面实现优先整理成可转交 Gemini 的任务包，本 Agent 不默认承担最终高保真前端实现。
 - 后续如需要图片资产，优先使用 Image 生成，并在提交前确认用途、尺寸、来源和是否纳入仓库。
 - 第 1 批代码应搭建完整商用级工程边界和本地基础设施，不实现业务主链路。
+- Boot 应用只产出可执行 jar，不提交 plain jar、构建缓存、node_modules、大体积媒体或真实密钥。
 
-## 本轮验证结果
+## 上一轮文档基线验证结果
 
 - 已做文档一致性搜索，PRD、技术方案、补项文档、第 1 批任务说明、ADR 和 `AGENTS.md` 已同步到 PRD v0.3 / 技术方案 v0.2 基线。
 - 已检查关键新增口径：`apps/web`、React + Vite + TypeScript、移动端优先兼容 PC Web、`PACKAGE_BLOCKED`、`ModerationAdapter.preCheckPublishPackage`、`works.version`、OpenAPI v0.1 覆盖范围。
@@ -55,18 +64,35 @@
 - 本轮只修改 Markdown 文档，未运行代码构建或测试。
 - 用户已要求执行 commit，本轮文档基线已纳入 Git 快照。
 
+## 第 1 批工程初始化验证结果
+
+- `docs/api/openapi-v0.1.yaml` 已通过 Ruby YAML 语法解析检查。
+- `./gradlew clean build` 成功。
+- `./gradlew test` 成功。
+- `./gradlew spotlessCheck` 成功。
+- `cd apps/web && npm run build && npm test` 成功，Vitest 1 个测试通过。
+- `cd apps/render-worker && npm run build && npm test` 成功，Node smoke test 1 个测试通过。
+- `docker compose -f deploy/docker-compose.yml --env-file .env.example config` 成功。
+- `docker compose -f deploy/docker-compose.yml --env-file .env.example up -d` 成功；PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana 均已启动，主要服务 healthcheck 为 healthy，Temporal UI 已启动。
+- `music-api` 可执行 jar smoke 成功：`/health` 返回 `status=OK`，`/actuator/health` 返回 `UP`。
+- `music-worker` 可执行 jar smoke 成功：`/actuator/health` 返回 `UP`，启动日志确认 `Temporal connection verified. target=localhost:7233, namespace=default, taskQueue=song-production-local`。
+- 敏感信息扫描未发现真实密钥、Token、私钥或 Cookie；命中的 `task-queue` 为技术方案/配置字段，不是敏感凭据。
+- 大文件扫描未发现需要提交的大体积产物。
+- 本机环境变更：已通过 Homebrew 安装 `openjdk@21` 和 `gradle`；Homebrew 为 Gradle 额外安装了 `openjdk` 依赖。项目验证命令均显式使用 `/opt/homebrew/opt/openjdk@21`。
+
 ## 待确认事项
 
-- OpenAPI v0.1 具体接口契约尚未输出。
+- OpenAPI v0.1 已输出，但尚未生成服务端代码或接入 API 实现。
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
+- 第 1 批只完成工程骨架和本地基础设施，尚未实现数据库业务表、Work 状态机、Mock Adapter、Workflow 主链路和真实模型调用。
 
 ## 下一步建议
 
-1. 输出 OpenAPI 接口契约 v0.1。
-2. 按 `docs/codex-batch-01-repository-initialization.md` 执行第 1 批仓库初始化。
-3. 第 1 批完成后运行构建、测试、Docker Compose 验收。
-4. 更新 `docs/project-progress.md` 并提醒是否 commit。
+1. 形成第 1 批工程初始化 commit 快照。
+2. 启动第 2 批：数据库 migration、Work 状态机、Mock Adapter 边界、Workflow 骨架与最小 API 状态读写。
+3. 将 OpenAPI v0.1 与后端 DTO/Controller scaffold 对齐，优先不实现真实 Provider。
+4. 准备 Gemini 前端任务包，只覆盖第 2 批需要的页面结构和状态字段，不做高保真视觉。
 
 ## 工作日志
 
@@ -86,3 +112,7 @@
 | 2026-06-05 01:26 CST | 升级项目 Agent 规则 | 重写 `AGENTS.md`，固化项目身份、Source of Truth、固定技术决策、外部系统边界、前后端执行规则、验证规则、进度记录、Git 和安全要求 |
 | 2026-06-05 01:28 CST | 补充前端协作和图片资产规则 | 更新 `AGENTS.md`，明确图片资产优先用 Image 生成，前端视觉实现优先产出 Gemini 任务包，本 Agent 负责需求、接口、状态、验收和 review |
 | 2026-06-05 01:30 CST | 提交文档基线 | 用户要求执行 commit；提交前已检查 Git 状态、敏感信息和 Markdown diff 格式，本轮文档基线已纳入 Git 快照 |
+| 2026-06-05 02:39 CST | 输出 OpenAPI v0.1 | 新增 `docs/api/openapi-v0.1.yaml`，覆盖作品状态、生成阶段、权益提示、失败动作和发布包交接 |
+| 2026-06-05 02:39 CST | 初始化商用级工程骨架 | 新增 Gradle 多模块后端、`apps/web`、`apps/render-worker`、数据库/知识库/运行手册目录 |
+| 2026-06-05 02:39 CST | 搭建本地基础设施 | 新增 Docker Compose，PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana 已通过本地启动验证 |
+| 2026-06-05 02:39 CST | 完成基础构建和 smoke 验证 | Gradle、Web、Render Worker、Docker Compose、API health、Worker Temporal 连接验证均通过 |

@@ -1,0 +1,12 @@
+package com.yanyun.music.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication(scanBasePackages = "com.yanyun.music")
+public class MusicApiApplication {
+
+  public static void main(String[] args) {
+    SpringApplication.run(MusicApiApplication.class, args);
+  }
+}

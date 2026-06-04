@@ -1,0 +1,16 @@
+.git
+.gradle
+**/build
+**/node_modules
+**/dist
+**/out
+.env
+.env.*
+!.env.example
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.flac
+logs
+tmp
