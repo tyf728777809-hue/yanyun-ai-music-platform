@@ -1,0 +1,15 @@
+package com.yanyun.music.workdomain;
+
+public enum AvailableAction {
+  POLISH_LYRICS,
+  CONTINUE_LYRICS,
+  CONFIRM_WORK,
+  RETRY_LYRICS,
+  RETRY_MUSIC,
+  RETRY_COVER,
+  RERENDER_VIDEO,
+  REFRESH_PACKAGE_URL,
+  MARK_PACKAGE_FETCHED,
+  RETURN_TO_EDIT,
+  CONTACT_SUPPORT
+}

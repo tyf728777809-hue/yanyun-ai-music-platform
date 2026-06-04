@@ -141,6 +141,8 @@ version INTEGER NOT NULL DEFAULT 0
 
 - 技术方案已有 `fake|mixed|real` Provider 模式。
 - AGENTS.md 已要求自动化测试不得调用真实 DeepSeek、MiniMax、Image 2。
+- 2026-06-05 新增产品要求：音乐生成 Provider 后续需同时预留 Suno 和 MiniMax，两者都要接入；上线时可通过配置或运营策略选择对用户开放哪个模型。
+- 用户提供了飞书资料链接：`https://ycnts90jb6sm.feishu.cn/docx/G9v9dhd76oyiLmxwdQXcYGqhnHg`。当前外部读取需要登录权限，真实鉴权、请求参数、限流、回调、计费和失败码细节待资料可读后补齐。
 
 建议补充：
 
@@ -148,6 +150,7 @@ version INTEGER NOT NULL DEFAULT 0
 - 默认 `PROVIDER_MODE=fake`。
 - CI 和自动化测试强制 fake 或 Mock HTTP。
 - `real` 模式只能手动联调使用。
+- Provider 抽象需覆盖 `SunoMusicProvider` 与 `MiniMaxMusicProvider`，并在配置中心预留 `MUSIC_PROVIDER=suno|minimax|mock` 或等价开关。
 
 ### 2.8 Remotion 商用许可与字体授权
 

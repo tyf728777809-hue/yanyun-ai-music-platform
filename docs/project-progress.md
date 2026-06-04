@@ -1,16 +1,18 @@
 # 项目进度记录
 
-更新时间：2026-06-05 02:39:37 CST
+更新时间：2026-06-05 03:20:10 CST
 
 ## 当前阶段
 
-项目第 1 批仓库初始化已完成并形成 Git 快照。PRD / 技术方案基线已升级，OpenAPI v0.1 已输出，商用级工程骨架和本地基础设施已搭建并通过基础验证。
+项目第 2 批已启动并完成首个可运行后端 Mock 业务闭环：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API 和本地 smoke 已跑通。当前仍不接真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
 - `docs/adr/0001-user-web-scope.md`：用户侧 Web 范围决策。
 - `docs/adr/0002-commercial-grade-stack.md`：商用级技术栈决策。
 - `docs/api/openapi-v0.1.yaml`：作品、生成阶段、失败动作、权益提示和发布包交接接口契约。
+- `database/migrations/V202606050245__init_work_domain.sql`：作品域核心业务表。
+- `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`：交给 Gemini 的第 2 批前端任务包。
 
 ## 进度记录规则
 
@@ -43,6 +45,13 @@
 - 新增 `.gitignore`、`.dockerignore`、`.env.example`、README、本地运行手册、数据库/知识库预留目录。
 - 为 `music-worker` 增加 Temporal 启动连接探测，启动时会验证 `localhost:7233` 可连接，失败时输出明确 target/namespace/taskQueue。
 - 已提交第 1 批工程初始化快照：`992762a chore: initialize commercial-grade project scaffold`。
+- 新增 Flyway migration，落库 `works`、`work_inputs`、`lyrics_drafts`、`generation_jobs`、`media_assets`、`publish_packages`、`provider_calls`、`quota_transactions`、知识库、Prompt 模板、系统配置和幂等键等表。
+- 实现 `work-domain` 领域枚举与状态机，覆盖 OpenAPI v0.1 的作品状态、生成阶段、发布包状态、失败码和可执行动作。
+- 实现本地 Mock Adapter 边界：账号、权益、审核、发布包交接均通过接口隔离，真实公司系统后续替换实现即可。
+- 实现 `music-api` 主路径接口：`/api/v1/me`、灵感成歌、填词成歌、作品列表/详情、润色/续写、确认出歌、封面重生、视频重渲、发布包获取/刷新/标记交接。
+- 实现 Mock 作品生成闭环：创建作品后得到歌词草案；确认出歌后生成 Mock 媒体资源、发布包 JSON、下载 URL，并将状态推进到 `GENERATED` / `PACKAGE_READY`；标记交接后进入 `PACKAGE_FETCHED`。
+- 新增第 2 批 Gemini 前端任务包，明确移动端优先 + PC Web 的页面、接口、状态、错误和验收范围。
+- 根据用户补充，记录音乐生成后续需同时接入 Suno 与 MiniMax，并预留可配置开放策略；飞书资料链接当前需要登录权限，待可读后补真实协议细节。
 
 ## 当前关键判断
 
@@ -81,19 +90,37 @@
 - 大文件扫描未发现需要提交的大体积产物。
 - 本机环境变更：已通过 Homebrew 安装 `openjdk@21` 和 `gradle`；Homebrew 为 Gradle 额外安装了 `openjdk` 依赖。项目验证命令均显式使用 `/opt/homebrew/opt/openjdk@21`。
 
+## 第 2 批首个后端 Mock 闭环验证结果
+
+- `./gradlew test` 成功。
+- `./gradlew spotlessCheck` 成功。
+- `./gradlew :apps:music-api:bootJar` 成功。
+- `./gradlew :apps:music-api:bootJar spotlessCheck test` 成功。
+- `music-api` 启动成功，Flyway 连接本地 PostgreSQL 并应用 `V202606050245__init_work_domain.sql`；二次启动时验证 schema 已 up-to-date。
+- HTTP smoke 成功：`POST /api/v1/works/inspiration` 创建作品，返回 `LYRICS_READY` 和 `WAITING_CONFIRM`。
+- HTTP smoke 成功：`GET /api/v1/works/{work_id}` 返回歌词草案、权益提示、可执行动作和发布交接提示。
+- HTTP smoke 成功：`POST /api/v1/works/{work_id}/confirm` 将作品推进到 `GENERATED` / `PACKAGE_READY`。
+- HTTP smoke 成功：`GET /api/v1/works/{work_id}/publish-package` 返回 `PACKAGE_READY`、Mock MP4、封面、歌词、时间轴和发布包 URL。
+- HTTP smoke 成功：`POST /api/v1/works/{work_id}/publish-package/mark-fetched` 将发布包推进到 `PACKAGE_FETCHED`。
+- HTTP smoke 成功：`POST /api/v1/works/lyrics` 的 `work_code` 已验证为 `YYM-YYYYMMDD-XXXXXX` 格式。
+- 本轮未启动真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统请求。
+
 ## 待确认事项
 
-- OpenAPI v0.1 已输出，但尚未生成服务端代码或接入 API 实现。
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
+- Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
-- 第 1 批只完成工程骨架和本地基础设施，尚未实现数据库业务表、Work 状态机、Mock Adapter、Workflow 主链路和真实模型调用。
+- 当前 `Idempotency-Key` 已做 Header 校验并预留 `idempotency_keys` 表，但尚未实现完整幂等重放语义。
+- 当前 `Workflow` 仍为接口骨架，API 通过同步 Mock 服务推进状态；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
+- 当前发布包 URL 为 Mock MinIO 风格 URL，尚未写入真实对象存储文件。
 
 ## 下一步建议
 
-1. 启动第 2 批：数据库 migration、Work 状态机、Mock Adapter 边界、Workflow 骨架与最小 API 状态读写。
-2. 将 OpenAPI v0.1 与后端 DTO/Controller scaffold 对齐，优先不实现真实 Provider。
-3. 准备 Gemini 前端任务包，只覆盖第 2 批需要的页面结构和状态字段，不做高保真视觉。
-4. 第 2 批完成后继续运行构建、测试、Docker/应用 smoke，并更新本进度文档。
+1. 补完整幂等语义：写入并读取 `idempotency_keys`，覆盖创建、确认、刷新、标记交接等 POST 操作。
+2. 将同步 Mock 推进逻辑拆入 Workflow/Job 层，为 Temporal `SongProductionWorkflow` 接入做准备。
+3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
+4. 补 `MusicProvider` 抽象：`MockMusicProvider`、`SunoMusicProvider`、`MiniMaxMusicProvider` 的接口、配置和测试边界，真实调用暂不进自动化测试。
+5. 第 2 批完成更完整快照后继续运行构建、测试、Docker/应用 smoke，并更新本进度文档。
 
 ## 工作日志
 
@@ -118,3 +145,9 @@
 | 2026-06-05 02:39 CST | 搭建本地基础设施 | 新增 Docker Compose，PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana 已通过本地启动验证 |
 | 2026-06-05 02:39 CST | 完成基础构建和 smoke 验证 | Gradle、Web、Render Worker、Docker Compose、API health、Worker Temporal 连接验证均通过 |
 | 2026-06-05 02:43 CST | 提交第 1 批工程快照 | 已提交 `992762a chore: initialize commercial-grade project scaffold` |
+| 2026-06-05 03:20 CST | 落地第 2 批数据库 migration | 新增作品域、歌词草案、任务、媒体、发布包、权益、Provider 调用、知识库、Prompt 和配置等核心表 |
+| 2026-06-05 03:20 CST | 实现 Work 状态机与 Mock Adapter 边界 | 账号、权益、审核、发布包交接均可通过 Mock 实现跑通，真实公司系统后续替换 Adapter |
+| 2026-06-05 03:20 CST | 实现 OpenAPI 主路径 Mock API | 灵感成歌、填词成歌、作品查询、改词、确认出歌、重生/重渲、发布包获取/刷新/交接接口已可运行 |
+| 2026-06-05 03:20 CST | 完成本地后端 Mock 业务 smoke | 作品从 `LYRICS_READY` 推进到 `GENERATED/PACKAGE_READY`，发布包标记后进入 `PACKAGE_FETCHED` |
+| 2026-06-05 03:20 CST | 输出 Gemini 前端任务包 | 新增 `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`，供后续前端实现使用 |
+| 2026-06-05 03:20 CST | 记录 Suno + MiniMax 双模型要求 | 音乐生成后续需同时接入 Suno 与 MiniMax，并通过配置/运营策略选择对用户开放的模型；飞书资料待可读后补细节 |
