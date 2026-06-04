@@ -1,5 +1,6 @@
 package com.yanyun.music.api.error;
 
+import com.yanyun.music.api.idempotency.IdempotencyConflictException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -27,6 +28,13 @@ public class ApiExceptionHandler {
       IllegalArgumentException exception, HttpServletRequest request) {
     return ResponseEntity.badRequest()
         .body(errorResponse("VALIDATION_ERROR", exception.getMessage(), request));
+  }
+
+  @ExceptionHandler(IdempotencyConflictException.class)
+  ResponseEntity<ApiErrorResponse> handleIdempotencyConflict(
+      IdempotencyConflictException exception, HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(errorResponse("IDEMPOTENCY_CONFLICT", exception.getMessage(), request));
   }
 
   @ExceptionHandler(Exception.class)

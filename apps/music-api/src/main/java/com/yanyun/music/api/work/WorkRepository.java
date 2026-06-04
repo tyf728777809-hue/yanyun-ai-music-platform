@@ -494,6 +494,59 @@ public class WorkRepository {
         reason);
   }
 
+  public Optional<IdempotencyRecord> findIdempotency(
+      String userId, String idempotencyKey, String operation) {
+    try {
+      return Optional.of(
+          jdbcTemplate.queryForObject(
+              """
+              SELECT user_id,
+                     idempotency_key,
+                     operation,
+                     request_hash,
+                     response_json::text AS response_json,
+                     created_at,
+                     expires_at
+              FROM idempotency_keys
+              WHERE user_id = ? AND idempotency_key = ? AND operation = ?
+                AND (expires_at IS NULL OR expires_at > now())
+              """,
+              this::mapIdempotencyRecord,
+              userId,
+              idempotencyKey,
+              operation));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
+  public void insertIdempotency(
+      String userId,
+      String idempotencyKey,
+      String operation,
+      String requestHash,
+      String responseJson,
+      OffsetDateTime expiresAt) {
+    jdbcTemplate.update(
+        """
+        INSERT INTO idempotency_keys (
+          user_id,
+          idempotency_key,
+          operation,
+          request_hash,
+          response_json,
+          expires_at
+        )
+        VALUES (?, ?, ?, ?, ?::jsonb, ?)
+        """,
+        userId,
+        idempotencyKey,
+        operation,
+        requestHash,
+        responseJson,
+        expiresAt);
+  }
+
   private WorkRow mapWork(ResultSet resultSet, int rowNum) throws SQLException {
     String failureCode = resultSet.getString("failure_code");
     return new WorkRow(
@@ -560,6 +613,18 @@ public class WorkRepository {
         resultSet.getObject("fetched_at", OffsetDateTime.class),
         resultSet.getObject("created_at", OffsetDateTime.class),
         resultSet.getObject("updated_at", OffsetDateTime.class));
+  }
+
+  private IdempotencyRecord mapIdempotencyRecord(ResultSet resultSet, int rowNum)
+      throws SQLException {
+    return new IdempotencyRecord(
+        resultSet.getString("user_id"),
+        resultSet.getString("idempotency_key"),
+        resultSet.getString("operation"),
+        resultSet.getString("request_hash"),
+        resultSet.getString("response_json"),
+        resultSet.getObject("created_at", OffsetDateTime.class),
+        resultSet.getObject("expires_at", OffsetDateTime.class));
   }
 
   private Boolean nullableBoolean(ResultSet resultSet, String columnName) throws SQLException {
@@ -640,4 +705,13 @@ public class WorkRepository {
       OffsetDateTime fetchedAt,
       OffsetDateTime createdAt,
       OffsetDateTime updatedAt) {}
+
+  public record IdempotencyRecord(
+      String userId,
+      String idempotencyKey,
+      String operation,
+      String requestHash,
+      String responseJson,
+      OffsetDateTime createdAt,
+      OffsetDateTime expiresAt) {}
 }

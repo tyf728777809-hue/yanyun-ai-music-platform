@@ -1,5 +1,6 @@
 package com.yanyun.music.api.work;
 
+import com.yanyun.music.api.idempotency.IdempotencyService;
 import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
 import com.yanyun.music.api.work.WorkDtos.CreateWorkResponse;
 import com.yanyun.music.api.work.WorkDtos.InspirationCreateRequest;
@@ -11,6 +12,8 @@ import com.yanyun.music.api.work.WorkDtos.PublishPackage;
 import com.yanyun.music.api.work.WorkDtos.WorkDetail;
 import com.yanyun.music.api.work.WorkDtos.WorkListResponse;
 import com.yanyun.music.workdomain.WorkStatus;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +32,11 @@ public class WorkController {
   private static final String DEFAULT_MOCK_USER_ID = "mock_user_001";
 
   private final WorkService workService;
+  private final IdempotencyService idempotencyService;
 
-  public WorkController(WorkService workService) {
+  public WorkController(WorkService workService, IdempotencyService idempotencyService) {
     this.workService = workService;
+    this.idempotencyService = idempotencyService;
   }
 
   @PostMapping("/works/inspiration")
@@ -44,7 +49,15 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @RequestBody InspirationCreateRequest request) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.createFromInspiration(userId, request));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.inspiration.create",
+                request,
+                CreateWorkResponse.class,
+                () -> workService.createFromInspiration(userId, request)));
   }
 
   @PostMapping("/works/lyrics")
@@ -57,7 +70,15 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @RequestBody LyricsCreateRequest request) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.createFromLyrics(userId, request));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.lyrics.create",
+                request,
+                CreateWorkResponse.class,
+                () -> workService.createFromLyrics(userId, request)));
   }
 
   @GetMapping("/works")
@@ -95,7 +116,15 @@ public class WorkController {
       @PathVariable("work_id") UUID workId,
       @RequestBody LyricsPolishRequest request) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.polishLyrics(userId, workId, request));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.lyrics.polish",
+                fingerprint(workId, request),
+                JobAcceptedResponse.class,
+                () -> workService.polishLyrics(userId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/lyrics/continue")
@@ -109,7 +138,15 @@ public class WorkController {
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) LyricsContinueRequest request) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.continueLyrics(userId, workId, request));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.lyrics.continue",
+                fingerprint(workId, request),
+                JobAcceptedResponse.class,
+                () -> workService.continueLyrics(userId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/confirm")
@@ -123,7 +160,15 @@ public class WorkController {
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) ConfirmWorkRequest request) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.confirmWork(userId, workId, request));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.confirm",
+                fingerprint(workId, request),
+                JobAcceptedResponse.class,
+                () -> workService.confirmWork(userId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/cover/regenerate")
@@ -136,7 +181,15 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.regenerateCover(userId, workId));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.cover.regenerate",
+                fingerprint(workId, null),
+                JobAcceptedResponse.class,
+                () -> workService.regenerateCover(userId, workId)));
   }
 
   @PostMapping("/works/{work_id}/video/rerender")
@@ -149,7 +202,15 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
-    return ResponseEntity.accepted().body(workService.rerenderVideo(userId, workId));
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.video.rerender",
+                fingerprint(workId, null),
+                JobAcceptedResponse.class,
+                () -> workService.rerenderVideo(userId, workId)));
   }
 
   @GetMapping("/works/{work_id}/publish-package")
@@ -173,7 +234,13 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
-    return workService.markPublishPackageFetched(userId, workId);
+    return idempotencyService.execute(
+        userId,
+        idempotencyKey,
+        "works.publish-package.mark-fetched",
+        fingerprint(workId, null),
+        PublishPackage.class,
+        () -> workService.markPublishPackageFetched(userId, workId));
   }
 
   @PostMapping("/works/{work_id}/publish-package/refresh-url")
@@ -186,12 +253,25 @@ public class WorkController {
       @RequestHeader("Idempotency-Key") String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
-    return workService.refreshPublishPackageUrl(userId, workId);
+    return idempotencyService.execute(
+        userId,
+        idempotencyKey,
+        "works.publish-package.refresh-url",
+        fingerprint(workId, null),
+        PublishPackage.class,
+        () -> workService.refreshPublishPackageUrl(userId, workId));
   }
 
   private void requireIdempotencyKey(String idempotencyKey) {
     if (idempotencyKey == null || idempotencyKey.isBlank() || idempotencyKey.length() < 8) {
       throw new IllegalArgumentException("Idempotency-Key header must be at least 8 characters");
     }
+  }
+
+  private Map<String, Object> fingerprint(UUID workId, Object request) {
+    Map<String, Object> fingerprint = new HashMap<>();
+    fingerprint.put("workId", workId);
+    fingerprint.put("request", request);
+    return fingerprint;
   }
 }
