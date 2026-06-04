@@ -95,6 +95,7 @@
 | `POLISH_LYRICS` | 润色歌词 | `POST /api/v1/works/{work_id}/lyrics/polish` |
 | `CONTINUE_LYRICS` | 续写歌词 | `POST /api/v1/works/{work_id}/lyrics/continue` |
 | `CONFIRM_WORK` | 确认出歌 | `POST /api/v1/works/{work_id}/confirm` |
+| `RETRY_MUSIC` | 重试出歌 | `POST /api/v1/works/{work_id}/music/retry` |
 | `RETRY_COVER` | 重生封面 | `POST /api/v1/works/{work_id}/cover/regenerate` |
 | `RERENDER_VIDEO` | 重渲视频 | `POST /api/v1/works/{work_id}/video/rerender` |
 | `REFRESH_PACKAGE_URL` | 刷新下载链接 | `POST /api/v1/works/{work_id}/publish-package/refresh-url` |

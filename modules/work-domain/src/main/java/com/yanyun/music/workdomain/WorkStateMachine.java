@@ -37,6 +37,16 @@ public final class WorkStateMachine {
     return status == WorkStatus.LYRICS_READY;
   }
 
+  public static boolean canRetryMusic(WorkSnapshot work) {
+    if (work.status() != WorkStatus.FAILED || !work.retryable() || work.failureCode() == null) {
+      return false;
+    }
+    return switch (work.failureCode()) {
+      case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED -> true;
+      default -> false;
+    };
+  }
+
   public static boolean canEditLyrics(WorkStatus status) {
     return status == WorkStatus.DRAFT || status == WorkStatus.LYRICS_READY;
   }

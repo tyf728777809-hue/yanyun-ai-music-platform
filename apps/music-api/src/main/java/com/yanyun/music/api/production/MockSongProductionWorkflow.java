@@ -98,7 +98,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     try {
       musicResult =
           musicProviderRegistry
-              .require(musicProviderSelection.providerType())
+              .require(selectedProvider(input).providerType())
               .submit(
                   new MusicGenerationRequest(
                       input.workId(),
@@ -278,6 +278,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             null,
             180_000,
             "{}"));
+  }
+
+  private MusicProviderSelection selectedProvider(SongProductionWorkflowInput input) {
+    return input.musicProvider() == null || input.musicProvider().isBlank()
+        ? musicProviderSelection
+        : MusicProviderSelection.fromConfig(input.musicProvider());
   }
 
   private Map<String, Object> buildPackageJson(UUID workId, SongProductionWorkflowInput input) {

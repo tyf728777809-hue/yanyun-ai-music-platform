@@ -17,6 +17,7 @@ import com.yanyun.music.api.work.WorkDtos.Pagination;
 import com.yanyun.music.api.work.WorkDtos.PublishHandoffHint;
 import com.yanyun.music.api.work.WorkDtos.PublishPackage;
 import com.yanyun.music.api.work.WorkDtos.QuotaHint;
+import com.yanyun.music.api.work.WorkDtos.RetryMusicRequest;
 import com.yanyun.music.api.work.WorkDtos.WorkDetail;
 import com.yanyun.music.api.work.WorkDtos.WorkListResponse;
 import com.yanyun.music.api.work.WorkDtos.WorkSummary;
@@ -26,6 +27,7 @@ import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.api.work.WorkRepository.WorkRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
+import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
@@ -244,15 +246,42 @@ public class WorkService {
 
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
-            new SongProductionWorkflowInput(
-                workId.toString(),
+            workflowInput(
+                workId,
                 userId,
-                draft.id().toString(),
-                draft.songTitle(),
-                draft.songSummary(),
-                draft.lyricsText(),
-                draft.musicPrompt(),
-                "AUTO"));
+                draft,
+                musicProvider(request == null ? null : request.musicProvider())));
+    if (!workflowResult.packageReady()) {
+      throw workflowFailure(workflowResult);
+    }
+
+    WorkRow updated = getRequiredWork(workId, userId);
+    return accepted(updated, UUID.fromString(workflowResult.jobId()));
+  }
+
+  @Transactional(noRollbackFor = ResponseStatusException.class)
+  public JobAcceptedResponse retryMusic(String userId, UUID workId, RetryMusicRequest request) {
+    WorkRow work = getRequiredWork(workId, userId);
+    WorkSnapshot snapshot =
+        new WorkSnapshot(
+            work.status(),
+            work.generationStage(),
+            work.packageStatus(),
+            work.failureCode(),
+            Boolean.TRUE.equals(work.retryable()));
+    if (!WorkStateMachine.canRetryMusic(snapshot)) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Current work cannot retry music generation");
+    }
+
+    LyricsDraftRow draft = getRequiredLyricsDraft(workId);
+    SongProductionWorkflowResult workflowResult =
+        songProductionWorkflow.produce(
+            workflowInput(
+                workId,
+                userId,
+                draft,
+                musicProvider(request == null ? null : request.musicProvider())));
     if (!workflowResult.packageReady()) {
       throw workflowFailure(workflowResult);
     }
@@ -353,6 +382,34 @@ public class WorkService {
     PublishHandoff handoff = publishAdapter.refreshPackageUrl(workId.toString());
     workRepository.updatePublishPackageUrl(workId, handoff.packageUrl(), handoff.expiresAt());
     return getPublishPackage(userId, workId);
+  }
+
+  private SongProductionWorkflowInput workflowInput(
+      UUID workId, String userId, LyricsDraftRow draft, String musicProvider) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        userId,
+        draft.id().toString(),
+        draft.songTitle(),
+        draft.songSummary(),
+        draft.lyricsText(),
+        draft.musicPrompt(),
+        "AUTO",
+        musicProvider);
+  }
+
+  private String musicProvider(String requestedProvider) {
+    if (requestedProvider == null || requestedProvider.isBlank()) {
+      return null;
+    }
+    try {
+      return MusicProviderSelection.fromConfig(requestedProvider)
+          .providerType()
+          .name()
+          .toLowerCase(Locale.ROOT);
+    } catch (IllegalArgumentException exception) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
+    }
   }
 
   private UUID createWorkWithDraft(

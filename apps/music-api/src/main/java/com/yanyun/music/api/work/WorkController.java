@@ -9,6 +9,7 @@ import com.yanyun.music.api.work.WorkDtos.LyricsContinueRequest;
 import com.yanyun.music.api.work.WorkDtos.LyricsCreateRequest;
 import com.yanyun.music.api.work.WorkDtos.LyricsPolishRequest;
 import com.yanyun.music.api.work.WorkDtos.PublishPackage;
+import com.yanyun.music.api.work.WorkDtos.RetryMusicRequest;
 import com.yanyun.music.api.work.WorkDtos.WorkDetail;
 import com.yanyun.music.api.work.WorkDtos.WorkListResponse;
 import com.yanyun.music.workdomain.WorkStatus;
@@ -190,6 +191,28 @@ public class WorkController {
                 fingerprint(workId, null),
                 JobAcceptedResponse.class,
                 () -> workService.regenerateCover(userId, workId)));
+  }
+
+  @PostMapping("/works/{work_id}/music/retry")
+  public ResponseEntity<JobAcceptedResponse> retryMusic(
+      @RequestHeader(
+              value = "X-Mock-User-Id",
+              required = false,
+              defaultValue = DEFAULT_MOCK_USER_ID)
+          String userId,
+      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @PathVariable("work_id") UUID workId,
+      @RequestBody(required = false) RetryMusicRequest request) {
+    requireIdempotencyKey(idempotencyKey);
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                userId,
+                idempotencyKey,
+                "works.music.retry",
+                fingerprint(workId, request),
+                JobAcceptedResponse.class,
+                () -> workService.retryMusic(userId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/video/rerender")

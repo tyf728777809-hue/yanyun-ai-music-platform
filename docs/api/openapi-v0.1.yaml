@@ -192,7 +192,7 @@ paths:
     post:
       tags: [Generation]
       summary: 确认歌词并开始出歌
-      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。
+      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。可选 `music_provider` 用于本地/联调阶段指定音乐 Provider，默认使用服务端配置。
       operationId: confirmWork
       parameters:
         - $ref: "#/components/parameters/MockUserId"
@@ -207,6 +207,31 @@ paths:
       responses:
         "202":
           description: 出歌工作流已启动
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/music/retry:
+    post:
+      tags: [Generation]
+      summary: 重试音乐生成
+      description: 仅当作品处于可重试的音乐失败状态时可用。可用 `music_provider` 切换 Provider 后重试，例如从未实现的 `suno` 边界切回 `mock`。
+      operationId: retryMusic
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetryMusicRequest"
+      responses:
+        "202":
+          description: 音乐重试工作流已启动
           content:
             application/json:
               schema:
@@ -414,6 +439,13 @@ components:
         user_confirmed_at:
           type: string
           format: date-time
+        music_provider:
+          $ref: "#/components/schemas/MusicProvider"
+    RetryMusicRequest:
+      type: object
+      properties:
+        music_provider:
+          $ref: "#/components/schemas/MusicProvider"
     CreateWorkResponse:
       type: object
       required: [work_id, work_code, status, generation_stage, job_id, quota_hint, available_actions]
@@ -740,6 +772,10 @@ components:
       type: string
       enum: [AUTO, MALE, FEMALE, CHORUS]
       default: AUTO
+    MusicProvider:
+      type: string
+      enum: [mock, suno, minimax]
+      default: mock
     WorkStatus:
       type: string
       enum:

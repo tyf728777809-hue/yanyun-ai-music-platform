@@ -38,6 +38,18 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 
 也可以显式选择 `suno` 或 `minimax` 验证失败边界。当前两者真实提交尚未实现，确认出歌会返回 HTTP 409，并将作品持久化为可重试的 `MUSIC_GENERATION_FAILED`，不会调用真实 API。
 
+失败后可通过音乐重试接口验证恢复边界：
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/works/{work_id}/music/retry" \
+  -H "Content-Type: application/json" \
+  -H "X-Mock-User-Id: local-user" \
+  -H "Idempotency-Key: retry-{uuid}" \
+  -d '{"music_provider":"mock"}'
+```
+
+预期结果是作品从 `FAILED / MUSIC_GENERATION_FAILED` 恢复到 `GENERATED / PACKAGE_READY`。权益流水应体现首次失败释放、重试成功提交：`LOCK_GENERATE -> RELEASE_GENERATE -> LOCK_GENERATE -> COMMIT_GENERATE`。
+
 健康检查：
 
 ```bash

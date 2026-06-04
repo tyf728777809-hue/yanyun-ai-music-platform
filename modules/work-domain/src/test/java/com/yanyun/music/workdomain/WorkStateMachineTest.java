@@ -56,4 +56,34 @@ class WorkStateMachineTest {
     assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
     assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
   }
+
+  @Test
+  void retryableMusicFailureAllowsRetryMusic() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            true);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertTrue(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertTrue(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
+  void retryMusicRejectsRetryableNonMusicFailure() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            true);
+
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
 }

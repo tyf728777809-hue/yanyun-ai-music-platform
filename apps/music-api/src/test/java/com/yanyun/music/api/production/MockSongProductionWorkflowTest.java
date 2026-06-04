@@ -237,6 +237,51 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void requestMusicProviderOverridesConfiguredSelection() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider mockProvider = mockMusicProvider(MusicProviderType.MOCK);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(mockProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                "application/json",
+                512L));
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(mockProvider, MusicProviderType.SUNO).produce(input(workId, "mock"));
+
+    assertThat(result.packageReady()).isTrue();
+    verify(mockProvider).submit(any());
+    verify(workRepository).markPackageReady(workId, "Mock title", "Mock summary", true, true);
+  }
+
+  @Test
   void releasesLockedQuotaAndFailsJobWhenConfiguredProviderThrows() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -366,6 +411,10 @@ class MockSongProductionWorkflowTest {
   }
 
   private SongProductionWorkflowInput input(UUID workId) {
+    return input(workId, null);
+  }
+
+  private SongProductionWorkflowInput input(UUID workId, String musicProvider) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         "user-1",
@@ -374,6 +423,7 @@ class MockSongProductionWorkflowTest {
         "Mock summary",
         "Mock lyrics",
         "Mock prompt",
-        "AUTO");
+        "AUTO",
+        musicProvider);
   }
 }

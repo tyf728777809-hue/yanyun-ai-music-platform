@@ -30,7 +30,10 @@ public final class WorkDtos {
 
   public record LyricsContinueRequest(String instruction) {}
 
-  public record ConfirmWorkRequest(UUID lyricsDraftId, OffsetDateTime userConfirmedAt) {}
+  public record ConfirmWorkRequest(
+      UUID lyricsDraftId, OffsetDateTime userConfirmedAt, String musicProvider) {}
+
+  public record RetryMusicRequest(String musicProvider) {}
 
   public record CreateWorkResponse(
       UUID workId,

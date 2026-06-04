@@ -8,4 +8,5 @@ public record SongProductionWorkflowInput(
     String songSummary,
     String lyricsText,
     String musicPrompt,
-    String vocalPreference) {}
+    String vocalPreference,
+    String musicProvider) {}
