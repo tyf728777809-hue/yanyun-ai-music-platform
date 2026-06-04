@@ -26,6 +26,11 @@ import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.api.work.WorkRepository.WorkRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
+import com.yanyun.music.musicprovider.MusicGenerationRequest;
+import com.yanyun.music.musicprovider.MusicGenerationResult;
+import com.yanyun.music.musicprovider.MusicGenerationStatus;
+import com.yanyun.music.musicprovider.MusicProviderRegistry;
+import com.yanyun.music.musicprovider.MusicProviderType;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
@@ -66,6 +71,7 @@ public class WorkService {
   private final QuotaAdapter quotaAdapter;
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
+  private final MusicProviderRegistry musicProviderRegistry;
   private final ObjectMapper objectMapper;
 
   public WorkService(
@@ -73,11 +79,13 @@ public class WorkService {
       QuotaAdapter quotaAdapter,
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
+      MusicProviderRegistry musicProviderRegistry,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
+    this.musicProviderRegistry = musicProviderRegistry;
     this.objectMapper = objectMapper;
   }
 
@@ -254,7 +262,22 @@ public class WorkService {
     workRepository.insertQuotaTransaction(
         workId, userId, lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
 
-    createMockMediaAssets(workId);
+    MusicGenerationResult musicResult =
+        musicProviderRegistry
+            .require(MusicProviderType.MOCK)
+            .submit(
+                new MusicGenerationRequest(
+                    workId.toString(), draft.lyricsText(), draft.musicPrompt(), "AUTO", Map.of()));
+    if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
+      workRepository.markFailure(
+          workId,
+          FailureCode.MUSIC_GENERATION_FAILED,
+          firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
+          true);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Music generation failed");
+    }
+
+    createMockMediaAssets(workId, musicResult);
     PublishHandoff handoff = publishAdapter.preparePackage(workId.toString());
     ModerationDecision packageDecision =
         moderationAdapter.preCheckPublishPackage(userId, workId.toString());
@@ -497,18 +520,18 @@ public class WorkService {
         OffsetDateTime.now());
   }
 
-  private void createMockMediaAssets(UUID workId) {
+  private void createMockMediaAssets(UUID workId, MusicGenerationResult musicResult) {
     workRepository.upsertMediaAsset(
         new MediaAssetRow(
             workId,
             "AUDIO",
-            "audio/" + workId + ".mp3",
+            firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".mp3"),
             "audio/mpeg",
             4_800_000L,
             "mock-audio",
             null,
             null,
-            180_000,
+            musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
             "{}"));
     workRepository.upsertMediaAsset(
         new MediaAssetRow(

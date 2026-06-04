@@ -10,6 +10,7 @@ dependencies {
     implementation(project(":modules:moderation"))
     implementation(project(":modules:publish"))
     implementation(project(":modules:work-domain"))
+    implementation(project(":modules:music-provider"))
     implementation(project(":modules:workflow"))
     implementation(project(":modules:observability"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
