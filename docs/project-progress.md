@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-05 04:19 CST
+更新时间：2026-06-05 04:29 CST
 
 ## 当前阶段
 
@@ -13,6 +13,8 @@
 当前 Mock 出歌流程已接入 `MockMusicProvider`，不再在 `WorkService` 内直接硬编码音频生成结果；后续切换 Suno 或 MiniMax 时已有主链路落点。
 
 `confirmWork` 已进一步拆到 `MockSongProductionWorkflow`：`WorkService` 只负责状态校验和接口返回，出歌编排集中处理权益锁定、音乐 Provider、媒体资产、发布包、发布包审核、权益扣减、失败释放和 generation job 收口。当前仍是同步 Mock Workflow，为后续 Temporal Workflow 接入做准备。
+
+Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient` 写入本地 `build/local-object-storage/yanyun-works-local/packages/{work_id}.json`，接口返回的 `package_url` 与本地写出的对象 key 保持一致。当前仍不写入真实 MinIO/S3，公司对象存储协议待后续确认。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -70,6 +72,9 @@
 - 新增 `MockSongProductionWorkflow`，将确认出歌后的生成编排从 `WorkService` 中拆出，集中处理权益锁定、Provider 调用、媒体资产、发布包、发布包审核、权益提交和失败释放。
 - `generation_jobs` 已增加完成状态更新方法，`SONG_PRODUCTION` job 成功后会收口到 `SUCCEEDED / PACKAGE_READY`，失败后会收口到 `FAILED / FAILED` 并记录失败码。
 - 新增 `MockSongProductionWorkflowTest`，覆盖成功出发布包和音乐 Provider 失败时释放已锁权益两个关键路径。
+- 新增 `modules:storage` 对象存储合约和 `LocalObjectStorageClient`，本地阶段可把发布包 JSON 写到 `build/local-object-storage/yanyun-works-local`。
+- `MockSongProductionWorkflow` 已接入对象存储写入；发布包准备或写入失败会进入 `PACKAGE_BUILD_FAILED`，释放已锁权益，并标记为可重试失败。
+- 本地运行手册已补充 package JSON 写入位置和检查方式。
 
 ## 当前关键判断
 
@@ -156,17 +161,27 @@
 - 新 JAR HTTP smoke 成功：`GET /api/v1/works/{work_id}/publish-package` 返回发布包 URL、Mock MP4 URL、封面、歌词和时间轴。
 - PostgreSQL 抽查成功：最新 smoke 作品的 `generation_jobs` 中 `SONG_PRODUCTION|SUCCEEDED|PACKAGE_READY|completed_at=true`，没有残留运行中的生成 job。
 
+## 第 2 批 Mock 对象存储验证结果
+
+- `./gradlew spotlessApply spotlessCheck test` 成功。
+- `LocalObjectStorageClientTest` 成功：可写入本地对象文件并返回公开 URL；路径穿越 key 会被拒绝。
+- `MockSongProductionWorkflowTest` 成功：成功路径会调用 `ObjectStorageClient.putObject` 写入 package JSON；storage 写入失败会释放权益、记录 `PACKAGE_BUILD_FAILED`、标记作品失败，并将 job 更新为 `FAILED / FAILED`。
+- `./gradlew :apps:music-api:bootJar` 成功。
+- 新 JAR HTTP smoke 成功：作品确认出歌后返回 `PACKAGE_READY` 和 `package_url=http://localhost:9000/yanyun-works-local/packages/{work_id}.json`。
+- 本地文件 smoke 成功：`build/local-object-storage/yanyun-works-local/packages/{work_id}.json` 已真实写出，文件内 `work_id` 和 `video.url` 与接口返回一致。
+- PostgreSQL 抽查成功：最新 smoke 作品的 `SONG_PRODUCTION` job 为 `SUCCEEDED / PACKAGE_READY`，且 `completed_at` 非空。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：工程 Provider 边界已预置，但飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
-- 当前发布包 URL 为 Mock MinIO 风格 URL，尚未写入真实对象存储文件。
+- 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
 
 ## 下一步建议
 
-1. 接入 Mock 对象存储/发布包文件写入边界，让本地阶段不仅返回 URL，也实际写出可检查的 package JSON。
+1. 补 Provider 配置选择，让本地可通过配置显式选择 `mock`，并为后续 `suno` / `minimax` 开放策略预留开关。
 2. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 3. 后续增强幂等：补并发冲突处理、过期键清理、更多集成测试。
 4. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
@@ -205,3 +220,4 @@
 | 2026-06-05 03:43 CST | 预置音乐 Provider 工程边界 | 新增统一 `MusicProvider` 合约、`MockMusicProvider`、`SunoMusicProvider`、`MiniMaxMusicProvider` 和配置变量，真实 API 调用仍保持关闭 |
 | 2026-06-05 03:50 CST | 接入 MockMusicProvider 到出歌流程 | `confirmWork` 已通过 Provider 结果写入音频媒体资产，主链路 smoke 通过 |
 | 2026-06-05 04:19 CST | 拆出 MockSongProductionWorkflow | 出歌编排从 `WorkService` 下沉到 Workflow，补齐 job 成功/失败收口和失败释放权益，单元测试、构建、HTTP smoke、DB 抽查均通过 |
+| 2026-06-05 04:29 CST | 接入 Mock 对象存储写入 | 新增 `ObjectStorageClient` 与本地文件实现，发布包 JSON 已可写入 `build/local-object-storage`，单元测试、构建、HTTP smoke、本地文件检查和 DB 抽查均通过 |

@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":modules:work-domain"))
     implementation(project(":modules:music-provider"))
     implementation(project(":modules:workflow"))
+    implementation(project(":modules:storage"))
     implementation(project(":modules:observability"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")

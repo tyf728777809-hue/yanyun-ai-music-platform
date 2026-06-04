@@ -11,6 +11,9 @@ import com.yanyun.music.publish.MockPublishAdapter;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.MockQuotaAdapter;
 import com.yanyun.music.quota.QuotaAdapter;
+import com.yanyun.music.storage.LocalObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageClient;
+import java.nio.file.Path;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +39,13 @@ public class AdapterConfiguration {
   @Bean
   PublishAdapter publishAdapter() {
     return new MockPublishAdapter();
+  }
+
+  @Bean
+  ObjectStorageClient objectStorageClient() {
+    return new LocalObjectStorageClient(
+        Path.of("build/local-object-storage/yanyun-works-local"),
+        "http://localhost:9000/yanyun-works-local");
   }
 
   @Bean

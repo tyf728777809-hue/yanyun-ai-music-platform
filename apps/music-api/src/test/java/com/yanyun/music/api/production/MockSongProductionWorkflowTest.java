@@ -28,6 +28,9 @@ import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaCommit;
 import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
+import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.StoredObject;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
@@ -46,6 +49,7 @@ class MockSongProductionWorkflowTest {
   private final QuotaAdapter quotaAdapter = mock(QuotaAdapter.class);
   private final ModerationAdapter moderationAdapter = mock(ModerationAdapter.class);
   private final PublishAdapter publishAdapter = mock(PublishAdapter.class);
+  private final ObjectStorageClient objectStorageClient = mock(ObjectStorageClient.class);
 
   @Test
   void producesPublishReadyPackageAndCompletesJob() throws Exception {
@@ -74,6 +78,13 @@ class MockSongProductionWorkflowTest {
                 OffsetDateTime.parse("2026-06-05T12:00:00Z")));
     when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
         .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                "application/json",
+                512L));
     when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
         .thenReturn(new QuotaCommit(true, "committed"));
 
@@ -107,6 +118,16 @@ class MockSongProductionWorkflowTest {
     assertThat(packageJson.path("video").path("url").asText())
         .endsWith("videos/" + workId + ".mp4");
     assertThat(packageJson.path("metadata").path("song_title").asText()).isEqualTo("Mock title");
+    assertThat(publishPackage.getValue().packageUrl())
+        .isEqualTo("http://localhost/packages/" + workId + ".json");
+
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient).putObject(storagePut.capture());
+    assertThat(storagePut.getValue().objectKey()).isEqualTo("packages/" + workId + ".json");
+    assertThat(storagePut.getValue().contentType()).isEqualTo("application/json");
+    assertThat(new String(storagePut.getValue().content(), java.nio.charset.StandardCharsets.UTF_8))
+        .contains("\"work_id\":\"" + workId + "\"");
 
     verify(workRepository)
         .insertQuotaTransaction(workId, "user-1", "lock-1", "LOCK_GENERATE", "LOCKED", "locked");
@@ -166,7 +187,63 @@ class MockSongProductionWorkflowTest {
     verify(workRepository, never()).upsertMediaAsset(any());
     verify(workRepository, never()).upsertPublishPackage(any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
-    verifyNoInteractions(publishAdapter, moderationAdapter);
+    verifyNoInteractions(publishAdapter, moderationAdapter, objectStorageClient);
+  }
+
+  @Test
+  void releasesLockedQuotaAndFailsJobWhenPackageStorageFails() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenThrow(new IllegalStateException("storage unavailable"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result = workflowWith(musicProvider).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(result.failureMessage()).isEqualTo("storage unavailable");
+
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(workId, FailureCode.PACKAGE_BUILD_FAILED, "storage unavailable", true);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            "storage unavailable");
+    verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
+    verify(workRepository, never()).upsertPublishPackage(any());
+    verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
   }
 
   private MockSongProductionWorkflow workflowWith(MusicProvider musicProvider) {
@@ -176,6 +253,7 @@ class MockSongProductionWorkflowTest {
         moderationAdapter,
         publishAdapter,
         new MusicProviderRegistry(List.of(musicProvider)),
+        objectStorageClient,
         objectMapper);
   }
 

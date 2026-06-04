@@ -18,12 +18,16 @@ import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaCommit;
 import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
+import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.StoredObject;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workflow.SongProductionWorkflow;
 import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -39,6 +43,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
   private final MusicProviderRegistry musicProviderRegistry;
+  private final ObjectStorageClient objectStorageClient;
   private final ObjectMapper objectMapper;
 
   public MockSongProductionWorkflow(
@@ -47,12 +52,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
       MusicProviderRegistry musicProviderRegistry,
+      ObjectStorageClient objectStorageClient,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
     this.musicProviderRegistry = musicProviderRegistry;
+    this.objectStorageClient = objectStorageClient;
     this.objectMapper = objectMapper;
   }
 
@@ -107,7 +114,19 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     createMockMediaAssets(workId, musicResult);
 
-    PublishHandoff handoff = publishAdapter.preparePackage(input.workId());
+    PublishHandoff handoff;
+    try {
+      handoff = publishAdapter.preparePackage(input.workId());
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.PACKAGE_BUILD_FAILED,
+          "Publish package preparation failed",
+          true,
+          input.userId(),
+          lock.lockId());
+    }
     ModerationDecision packageDecision =
         moderationAdapter.preCheckPublishPackage(input.userId(), input.workId());
     if (!packageDecision.allowed()) {
@@ -121,14 +140,35 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
 
+    String packageJson;
+    StoredObject storedPackage;
+    try {
+      packageJson = writeJson(buildPackageJson(workId, input));
+      storedPackage =
+          objectStorageClient.putObject(
+              new ObjectStoragePutRequest(
+                  handoff.packageObjectKey(),
+                  "application/json",
+                  packageJson.getBytes(StandardCharsets.UTF_8)));
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.PACKAGE_BUILD_FAILED,
+          firstNonBlank(exception.getMessage(), "Package build failed"),
+          true,
+          input.userId(),
+          lock.lockId());
+    }
+
     workRepository.upsertPublishPackage(
         new PublishPackageRow(
             UUID.randomUUID(),
             workId,
             PackageStatus.PACKAGE_READY,
-            writeJson(buildPackageJson(workId, input)),
-            handoff.packageObjectKey(),
-            handoff.packageUrl(),
+            packageJson,
+            storedPackage.objectKey(),
+            storedPackage.url(),
             handoff.expiresAt(),
             null,
             null,

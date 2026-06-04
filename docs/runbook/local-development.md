@@ -37,6 +37,14 @@ curl http://localhost:8080/health
 curl http://localhost:8080/actuator/health
 ```
 
+本地 Mock 发布包文件会写入：
+
+```text
+build/local-object-storage/yanyun-works-local/packages/{work_id}.json
+```
+
+确认出歌后可用 `GET /api/v1/works/{work_id}/publish-package` 查看 `package_url`，并用本地文件检查 package JSON 内容。
+
 Worker：
 
 ```bash
