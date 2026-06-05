@@ -2,6 +2,13 @@ package com.yanyun.music.production;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.image2.CoverGenerationRequest;
+import com.yanyun.music.image2.CoverGenerationResult;
+import com.yanyun.music.image2.CoverGenerationService;
+import com.yanyun.music.media.MediaAssetDescriptor;
+import com.yanyun.music.media.VideoRenderRequest;
+import com.yanyun.music.media.VideoRenderResult;
+import com.yanyun.music.media.VideoRenderService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
@@ -60,6 +67,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final MusicProviderSelection musicProviderSelection;
   private final ObjectStorageClient objectStorageClient;
   private final RemoteObjectImporter remoteObjectImporter;
+  private final CoverGenerationService coverGenerationService;
+  private final VideoRenderService videoRenderService;
   private final ObjectMapper objectMapper;
 
   public MockSongProductionWorkflow(
@@ -71,6 +80,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       MusicProviderSelection musicProviderSelection,
       ObjectStorageClient objectStorageClient,
       RemoteObjectImporter remoteObjectImporter,
+      CoverGenerationService coverGenerationService,
+      VideoRenderService videoRenderService,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
@@ -80,6 +91,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.musicProviderSelection = musicProviderSelection;
     this.objectStorageClient = objectStorageClient;
     this.remoteObjectImporter = remoteObjectImporter;
+    this.coverGenerationService = coverGenerationService;
+    this.videoRenderService = videoRenderService;
     this.objectMapper = objectMapper;
   }
 
@@ -158,14 +171,15 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
 
+    GeneratedMediaAssets mediaAssets;
     try {
-      createMediaAssets(workId, musicResult);
+      mediaAssets = createMediaAssets(workId, input, musicResult);
     } catch (RuntimeException exception) {
       return fail(
           workId,
           jobId,
           FailureCode.PACKAGE_BUILD_FAILED,
-          firstNonBlank(exception.getMessage(), "Provider audio import failed"),
+          firstNonBlank(exception.getMessage(), "Media asset generation failed"),
           true,
           input.userId(),
           lock.lockId());
@@ -200,7 +214,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     String packageJson;
     StoredObject storedPackage;
     try {
-      packageJson = writeJson(buildPackageJson(workId, input));
+      packageJson = writeJson(buildPackageJson(workId, input, mediaAssets));
       storedPackage =
           objectStorageClient.putObject(
               new ObjectStoragePutRequest(
@@ -286,13 +300,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         null);
   }
 
-  private void createMediaAssets(UUID workId, MusicGenerationResult musicResult) {
+  private GeneratedMediaAssets createMediaAssets(
+      UUID workId, SongProductionWorkflowInput input, MusicGenerationResult musicResult) {
     StoredObject importedAudio = importProviderAudio(workId, musicResult);
     String audioObjectKey =
         firstNonBlank(
             musicResult.audioObjectKey(),
             importedAudio == null ? "audio/" + workId + ".mp3" : importedAudio.objectKey());
-    workRepository.upsertMediaAsset(
+    MediaAssetRow audioAsset =
         new MediaAssetRow(
             workId,
             "AUDIO",
@@ -303,43 +318,49 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             null,
             null,
             musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "COVER",
-            "covers/" + workId + ".png",
-            "image/png",
-            512_000L,
-            "mock-cover",
-            1080,
-            1920,
-            null,
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "VIDEO",
-            "videos/" + workId + ".mp4",
-            "video/mp4",
-            12_000_000L,
-            "mock-video",
-            1080,
-            1920,
-            180_000,
-            "{}"));
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "TIMELINE",
-            "timelines/" + workId + ".json",
-            "application/json",
-            64_000L,
-            "mock-timeline",
-            null,
-            null,
-            180_000,
-            "{}"));
+            "{}");
+    workRepository.upsertMediaAsset(audioAsset);
+
+    CoverGenerationResult coverResult =
+        coverGenerationService.generateCover(
+            new CoverGenerationRequest(
+                workId.toString(),
+                input.songTitle(),
+                input.songSummary(),
+                input.lyricsText(),
+                input.musicPrompt()));
+    MediaAssetRow coverAsset = toMediaAssetRow(workId, coverResult.asset());
+    workRepository.upsertMediaAsset(coverAsset);
+
+    VideoRenderResult videoResult =
+        videoRenderService.renderVideo(
+            new VideoRenderRequest(
+                workId.toString(),
+                input.songTitle(),
+                input.lyricsText(),
+                audioAsset.objectKey(),
+                audioAsset.mimeType(),
+                coverAsset.objectKey(),
+                audioAsset.durationMs()));
+    MediaAssetRow videoAsset = toMediaAssetRow(workId, videoResult.videoAsset());
+    MediaAssetRow timelineAsset = toMediaAssetRow(workId, videoResult.timelineAsset());
+    workRepository.upsertMediaAsset(videoAsset);
+    workRepository.upsertMediaAsset(timelineAsset);
+    return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
+  }
+
+  private MediaAssetRow toMediaAssetRow(UUID workId, MediaAssetDescriptor asset) {
+    return new MediaAssetRow(
+        workId,
+        asset.assetType(),
+        asset.objectKey(),
+        asset.mimeType(),
+        asset.fileSizeBytes(),
+        asset.checksum(),
+        asset.width(),
+        asset.height(),
+        asset.durationMs(),
+        writeJson(asset.metadata()));
   }
 
   private StoredObject importProviderAudio(UUID workId, MusicGenerationResult musicResult) {
@@ -423,36 +444,33 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             + request.lyricsText());
   }
 
-  private Map<String, Object> buildPackageJson(UUID workId, SongProductionWorkflowInput input) {
+  private Map<String, Object> buildPackageJson(
+      UUID workId, SongProductionWorkflowInput input, GeneratedMediaAssets mediaAssets) {
     return Map.of(
         "work_id",
         workId.toString(),
         "video",
         Map.of(
             "url",
-            ASSET_BASE_URL + "videos/" + workId + ".mp4",
+            assetUrl(mediaAssets.videoAsset()),
             "mime_type",
-            "video/mp4",
+            mediaAssets.videoAsset().mimeType(),
             "file_size_bytes",
-            12_000_000,
+            mediaAssets.videoAsset().fileSizeBytes(),
             "checksum",
-            "mock-video"),
+            mediaAssets.videoAsset().checksum()),
         "cover",
         Map.of(
             "url",
-            ASSET_BASE_URL + "covers/" + workId + ".png",
+            assetUrl(mediaAssets.coverAsset()),
             "mime_type",
-            "image/png",
+            mediaAssets.coverAsset().mimeType(),
             "file_size_bytes",
-            512_000,
+            mediaAssets.coverAsset().fileSizeBytes(),
             "checksum",
-            "mock-cover"),
+            mediaAssets.coverAsset().checksum()),
         "lyrics",
-        Map.of(
-            "text",
-            input.lyricsText(),
-            "timeline_url",
-            ASSET_BASE_URL + "timelines/" + workId + ".json"),
+        Map.of("text", input.lyricsText(), "timeline_url", assetUrl(mediaAssets.timelineAsset())),
         "metadata",
         Map.of(
             "song_title",
@@ -461,6 +479,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             input.songSummary(),
             "source",
             "mock-local"));
+  }
+
+  private String assetUrl(MediaAssetRow asset) {
+    return ASSET_BASE_URL + asset.objectKey();
   }
 
   private String firstNonBlank(String value, String fallback) {
@@ -484,4 +506,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       throw new IllegalStateException("SHA-256 digest is unavailable", exception);
     }
   }
+
+  private record GeneratedMediaAssets(
+      MediaAssetRow audioAsset,
+      MediaAssetRow coverAsset,
+      MediaAssetRow videoAsset,
+      MediaAssetRow timelineAsset) {}
 }

@@ -12,6 +12,9 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.image2.MockCoverGenerationService;
+import com.yanyun.music.media.MockVideoRenderService;
+import com.yanyun.music.media.VideoRenderService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
@@ -123,6 +126,28 @@ class MockSongProductionWorkflowTest {
     assertThat(mediaAsset.getAllValues())
         .extracting(MediaAssetRow::assetType)
         .containsExactlyInAnyOrder("AUDIO", "COVER", "VIDEO", "TIMELINE");
+    MediaAssetRow coverAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "COVER".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    MediaAssetRow videoAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "VIDEO".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    MediaAssetRow timelineAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "TIMELINE".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(coverAsset.metadataJson()).contains("mock-image2");
+    assertThat(videoAsset.metadataJson()).contains("mock-remotion-ffmpeg");
+    assertThat(timelineAsset.metadataJson()).contains("mobile-first");
+    assertThat(coverAsset.width()).isEqualTo(1920);
+    assertThat(coverAsset.height()).isEqualTo(1080);
+    assertThat(videoAsset.width()).isEqualTo(1920);
+    assertThat(videoAsset.height()).isEqualTo(1080);
 
     ArgumentCaptor<PublishPackageRow> publishPackage =
         ArgumentCaptor.forClass(PublishPackageRow.class);
@@ -523,12 +548,78 @@ class MockSongProductionWorkflowTest {
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
   }
 
+  @Test
+  void releasesLockedQuotaAndFailsJobWhenVideoRenderFails() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+    VideoRenderService failingVideoRenderer =
+        request -> {
+          throw new IllegalStateException("video render unavailable");
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.MOCK, failingVideoRenderer)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(result.failureMessage()).isEqualTo("video render unavailable");
+
+    ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
+    verify(workRepository, org.mockito.Mockito.times(2)).upsertMediaAsset(mediaAsset.capture());
+    assertThat(mediaAsset.getAllValues())
+        .extracting(MediaAssetRow::assetType)
+        .containsExactly("AUDIO", "COVER");
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(workId, FailureCode.PACKAGE_BUILD_FAILED, "video render unavailable", true);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            "video render unavailable");
+    verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
+    verify(workRepository, never()).upsertPublishPackage(any());
+    verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
+    verifyNoInteractions(
+        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+  }
+
   private MockSongProductionWorkflow workflowWith(MusicProvider musicProvider) {
     return workflowWith(musicProvider, MusicProviderType.MOCK);
   }
 
   private MockSongProductionWorkflow workflowWith(
       MusicProvider musicProvider, MusicProviderType providerType) {
+    return workflowWith(musicProvider, providerType, new MockVideoRenderService());
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer) {
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,
@@ -538,6 +629,8 @@ class MockSongProductionWorkflowTest {
         new MusicProviderSelection(providerType),
         objectStorageClient,
         remoteObjectImporter,
+        new MockCoverGenerationService(),
+        videoRenderer,
         objectMapper);
   }
 

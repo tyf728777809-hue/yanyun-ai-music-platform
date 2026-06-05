@@ -10,7 +10,7 @@
     "build": "tsc --noEmit",
     "test": "node --test --import tsx src/smoke.test.ts",
     "preview": "remotion preview src/index.ts",
-    "render:sample": "remotion render src/index.ts YanyunScaffold out/sample.mp4"
+    "render:sample": "remotion render src/index.ts LyricVideo16x9 out/sample.mp4 --codec=h264"
   },
   "dependencies": {
     "@remotion/cli": "4.0.472",

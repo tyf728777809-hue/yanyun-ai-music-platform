@@ -1,4 +1,5 @@
 plugins {
+    `java-library`
     id("io.spring.dependency-management")
 }
 
@@ -9,6 +10,8 @@ dependencyManagement {
 }
 
 dependencies {
+    api(project(":modules:image2"))
+    api(project(":modules:media"))
     implementation(project(":modules:moderation"))
     implementation(project(":modules:music-provider"))
     implementation(project(":modules:publish"))

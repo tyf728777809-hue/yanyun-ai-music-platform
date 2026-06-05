@@ -1,10 +1,10 @@
 # 项目进度记录
 
-更新时间：2026-06-06 03:01 CST
+更新时间：2026-06-06 03:44 CST
 
 ## 当前阶段
 
-项目已完成第 6 批 DeepSeek / 知识库写词润色 Mock 链路：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关，以及 DeepSeek / Knowledge / Prompt / Lyrics 四个写词边界均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、Image 2 或公司系统调用。
+项目已完成第 7 批封面与 Remotion/FFmpeg MP4 成片基础：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、CoverGenerationService / VideoRenderService 媒体生成边界，以及 render-worker 本地 16:9 MP4 样例渲染均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
@@ -30,6 +30,8 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 
 第 6 批 DeepSeek / 知识库写词润色 Mock 链路已完成：`WorkService` 不再硬编码灵感成歌、填词成歌、润色和续写文本，而是通过 `LyricsGenerationService` 编排 `KnowledgeService`、`PromptTemplateService` 和 `DeepSeekLyricsClient`；当前默认均为 Mock/Fake，不调用真实 DeepSeek。AI 润色和 AI 续写共享 2 次用户侧编辑次数，低质量结果的内部自动重写不消耗用户次数。
 
+第 7 批封面与视频成片基础已完成：`MockSongProductionWorkflow` 不再直接硬编码封面、视频和时间轴路径，而是通过 `CoverGenerationService` 与 `VideoRenderService` 生成 `COVER`、`VIDEO`、`TIMELINE` 资产描述，并连同 `AUDIO` 统一写入 `media_assets`；发布包 JSON 已按媒体资产 object key 组装 `video.url`、`cover.url` 和 `lyrics.timeline_url`。`apps/render-worker` 已新增 `LyricVideo16x9` composition，并可本地渲染 H.264/AAC、1920x1080、约 8 秒的 MP4 样例。
+
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
 - `docs/adr/0001-user-web-scope.md`：用户侧 Web 范围决策。
@@ -38,6 +40,7 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `database/migrations/V202606050245__init_work_domain.sql`：作品域核心业务表。
 - `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`：交给 Gemini 的第 2 批前端任务包。
 - `docs/specs/deepseek-knowledge-lyrics-v0.1.md`：第 6 批 DeepSeek / 知识库写词润色 Mock 链路规格。
+- `docs/specs/cover-video-rendering-v0.1.md`：第 7 批封面与 Remotion/FFmpeg MP4 成片基础规格。
 
 ## 进度记录规则
 
@@ -275,6 +278,11 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `MusicGenerationResult` 已增加 `modelName`，`provider_calls.model_name` 可写入 `suno:music-gen:{model}`、`music-minimax:text-to-music:{model}` 或 `mock`。
 - 供应商失败消息进入 `provider_calls`、作品失败状态和用户响应前会脱敏 Bearer token、JWT、key/token 字段并截断。
 - 新增第 5 批操作文档：受控真实联调 runbook、验收清单、凭据与日志规则、开放问题跟踪、公司交接说明。
+- 新增 `modules:image2`，定义封面生成请求、结果、服务接口和 `MockCoverGenerationService`；当前返回 deterministic 16:9 Mock 封面资产描述，不调用真实 Image 2。
+- 新增 `modules:media`，定义媒体资产描述、视频渲染请求、结果、服务接口和 `MockVideoRenderService`；当前返回 deterministic 16:9 Mock 视频与时间轴资产描述，不调用真实外部渲染服务。
+- `MockSongProductionWorkflow` 已通过 `CoverGenerationService` / `VideoRenderService` 生成并写入 `COVER`、`VIDEO`、`TIMELINE` 资产，发布包 JSON 不再写死封面、视频和 timeline 路径。
+- `MockSongProductionWorkflowTest` 已覆盖成功路径四类资产写入、封面/视频 1920x1080、发布包引用媒体 object key，以及视频渲染失败时释放权益并阻止发布包生成。
+- `apps/render-worker` 已新增 `LyricVideo16x9`、样例输入和 `render:sample` 脚本，可用 Remotion/FFmpeg 渲染本地 MP4。
 
 ## 第 2 批 DreamMaker Provider 接入骨架验证结果
 
@@ -357,22 +365,39 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - PostgreSQL 抽查成功：最新 smoke 作品的 `lyrics_drafts` 已持久化 `knowledge_base_version=mock-yanyun-kb-v0`、`prompt_template_versions={"lyrics.continue.v1": 1}`，且 `cover_prompt_seed`、`quality_score` 均非空。
 - smoke 后已停止 `music-api`，未留下占用 `8080` 的 API 进程。
 
+## 第 7 批封面与 Remotion/FFmpeg MP4 成片基础验证结果
+
+- 新增 `docs/specs/cover-video-rendering-v0.1.md`，明确本批只做 Mock/Fake 封面与视频生成边界、16:9 MP4 成片工具链验证、发布包引用更新，不调用真实 Image 2 或真实外部渲染服务。
+- `./gradlew :modules:image2:spotlessCheck :modules:media:spotlessCheck :modules:production:spotlessCheck :apps:music-api:test --tests com.yanyun.music.production.MockSongProductionWorkflowTest` 成功。
+- `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar :apps:music-worker:bootJar` 成功。
+- `cd apps/render-worker && npm run build` 成功。
+- `cd apps/render-worker && npm test` 成功：`LyricVideo16x9` 输出设置为 1920x1080、30fps、240 frames，样例歌词覆盖完整 composition 时长。
+- `cd apps/render-worker && npm run render:sample` 成功：Remotion/FFmpeg 生成 `apps/render-worker/out/sample.mp4`。
+- `ffprobe` 检查成功：样例 MP4 包含 `h264` 视频流、`aac` 音频流，分辨率为 1920x1080，时长约 8 秒，文件约 973KB。
+- JAR HTTP smoke 成功：`MUSIC_PROVIDER=mock` 下，填词创建作品、确认出歌后进入 `GENERATED / PACKAGE_READY`。
+- JAR HTTP smoke 成功：作品详情 `media_assets` 返回 audio、cover、video URL，video duration 为 180000，video file size 为 12000000。
+- PostgreSQL 抽查成功：最新 smoke 作品写入 `AUDIO`、`COVER`、`TIMELINE`、`VIDEO` 四类 `media_assets`；`COVER` 和 `VIDEO` 均为 1920x1080；metadata 分别包含 `mock-image2` 和 `mock-remotion-ffmpeg`。
+- 发布包 smoke 成功：`GET /api/v1/works/{work_id}/publish-package` 返回 `PACKAGE_READY`，`video.url`、`cover.url`、`lyrics.timeline_url` 均由对应媒体资产 object key 推导。
+- 本地文件 smoke 成功：`build/local-object-storage/yanyun-works-local/packages/{work_id}.json` 已真实写出。
+- smoke 后已停止 `music-api`，未留下占用 `8080` 的 API 进程。
+- 当前 Java workflow 仍未直接调用 render-worker 生成真实业务 MP4 文件；本批完成的是媒体生成边界、发布包引用和 render-worker 工具链样例。后续需把 render-worker 输出、对象存储写入和发布包真实视频文件纳入第 8 批/后续真实成片链路。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 的 DreamMaker run/status 接入骨架、JWT 鉴权、真实调用硬开关和受控联调文档已实现；非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待真实联调确认。
 - DeepSeek 真实 API 协议、模型参数、失败码、限流策略、计费口径、日志脱敏和受控联调窗口仍待确认。
-- Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
+- Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认；本地 Mock 封面边界已完成，真实 Image 2 接入尚未开始。
 - Outbox v0.1 与 Temporal v0.1 已落地并可本地验证；后续进入真实模型链路前，还需要把当前单一 activity 委托拆成更细粒度、可幂等重试的音乐生成、封面、视频、发布包等活动。
-- 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
+- 当前发布包 JSON 已写入本地 mock 对象存储目录，但封面、视频、时间轴仍是 Mock asset 描述和 URL 口径，尚未把真实媒体文件写入 MinIO/S3。
 - 当前音乐重试已有次数上限和状态抢占，DreamMaker 失败码也已有保守映射；真实联调后仍需根据具体非零 code 和 failed payload 精细化 retryable / non-retryable 规则。
 - 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
 
 ## 下一步建议
 
-1. 第 7 批优先补封面生成链路：先写 Image 2 / Mock Cover Adapter 规格，再读取 `lyrics_drafts.cover_prompt_seed` 生成封面资产。
-2. 第 7 批继续补 Remotion/FFmpeg MP4 成片：先用 Mock 音频和 Mock 封面做本地可验证成片，再接真实渲染参数。
-3. 第 8 批补 MinIO/S3 发布包强化：发布包文件结构、URL 有效期、交接状态、清理策略和对象存储配置。
+1. 第 8 批补 MinIO/S3 发布包强化：明确真实媒体对象写入、发布包文件结构、URL 有效期、交接状态、清理策略和对象存储配置。
+2. 补 Java workflow 到 render-worker 的真实成片调用边界，逐步从 Mock `VideoRenderService` 过渡到可落盘/可上传的 MP4 文件。
+3. 审查 Gemini CLI 生成的独立前端原型 `prototypes/gemini-web-v1`，确认移动端 390px 与桌面 1440px 的页面流程、状态驱动和 API 调用符合 OpenAPI v0.1。
 4. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
 5. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
 
@@ -421,3 +446,4 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 01:35 CST | 完成 Temporal 真实编排基础 | 新增 `modules:production`、`modules:workflow`、API local/temporal starter、worker workflow/activity 注册和生命周期；local outbox smoke、Temporal worker smoke、全量 Gradle 验证和 DB 抽查均通过 |
 | 2026-06-06 02:20 CST | 完成 DreamMaker 受控真实联调准备 | 新增真实调用硬开关、共享 DreamMaker client、worker Suno/MiniMax 注册、provider 模型标识、失败信息脱敏和第 5 批联调/安全/验收/交接文档；全量测试、bootJar 和硬开关 HTTP smoke 均通过 |
 | 2026-06-06 03:01 CST | 完成 DeepSeek / 知识库写词润色 Mock 链路 | 新增 Knowledge/Prompt/DeepSeek/Lyrics 模块、统一写词服务、低质量内部重写、AI 编辑次数共享、持久化写词元数据和事务 4xx 修复；全量测试、bootJar、HTTP smoke 和 DB 抽查均通过 |
+| 2026-06-06 03:44 CST | 完成封面与 MP4 成片基础 | 新增 Image2/Media 边界、Cover/Video Mock 服务、发布包媒体引用更新和 `LyricVideo16x9` Remotion 样例；全量 Gradle、render-worker build/test/render、ffprobe、HTTP smoke 和 DB 抽查均通过 |
