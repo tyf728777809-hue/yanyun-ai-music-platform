@@ -64,7 +64,7 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 ```
 
 也可以显式选择 `suno` 或 `minimax` 验证 DreamMaker Provider 边界。默认不配置
-`DREAMMAKER_API_KEY` 时，确认出歌会返回 HTTP 409，并将作品持久化为可重试的
+`DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 时，确认出歌会返回 HTTP 409，并将作品持久化为可重试的
 `MUSIC_GENERATION_FAILED`，不会发起真实供应商请求。
 
 真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
@@ -72,7 +72,10 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 ```bash
 export MUSIC_PROVIDER=suno
 export DREAMMAKER_API_BASE_URL=https://api-all.dreammaker.netease.com
-export DREAMMAKER_API_KEY=...
+export DREAMMAKER_ACCESS_KEY=...
+export DREAMMAKER_SECRET_KEY=...
+# Optional: only set when company integration wants DreamMaker to parse a real user identity.
+export DREAMMAKER_USER_ACCESS_TOKEN=...
 export SUNO_MODEL=chirp-crow
 ./gradlew :apps:music-api:bootRun
 ```
@@ -85,9 +88,10 @@ export MINIMAX_MODEL=minimax-music-2.6
 ./gradlew :apps:music-api:bootRun
 ```
 
-当前工程已预留 `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 变量名，但 Feishu 资料只明确
-`Authorization: Bearer <key>`。在供应商确认 AccessKey/SecretKey 如何换取 Bearer 或签名之前，不要擅自把
-AccessKey/SecretKey 当作请求头使用。
+DreamMaker 鉴权已确认：客户端会使用 `DREAMMAKER_ACCESS_KEY` 作为 JWT `iss`，使用
+`DREAMMAKER_SECRET_KEY` 做 HS256 签名，`exp=now+1800s`，`nbf=now-5s`，并放入
+`Authorization: Bearer <jwt>`。`DREAMMAKER_USER_ACCESS_TOKEN` 只作为可选
+`X-Access-Token` 透传，不参与本平台本地 Mock 用户身份。
 
 当真实 Provider 返回音频 URL 后，workflow 会先把音频导入本地对象存储，再写入 `media_assets`；作品详情和发布包仍只暴露平台自己的对象 URL。
 

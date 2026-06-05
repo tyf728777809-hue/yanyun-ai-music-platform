@@ -8,9 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DreamMakerProperties {
 
   private URI baseUrl = URI.create("https://api-all.dreammaker.netease.com");
-  private String apiKey = "";
   private String accessKey = "";
   private String secretKey = "";
+  private String userAccessToken = "";
   private Duration requestTimeout = Duration.ofSeconds(30);
   private int maxPollAttempts = 60;
   private Duration pollInterval = Duration.ofSeconds(2);
@@ -23,14 +23,6 @@ public class DreamMakerProperties {
 
   public void setBaseUrl(URI baseUrl) {
     this.baseUrl = baseUrl == null ? URI.create("https://api-all.dreammaker.netease.com") : baseUrl;
-  }
-
-  public String getApiKey() {
-    return apiKey;
-  }
-
-  public void setApiKey(String apiKey) {
-    this.apiKey = apiKey == null ? "" : apiKey.trim();
   }
 
   public String getAccessKey() {
@@ -47,6 +39,14 @@ public class DreamMakerProperties {
 
   public void setSecretKey(String secretKey) {
     this.secretKey = secretKey == null ? "" : secretKey.trim();
+  }
+
+  public String getUserAccessToken() {
+    return userAccessToken;
+  }
+
+  public void setUserAccessToken(String userAccessToken) {
+    this.userAccessToken = userAccessToken == null ? "" : userAccessToken.trim();
   }
 
   public Duration getRequestTimeout() {

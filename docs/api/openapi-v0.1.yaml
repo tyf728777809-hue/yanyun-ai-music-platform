@@ -192,7 +192,7 @@ paths:
     post:
       tags: [Generation]
       summary: 确认歌词并开始出歌
-      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。默认 `MUSIC_WORKFLOW_DISPATCH_MODE=sync` 时本地 Mock 会在请求内完成并返回 `GENERATED / PACKAGE_READY`；显式切到 `outbox` 时先返回 `GENERATING / QUOTA_LOCKING`，由本地 dispatcher 异步推进。可选 `music_provider` 用于本地/联调阶段指定音乐 Provider，默认使用服务端配置。默认 `mock` 不调用外部服务；`suno` / `minimax` 通过 DreamMaker 接入骨架提交和轮询，真实调用需本地安全配置 `DREAMMAKER_API_KEY`。
+      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。默认 `MUSIC_WORKFLOW_DISPATCH_MODE=sync` 时本地 Mock 会在请求内完成并返回 `GENERATED / PACKAGE_READY`；显式切到 `outbox` 时先返回 `GENERATING / QUOTA_LOCKING`，由本地 dispatcher 异步推进。可选 `music_provider` 用于本地/联调阶段指定音乐 Provider，默认使用服务端配置。默认 `mock` 不调用外部服务；`suno` / `minimax` 通过 DreamMaker 接入骨架提交和轮询，真实调用需本地安全配置 `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`。
       operationId: confirmWork
       parameters:
         - $ref: "#/components/parameters/MockUserId"

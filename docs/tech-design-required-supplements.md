@@ -143,7 +143,7 @@ version INTEGER NOT NULL DEFAULT 0
 - 技术方案已有 `fake|mixed|real` Provider 模式。
 - AGENTS.md 已要求自动化测试不得调用真实 DeepSeek、MiniMax、Image 2。
 - 2026-06-05 新增产品要求：音乐生成 Provider 后续需同时预留 Suno 和 MiniMax，两者都要接入；上线时可通过配置或运营策略选择对用户开放哪个模型。
-- 用户提供了飞书资料链接：`https://ycnts90jb6sm.feishu.cn/docx/G9v9dhd76oyiLmxwdQXcYGqhnHg`。当前外部读取需要登录权限，真实鉴权、请求参数、限流、回调、计费和失败码细节待资料可读后补齐。
+- 用户提供了飞书资料链接：`https://ycnts90jb6sm.feishu.cn/docx/G9v9dhd76oyiLmxwdQXcYGqhnHg`。资料已读取并整理；后续用户补充确认 DreamMaker 使用 AccessKey/SecretKey 生成 HS256 JWT，并以 `Authorization: Bearer <jwt>` 调用。
 
 建议补充：
 
@@ -156,11 +156,12 @@ version INTEGER NOT NULL DEFAULT 0
 当前进展：
 
 - 已新增 `modules:music-provider`，预置统一 Provider 合约和 `MockMusicProvider`。
-- 已新增 `modules:suno`，预置 `SunoMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
-- 已扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 类型边界，真实提交方法在本地阶段显式未实现。
-- 已在 `.env.example` 预留 `MUSIC_PROVIDER`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY`、`MINIMAX_API_KEY`。
+- 已新增 `modules:suno`，实现通过 DreamMaker run/status 协议提交与轮询的 `SunoMusicProvider` 骨架。
+- 已扩展 `modules:minimax`，实现通过 DreamMaker run/status 协议提交与轮询的 `MiniMaxMusicProvider` 骨架。
+- 已在 `.env.example` 预留 `MUSIC_PROVIDER`、`DREAMMAKER_API_BASE_URL`、`DREAMMAKER_ACCESS_KEY`、`DREAMMAKER_SECRET_KEY`、可选 `DREAMMAKER_USER_ACCESS_TOKEN`、`SUNO_MODEL`、`MINIMAX_MODEL`。
 - 已新增 `MusicProviderSelection` 并接入 `music-api` 配置：`MUSIC_PROVIDER=mock|suno|minimax` 可选择 Provider，默认 `mock`。
-- `music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean；当前 `suno` / `minimax` 真实提交仍显式未实现，本地选择它们会进入可重试失败并释放权益，不会调用真实 API。
+- `music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean；当前自动化测试仍只用 Mock/Fake，不调用真实 API。真实联调需要本地安全注入 AccessKey/SecretKey。
+- `DreamMakerHttpClient` 已实现每次请求生成 HS256 JWT：AccessKey 写入 `iss`，SecretKey 用作签名密钥，`exp=now+1800s`，`nbf=now-5s`。
 
 ### 2.8 Remotion 商用许可与字体授权
 

@@ -3,8 +3,10 @@
 ## Status
 
 - Current stage: DreamMaker provider skeleton implemented; local default remains mock.
-- Real Suno calls: implemented behind `DREAMMAKER_API_KEY`, not run in automated tests.
-- Real MiniMax calls: implemented behind `DREAMMAKER_API_KEY`, not run in automated tests.
+- Real Suno calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run in
+  automated tests.
+- Real MiniMax calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run
+  in automated tests.
 - Feishu reference doc: fetched through `lark-cli docs +fetch` after user authorization.
 - Real credentials: must not be committed, logged, or written into docs.
 
@@ -47,7 +49,12 @@ Both Suno and MiniMax use DreamMaker task-style APIs:
 
 - Submit task: `POST https://api-all.dreammaker.netease.com/api/v1/apps/{app}/run?sub_app_name={sub_app}`.
 - Poll task: `GET https://api-all.dreammaker.netease.com/api/v1/apps/{app}/status?sub_app_name={sub_app}&task_id={task_id}`.
-- Auth header: `Authorization: Bearer <key>`.
+- Auth header: `Authorization: Bearer <jwt>`.
+- JWT: RFC 7519 style HS256 token. Header is `{"alg":"HS256","typ":"JWT"}`. Payload includes
+  `iss=<DREAMMAKER_ACCESS_KEY>`, `exp=now+1800s`, and `nbf=now-5s`. Signature uses
+  `DREAMMAKER_SECRET_KEY`.
+- Optional user identity header: `X-Access-Token: <DREAMMAKER_USER_ACCESS_TOKEN>`. If omitted,
+  DreamMaker uses the API key binding's system account/default user group.
 - Body wrapper: submit request body is `{ "params": { ... } }`.
 - Submit success: `code = 0`, `data.task_id` is returned.
 - Status success: `code = 0`, `data.status` is one of `success`, `failed`, `running`, `queued`.
@@ -130,31 +137,30 @@ Keep mapping conservative until real error-code samples are available:
 
 Before running real authenticated calls broadly, confirm these remaining details:
 
-1. Real API key delivery path and production secret manager naming.
-2. Whether the provided AccessKey/SecretKey must be exchanged for `Bearer <key>`, signed directly,
-   or replaced by a separate DreamMaker bearer key.
-3. Concrete non-zero `code` values and retryability.
-4. `failed` task response examples and failure-message schema.
-5. Rate limit, timeout, polling interval, and maximum polling duration.
-6. Whether status API `url` values are relative to the same DreamMaker domain.
-7. Whether audio URLs expire.
-8. Required file download API, if direct URL download is not allowed.
-9. Pricing or quota unit per task.
-10. Content moderation and blocked-content error codes.
+1. Production secret manager naming and rotation policy for AccessKey/SecretKey.
+2. Concrete non-zero `code` values and retryability.
+3. `failed` task response examples and failure-message schema.
+4. Rate limit, timeout, polling interval, and maximum polling duration.
+5. Whether status API `url` values are relative to the same DreamMaker domain.
+6. Whether audio URLs expire.
+7. Required file download API, if direct URL download is not allowed.
+8. Pricing or quota unit per task.
+9. Content moderation and blocked-content error codes.
 
 ## Implemented Plan
 
 1. Added DreamMaker config properties, with no real secret defaults:
    - `DREAMMAKER_API_BASE_URL`.
-   - `DREAMMAKER_API_KEY`.
-   - `DREAMMAKER_ACCESS_KEY` and `DREAMMAKER_SECRET_KEY` reserved only.
+   - `DREAMMAKER_ACCESS_KEY`.
+   - `DREAMMAKER_SECRET_KEY`.
+   - `DREAMMAKER_USER_ACCESS_TOKEN` optional passthrough for `X-Access-Token`.
    - `SUNO_MODEL`.
    - `MINIMAX_MODEL`.
    - submit timeout, poll interval, poll timeout.
 2. Implemented request builders:
    - Suno custom lyrics mode maps `lyricsText` to `prompt`, `musicPrompt` to `tags`, title to `title`, vocal preference to `metadata.vocal_gender` when possible.
    - MiniMax maps `musicPrompt` to `prompt`, `lyricsText` to `lyrics`, sets `lyrics_optimizer=false` when confirmed lyrics are present, and defaults `audio_format=mp3`, `sample_rate=44100`, `bitrate=256000`.
-3. Implemented DreamMaker submit + polling client.
+3. Implemented DreamMaker submit + polling client with per-request HS256 JWT authentication.
 4. Added provider failure-code mapping tests.
 5. Added HTTP client tests with local mocked DreamMaker responses.
 6. `data.task_id` is returned as `MusicGenerationResult.providerTaskId` and recorded in `provider_calls.provider_trace_id`.

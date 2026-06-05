@@ -3,6 +3,7 @@ package com.yanyun.music.api.integration.dreammaker;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
 import com.yanyun.music.dreammaker.DreamMakerClientException;
@@ -17,12 +18,24 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Base64;
 import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class DreamMakerHttpClientTest {
+
+  private static final Clock FIXED_CLOCK =
+      Clock.fixed(Instant.parse("2026-06-06T00:00:00Z"), ZoneOffset.UTC);
+  private static final String TEST_ACCESS_KEY = "test-access-key";
+  private static final String TEST_SECRET_KEY = "test-secret-key";
+  private static final String TEST_USER_ACCESS_TOKEN = "test-user-access-token";
 
   private HttpServer server;
 
@@ -38,7 +51,10 @@ class DreamMakerHttpClientTest {
     server = startServer();
     DreamMakerHttpClient client =
         new DreamMakerHttpClient(
-            properties("test-api-key"), new ObjectMapper(), HttpClient.newHttpClient());
+            properties(TEST_ACCESS_KEY, TEST_SECRET_KEY),
+            new ObjectMapper(),
+            HttpClient.newHttpClient(),
+            FIXED_CLOCK);
 
     DreamMakerSubmitResponse submit =
         client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of("prompt", "lyrics")));
@@ -55,9 +71,10 @@ class DreamMakerHttpClientTest {
   }
 
   @Test
-  void rejectsMissingApiKeyBeforeHttpCall() {
+  void rejectsMissingAccessKeyOrSecretKeyBeforeHttpCall() {
     DreamMakerHttpClient client =
-        new DreamMakerHttpClient(properties(""), new ObjectMapper(), HttpClient.newHttpClient());
+        new DreamMakerHttpClient(
+            properties("", TEST_SECRET_KEY), new ObjectMapper(), HttpClient.newHttpClient());
 
     DreamMakerClientException exception =
         assertThrows(
@@ -72,8 +89,9 @@ class DreamMakerHttpClientTest {
     httpServer.createContext(
         "/api/v1/apps/suno/run",
         exchange -> {
+          assertDreamMakerAuth(exchange.getRequestHeaders().getFirst("Authorization"));
           assertEquals(
-              "Bearer test-api-key", exchange.getRequestHeaders().getFirst("Authorization"));
+              TEST_USER_ACCESS_TOKEN, exchange.getRequestHeaders().getFirst("X-Access-Token"));
           byte[] body =
               "{\"code\":0,\"message\":\"ok\",\"data\":{\"task_id\":\"task-1\"}}"
                   .getBytes(StandardCharsets.UTF_8);
@@ -85,8 +103,9 @@ class DreamMakerHttpClientTest {
     httpServer.createContext(
         "/api/v1/apps/suno/status",
         exchange -> {
+          assertDreamMakerAuth(exchange.getRequestHeaders().getFirst("Authorization"));
           assertEquals(
-              "Bearer test-api-key", exchange.getRequestHeaders().getFirst("Authorization"));
+              TEST_USER_ACCESS_TOKEN, exchange.getRequestHeaders().getFirst("X-Access-Token"));
           byte[] body =
               """
               {
@@ -117,10 +136,43 @@ class DreamMakerHttpClientTest {
     return httpServer;
   }
 
-  private DreamMakerProperties properties(String apiKey) {
+  private void assertDreamMakerAuth(String authorization) {
+    try {
+      String token = authorization.substring("Bearer ".length());
+      String[] parts = token.split("\\.");
+      assertEquals(3, parts.length);
+
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode header = mapper.readTree(Base64.getUrlDecoder().decode(parts[0]));
+      JsonNode payload = mapper.readTree(Base64.getUrlDecoder().decode(parts[1]));
+
+      assertEquals("HS256", header.path("alg").asText());
+      assertEquals("JWT", header.path("typ").asText());
+      assertEquals(TEST_ACCESS_KEY, payload.path("iss").asText());
+      assertEquals(
+          FIXED_CLOCK.instant().plusSeconds(1800L).getEpochSecond(), payload.path("exp").asLong());
+      assertEquals(
+          FIXED_CLOCK.instant().minusSeconds(5L).getEpochSecond(), payload.path("nbf").asLong());
+      assertEquals(signature(parts[0] + "." + parts[1]), parts[2]);
+    } catch (Exception exception) {
+      throw new AssertionError("DreamMaker JWT auth header is invalid", exception);
+    }
+  }
+
+  private String signature(String signingInput) throws Exception {
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(TEST_SECRET_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+    return Base64.getUrlEncoder()
+        .withoutPadding()
+        .encodeToString(mac.doFinal(signingInput.getBytes(StandardCharsets.UTF_8)));
+  }
+
+  private DreamMakerProperties properties(String accessKey, String secretKey) {
     DreamMakerProperties properties = new DreamMakerProperties();
     properties.setBaseUrl(URI.create(server == null ? "http://127.0.0.1:1" : baseUrl()));
-    properties.setApiKey(apiKey);
+    properties.setAccessKey(accessKey);
+    properties.setSecretKey(secretKey);
+    properties.setUserAccessToken(TEST_USER_ACCESS_TOKEN);
     properties.setRequestTimeout(Duration.ofSeconds(2));
     return properties;
   }

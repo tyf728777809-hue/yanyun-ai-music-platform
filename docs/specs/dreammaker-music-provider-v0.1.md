@@ -32,12 +32,18 @@ storage before they appear in work details or publish packages.
   that URL as a platform object key.
 - FR-6: The song production workflow MUST import provider audio source URLs into object storage
   before writing the `AUDIO` media asset.
-- FR-7: Missing API key, HTTP failure, non-zero provider code, failed task, missing audio output,
-  and polling timeout MUST produce internal failure codes suitable for existing retry logic.
+- FR-7: Missing AccessKey/SecretKey, HTTP failure, non-zero provider code, failed task, missing
+  audio output, and polling timeout MUST produce internal failure codes suitable for existing retry
+  logic.
 - FR-8: Automated tests MUST NOT call real DreamMaker, Suno, MiniMax, DeepSeek, Image 2, or company
   systems.
 - FR-9: Real provider credentials MUST only be read from local environment variables or production
   secret injection, never from committed files.
+- FR-10: DreamMaker requests MUST generate an HS256 JWT per request using `DREAMMAKER_ACCESS_KEY`
+  as JWT `iss` and `DREAMMAKER_SECRET_KEY` as the signing secret, then send it as
+  `Authorization: Bearer <jwt>`.
+- FR-11: When `DREAMMAKER_USER_ACCESS_TOKEN` is configured, the HTTP client MUST forward it as
+  `X-Access-Token`; otherwise user identity and accounting use the DreamMaker API key binding.
 
 ## Non-Functional Requirements
 
@@ -48,6 +54,7 @@ storage before they appear in work details or publish packages.
   payload dumps.
 - NFR-5: Existing `mock` provider local smoke path MUST remain the default and must not require
   external network access.
+- NFR-6: JWTs and user access tokens MUST NOT be logged, committed, or included in test snapshots.
 
 ## Acceptance Criteria
 
@@ -66,6 +73,9 @@ storage before they appear in work details or publish packages.
   assets are created, then no remote import is attempted.
 - AC-7: Given no real provider credentials, when automated tests run, then all tests pass without
   external DreamMaker calls.
+- AC-8: Given fake AccessKey/SecretKey and a fake local DreamMaker server, when the HTTP client
+  submits and polls, then the server receives a valid three-part JWT with `alg=HS256`, `typ=JWT`,
+  `iss=<access_key>`, `exp=now+1800s`, `nbf=now-5s`, and a valid HMAC signature.
 
 ## API Contracts
 
@@ -101,7 +111,8 @@ No database migration is required in this stage.
 
 ## Edge Cases
 
-- EC-1: Missing or blank `DREAMMAKER_API_KEY` returns `MUSIC_GENERATION_FAILED`.
+- EC-1: Missing or blank `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` returns
+  `MUSIC_GENERATION_FAILED`.
 - EC-2: HTTP 429 maps to `RATE_LIMITED`.
 - EC-3: HTTP timeout or polling exhaustion maps to `PROVIDER_TIMEOUT`.
 - EC-4: Non-zero DreamMaker `code` maps conservatively until real error samples are collected.
@@ -114,7 +125,7 @@ No database migration is required in this stage.
 ## Out of Scope
 
 - Real authenticated Suno/MiniMax smoke calls are out of scope until a secure local secret injection
-  path and the exact AccessKey/SecretKey-to-Bearer mapping are confirmed.
+  path is used.
 - Temporal async workflow migration is out of scope for this stage.
 - Provider cost accounting and quota unit mapping are out of scope until pricing is confirmed.
 - Automatic fallback from one real music provider to another is out of scope until the operations
