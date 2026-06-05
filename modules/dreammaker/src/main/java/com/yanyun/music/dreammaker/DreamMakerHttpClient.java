@@ -1,17 +1,8 @@
-package com.yanyun.music.api.integration.dreammaker;
+package com.yanyun.music.dreammaker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.dreammaker.DreamMakerClient;
-import com.yanyun.music.dreammaker.DreamMakerClientException;
-import com.yanyun.music.dreammaker.DreamMakerFailureMapper;
-import com.yanyun.music.dreammaker.DreamMakerOutputFile;
-import com.yanyun.music.dreammaker.DreamMakerRunRequest;
-import com.yanyun.music.dreammaker.DreamMakerStatusRequest;
-import com.yanyun.music.dreammaker.DreamMakerStatusResponse;
-import com.yanyun.music.dreammaker.DreamMakerSubmitResponse;
-import com.yanyun.music.dreammaker.DreamMakerTaskStatus;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -127,7 +118,7 @@ public final class DreamMakerHttpClient implements DreamMakerClient {
           || response.statusCode() >= HttpURLConnection.HTTP_MULT_CHOICE) {
         throw new DreamMakerClientException(
             DreamMakerFailureMapper.fromHttpStatus(response.statusCode()),
-            "DreamMaker request failed with HTTP " + response.statusCode());
+            responseFailureMessage(response.statusCode(), response.body()));
       }
       return objectMapper.readTree(response.body());
     } catch (HttpTimeoutException exception) {
@@ -168,6 +159,20 @@ public final class DreamMakerHttpClient implements DreamMakerClient {
               durationMs(file.path("duration"))));
     }
     return result;
+  }
+
+  private String responseFailureMessage(int statusCode, String body) {
+    String fallback = "DreamMaker request failed with HTTP " + statusCode;
+    if (body == null || body.isBlank()) {
+      return fallback;
+    }
+    try {
+      JsonNode root = objectMapper.readTree(body);
+      String providerMessage = text(root, "message", "msg", "error");
+      return DreamMakerFailureMapper.sanitizedMessage("DreamMaker", providerMessage, fallback);
+    } catch (JsonProcessingException exception) {
+      return fallback;
+    }
   }
 
   private URI apiUri(String path, Map<String, String> queryParams) {
@@ -236,6 +241,11 @@ public final class DreamMakerHttpClient implements DreamMakerClient {
   }
 
   private void ensureConfigured() {
+    if (!properties.isRealCallsEnabled()) {
+      throw new DreamMakerClientException(
+          DreamMakerFailureMapper.MUSIC_GENERATION_FAILED,
+          "DreamMaker real calls are disabled; set DREAMMAKER_REAL_CALLS_ENABLED=true for manual integration");
+    }
     if (properties.getAccessKey() == null
         || properties.getAccessKey().isBlank()
         || properties.getSecretKey() == null

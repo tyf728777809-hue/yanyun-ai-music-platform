@@ -24,6 +24,17 @@ management:
 yanyun:
   music:
     provider: ${MUSIC_PROVIDER:mock}
+  dreammaker:
+    base-url: ${DREAMMAKER_API_BASE_URL:https://api-all.dreammaker.netease.com}
+    access-key: ${DREAMMAKER_ACCESS_KEY:}
+    secret-key: ${DREAMMAKER_SECRET_KEY:}
+    user-access-token: ${DREAMMAKER_USER_ACCESS_TOKEN:}
+    real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
+    request-timeout: ${DREAMMAKER_REQUEST_TIMEOUT:30s}
+    max-poll-attempts: ${DREAMMAKER_MAX_POLL_ATTEMPTS:60}
+    poll-interval: ${DREAMMAKER_POLL_INTERVAL:2s}
+    suno-model: ${SUNO_MODEL:chirp-crow}
+    minimax-model: ${MINIMAX_MODEL:minimax-music-2.6}
   temporal:
     target: ${TEMPORAL_TARGET:localhost:7233}
     namespace: ${TEMPORAL_NAMESPACE:default}

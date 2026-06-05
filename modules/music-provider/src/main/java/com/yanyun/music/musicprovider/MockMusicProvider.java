@@ -14,6 +14,6 @@ public final class MockMusicProvider implements MusicProvider {
     String taskId = "mock-music-" + UUID.randomUUID();
     String audioObjectKey = "audio/" + request.workId() + ".mp3";
     return MusicGenerationResult.succeeded(
-        providerType(), taskId, audioObjectKey, 180_000, "Mock music generation succeeded");
+        providerType(), taskId, "mock", audioObjectKey, 180_000, "Mock music generation succeeded");
   }
 }

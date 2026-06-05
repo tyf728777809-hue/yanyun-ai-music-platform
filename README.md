@@ -4,7 +4,7 @@
 
 ## Current Stage
 
-第 4 批 Temporal 真实编排基础已完成：本地默认 `mock` 可跑通作品到发布包，Outbox local 和 Temporal worker 分进程编排边界均已验证；Suno/MiniMax 已通过 DreamMaker 接入骨架预置，真实联调需本地安全配置 AccessKey/SecretKey。
+第 5 批 DreamMaker 受控真实联调准备已完成：本地默认 `mock` 可跑通作品到发布包，Outbox local 和 Temporal worker 分进程编排边界均已验证；Suno/MiniMax 已通过 DreamMaker 接入骨架预置，并增加真实调用硬开关 `DREAMMAKER_REAL_CALLS_ENABLED=false`。
 
 ## Stack
 
@@ -69,6 +69,10 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 HS256 JWT，并使用 `Authorization: Bearer <jwt>` 请求。自动化测试不会调用真实供应商。
 如果后续公司接入方需要按真实用户视角归因，可通过安全注入
 `DREAMMAKER_USER_ACCESS_TOKEN` 让客户端透传 `X-Access-Token`。
+
+真实 Suno/MiniMax 联调必须显式打开 `DREAMMAKER_REAL_CALLS_ENABLED=true`，并按
+[DreamMaker 受控真实联调 Runbook](docs/runbook/dreammaker-controlled-real-integration.md)
+执行；不要在默认 `sync` 模式下跑真实 Provider。
 
 生成编排默认保持同步 Mock 模式；要验证 Outbox local 异步启动边界：
 

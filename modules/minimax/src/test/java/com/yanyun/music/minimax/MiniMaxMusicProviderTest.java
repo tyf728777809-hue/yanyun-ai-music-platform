@@ -64,6 +64,7 @@ class MiniMaxMusicProviderTest {
 
     assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
     assertEquals("task-1", result.providerTaskId());
+    assertEquals("music-minimax:text-to-music:minimax-music-2.6", result.modelName());
     assertEquals("https://provider.example/song.mp3", result.audioSourceUrl());
     assertEquals("audio/mpeg", result.audioContentType());
     assertEquals(182_000, result.durationMs());

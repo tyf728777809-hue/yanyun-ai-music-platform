@@ -105,11 +105,17 @@ export MUSIC_PROVIDER=suno
 export DREAMMAKER_API_BASE_URL=https://api-all.dreammaker.netease.com
 export DREAMMAKER_ACCESS_KEY=...
 export DREAMMAKER_SECRET_KEY=...
+export DREAMMAKER_REAL_CALLS_ENABLED=true
 # Optional: only set when company integration wants DreamMaker to parse a real user identity.
 export DREAMMAKER_USER_ACCESS_TOKEN=...
 export SUNO_MODEL=chirp-crow
 ./gradlew :apps:music-api:bootRun
 ```
+
+上面命令只用于说明变量名。真实 Suno / MiniMax 联调必须先阅读并执行
+`docs/runbook/dreammaker-controlled-real-integration.md`；默认 `DREAMMAKER_REAL_CALLS_ENABLED=false`
+会在外部 HTTP 请求前拒绝调用，防止误触真实供应商。真实联调推荐走 outbox + Temporal worker，
+不要使用默认 `sync` 模式。
 
 MiniMax 可用：
 

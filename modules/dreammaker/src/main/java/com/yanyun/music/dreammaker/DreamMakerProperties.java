@@ -1,16 +1,15 @@
-package com.yanyun.music.api.integration.dreammaker;
+package com.yanyun.music.dreammaker;
 
 import java.net.URI;
 import java.time.Duration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "yanyun.dreammaker")
 public class DreamMakerProperties {
 
   private URI baseUrl = URI.create("https://api-all.dreammaker.netease.com");
   private String accessKey = "";
   private String secretKey = "";
   private String userAccessToken = "";
+  private boolean realCallsEnabled;
   private Duration requestTimeout = Duration.ofSeconds(30);
   private int maxPollAttempts = 60;
   private Duration pollInterval = Duration.ofSeconds(2);
@@ -47,6 +46,14 @@ public class DreamMakerProperties {
 
   public void setUserAccessToken(String userAccessToken) {
     this.userAccessToken = userAccessToken == null ? "" : userAccessToken.trim();
+  }
+
+  public boolean isRealCallsEnabled() {
+    return realCallsEnabled;
+  }
+
+  public void setRealCallsEnabled(boolean realCallsEnabled) {
+    this.realCallsEnabled = realCallsEnabled;
   }
 
   public Duration getRequestTimeout() {

@@ -13,6 +13,7 @@ class DreamMakerTaskStatusTest {
     assertEquals(
         DreamMakerTaskStatus.SUCCEEDED, DreamMakerTaskStatus.fromProviderStatus("success"));
     assertEquals(DreamMakerTaskStatus.FAILED, DreamMakerTaskStatus.fromProviderStatus("failed"));
-    assertEquals(DreamMakerTaskStatus.FAILED, DreamMakerTaskStatus.fromProviderStatus("unknown"));
+    assertEquals(DreamMakerTaskStatus.UNKNOWN, DreamMakerTaskStatus.fromProviderStatus("unknown"));
+    assertEquals(DreamMakerTaskStatus.UNKNOWN, DreamMakerTaskStatus.fromProviderStatus(null));
   }
 }

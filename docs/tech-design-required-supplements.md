@@ -162,8 +162,9 @@ version INTEGER NOT NULL DEFAULT 0
 - 已扩展 `modules:minimax`，实现通过 DreamMaker run/status 协议提交与轮询的 `MiniMaxMusicProvider` 骨架。
 - 已在 `.env.example` 预留 `MUSIC_PROVIDER`、`DREAMMAKER_API_BASE_URL`、`DREAMMAKER_ACCESS_KEY`、`DREAMMAKER_SECRET_KEY`、可选 `DREAMMAKER_USER_ACCESS_TOKEN`、`SUNO_MODEL`、`MINIMAX_MODEL`。
 - 已新增 `MusicProviderSelection` 并接入 `music-api` 配置：`MUSIC_PROVIDER=mock|suno|minimax` 可选择 Provider，默认 `mock`。
-- `music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean；当前自动化测试仍只用 Mock/Fake，不调用真实 API。真实联调需要本地安全注入 AccessKey/SecretKey。
+- `music-api` 与 `music-worker` 均已注册 Mock、Suno、MiniMax 三类 Provider bean；当前自动化测试仍只用 Mock/Fake，不调用真实 API。真实联调需要本地安全注入 AccessKey/SecretKey，并显式设置 `DREAMMAKER_REAL_CALLS_ENABLED=true`。
 - `DreamMakerHttpClient` 已实现每次请求生成 HS256 JWT：AccessKey 写入 `iss`，SecretKey 用作签名密钥，`exp=now+1800s`，`nbf=now-5s`。
+- `DreamMakerHttpClient` 与配置属性已下沉到共享 `modules:dreammaker`，确保 API sync/local 和 Temporal worker 路径使用同一套鉴权、安全开关和脱敏逻辑。
 
 ### 2.8 Remotion 商用许可与字体授权
 

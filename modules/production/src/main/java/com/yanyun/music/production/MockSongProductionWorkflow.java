@@ -38,12 +38,19 @@ import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
   private static final String ASSET_BASE_URL = "http://localhost:9000/yanyun-works-local/";
+  private static final Pattern BEARER_TOKEN_PATTERN =
+      Pattern.compile("(?i)bearer\\s+[a-z0-9._~+/=-]+");
+  private static final Pattern JWT_PATTERN =
+      Pattern.compile("\\b[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\b");
+  private static final Pattern SECRET_FIELD_PATTERN =
+      Pattern.compile("(?i)(access[_ -]?key|secret[_ -]?key|token)\\s*[:=]\\s*[^,;\\s]+");
 
   private final WorkRepository workRepository;
   private final QuotaAdapter quotaAdapter;
@@ -244,6 +251,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       boolean retryable,
       String userId,
       String lockId) {
+    String safeFailureMessage =
+        firstNonBlank(sanitizeProviderError(failureMessage), failureCode.name());
     if (lockId != null) {
       QuotaRelease release = quotaAdapter.releaseGenerateQuota(userId, lockId, failureCode.name());
       workRepository.insertQuotaTransaction(
@@ -254,14 +263,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           release.released() ? "RELEASED" : "FAILED",
           release.message());
     }
-    workRepository.markFailure(workId, failureCode, failureMessage, retryable);
+    workRepository.markFailure(workId, failureCode, safeFailureMessage, retryable);
     workRepository.completeGenerationJob(
-        jobId, "FAILED", GenerationStage.FAILED, failureCode, failureMessage);
+        jobId, "FAILED", GenerationStage.FAILED, failureCode, safeFailureMessage);
     return SongProductionWorkflowResult.failed(
         jobId.toString(),
         PackageStatus.PACKAGE_NOT_READY.name(),
         failureCode.name(),
-        failureMessage);
+        safeFailureMessage);
   }
 
   private UUID resolveJobId(UUID workId, SongProductionWorkflowInput input) {
@@ -369,7 +378,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             jobId,
             selectedProvider.providerType().name(),
             "MUSIC_GENERATION",
-            selectedProvider.providerType().name().toLowerCase(java.util.Locale.ROOT),
+            modelName(selectedProvider, result),
             hashRequest(request),
             sha256(request.musicPrompt()),
             result == null ? null : result.providerTaskId(),
@@ -377,7 +386,25 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             latencyMs,
             null,
             errorCode,
-            errorMessage));
+            sanitizeProviderError(errorMessage)));
+  }
+
+  private String modelName(MusicProviderSelection selectedProvider, MusicGenerationResult result) {
+    if (result != null && result.modelName() != null && !result.modelName().isBlank()) {
+      return result.modelName();
+    }
+    return selectedProvider.providerType().name().toLowerCase(java.util.Locale.ROOT);
+  }
+
+  private String sanitizeProviderError(String value) {
+    if (value == null || value.isBlank()) {
+      return null;
+    }
+    String sanitized = value.replaceAll("[\\r\\n\\t]+", " ").trim();
+    sanitized = BEARER_TOKEN_PATTERN.matcher(sanitized).replaceAll("Bearer <redacted>");
+    sanitized = JWT_PATTERN.matcher(sanitized).replaceAll("<jwt-redacted>");
+    sanitized = SECRET_FIELD_PATTERN.matcher(sanitized).replaceAll("$1=<redacted>");
+    return sanitized.length() <= 240 ? sanitized : sanitized.substring(0, 240);
   }
 
   private int elapsedMillis(long startedAtNanos) {

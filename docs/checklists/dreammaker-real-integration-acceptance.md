@@ -1,0 +1,52 @@
+# DreamMaker 真实联调验收清单
+
+## 联调前
+
+- [ ] `git status --short` 无未记录的无关改动。
+- [ ] `DREAMMAKER_REAL_CALLS_ENABLED=false` 是默认状态。
+- [ ] 真实凭据只通过当前 shell 或安全密钥系统注入。
+- [ ] `./gradlew :modules:dreammaker:test :modules:suno:test :modules:minimax:test` 通过。
+- [ ] 本地 Docker 基础设施健康。
+- [ ] API 使用 outbox temporal 模式，真实调用由 worker 执行。
+
+## Suno 成功路径
+
+- [ ] `music_provider=suno` 能创建真实 DreamMaker task。
+- [ ] `provider_calls.provider=SUNO`。
+- [ ] `provider_calls.model_name` 含 DreamMaker app/sub_app/model。
+- [ ] `provider_calls.provider_trace_id` 有真实 task id。
+- [ ] 供应商音频 URL 被导入平台对象存储。
+- [ ] 作品进入 `GENERATED / PACKAGE_READY`。
+- [ ] 发布包可获取，且只暴露平台 URL。
+
+## MiniMax 成功路径
+
+- [ ] `music_provider=minimax` 能创建真实 DreamMaker task。
+- [ ] `provider_calls.provider=MINIMAX`。
+- [ ] `provider_calls.model_name` 含 DreamMaker app/sub_app/model。
+- [ ] `provider_calls.provider_trace_id` 有真实 task id。
+- [ ] 供应商音频 URL 被导入平台对象存储。
+- [ ] 作品进入 `GENERATED / PACKAGE_READY`。
+- [ ] 发布包可获取，且只暴露平台 URL。
+
+## 失败与止损
+
+- [ ] 未设置 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时，真实 Provider 请求被本地保护层拒绝。
+- [ ] 缺失 AK/SK 时，请求不会发出外部 HTTP。
+- [ ] 限流、超时、失败任务至少能落库为脱敏错误。
+- [ ] 失败作品保留 `RETRY_MUSIC` 或合理的下一步动作。
+- [ ] 回退 `MUSIC_PROVIDER=mock` 后本地主链路仍能跑通。
+
+## 安全
+
+- [ ] 提交内容不包含真实 AK/SK、JWT、用户 token、Cookie 或私钥。
+- [ ] 日志、截图和联调记录不包含供应商原始 payload。
+- [ ] `provider_calls.error_message` 不包含 Bearer token、JWT 或 key/token 字段原文。
+- [ ] 终端联调结束后已 `unset` 敏感环境变量。
+
+## 交接
+
+- [ ] 更新 `docs/project-progress.md`。
+- [ ] 更新 `docs/integrations/dreammaker-open-questions-tracker.md` 的确认项状态。
+- [ ] 若发现新错误码，补充失败码样本、retryable 判断和处理建议。
+- [ ] 将可交接信息同步到 `docs/handover/dreammaker-provider-batch-05-handoff.md`。

@@ -44,6 +44,9 @@ storage before they appear in work details or publish packages.
   `Authorization: Bearer <jwt>`.
 - FR-11: When `DREAMMAKER_USER_ACCESS_TOKEN` is configured, the HTTP client MUST forward it as
   `X-Access-Token`; otherwise user identity and accounting use the DreamMaker API key binding.
+- FR-12: Real DreamMaker HTTP calls MUST be blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
+- FR-13: API and worker MUST share the same DreamMaker HTTP client and properties so sync, outbox
+  local, and Temporal worker paths use identical authentication and safety checks.
 
 ## Non-Functional Requirements
 
@@ -55,6 +58,8 @@ storage before they appear in work details or publish packages.
 - NFR-5: Existing `mock` provider local smoke path MUST remain the default and must not require
   external network access.
 - NFR-6: JWTs and user access tokens MUST NOT be logged, committed, or included in test snapshots.
+- NFR-7: Real provider integration SHOULD run through outbox + Temporal worker; sync mode is not
+  recommended for real calls because provider polling can block API request threads.
 
 ## Acceptance Criteria
 
@@ -76,6 +81,10 @@ storage before they appear in work details or publish packages.
 - AC-8: Given fake AccessKey/SecretKey and a fake local DreamMaker server, when the HTTP client
   submits and polls, then the server receives a valid three-part JWT with `alg=HS256`, `typ=JWT`,
   `iss=<access_key>`, `exp=now+1800s`, `nbf=now-5s`, and a valid HMAC signature.
+- AC-9: Given `DREAMMAKER_REAL_CALLS_ENABLED=false`, when Suno or MiniMax would call DreamMaker,
+  then the HTTP client fails before making an external request.
+- AC-10: Given a non-2xx DreamMaker response, when the HTTP client reports an error, then the
+  message is short and sanitized rather than a raw provider payload dump.
 
 ## API Contracts
 
@@ -121,12 +130,15 @@ No database migration is required in this stage.
   client before reaching providers.
 - EC-7: Audio download failure maps to `PACKAGE_BUILD_FAILED` in the workflow because the provider
   succeeded but the platform failed to import the asset.
+- EC-8: Unknown provider task status maps to `UNKNOWN` and is treated as non-terminal by providers;
+  polling continues until a terminal status or timeout.
+- EC-9: Real provider failure messages are sanitized before entering `provider_calls`, work failure
+  state, user-facing responses, or project documentation.
 
 ## Out of Scope
 
-- Real authenticated Suno/MiniMax smoke calls are out of scope until a secure local secret injection
-  path is used.
-- Temporal async workflow migration is out of scope for this stage.
+- Real authenticated Suno/MiniMax smoke calls are out of scope for automated tests; manual calls
+  must follow `docs/runbook/dreammaker-controlled-real-integration.md`.
 - Provider cost accounting and quota unit mapping are out of scope until pricing is confirmed.
 - Automatic fallback from one real music provider to another is out of scope until the operations
   strategy is defined.

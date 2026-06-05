@@ -1,6 +1,7 @@
 package com.yanyun.music.dreammaker;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public final class DreamMakerFailureMapper {
 
@@ -8,6 +9,12 @@ public final class DreamMakerFailureMapper {
   public static final String MUSIC_QUALITY_FAILED = "MUSIC_QUALITY_FAILED";
   public static final String PROVIDER_TIMEOUT = "PROVIDER_TIMEOUT";
   public static final String RATE_LIMITED = "RATE_LIMITED";
+  private static final Pattern BEARER_TOKEN_PATTERN =
+      Pattern.compile("(?i)bearer\\s+[a-z0-9._~+/=-]+");
+  private static final Pattern JWT_PATTERN =
+      Pattern.compile("\\b[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\b");
+  private static final Pattern SECRET_FIELD_PATTERN =
+      Pattern.compile("(?i)(access[_ -]?key|secret[_ -]?key|token)\\s*[:=]\\s*[^,;\\s]+");
 
   private DreamMakerFailureMapper() {}
 
@@ -39,10 +46,13 @@ public final class DreamMakerFailureMapper {
   }
 
   public static String sanitizedMessage(String providerName, String message, String fallback) {
-    String value = message == null ? "" : message.trim();
+    String value = message == null ? "" : message.replaceAll("[\\r\\n\\t]+", " ").trim();
     if (value.isEmpty()) {
       return fallback;
     }
+    value = BEARER_TOKEN_PATTERN.matcher(value).replaceAll("Bearer <redacted>");
+    value = JWT_PATTERN.matcher(value).replaceAll("<jwt-redacted>");
+    value = SECRET_FIELD_PATTERN.matcher(value).replaceAll("$1=<redacted>");
     if (value.length() > 240) {
       value = value.substring(0, 240);
     }

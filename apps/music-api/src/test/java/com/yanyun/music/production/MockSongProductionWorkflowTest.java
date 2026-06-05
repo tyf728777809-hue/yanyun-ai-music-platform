@@ -112,6 +112,7 @@ class MockSongProductionWorkflowTest {
     assertThat(providerCall.getValue().jobId()).isEqualTo(jobId);
     assertThat(providerCall.getValue().provider()).isEqualTo("MOCK");
     assertThat(providerCall.getValue().operation()).isEqualTo("MUSIC_GENERATION");
+    assertThat(providerCall.getValue().modelName()).isEqualTo("mock");
     assertThat(providerCall.getValue().providerTraceId()).isEqualTo("task-1");
     assertThat(providerCall.getValue().status()).isEqualTo("SUCCEEDED");
     assertThat(providerCall.getValue().requestHash()).hasSize(64);
@@ -175,7 +176,11 @@ class MockSongProductionWorkflowTest {
     when(musicProvider.submit(any()))
         .thenReturn(
             MusicGenerationResult.failed(
-                MusicProviderType.MOCK, "task-1", "PROVIDER_FAILED", "provider failed"));
+                MusicProviderType.MOCK,
+                "task-1",
+                "mock",
+                "PROVIDER_FAILED",
+                "provider failed Authorization: Bearer fake-token-value token=plain"));
     when(quotaAdapter.releaseGenerateQuota(
             "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
@@ -184,7 +189,8 @@ class MockSongProductionWorkflowTest {
 
     assertThat(result.packageReady()).isFalse();
     assertThat(result.failureCode()).isEqualTo(FailureCode.MUSIC_GENERATION_FAILED.name());
-    assertThat(result.failureMessage()).isEqualTo("provider failed");
+    assertThat(result.failureMessage())
+        .isEqualTo("provider failed Authorization: Bearer <redacted> token=<redacted>");
 
     verify(workRepository)
         .insertQuotaTransaction(workId, "user-1", "lock-1", "LOCK_GENERATE", "LOCKED", "locked");
@@ -194,19 +200,25 @@ class MockSongProductionWorkflowTest {
     ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
     verify(workRepository).insertProviderCall(providerCall.capture());
     assertThat(providerCall.getValue().provider()).isEqualTo("MOCK");
+    assertThat(providerCall.getValue().modelName()).isEqualTo("mock");
     assertThat(providerCall.getValue().providerTraceId()).isEqualTo("task-1");
     assertThat(providerCall.getValue().status()).isEqualTo("FAILED");
     assertThat(providerCall.getValue().errorCode()).isEqualTo("PROVIDER_FAILED");
-    assertThat(providerCall.getValue().errorMessage()).isEqualTo("provider failed");
+    assertThat(providerCall.getValue().errorMessage())
+        .isEqualTo("provider failed Authorization: Bearer <redacted> token=<redacted>");
     verify(workRepository)
-        .markFailure(workId, FailureCode.MUSIC_GENERATION_FAILED, "provider failed", true);
+        .markFailure(
+            workId,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            "provider failed Authorization: Bearer <redacted> token=<redacted>",
+            true);
     verify(workRepository)
         .completeGenerationJob(
             jobId,
             "FAILED",
             GenerationStage.FAILED,
             FailureCode.MUSIC_GENERATION_FAILED,
-            "provider failed");
+            "provider failed Authorization: Bearer <redacted> token=<redacted>");
     verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
     verify(workRepository, never()).upsertMediaAsset(any());
     verify(workRepository, never()).upsertPublishPackage(any());

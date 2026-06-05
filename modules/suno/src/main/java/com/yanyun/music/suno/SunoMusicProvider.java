@@ -131,6 +131,7 @@ public final class SunoMusicProvider implements MusicProvider {
     return MusicGenerationResult.succeededFromSource(
         providerType(),
         taskId,
+        modelName(),
         audio.get().url(),
         CONTENT_TYPE,
         audio.get().durationMs(),
@@ -139,7 +140,12 @@ public final class SunoMusicProvider implements MusicProvider {
 
   private MusicGenerationResult providerFailure(
       String taskId, String failureCode, String failureMessage) {
-    return MusicGenerationResult.failed(providerType(), taskId, failureCode, failureMessage);
+    return MusicGenerationResult.failed(
+        providerType(), taskId, modelName(), failureCode, failureMessage);
+  }
+
+  private String modelName() {
+    return APP_NAME + ":" + SUB_APP_NAME + ":" + options.model();
   }
 
   private void sleepBeforeNextPoll() {

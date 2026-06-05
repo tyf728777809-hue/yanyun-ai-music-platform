@@ -1,11 +1,11 @@
 package com.yanyun.music.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.api.integration.dreammaker.DreamMakerHttpClient;
-import com.yanyun.music.api.integration.dreammaker.DreamMakerProperties;
 import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
 import com.yanyun.music.dreammaker.DreamMakerClient;
+import com.yanyun.music.dreammaker.DreamMakerHttpClient;
+import com.yanyun.music.dreammaker.DreamMakerProperties;
 import com.yanyun.music.minimax.MiniMaxMusicProvider;
 import com.yanyun.music.minimax.MiniMaxMusicProviderOptions;
 import com.yanyun.music.moderation.MockModerationAdapter;
@@ -27,12 +27,11 @@ import com.yanyun.music.suno.SunoMusicProviderOptions;
 import java.nio.file.Path;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(DreamMakerProperties.class)
 public class AdapterConfiguration {
 
   @Bean
@@ -65,6 +64,12 @@ public class AdapterConfiguration {
   @Bean
   RemoteObjectImporter remoteObjectImporter(ObjectStorageClient objectStorageClient) {
     return new HttpRemoteObjectImporter(objectStorageClient);
+  }
+
+  @Bean
+  @ConfigurationProperties(prefix = "yanyun.dreammaker")
+  DreamMakerProperties dreamMakerProperties() {
+    return new DreamMakerProperties();
   }
 
   @Bean

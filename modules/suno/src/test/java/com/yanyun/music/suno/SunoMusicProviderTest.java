@@ -61,6 +61,7 @@ class SunoMusicProviderTest {
 
     assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
     assertEquals("task-1", result.providerTaskId());
+    assertEquals("suno:music-gen:chirp-crow", result.modelName());
     assertEquals("https://provider.example/song.mp3", result.audioSourceUrl());
     assertEquals("audio/mpeg", result.audioContentType());
     assertEquals(181_000, result.durationMs());

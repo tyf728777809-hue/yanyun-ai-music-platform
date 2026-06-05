@@ -1,5 +1,11 @@
 package com.yanyun.music.worker;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.dreammaker.DreamMakerClient;
+import com.yanyun.music.dreammaker.DreamMakerHttpClient;
+import com.yanyun.music.dreammaker.DreamMakerProperties;
+import com.yanyun.music.minimax.MiniMaxMusicProvider;
+import com.yanyun.music.minimax.MiniMaxMusicProviderOptions;
 import com.yanyun.music.moderation.MockModerationAdapter;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.musicprovider.MockMusicProvider;
@@ -14,9 +20,12 @@ import com.yanyun.music.storage.HttpRemoteObjectImporter;
 import com.yanyun.music.storage.LocalObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.RemoteObjectImporter;
+import com.yanyun.music.suno.SunoMusicProvider;
+import com.yanyun.music.suno.SunoMusicProviderOptions;
 import java.nio.file.Path;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -53,6 +62,43 @@ public class WorkerProductionConfiguration {
   @Bean
   MusicProvider mockMusicProvider() {
     return new MockMusicProvider();
+  }
+
+  @Bean
+  @ConfigurationProperties(prefix = "yanyun.dreammaker")
+  DreamMakerProperties dreamMakerProperties() {
+    return new DreamMakerProperties();
+  }
+
+  @Bean
+  DreamMakerClient dreamMakerClient(
+      DreamMakerProperties dreamMakerProperties, ObjectMapper objectMapper) {
+    return new DreamMakerHttpClient(dreamMakerProperties, objectMapper);
+  }
+
+  @Bean
+  MusicProvider sunoMusicProvider(
+      DreamMakerClient dreamMakerClient, DreamMakerProperties dreamMakerProperties) {
+    return new SunoMusicProvider(
+        dreamMakerClient,
+        new SunoMusicProviderOptions(
+            dreamMakerProperties.getSunoModel(),
+            dreamMakerProperties.getMaxPollAttempts(),
+            dreamMakerProperties.getPollInterval()));
+  }
+
+  @Bean
+  MusicProvider miniMaxMusicProvider(
+      DreamMakerClient dreamMakerClient, DreamMakerProperties dreamMakerProperties) {
+    return new MiniMaxMusicProvider(
+        dreamMakerClient,
+        new MiniMaxMusicProviderOptions(
+            dreamMakerProperties.getMinimaxModel(),
+            dreamMakerProperties.getMaxPollAttempts(),
+            dreamMakerProperties.getPollInterval(),
+            "mp3",
+            44100,
+            256000));
   }
 
   @Bean

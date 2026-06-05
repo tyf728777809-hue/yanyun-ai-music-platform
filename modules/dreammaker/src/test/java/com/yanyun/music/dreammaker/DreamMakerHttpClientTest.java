@@ -1,18 +1,12 @@
-package com.yanyun.music.api.integration.dreammaker;
+package com.yanyun.music.dreammaker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
-import com.yanyun.music.dreammaker.DreamMakerClientException;
-import com.yanyun.music.dreammaker.DreamMakerFailureMapper;
-import com.yanyun.music.dreammaker.DreamMakerRunRequest;
-import com.yanyun.music.dreammaker.DreamMakerStatusRequest;
-import com.yanyun.music.dreammaker.DreamMakerStatusResponse;
-import com.yanyun.music.dreammaker.DreamMakerSubmitResponse;
-import com.yanyun.music.dreammaker.DreamMakerTaskStatus;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -74,7 +68,7 @@ class DreamMakerHttpClientTest {
   void rejectsMissingAccessKeyOrSecretKeyBeforeHttpCall() {
     DreamMakerHttpClient client =
         new DreamMakerHttpClient(
-            properties("", TEST_SECRET_KEY), new ObjectMapper(), HttpClient.newHttpClient());
+            properties("", TEST_SECRET_KEY, true), new ObjectMapper(), HttpClient.newHttpClient());
 
     DreamMakerClientException exception =
         assertThrows(
@@ -82,6 +76,42 @@ class DreamMakerHttpClientTest {
             () -> client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of())));
 
     assertEquals(DreamMakerFailureMapper.MUSIC_GENERATION_FAILED, exception.failureCode());
+  }
+
+  @Test
+  void rejectsRealProviderCallWhenManualEnableFlagIsDisabled() {
+    DreamMakerHttpClient client =
+        new DreamMakerHttpClient(
+            properties(TEST_ACCESS_KEY, TEST_SECRET_KEY, false),
+            new ObjectMapper(),
+            HttpClient.newHttpClient());
+
+    DreamMakerClientException exception =
+        assertThrows(
+            DreamMakerClientException.class,
+            () -> client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of())));
+
+    assertEquals(DreamMakerFailureMapper.MUSIC_GENERATION_FAILED, exception.failureCode());
+  }
+
+  @Test
+  void mapsNon2xxResponseAndRedactsProviderMessage() throws Exception {
+    server = startFailureServer();
+    DreamMakerHttpClient client =
+        new DreamMakerHttpClient(
+            properties(TEST_ACCESS_KEY, TEST_SECRET_KEY),
+            new ObjectMapper(),
+            HttpClient.newHttpClient(),
+            FIXED_CLOCK);
+
+    DreamMakerClientException exception =
+        assertThrows(
+            DreamMakerClientException.class,
+            () -> client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of())));
+
+    assertEquals(DreamMakerFailureMapper.RATE_LIMITED, exception.failureCode());
+    assertTrue(exception.getMessage().contains("Bearer <redacted>"));
+    assertTrue(exception.getMessage().contains("token=<redacted>"));
   }
 
   private HttpServer startServer() throws IOException {
@@ -136,6 +166,29 @@ class DreamMakerHttpClientTest {
     return httpServer;
   }
 
+  private HttpServer startFailureServer() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/api/v1/apps/suno/run",
+        exchange -> {
+          assertDreamMakerAuth(exchange.getRequestHeaders().getFirst("Authorization"));
+          byte[] body =
+              """
+              {
+                "code": 429,
+                "message": "rate limit Bearer fake-token-value token=plain"
+              }
+              """
+                  .getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "application/json");
+          exchange.sendResponseHeaders(429, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
   private void assertDreamMakerAuth(String authorization) {
     try {
       String token = authorization.substring("Bearer ".length());
@@ -168,11 +221,16 @@ class DreamMakerHttpClientTest {
   }
 
   private DreamMakerProperties properties(String accessKey, String secretKey) {
+    return properties(accessKey, secretKey, true);
+  }
+
+  private DreamMakerProperties properties(String accessKey, String secretKey, boolean enabled) {
     DreamMakerProperties properties = new DreamMakerProperties();
     properties.setBaseUrl(URI.create(server == null ? "http://127.0.0.1:1" : baseUrl()));
     properties.setAccessKey(accessKey);
     properties.setSecretKey(secretKey);
     properties.setUserAccessToken(TEST_USER_ACCESS_TOKEN);
+    properties.setRealCallsEnabled(enabled);
     properties.setRequestTimeout(Duration.ofSeconds(2));
     return properties;
   }

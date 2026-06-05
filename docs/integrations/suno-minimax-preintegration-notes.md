@@ -4,9 +4,9 @@
 
 - Current stage: DreamMaker provider skeleton implemented; local default remains mock.
 - Real Suno calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run in
-  automated tests.
+  automated tests; additionally blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - Real MiniMax calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run
-  in automated tests.
+  in automated tests; additionally blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - Feishu reference doc: fetched through `lark-cli docs +fetch` after user authorization.
 - Real credentials: must not be committed, logged, or written into docs.
 
@@ -27,6 +27,8 @@ The backend already has a shared music provider contract:
   and returns provider audio source URLs.
 - Workflow imports provider audio source URLs into object storage before writing `AUDIO` media
   assets, so user-facing URLs remain platform-owned.
+- API and worker share the same DreamMaker HTTP client and property model; Temporal worker real
+  provider calls use the same JWT and hard-switch checks as API local mode.
 
 Each provider call record captures:
 
@@ -154,6 +156,7 @@ Before running real authenticated calls broadly, confirm these remaining details
    - `DREAMMAKER_ACCESS_KEY`.
    - `DREAMMAKER_SECRET_KEY`.
    - `DREAMMAKER_USER_ACCESS_TOKEN` optional passthrough for `X-Access-Token`.
+   - `DREAMMAKER_REAL_CALLS_ENABLED` hard switch, default false.
    - `SUNO_MODEL`.
    - `MINIMAX_MODEL`.
    - submit timeout, poll interval, poll timeout.
@@ -165,7 +168,10 @@ Before running real authenticated calls broadly, confirm these remaining details
 5. Added HTTP client tests with local mocked DreamMaker responses.
 6. `data.task_id` is returned as `MusicGenerationResult.providerTaskId` and recorded in `provider_calls.provider_trace_id`.
 7. Provider output audio URL is imported into object storage before workflow writes the audio media asset.
-8. Automated tests still do not call real providers; real calls require manual environment variables.
+8. Automated tests still do not call real providers; real calls require manual environment variables
+   plus `DREAMMAKER_REAL_CALLS_ENABLED=true`.
+9. Added controlled real-integration runbook, acceptance checklist, security/log handling rules,
+   open-question tracker, and company handoff note for the next manual联调 window.
 
 ## Non-Goals
 
