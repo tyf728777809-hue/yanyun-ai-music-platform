@@ -214,6 +214,16 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - HTTP smoke 成功：非法 `music_provider` 返回 HTTP 400，作品保持 `FAILED / MUSIC_GENERATION_FAILED`，`music_retry_count` 不增加，随后仍可用 `mock` 重试恢复成功。
 - PostgreSQL 抽查成功：耗尽作品为 `FAILED / MUSIC_GENERATION_FAILED / retryable=false / music_retry_count=2`；恢复作品为 `GENERATED / PACKAGE_READY / music_retry_count=1`；权益流水符合失败释放、成功提交口径。
 
+## 第 2 批 Provider 调用记录与接入前置结果
+
+- 已启用已有 `provider_calls` 表：`MockSongProductionWorkflow` 每次调用音乐 Provider 后记录 `provider`、`operation`、`provider_trace_id`、`status`、`latency_ms`、`request_hash`、`prompt_hash`、`error_code` 和 `error_message`。
+- `MockSongProductionWorkflowTest` 已验证成功路径写入 `MOCK / MUSIC_GENERATION / SUCCEEDED`，失败路径写入 `MOCK / MUSIC_GENERATION / FAILED` 和 provider 原始失败码。
+- `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar` 成功。
+- HTTP smoke 成功：`MUSIC_PROVIDER=suno` 初始失败后，切换 `mock` 重试恢复成功。
+- PostgreSQL 抽查成功：同一作品写入两条 provider call，分别为 `SUNO|MUSIC_GENERATION|FAILED|PROVIDER_EXCEPTION` 和 `MOCK|MUSIC_GENERATION|SUCCEEDED`，`request_hash` 与 `prompt_hash` 均为 64 位 SHA-256 hex。
+- 新增 `docs/integrations/suno-minimax-preintegration-notes.md`，记录 Suno / MiniMax 真实接入前需要确认的鉴权、请求、回调、失败码、限流、下载和对象存储要求。
+- 飞书参考资料当前需要登录，Agent 环境无法读取具体内容；真实 Provider 请求/回调/失败码细节仍待用户或公司开发提供可读资料后补齐。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
@@ -269,3 +279,4 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 | 2026-06-05 04:50 CST | 补 Provider 配置选择 | `MUSIC_PROVIDER=mock|suno|minimax` 已接入 Workflow；默认 mock 成功，suno 未实现边界会持久化失败并释放权益，测试、构建、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 05:12 CST | 补失败恢复与重试闭环 | 新增音乐重试接口与请求级 Provider 覆盖；`suno` 失败后可用 `mock` 重试恢复到 `PACKAGE_READY`，测试、构建、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 10:07 CST | 增强重试稳定性 | 新增 `music_retry_count`、2 次音乐重试上限、状态抢占和失败推荐动作；次数耗尽、恢复成功、Flyway、HTTP smoke 和 DB 抽查均通过 |
+| 2026-06-05 10:22 CST | 启用 Provider 调用记录 | 出歌流程已写入 `provider_calls`，Suno 失败与 Mock 成功均可追踪；新增 Suno/MiniMax 真实接入前置说明 |

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.api.work.WorkRepository;
 import com.yanyun.music.api.work.WorkRepository.MediaAssetRow;
+import com.yanyun.music.api.work.WorkRepository.ProviderCallRow;
 import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
@@ -102,6 +103,17 @@ class MockSongProductionWorkflowTest {
     assertThat(musicRequest.getValue().lyricsText()).isEqualTo("Mock lyrics");
     assertThat(musicRequest.getValue().musicPrompt()).isEqualTo("Mock prompt");
 
+    ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
+    verify(workRepository).insertProviderCall(providerCall.capture());
+    assertThat(providerCall.getValue().workId()).isEqualTo(workId);
+    assertThat(providerCall.getValue().jobId()).isEqualTo(jobId);
+    assertThat(providerCall.getValue().provider()).isEqualTo("MOCK");
+    assertThat(providerCall.getValue().operation()).isEqualTo("MUSIC_GENERATION");
+    assertThat(providerCall.getValue().providerTraceId()).isEqualTo("task-1");
+    assertThat(providerCall.getValue().status()).isEqualTo("SUCCEEDED");
+    assertThat(providerCall.getValue().requestHash()).hasSize(64);
+    assertThat(providerCall.getValue().promptHash()).hasSize(64);
+
     ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
     verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
     assertThat(mediaAsset.getAllValues())
@@ -175,6 +187,13 @@ class MockSongProductionWorkflowTest {
     verify(workRepository)
         .insertQuotaTransaction(
             workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
+    verify(workRepository).insertProviderCall(providerCall.capture());
+    assertThat(providerCall.getValue().provider()).isEqualTo("MOCK");
+    assertThat(providerCall.getValue().providerTraceId()).isEqualTo("task-1");
+    assertThat(providerCall.getValue().status()).isEqualTo("FAILED");
+    assertThat(providerCall.getValue().errorCode()).isEqualTo("PROVIDER_FAILED");
+    assertThat(providerCall.getValue().errorMessage()).isEqualTo("provider failed");
     verify(workRepository)
         .markFailure(workId, FailureCode.MUSIC_GENERATION_FAILED, "provider failed", true);
     verify(workRepository)

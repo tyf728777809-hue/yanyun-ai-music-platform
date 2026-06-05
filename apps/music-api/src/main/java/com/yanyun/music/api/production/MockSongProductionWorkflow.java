@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.api.work.WorkRepository;
 import com.yanyun.music.api.work.WorkRepository.MediaAssetRow;
+import com.yanyun.music.api.work.WorkRepository.ProviderCallRow;
 import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
@@ -28,9 +29,13 @@ import com.yanyun.music.workflow.SongProductionWorkflow;
 import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
+import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -95,18 +100,29 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         workId, input.userId(), lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
 
     MusicGenerationResult musicResult;
+    MusicProviderSelection selectedProvider = selectedProvider(input);
+    MusicGenerationRequest musicRequest =
+        new MusicGenerationRequest(
+            input.workId(),
+            input.lyricsText(),
+            input.musicPrompt(),
+            input.vocalPreference(),
+            Map.of());
+    long providerStartedAt = System.nanoTime();
     try {
       musicResult =
-          musicProviderRegistry
-              .require(selectedProvider(input).providerType())
-              .submit(
-                  new MusicGenerationRequest(
-                      input.workId(),
-                      input.lyricsText(),
-                      input.musicPrompt(),
-                      input.vocalPreference(),
-                      Map.of()));
+          musicProviderRegistry.require(selectedProvider.providerType()).submit(musicRequest);
     } catch (RuntimeException exception) {
+      recordProviderCall(
+          workId,
+          jobId,
+          selectedProvider,
+          musicRequest,
+          null,
+          "FAILED",
+          elapsedMillis(providerStartedAt),
+          "PROVIDER_EXCEPTION",
+          firstNonBlank(exception.getMessage(), "Music provider failed"));
       return fail(
           workId,
           jobId,
@@ -116,6 +132,16 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           input.userId(),
           lock.lockId());
     }
+    recordProviderCall(
+        workId,
+        jobId,
+        selectedProvider,
+        musicRequest,
+        musicResult,
+        musicResult.status().name(),
+        elapsedMillis(providerStartedAt),
+        musicResult.failureCode(),
+        musicResult.failureMessage());
     if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
       return fail(
           workId,
@@ -286,6 +312,49 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         : MusicProviderSelection.fromConfig(input.musicProvider());
   }
 
+  private void recordProviderCall(
+      UUID workId,
+      UUID jobId,
+      MusicProviderSelection selectedProvider,
+      MusicGenerationRequest request,
+      MusicGenerationResult result,
+      String status,
+      int latencyMs,
+      String errorCode,
+      String errorMessage) {
+    workRepository.insertProviderCall(
+        new ProviderCallRow(
+            workId,
+            jobId,
+            selectedProvider.providerType().name(),
+            "MUSIC_GENERATION",
+            selectedProvider.providerType().name().toLowerCase(java.util.Locale.ROOT),
+            hashRequest(request),
+            sha256(request.musicPrompt()),
+            result == null ? null : result.providerTaskId(),
+            status,
+            latencyMs,
+            null,
+            errorCode,
+            errorMessage));
+  }
+
+  private int elapsedMillis(long startedAtNanos) {
+    return Math.toIntExact(
+        Math.max(0L, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAtNanos)));
+  }
+
+  private String hashRequest(MusicGenerationRequest request) {
+    return sha256(
+        request.workId()
+            + "\n"
+            + request.vocalPreference()
+            + "\n"
+            + request.musicPrompt()
+            + "\n"
+            + request.lyricsText());
+  }
+
   private Map<String, Object> buildPackageJson(UUID workId, SongProductionWorkflowInput input) {
     return Map.of(
         "work_id",
@@ -335,6 +404,16 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       return objectMapper.writeValueAsString(value);
     } catch (JsonProcessingException exception) {
       throw new IllegalStateException("Failed to write JSON", exception);
+    }
+  }
+
+  private String sha256(String value) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      return HexFormat.of()
+          .formatHex(digest.digest((value == null ? "" : value).getBytes(StandardCharsets.UTF_8)));
+    } catch (NoSuchAlgorithmException exception) {
+      throw new IllegalStateException("SHA-256 digest is unavailable", exception);
     }
   }
 }

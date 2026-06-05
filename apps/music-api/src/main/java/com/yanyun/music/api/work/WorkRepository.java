@@ -5,6 +5,7 @@ import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workdomain.WorkStatus;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -557,6 +558,41 @@ public class WorkRepository {
         reason);
   }
 
+  public void insertProviderCall(ProviderCallRow call) {
+    jdbcTemplate.update(
+        """
+        INSERT INTO provider_calls (
+          work_id,
+          job_id,
+          provider,
+          operation,
+          model_name,
+          request_hash,
+          prompt_hash,
+          provider_trace_id,
+          status,
+          latency_ms,
+          cost_units,
+          error_code,
+          error_message
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        call.workId(),
+        call.jobId(),
+        call.provider(),
+        call.operation(),
+        call.modelName(),
+        call.requestHash(),
+        call.promptHash(),
+        call.providerTraceId(),
+        call.status(),
+        call.latencyMs(),
+        call.costUnits(),
+        call.errorCode(),
+        call.errorMessage());
+  }
+
   public Optional<IdempotencyRecord> findIdempotency(
       String userId, String idempotencyKey, String operation) {
     try {
@@ -770,6 +806,21 @@ public class WorkRepository {
       OffsetDateTime fetchedAt,
       OffsetDateTime createdAt,
       OffsetDateTime updatedAt) {}
+
+  public record ProviderCallRow(
+      UUID workId,
+      UUID jobId,
+      String provider,
+      String operation,
+      String modelName,
+      String requestHash,
+      String promptHash,
+      String providerTraceId,
+      String status,
+      Integer latencyMs,
+      BigDecimal costUnits,
+      String errorCode,
+      String errorMessage) {}
 
   public record IdempotencyRecord(
       String userId,
