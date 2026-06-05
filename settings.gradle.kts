@@ -27,6 +27,7 @@ include(
     "modules:knowledge",
     "modules:prompt",
     "modules:music-provider",
+    "modules:dreammaker",
     "modules:minimax",
     "modules:suno",
     "modules:deepseek",

@@ -21,6 +21,8 @@ import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.RemoteObjectImportRequest;
+import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.storage.StoredObject;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
@@ -50,6 +52,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final MusicProviderRegistry musicProviderRegistry;
   private final MusicProviderSelection musicProviderSelection;
   private final ObjectStorageClient objectStorageClient;
+  private final RemoteObjectImporter remoteObjectImporter;
   private final ObjectMapper objectMapper;
 
   public MockSongProductionWorkflow(
@@ -60,6 +63,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       MusicProviderRegistry musicProviderRegistry,
       MusicProviderSelection musicProviderSelection,
       ObjectStorageClient objectStorageClient,
+      RemoteObjectImporter remoteObjectImporter,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
@@ -68,6 +72,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.musicProviderRegistry = musicProviderRegistry;
     this.musicProviderSelection = musicProviderSelection;
     this.objectStorageClient = objectStorageClient;
+    this.remoteObjectImporter = remoteObjectImporter;
     this.objectMapper = objectMapper;
   }
 
@@ -153,7 +158,18 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
 
-    createMockMediaAssets(workId, musicResult);
+    try {
+      createMediaAssets(workId, musicResult);
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.PACKAGE_BUILD_FAILED,
+          firstNonBlank(exception.getMessage(), "Provider audio import failed"),
+          true,
+          input.userId(),
+          lock.lockId());
+    }
 
     PublishHandoff handoff;
     try {
@@ -255,15 +271,20 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         failureMessage);
   }
 
-  private void createMockMediaAssets(UUID workId, MusicGenerationResult musicResult) {
+  private void createMediaAssets(UUID workId, MusicGenerationResult musicResult) {
+    StoredObject importedAudio = importProviderAudio(workId, musicResult);
+    String audioObjectKey =
+        firstNonBlank(
+            musicResult.audioObjectKey(),
+            importedAudio == null ? "audio/" + workId + ".mp3" : importedAudio.objectKey());
     workRepository.upsertMediaAsset(
         new MediaAssetRow(
             workId,
             "AUDIO",
-            firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".mp3"),
-            "audio/mpeg",
-            4_800_000L,
-            "mock-audio",
+            audioObjectKey,
+            firstNonBlank(musicResult.audioContentType(), "audio/mpeg"),
+            importedAudio == null ? 4_800_000L : importedAudio.sizeBytes(),
+            importedAudio == null ? "mock-audio" : "provider-audio",
             null,
             null,
             musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
@@ -304,6 +325,20 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             null,
             180_000,
             "{}"));
+  }
+
+  private StoredObject importProviderAudio(UUID workId, MusicGenerationResult musicResult) {
+    if (musicResult.audioObjectKey() != null && !musicResult.audioObjectKey().isBlank()) {
+      return null;
+    }
+    if (musicResult.audioSourceUrl() == null || musicResult.audioSourceUrl().isBlank()) {
+      return null;
+    }
+    return remoteObjectImporter.importObject(
+        new RemoteObjectImportRequest(
+            musicResult.audioSourceUrl(),
+            "audio/" + workId + ".mp3",
+            firstNonBlank(musicResult.audioContentType(), "audio/mpeg")));
   }
 
   private MusicProviderSelection selectedProvider(SongProductionWorkflowInput input) {

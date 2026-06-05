@@ -2,9 +2,9 @@
 
 ## Status
 
-- Current stage: local mock stage.
-- Real Suno calls: not implemented.
-- Real MiniMax calls: not implemented.
+- Current stage: DreamMaker provider skeleton implemented; local default remains mock.
+- Real Suno calls: implemented behind `DREAMMAKER_API_KEY`, not run in automated tests.
+- Real MiniMax calls: implemented behind `DREAMMAKER_API_KEY`, not run in automated tests.
 - Feishu reference doc: fetched through `lark-cli docs +fetch` after user authorization.
 - Real credentials: must not be committed, logged, or written into docs.
 
@@ -18,6 +18,13 @@ The backend already has a shared music provider contract:
 - Runtime selection: `MUSIC_PROVIDER=mock|suno|minimax`.
 - Per-request override: `confirm` and `music/retry` accept `music_provider`.
 - Provider calls are now written to `provider_calls`.
+- `modules:dreammaker` defines the shared DreamMaker run/status client contract.
+- `SunoMusicProvider` builds DreamMaker params, submits tasks, polls status, maps failure codes,
+  and returns provider audio source URLs.
+- `MiniMaxMusicProvider` builds DreamMaker params, submits tasks, polls status, maps failure codes,
+  and returns provider audio source URLs.
+- Workflow imports provider audio source URLs into object storage before writing `AUDIO` media
+  assets, so user-facing URLs remain platform-owned.
 
 Each provider call record captures:
 
@@ -121,10 +128,11 @@ Keep mapping conservative until real error-code samples are available:
 
 ## Required Real Provider Details
 
-Before implementing real calls, confirm these remaining details:
+Before running real authenticated calls broadly, confirm these remaining details:
 
-1. Real API key delivery path and local secret naming.
-2. Whether `Bearer <key>` differs by Suno and MiniMax or uses one shared DreamMaker key.
+1. Real API key delivery path and production secret manager naming.
+2. Whether the provided AccessKey/SecretKey must be exchanged for `Bearer <key>`, signed directly,
+   or replaced by a separate DreamMaker bearer key.
 3. Concrete non-zero `code` values and retryability.
 4. `failed` task response examples and failure-message schema.
 5. Rate limit, timeout, polling interval, and maximum polling duration.
@@ -134,23 +142,24 @@ Before implementing real calls, confirm these remaining details:
 9. Pricing or quota unit per task.
 10. Content moderation and blocked-content error codes.
 
-## Implementation Plan When Docs Are Available
+## Implemented Plan
 
-1. Add DreamMaker config properties, with no real defaults:
+1. Added DreamMaker config properties, with no real secret defaults:
    - `DREAMMAKER_API_BASE_URL`.
    - `DREAMMAKER_API_KEY`.
+   - `DREAMMAKER_ACCESS_KEY` and `DREAMMAKER_SECRET_KEY` reserved only.
    - `SUNO_MODEL`.
    - `MINIMAX_MODEL`.
    - submit timeout, poll interval, poll timeout.
-2. Implement request builders:
+2. Implemented request builders:
    - Suno custom lyrics mode maps `lyricsText` to `prompt`, `musicPrompt` to `tags`, title to `title`, vocal preference to `metadata.vocal_gender` when possible.
-   - MiniMax maps `musicPrompt` to `prompt`, `lyricsText` to `lyrics`, default `audio_format=mp3`, `sample_rate=44100`, `bitrate=256000`.
-3. Implement DreamMaker submit + polling client.
-4. Add provider failure-code mapping tests.
-5. Add HTTP client tests with mocked DreamMaker responses.
-6. Store `data.task_id` in `provider_calls.provider_trace_id`.
-7. Download or import generated audio into object storage before returning success.
-8. Keep automated tests on mock provider only unless explicit test credentials are provided.
+   - MiniMax maps `musicPrompt` to `prompt`, `lyricsText` to `lyrics`, sets `lyrics_optimizer=false` when confirmed lyrics are present, and defaults `audio_format=mp3`, `sample_rate=44100`, `bitrate=256000`.
+3. Implemented DreamMaker submit + polling client.
+4. Added provider failure-code mapping tests.
+5. Added HTTP client tests with local mocked DreamMaker responses.
+6. `data.task_id` is returned as `MusicGenerationResult.providerTaskId` and recorded in `provider_calls.provider_trace_id`.
+7. Provider output audio URL is imported into object storage before workflow writes the audio media asset.
+8. Automated tests still do not call real providers; real calls require manual environment variables.
 
 ## Non-Goals
 

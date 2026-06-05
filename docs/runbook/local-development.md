@@ -36,7 +36,33 @@ docker compose -f deploy/docker-compose.yml ps
 MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 ```
 
-也可以显式选择 `suno` 或 `minimax` 验证失败边界。当前两者真实提交尚未实现，确认出歌会返回 HTTP 409，并将作品持久化为可重试的 `MUSIC_GENERATION_FAILED`，不会调用真实 API。
+也可以显式选择 `suno` 或 `minimax` 验证 DreamMaker Provider 边界。默认不配置
+`DREAMMAKER_API_KEY` 时，确认出歌会返回 HTTP 409，并将作品持久化为可重试的
+`MUSIC_GENERATION_FAILED`，不会发起真实供应商请求。
+
+真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
+
+```bash
+export MUSIC_PROVIDER=suno
+export DREAMMAKER_API_BASE_URL=https://api-all.dreammaker.netease.com
+export DREAMMAKER_API_KEY=...
+export SUNO_MODEL=chirp-crow
+./gradlew :apps:music-api:bootRun
+```
+
+MiniMax 可用：
+
+```bash
+export MUSIC_PROVIDER=minimax
+export MINIMAX_MODEL=minimax-music-2.6
+./gradlew :apps:music-api:bootRun
+```
+
+当前工程已预留 `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 变量名，但 Feishu 资料只明确
+`Authorization: Bearer <key>`。在供应商确认 AccessKey/SecretKey 如何换取 Bearer 或签名之前，不要擅自把
+AccessKey/SecretKey 当作请求头使用。
+
+当真实 Provider 返回音频 URL 后，workflow 会先把音频导入本地对象存储，再写入 `media_assets`；作品详情和发布包仍只暴露平台自己的对象 URL。
 
 失败后可通过音乐重试接口验证恢复边界：
 
@@ -101,4 +127,4 @@ npm test
 
 ## Current Boundary
 
-当前本地阶段只验证工程、Mock 业务链路、Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
+当前自动化测试只验证工程、Mock 业务链路、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。

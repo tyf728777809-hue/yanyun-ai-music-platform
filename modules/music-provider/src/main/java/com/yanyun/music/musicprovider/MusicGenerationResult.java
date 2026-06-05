@@ -5,6 +5,8 @@ public record MusicGenerationResult(
     String providerTaskId,
     MusicGenerationStatus status,
     String audioObjectKey,
+    String audioSourceUrl,
+    String audioContentType,
     Integer durationMs,
     String failureCode,
     String failureMessage,
@@ -13,7 +15,16 @@ public record MusicGenerationResult(
   public static MusicGenerationResult accepted(
       MusicProviderType providerType, String providerTaskId) {
     return new MusicGenerationResult(
-        providerType, providerTaskId, MusicGenerationStatus.QUEUED, null, null, null, null, null);
+        providerType,
+        providerTaskId,
+        MusicGenerationStatus.QUEUED,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
   }
 
   public static MusicGenerationResult succeeded(
@@ -27,6 +38,28 @@ public record MusicGenerationResult(
         providerTaskId,
         MusicGenerationStatus.SUCCEEDED,
         audioObjectKey,
+        null,
+        null,
+        durationMs,
+        null,
+        null,
+        message);
+  }
+
+  public static MusicGenerationResult succeededFromSource(
+      MusicProviderType providerType,
+      String providerTaskId,
+      String audioSourceUrl,
+      String audioContentType,
+      Integer durationMs,
+      String message) {
+    return new MusicGenerationResult(
+        providerType,
+        providerTaskId,
+        MusicGenerationStatus.SUCCEEDED,
+        null,
+        audioSourceUrl,
+        audioContentType,
         durationMs,
         null,
         null,
@@ -42,6 +75,8 @@ public record MusicGenerationResult(
         providerType,
         providerTaskId,
         MusicGenerationStatus.FAILED,
+        null,
+        null,
         null,
         null,
         failureCode,

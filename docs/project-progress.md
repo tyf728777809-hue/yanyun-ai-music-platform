@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-05 04:50 CST
+更新时间：2026-06-05 22:52 CST
 
 ## 当前阶段
 
@@ -16,7 +16,9 @@
 
 Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient` 写入本地 `build/local-object-storage/yanyun-works-local/packages/{work_id}.json`，接口返回的 `package_url` 与本地写出的对象 key 保持一致。当前仍不写入真实 MinIO/S3，公司对象存储协议待后续确认。
 
-音乐 Provider 选择已从硬编码 `MOCK` 改为配置驱动：`MUSIC_PROVIDER=mock|suno|minimax` 会映射到统一 `MusicProviderSelection`。当前默认 `mock` 可完整成功；`suno` / `minimax` 已注册边界但真实提交仍显式未实现，本地选择它们会进入 `MUSIC_GENERATION_FAILED` 可重试失败，并释放已锁权益，不会调用真实 API。
+音乐 Provider 选择已从硬编码 `MOCK` 改为配置驱动：`MUSIC_PROVIDER=mock|suno|minimax` 会映射到统一 `MusicProviderSelection`。当前默认 `mock` 可完整成功；`suno` / `minimax` 已接入 DreamMaker submit + poll 骨架，但缺少 `DREAMMAKER_API_KEY` 时会在发起外部请求前进入 `MUSIC_GENERATION_FAILED` 可重试失败，并释放已锁权益。
+
+DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreammaker`，`SunoMusicProvider` 和 `MiniMaxMusicProvider` 已可按 DreamMaker run/status 协议构造请求、提交任务、轮询状态、映射失败码，并在成功时返回供应商音频源 URL。Workflow 已补远程音频导入边界，会先把供应商音频 URL 导入本地对象存储，再写入 `AUDIO` 媒体资产。默认仍走 `mock`，自动化测试不调用真实供应商；真实联调需要安全配置 `DREAMMAKER_API_KEY`。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -66,8 +68,8 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - 根据用户补充，记录音乐生成后续需同时接入 Suno 与 MiniMax，并预留可配置开放策略；飞书资料已通过 `lark-cli` 授权读取，真实 run/status 接口要点已整理到集成说明。
 - 实现 `Idempotency-Key` 基础语义，覆盖当前所有 POST 主路径，成功响应写入 `idempotency_keys`，重复提交可重放响应，参数冲突返回 `IDEMPOTENCY_CONFLICT`。
 - 新增 `modules:music-provider`，定义音乐生成统一 Provider 合约、请求、结果、状态、Provider 类型和注册选择器。
-- 新增 `modules:suno`，预置 `SunoMusicProvider` 边界；当前真实调用显式未实现，自动化测试验证不会调用真实 Suno API。
-- 扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 边界；当前真实调用显式未实现，自动化测试验证不会调用真实 MiniMax API。
+- 新增 `modules:suno`，预置 `SunoMusicProvider` 边界；后续已升级为 DreamMaker submit + poll 骨架，自动化测试仍不会调用真实 Suno API。
+- 扩展 `modules:minimax`，预置 `MiniMaxMusicProvider` 边界；后续已升级为 DreamMaker submit + poll 骨架，自动化测试仍不会调用真实 MiniMax API。
 - `.env.example` 增加 `MUSIC_PROVIDER=mock`、`SUNO_API_BASE_URL`、`MINIMAX_API_BASE_URL`、`SUNO_API_KEY` 等变量名，不包含真实凭据。
 - `music-api` 已依赖 `modules:music-provider`，通过 Spring 配置注册 `MockMusicProvider` 和 `MusicProviderRegistry`。
 - `WorkService.confirmWork` 已通过 `MusicProviderRegistry.require(MOCK)` 生成 Mock 音频结果，再继续封面、视频、发布包链路。
@@ -223,20 +225,42 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - PostgreSQL 抽查成功：同一作品写入两条 provider call，分别为 `SUNO|MUSIC_GENERATION|FAILED|PROVIDER_EXCEPTION` 和 `MOCK|MUSIC_GENERATION|SUCCEEDED`，`request_hash` 与 `prompt_hash` 均为 64 位 SHA-256 hex。
 - 新增 `docs/integrations/suno-minimax-preintegration-notes.md`，记录 Suno / MiniMax 的 DreamMaker run/status 接口、鉴权方式、请求字段、状态字段、输出文件字段和待确认项。
 - 飞书参考资料已通过 `lark-cli docs +fetch` 成功读取；文档中的 `Authorization: Bearer keys` 是占位写法，不是真实密钥，真实密钥交付方式仍待确认。
+- 新增 `docs/specs/dreammaker-music-provider-v0.1.md`，作为 DreamMaker / Suno / MiniMax 接入骨架规格，明确不提交密钥、自动化不调用真实 Provider、供应商音频 URL 必须先导入对象存储。
+- 新增 `modules:dreammaker`，定义 DreamMaker client、run/status request、submit/status response、任务状态、输出文件和失败映射。
+- `SunoMusicProvider` 已实现 DreamMaker 参数构造、任务提交、状态轮询、成功音频输出提取、`PROVIDER_TIMEOUT` / `RATE_LIMITED` / `MUSIC_QUALITY_FAILED` 等内部失败码映射。
+- `MiniMaxMusicProvider` 已实现 DreamMaker 参数构造、任务提交、状态轮询、成功音频输出提取；确认歌词存在时默认 `lyrics_optimizer=false`，避免改写用户已确认歌词。
+- `DreamMakerHttpClient` 已接入 `DREAMMAKER_API_BASE_URL`、`DREAMMAKER_API_KEY`、轮询次数、轮询间隔、请求超时和模型配置；`DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 仅预留，未擅自用于请求头或签名。
+- 新增 `RemoteObjectImporter` 和 `HttpRemoteObjectImporter`，支持把 Provider 返回的 HTTP(S) 音频 URL 下载并写入 `ObjectStorageClient`，拒绝非 HTTP(S) URL 并限制最大下载大小。
+- `MockSongProductionWorkflow` 已支持 Provider 音频源 URL 导入；导入失败按 `PACKAGE_BUILD_FAILED` 收口并释放权益，避免作品半生成。
+
+## 第 2 批 DreamMaker Provider 接入骨架验证结果
+
+- `./gradlew spotlessApply` 成功。
+- `./gradlew spotlessCheck test :apps:music-api:bootJar` 成功。
+- `ruby -e "require 'yaml'; YAML.load_file('docs/api/openapi-v0.1.yaml')"` 成功，OpenAPI YAML 可解析。
+- `DreamMakerTaskStatusTest` 成功：DreamMaker `queued` / `running` / `success` / `failed` 状态可映射。
+- `SunoMusicProviderTest` 成功：Fake DreamMaker 成功响应可返回 `SUCCEEDED` 和音频源 URL；长期 `running` 会映射为 `PROVIDER_TIMEOUT`。
+- `MiniMaxMusicProviderTest` 成功：Fake DreamMaker 成功响应可返回 `SUCCEEDED` 和音频源 URL；失败状态可映射为 `MUSIC_QUALITY_FAILED`。
+- `DreamMakerHttpClientTest` 成功：本地 HTTP server 模拟 DreamMaker run/status，可解析 task id、状态、相对音频 URL 和 duration；缺失 `DREAMMAKER_API_KEY` 会在发请求前失败。
+- `HttpRemoteObjectImporterTest` 成功：本地 HTTP 音频可导入 `ObjectStorageClient`；非 HTTP(S) source URL 会被拒绝。
+- `MockSongProductionWorkflowTest` 成功：已有 object key 不触发下载；Provider 音频源 URL 会先导入对象存储再写入 `AUDIO` 媒体资产。
+- 本地 API JAR smoke 成功：默认 `MUSIC_PROVIDER=mock` 下，`/health` 返回 `OK`，作品可从填词创建推进到 `GENERATED / PACKAGE_READY`，发布包 URL 存在。
+- 本地 API JAR smoke 成功：请求级 `music_provider=suno` 且未配置 `DREAMMAKER_API_KEY` 时，确认出歌返回 HTTP 409，作品持久化为 `FAILED / MUSIC_GENERATION_FAILED / retryable=true`，`available_actions` 包含 `RETRY_MUSIC`。
+- smoke 后已停止 `music-api`，`8080` 未残留监听进程。
 
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
-- Suno 和 MiniMax 的 DreamMaker run/status API 资料已读取；真实 API key、非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 下载方式和计费口径仍待确认。
+- Suno 和 MiniMax 的 DreamMaker run/status 接入骨架已实现；真实 Bearer key 交付方式、AccessKey/SecretKey 如何换取 Bearer 或签名、非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
-- 当前音乐重试已有次数上限和状态抢占，但真实 Provider 接入后仍需把 Suno/MiniMax 失败码映射到 `PROVIDER_TIMEOUT`、`RATE_LIMITED`、`MUSIC_QUALITY_FAILED` 等内部失败码。
+- 当前音乐重试已有次数上限和状态抢占，DreamMaker 失败码也已有保守映射；真实联调后仍需根据具体非零 code 和 failed payload 精细化 retryable / non-retryable 规则。
 - 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
 
 ## 下一步建议
 
-1. 基于已读取的 DreamMaker 文档实现 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实 submit + poll + 音频下载骨架，但继续禁止自动化测试调用真实外部 API。
+1. 确认 DreamMaker Bearer key 与 AccessKey/SecretKey 的关系后，做一次手动真实 Suno / MiniMax 联调；联调过程不得把密钥写入仓库、日志或测试。
 2. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
 3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 4. 后续增强幂等：补过期键清理、更多集成测试和真实并发压测。
@@ -281,3 +305,4 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 | 2026-06-05 10:07 CST | 增强重试稳定性 | 新增 `music_retry_count`、2 次音乐重试上限、状态抢占和失败推荐动作；次数耗尽、恢复成功、Flyway、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 10:22 CST | 启用 Provider 调用记录 | 出歌流程已写入 `provider_calls`，Suno 失败与 Mock 成功均可追踪；新增 Suno/MiniMax 真实接入前置说明 |
 | 2026-06-05 22:18 CST | 读取飞书模型接入资料 | 已通过 `lark-cli` 授权读取文档，整理 DreamMaker Suno / MiniMax run/status 接口、字段限制和剩余待确认项 |
+| 2026-06-05 22:52 CST | 实现 DreamMaker Provider 接入骨架 | 新增 `modules:dreammaker`、Suno/MiniMax submit+poll、DreamMaker HTTP client、远程音频导入对象存储和规格/运行文档；测试、bootJar、OpenAPI 解析和本地 API smoke 均通过 |

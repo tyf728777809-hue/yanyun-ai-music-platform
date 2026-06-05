@@ -32,6 +32,8 @@ import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.RemoteObjectImportRequest;
+import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.storage.StoredObject;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
@@ -52,6 +54,7 @@ class MockSongProductionWorkflowTest {
   private final ModerationAdapter moderationAdapter = mock(ModerationAdapter.class);
   private final PublishAdapter publishAdapter = mock(PublishAdapter.class);
   private final ObjectStorageClient objectStorageClient = mock(ObjectStorageClient.class);
+  private final RemoteObjectImporter remoteObjectImporter = mock(RemoteObjectImporter.class);
 
   @Test
   void producesPublishReadyPackageAndCompletesJob() throws Exception {
@@ -141,6 +144,7 @@ class MockSongProductionWorkflowTest {
     assertThat(storagePut.getValue().contentType()).isEqualTo("application/json");
     assertThat(new String(storagePut.getValue().content(), java.nio.charset.StandardCharsets.UTF_8))
         .contains("\"work_id\":\"" + workId + "\"");
+    verifyNoInteractions(remoteObjectImporter);
 
     verify(workRepository)
         .insertQuotaTransaction(workId, "user-1", "lock-1", "LOCK_GENERATE", "LOCKED", "locked");
@@ -207,7 +211,80 @@ class MockSongProductionWorkflowTest {
     verify(workRepository, never()).upsertMediaAsset(any());
     verify(workRepository, never()).upsertPublishPackage(any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
-    verifyNoInteractions(publishAdapter, moderationAdapter, objectStorageClient);
+    verifyNoInteractions(
+        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+  }
+
+  @Test
+  void importsProviderAudioSourceBeforeWritingMediaAsset() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider(MusicProviderType.SUNO);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeededFromSource(
+                MusicProviderType.SUNO,
+                "task-1",
+                "https://provider.example/audio.mp3",
+                "audio/mpeg",
+                123_000,
+                "ok"));
+    when(remoteObjectImporter.importObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "audio/" + workId + ".mp3",
+                "http://localhost/audio/" + workId + ".mp3",
+                "audio/mpeg",
+                3_000_000L));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                "application/json",
+                512L));
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.SUNO).produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    ArgumentCaptor<RemoteObjectImportRequest> importRequest =
+        ArgumentCaptor.forClass(RemoteObjectImportRequest.class);
+    verify(remoteObjectImporter).importObject(importRequest.capture());
+    assertThat(importRequest.getValue().sourceUrl())
+        .isEqualTo("https://provider.example/audio.mp3");
+    assertThat(importRequest.getValue().objectKey()).isEqualTo("audio/" + workId + ".mp3");
+
+    ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
+    verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
+    MediaAssetRow audioAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "AUDIO".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(audioAsset.objectKey()).isEqualTo("audio/" + workId + ".mp3");
+    assertThat(audioAsset.fileSizeBytes()).isEqualTo(3_000_000L);
+    assertThat(audioAsset.checksum()).isEqualTo("provider-audio");
   }
 
   @Test
@@ -374,7 +451,8 @@ class MockSongProductionWorkflowTest {
             GenerationStage.FAILED,
             FailureCode.MUSIC_GENERATION_FAILED,
             "Suno real music generation is not ready");
-    verifyNoInteractions(publishAdapter, moderationAdapter, objectStorageClient);
+    verifyNoInteractions(
+        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
   }
 
   @Test
@@ -447,6 +525,7 @@ class MockSongProductionWorkflowTest {
         new MusicProviderRegistry(List.of(musicProvider)),
         new MusicProviderSelection(providerType),
         objectStorageClient,
+        remoteObjectImporter,
         objectMapper);
   }
 

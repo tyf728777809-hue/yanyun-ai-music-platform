@@ -27,3 +27,13 @@ management:
 yanyun:
   music:
     provider: ${MUSIC_PROVIDER:mock}
+  dreammaker:
+    base-url: ${DREAMMAKER_API_BASE_URL:https://api-all.dreammaker.netease.com}
+    api-key: ${DREAMMAKER_API_KEY:}
+    access-key: ${DREAMMAKER_ACCESS_KEY:}
+    secret-key: ${DREAMMAKER_SECRET_KEY:}
+    request-timeout: ${DREAMMAKER_REQUEST_TIMEOUT:30s}
+    max-poll-attempts: ${DREAMMAKER_MAX_POLL_ATTEMPTS:60}
+    poll-interval: ${DREAMMAKER_POLL_INTERVAL:2s}
+    suno-model: ${SUNO_MODEL:chirp-crow}
+    minimax-model: ${MINIMAX_MODEL:minimax-music-2.6}
