@@ -67,6 +67,13 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 `MUSIC_PROVIDER=suno|minimax` 会走 DreamMaker 接入骨架。真实调用需要本地环境变量
 `DREAMMAKER_API_KEY`；自动化测试不会调用真实供应商。
 
+生成编排默认保持同步 Mock 模式；要验证 Outbox 异步启动边界：
+
+```bash
+MUSIC_WORKFLOW_DISPATCH_MODE=outbox WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+  ./gradlew :apps:music-api:bootRun
+```
+
 健康检查：
 
 ```bash

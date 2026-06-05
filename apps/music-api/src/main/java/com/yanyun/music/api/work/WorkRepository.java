@@ -132,6 +132,18 @@ public class WorkRepository {
       OffsetDateTime startedAt,
       OffsetDateTime completedAt) {
     UUID jobId = UUID.randomUUID();
+    insertGenerationJob(jobId, workId, jobType, status, stage, startedAt, completedAt);
+    return jobId;
+  }
+
+  public void insertGenerationJob(
+      UUID jobId,
+      UUID workId,
+      String jobType,
+      String status,
+      GenerationStage stage,
+      OffsetDateTime startedAt,
+      OffsetDateTime completedAt) {
     jdbcTemplate.update(
         """
         INSERT INTO generation_jobs (
@@ -152,7 +164,6 @@ public class WorkRepository {
         stage == null ? null : stage.name(),
         startedAt,
         completedAt);
-    return jobId;
   }
 
   public void completeGenerationJob(
@@ -338,6 +349,35 @@ public class WorkRepository {
         failureMessage,
         retryable,
         workId);
+  }
+
+  public boolean reserveSongProduction(UUID workId, String userId, int expectedVersion) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET status = ?,
+                generation_stage = ?,
+                package_status = ?,
+                failure_code = NULL,
+                failure_message = NULL,
+                retryable = NULL,
+                failed_at = NULL,
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND user_id = ?
+              AND version = ?
+              AND status = ?
+            """,
+            WorkStatus.GENERATING.name(),
+            GenerationStage.QUOTA_LOCKING.name(),
+            PackageStatus.PACKAGE_NOT_READY.name(),
+            workId,
+            userId,
+            expectedVersion,
+            WorkStatus.LYRICS_READY.name());
+    return updated == 1;
   }
 
   public boolean reserveMusicRetry(

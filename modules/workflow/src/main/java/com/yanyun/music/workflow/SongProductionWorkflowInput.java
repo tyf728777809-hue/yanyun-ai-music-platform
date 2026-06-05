@@ -10,4 +10,31 @@ public record SongProductionWorkflowInput(
     String musicPrompt,
     String vocalPreference,
     String musicProvider,
-    boolean musicRetryAllowedAfterFailure) {}
+    boolean musicRetryAllowedAfterFailure,
+    String jobId) {
+
+  public SongProductionWorkflowInput(
+      String workId,
+      String userId,
+      String lyricsDraftId,
+      String songTitle,
+      String songSummary,
+      String lyricsText,
+      String musicPrompt,
+      String vocalPreference,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure) {
+    this(
+        workId,
+        userId,
+        lyricsDraftId,
+        songTitle,
+        songSummary,
+        lyricsText,
+        musicPrompt,
+        vocalPreference,
+        musicProvider,
+        musicRetryAllowedAfterFailure,
+        null);
+  }
+}

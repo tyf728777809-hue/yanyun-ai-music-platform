@@ -36,6 +36,33 @@ docker compose -f deploy/docker-compose.yml ps
 MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 ```
 
+Workflow dispatch 默认走同步本地模式，方便保持当前 Mock 主链路 smoke：
+
+```bash
+MUSIC_WORKFLOW_DISPATCH_MODE=sync WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+  ./gradlew :apps:music-api:bootRun
+```
+
+如果要验证真实模型链路前的可靠启动边界，可切到 Outbox 模式：
+
+```bash
+MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+WORKFLOW_OUTBOX_POLL_INTERVAL=1s \
+WORKFLOW_OUTBOX_RETRY_DELAY=1s \
+./gradlew :apps:music-api:bootRun
+```
+
+Outbox 模式下，`confirm` / `music/retry` 会先返回 `GENERATING / QUOTA_LOCKING`，由本地 dispatcher
+异步执行 `SongProductionWorkflow`，成功后作品会推进到 `GENERATED / PACKAGE_READY`。
+
+Outbox 状态可用 PostgreSQL 抽查：
+
+```bash
+docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
+  "select status, event_type, attempt_count, processed_at is not null from workflow_outbox where aggregate_id = '{work_id}' order by created_at"
+```
+
 也可以显式选择 `suno` 或 `minimax` 验证 DreamMaker Provider 边界。默认不配置
 `DREAMMAKER_API_KEY` 时，确认出歌会返回 HTTP 409，并将作品持久化为可重试的
 `MUSIC_GENERATION_FAILED`，不会发起真实供应商请求。
@@ -127,4 +154,4 @@ npm test
 
 ## Current Boundary
 
-当前自动化测试只验证工程、Mock 业务链路、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。
+当前自动化测试只验证工程、Mock 业务链路、Outbox/Workflow 启动边界、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。

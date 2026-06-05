@@ -79,14 +79,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   @Override
   public SongProductionWorkflowResult produce(SongProductionWorkflowInput input) {
     UUID workId = UUID.fromString(input.workId());
-    UUID jobId =
-        workRepository.insertGenerationJob(
-            workId,
-            "SONG_PRODUCTION",
-            "RUNNING",
-            GenerationStage.QUOTA_LOCKING,
-            OffsetDateTime.now(),
-            null);
+    UUID jobId = resolveJobId(workId, input);
 
     QuotaLock lock = quotaAdapter.lockGenerateQuota(input.userId(), input.workId());
     if (!lock.locked()) {
@@ -269,6 +262,19 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         PackageStatus.PACKAGE_NOT_READY.name(),
         failureCode.name(),
         failureMessage);
+  }
+
+  private UUID resolveJobId(UUID workId, SongProductionWorkflowInput input) {
+    if (input.jobId() != null && !input.jobId().isBlank()) {
+      return UUID.fromString(input.jobId());
+    }
+    return workRepository.insertGenerationJob(
+        workId,
+        "SONG_PRODUCTION",
+        "RUNNING",
+        GenerationStage.QUOTA_LOCKING,
+        OffsetDateTime.now(),
+        null);
   }
 
   private void createMediaAssets(UUID workId, MusicGenerationResult musicResult) {

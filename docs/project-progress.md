@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-05 22:52 CST
+更新时间：2026-06-05 23:55 CST
 
 ## 当前阶段
 
@@ -19,6 +19,8 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 音乐 Provider 选择已从硬编码 `MOCK` 改为配置驱动：`MUSIC_PROVIDER=mock|suno|minimax` 会映射到统一 `MusicProviderSelection`。当前默认 `mock` 可完整成功；`suno` / `minimax` 已接入 DreamMaker submit + poll 骨架，但缺少 `DREAMMAKER_API_KEY` 时会在发起外部请求前进入 `MUSIC_GENERATION_FAILED` 可重试失败，并释放已锁权益。
 
 DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreammaker`，`SunoMusicProvider` 和 `MiniMaxMusicProvider` 已可按 DreamMaker run/status 协议构造请求、提交任务、轮询状态、映射失败码，并在成功时返回供应商音频源 URL。Workflow 已补远程音频导入边界，会先把供应商音频 URL 导入本地对象存储，再写入 `AUDIO` 媒体资产。默认仍走 `mock`，自动化测试不调用真实供应商；真实联调需要安全配置 `DREAMMAKER_API_KEY`。
+
+第 3 批可靠编排基础已启动并完成 Outbox v0.1：新增 `workflow_outbox` 表、`MUSIC_WORKFLOW_DISPATCH_MODE=sync|outbox`、本地 outbox dispatcher 和确认出歌/音乐重试的异步启动边界。默认 `sync` 保持现有 Mock 主链路兼容；显式 `outbox` 模式会在 API 事务内抢占作品状态、写入 generation job 和 outbox event，随后由 dispatcher 异步推进到 `GENERATED / PACKAGE_READY`。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -232,6 +234,13 @@ DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreamm
 - `DreamMakerHttpClient` 已接入 `DREAMMAKER_API_BASE_URL`、`DREAMMAKER_API_KEY`、轮询次数、轮询间隔、请求超时和模型配置；`DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 仅预留，未擅自用于请求头或签名。
 - 新增 `RemoteObjectImporter` 和 `HttpRemoteObjectImporter`，支持把 Provider 返回的 HTTP(S) 音频 URL 下载并写入 `ObjectStorageClient`，拒绝非 HTTP(S) URL 并限制最大下载大小。
 - `MockSongProductionWorkflow` 已支持 Provider 音频源 URL 导入；导入失败按 `PACKAGE_BUILD_FAILED` 收口并释放权益，避免作品半生成。
+- 新增 `docs/specs/reliable-song-production-orchestration-v0.1.md`，定义 Outbox v0.1 的功能要求、验收口径、边界和非目标。
+- 新增 Flyway migration `V202606052300__add_workflow_outbox.sql`，落库 `workflow_outbox`，支持事件状态、尝试次数、锁、失败信息和 processed 状态。
+- 新增 `WorkflowDispatchProperties`，支持 `MUSIC_WORKFLOW_DISPATCH_MODE=sync|outbox` 和 outbox dispatcher 配置。
+- `WorkService.confirmWork` 在默认 sync 模式保持请求内执行；在 outbox 模式会先将作品置为 `GENERATING / QUOTA_LOCKING`，插入 `SONG_PRODUCTION` job 和 outbox event 后立即返回 202。
+- `WorkService.retryMusic` 在 outbox 模式下沿用 `works.version` 和重试次数抢占逻辑，随后写入 outbox event 异步执行。
+- `MockSongProductionWorkflow` 已支持复用既有 `generation_jobs.id`，dispatcher 执行时不会重复创建 job。
+- 新增 `WorkflowOutboxDispatcher`，可 claim due outbox events，执行 `SongProductionWorkflow`，并将事件标记为 `SUCCEEDED` / `FAILED` / `SKIPPED`；已处理终态作品不重复执行的问题。
 
 ## 第 2 批 DreamMaker Provider 接入骨架验证结果
 
@@ -248,12 +257,26 @@ DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreamm
 - 本地 API JAR smoke 成功：请求级 `music_provider=suno` 且未配置 `DREAMMAKER_API_KEY` 时，确认出歌返回 HTTP 409，作品持久化为 `FAILED / MUSIC_GENERATION_FAILED / retryable=true`，`available_actions` 包含 `RETRY_MUSIC`。
 - smoke 后已停止 `music-api`，`8080` 未残留监听进程。
 
+## 第 3 批 Outbox 可靠编排基础验证结果
+
+- `./gradlew :apps:music-api:test` 成功。
+- `./gradlew spotlessApply` 成功。
+- `./gradlew spotlessCheck test :apps:music-api:bootJar` 成功。
+- `ruby -e "require 'yaml'; YAML.load_file('docs/api/openapi-v0.1.yaml')"` 成功，OpenAPI YAML 可解析。
+- `WorkServiceWorkflowDispatchTest` 成功：默认 sync 模式仍调用 workflow inline；outbox 模式会写 generation job、enqueue outbox，并返回 `GENERATING / QUOTA_LOCKING`。
+- `WorkflowOutboxDispatcherTest` 成功：pending event 可执行 workflow 并标记成功；workflow 抛异常会标记 `WORKFLOW_DISPATCH_FAILED` 并安排重试；已终态 `GENERATED` 的作品不会重复执行 workflow。
+- Flyway 启动验证成功：本地 PostgreSQL 从版本 `202606050520` 迁移到 `202606052300`，`workflow_outbox` 已落库。
+- 默认 sync HTTP smoke 成功：确认出歌仍直接返回 `GENERATED / PACKAGE_READY`，发布包 URL 存在。
+- outbox HTTP smoke 成功：确认出歌先返回 `GENERATING / QUOTA_LOCKING`，随后 dispatcher 自动推进到 `GENERATED / PACKAGE_READY`。
+- PostgreSQL 抽查成功：outbox smoke 作品对应 `workflow_outbox` 为 `SUCCEEDED / SONG_PRODUCTION_REQUESTED / attempt_count=0 / processed_at=true`；`generation_jobs` 为 `SUCCEEDED / PACKAGE_READY / completed_at=true`。
+- smoke 后已停止 `music-api`，`8080` 未残留监听进程。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 的 DreamMaker run/status 接入骨架已实现；真实 Bearer key 交付方式、AccessKey/SecretKey 如何换取 Bearer 或签名、非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
-- 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
+- Outbox v0.1 已落地并可本地验证；完整 Temporal Java Workflow / Activity 实现仍未接入，后续进入真实模型链路时还需把 dispatcher 执行替换或升级为 Temporal Worker 编排。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
 - 当前音乐重试已有次数上限和状态抢占，DreamMaker 失败码也已有保守映射；真实联调后仍需根据具体非零 code 和 failed payload 精细化 retryable / non-retryable 规则。
 - 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
@@ -264,7 +287,7 @@ DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreamm
 2. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
 3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 4. 后续增强幂等：补过期键清理、更多集成测试和真实并发压测。
-5. 进入真实模型链路前接入 Temporal `SongProductionWorkflow` 与 Outbox 或等价补偿机制。
+5. 在 Outbox v0.1 基础上设计 Temporal `SongProductionWorkflow` / Activity 详细方案，把本地 dispatcher 升级为真实 worker 编排。
 
 ## 工作日志
 
@@ -306,3 +329,4 @@ DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreamm
 | 2026-06-05 10:22 CST | 启用 Provider 调用记录 | 出歌流程已写入 `provider_calls`，Suno 失败与 Mock 成功均可追踪；新增 Suno/MiniMax 真实接入前置说明 |
 | 2026-06-05 22:18 CST | 读取飞书模型接入资料 | 已通过 `lark-cli` 授权读取文档，整理 DreamMaker Suno / MiniMax run/status 接口、字段限制和剩余待确认项 |
 | 2026-06-05 22:52 CST | 实现 DreamMaker Provider 接入骨架 | 新增 `modules:dreammaker`、Suno/MiniMax submit+poll、DreamMaker HTTP client、远程音频导入对象存储和规格/运行文档；测试、bootJar、OpenAPI 解析和本地 API smoke 均通过 |
+| 2026-06-05 23:55 CST | 实现 Outbox 可靠编排基础 | 新增 `workflow_outbox`、可切换 sync/outbox 模式、本地 dispatcher、确认出歌/音乐重试异步启动边界和规格/运行文档；测试、bootJar、Flyway、sync smoke、outbox smoke 和 DB 抽查均通过 |

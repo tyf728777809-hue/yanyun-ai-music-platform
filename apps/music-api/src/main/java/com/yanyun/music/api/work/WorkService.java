@@ -25,6 +25,8 @@ import com.yanyun.music.api.work.WorkRepository.LyricsDraftRow;
 import com.yanyun.music.api.work.WorkRepository.MediaAssetRow;
 import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.api.work.WorkRepository.WorkRow;
+import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
+import com.yanyun.music.api.workflow.WorkflowOutboxService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
@@ -71,6 +73,8 @@ public class WorkService {
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
   private final SongProductionWorkflow songProductionWorkflow;
+  private final WorkflowDispatchProperties workflowDispatchProperties;
+  private final WorkflowOutboxService workflowOutboxService;
   private final ObjectMapper objectMapper;
 
   public WorkService(
@@ -79,12 +83,16 @@ public class WorkService {
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
       SongProductionWorkflow songProductionWorkflow,
+      WorkflowDispatchProperties workflowDispatchProperties,
+      WorkflowOutboxService workflowOutboxService,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
     this.songProductionWorkflow = songProductionWorkflow;
+    this.workflowDispatchProperties = workflowDispatchProperties;
+    this.workflowOutboxService = workflowOutboxService;
     this.objectMapper = objectMapper;
   }
 
@@ -245,6 +253,11 @@ public class WorkService {
     }
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
 
+    if (workflowDispatchProperties.outboxMode()) {
+      return enqueueSongProduction(
+          work, draft, musicProvider(request == null ? null : request.musicProvider()), true);
+    }
+
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
             workflowInput(
@@ -276,6 +289,10 @@ public class WorkService {
           HttpStatus.CONFLICT, "Music retry is already running or retry limit reached");
     }
     boolean retryAllowedAfterFailure = work.musicRetryCount() + 1 < MUSIC_RETRY_LIMIT;
+    if (workflowDispatchProperties.outboxMode()) {
+      return enqueueReservedSongProduction(
+          workId, userId, draft, selectedMusicProvider, retryAllowedAfterFailure);
+    }
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
             workflowInput(workId, userId, draft, selectedMusicProvider, retryAllowedAfterFailure));
@@ -285,6 +302,41 @@ public class WorkService {
 
     WorkRow updated = getRequiredWork(workId, userId);
     return accepted(updated, UUID.fromString(workflowResult.jobId()));
+  }
+
+  private JobAcceptedResponse enqueueSongProduction(
+      WorkRow work,
+      LyricsDraftRow draft,
+      String selectedMusicProvider,
+      boolean musicRetryAllowedAfterFailure) {
+    if (!workRepository.reserveSongProduction(work.id(), work.userId(), work.version())) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Song production is already running or work changed");
+    }
+    return enqueueReservedSongProduction(
+        work.id(), work.userId(), draft, selectedMusicProvider, musicRetryAllowedAfterFailure);
+  }
+
+  private JobAcceptedResponse enqueueReservedSongProduction(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String selectedMusicProvider,
+      boolean musicRetryAllowedAfterFailure) {
+    UUID jobId = UUID.randomUUID();
+    workRepository.insertGenerationJob(
+        jobId,
+        workId,
+        "SONG_PRODUCTION",
+        "RUNNING",
+        GenerationStage.QUOTA_LOCKING,
+        OffsetDateTime.now(),
+        null);
+    workflowOutboxService.enqueueSongProduction(
+        workId,
+        workflowInput(
+            workId, userId, draft, selectedMusicProvider, musicRetryAllowedAfterFailure, jobId));
+    return accepted(getRequiredWork(workId, userId), jobId);
   }
 
   @Transactional
@@ -387,6 +439,16 @@ public class WorkService {
       LyricsDraftRow draft,
       String musicProvider,
       boolean musicRetryAllowedAfterFailure) {
+    return workflowInput(workId, userId, draft, musicProvider, musicRetryAllowedAfterFailure, null);
+  }
+
+  private SongProductionWorkflowInput workflowInput(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      UUID jobId) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         userId,
@@ -397,7 +459,8 @@ public class WorkService {
         draft.musicPrompt(),
         "AUTO",
         musicProvider,
-        musicRetryAllowedAfterFailure);
+        musicRetryAllowedAfterFailure,
+        jobId == null ? null : jobId.toString());
   }
 
   private String musicProvider(String requestedProvider) {

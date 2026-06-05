@@ -121,7 +121,7 @@ version INTEGER NOT NULL DEFAULT 0
 
 现状：
 
-- 技术方案提到“启动 Temporal workflow 与数据库事务之间使用 Outbox 或状态补偿”，但未定具体方案。
+- 已新增 `workflow_outbox` 表和本地 outbox dispatcher，可在 `MUSIC_WORKFLOW_DISPATCH_MODE=outbox` 下验证确认出歌/音乐重试的可靠启动边界。
 
 建议补充：
 
@@ -134,6 +134,7 @@ version INTEGER NOT NULL DEFAULT 0
 
 - 第 1-3 批可用状态补偿，降低初始复杂度。
 - 在 SongProductionWorkflow 进入真实模型调用前，引入可靠 Outbox 或等价补偿机制。
+- 第 3 批已落地 Outbox v0.1：默认 sync 保持本地 Mock 兼容；显式 outbox 模式会同事务写入 generation job 和 outbox event，由本地 dispatcher 异步推进作品状态。
 
 ### 2.7 Provider 模式与真实 API 调用边界（已决策）
 
