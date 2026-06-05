@@ -5,7 +5,7 @@
 - Current stage: local mock stage.
 - Real Suno calls: not implemented.
 - Real MiniMax calls: not implemented.
-- Feishu reference doc: provided by product owner, but current agent environment cannot read it because the page requires Feishu login.
+- Feishu reference doc: fetched through `lark-cli docs +fetch` after user authorization.
 - Real credentials: must not be committed, logged, or written into docs.
 
 ## Implemented Boundary
@@ -34,9 +34,80 @@ Each provider call record captures:
 - `error_code`.
 - `error_message`.
 
+## DreamMaker API Shape
+
+Both Suno and MiniMax use DreamMaker task-style APIs:
+
+- Submit task: `POST https://api-all.dreammaker.netease.com/api/v1/apps/{app}/run?sub_app_name={sub_app}`.
+- Poll task: `GET https://api-all.dreammaker.netease.com/api/v1/apps/{app}/status?sub_app_name={sub_app}&task_id={task_id}`.
+- Auth header: `Authorization: Bearer <key>`.
+- Body wrapper: submit request body is `{ "params": { ... } }`.
+- Submit success: `code = 0`, `data.task_id` is returned.
+- Status success: `code = 0`, `data.status` is one of `success`, `failed`, `running`, `queued`.
+- Output files: `data.output.output[]`, with provider-relative `url` values that must be downloaded or copied into our object storage before package build.
+
+## Suno Integration Details
+
+- App path: `suno`.
+- Submit sub app: `music-gen`.
+- Submit endpoint: `/api/v1/apps/suno/run?sub_app_name=music-gen`.
+- Status endpoint: `/api/v1/apps/suno/status?sub_app_name=music-gen&task_id={task_id}`.
+- Default model in provider doc: `chirp-crow`.
+- Supported models include `chirp-v3-5`, `chirp-v4`, `chirp-auk-turbo`, `chirp-auk`, `chirp-bluejay`, `chirp-crow`, `chirp-fenix`.
+
+Suno submit fields:
+
+| Field | Requirement | Notes |
+|---|---|---|
+| `gpt_description_prompt` | Optional | Inspiration-mode description; max 500 chars; mutually exclusive with `prompt`. |
+| `prompt` | Optional | Custom lyrics; max 5000 chars; supports `[Verse]`, `[Chorus]`, `[Bridge]`, etc. |
+| `tags` | Optional | Style tags; max 1000 chars. |
+| `negative_tags` | Optional | Styles to avoid. |
+| `mv` | Optional | Model version. |
+| `title` | Optional | Song title; max 80 chars. |
+| `make_instrumental` | Optional | Instrumental mode. |
+| `continue_clip_id` | Optional | Source Suno ID for continuation. |
+| `continue_at` | Optional | Continuation start seconds. |
+| `metadata.vocal_gender` | Optional | `f` for female, `m` for male. |
+| `metadata.control_sliders.style_weight` | Optional | Range 0 to 1. |
+| `metadata.control_sliders.weirdness_constraint` | Optional | Range 0 to 1. |
+
+Suno status output:
+
+- Usually returns two audio outputs.
+- Audio item fields include `name`, `url`, `cover`, `file_type`.
+- `file_type` is `audio`.
+
+## MiniMax Integration Details
+
+- App path: `music-minimax`.
+- Submit sub app: `text-to-music`.
+- Submit endpoint: `/api/v1/apps/music-minimax/run?sub_app_name=text-to-music`.
+- Status endpoint: `/api/v1/apps/music-minimax/status?sub_app_name=text-to-music&task_id={task_id}`.
+- Current model: `minimax-music-2.6`.
+
+MiniMax submit fields:
+
+| Field | Requirement | Notes |
+|---|---|---|
+| `model` | Required | Current value: `minimax-music-2.6`. |
+| `prompt` | Required | Style, mood, scene description; recommended <= 300 chars; max 2000 chars. |
+| `lyrics` | Optional | Required for non-instrumental generation; length [1, 3500]; supports section tags. |
+| `is_instrumental` | Optional | If true, `lyrics` may be empty. |
+| `lyrics_optimizer` | Optional | Default true; can generate/optimize lyrics from prompt. |
+| `audio_format` | Optional | `mp3` or `wav`; default `mp3`. |
+| `sample_rate` | Optional | `16000`, `24000`, `32000`, `44100`; default `44100`. |
+| `bitrate` | Optional | `32000`, `64000`, `128000`, `256000`; default `256000`. |
+
+MiniMax status output:
+
+- Audio item fields include `duration`, `file_type`, `name`, `url`.
+- `duration` is seconds as a string.
+- `file_type` is `audio`.
+
 ## Internal Failure Mapping
 
-Until the real provider documents are readable, keep mapping conservative:
+Keep mapping conservative until real error-code samples are available:
 
 | Provider condition | Internal failure code | Retry |
 |---|---|---|
@@ -44,41 +115,42 @@ Until the real provider documents are readable, keep mapping conservative:
 | Provider rate limit or quota throttle | `RATE_LIMITED` | Yes, while retry count remains |
 | Provider accepts task but generated audio fails quality gate | `MUSIC_QUALITY_FAILED` | Yes, while retry count remains |
 | Provider submission fails for unknown transient reason | `MUSIC_GENERATION_FAILED` | Yes, while retry count remains |
-| Auth, signature, project config, or unsupported model error | `MUSIC_GENERATION_FAILED` initially; refine after provider docs | Depends on provider error |
+| Submit response `code != 0` | `MUSIC_GENERATION_FAILED` initially; refine after concrete codes | Depends on provider error |
+| Poll response `data.status = failed` | `MUSIC_GENERATION_FAILED` or `MUSIC_QUALITY_FAILED` based on provider failure message | Yes, while retry count remains |
+| Auth, signature, project config, or unsupported model error | `MUSIC_GENERATION_FAILED` initially; refine after concrete codes | Usually no, but keep conservative until samples exist |
 
 ## Required Real Provider Details
 
-Before implementing real calls, confirm these for both Suno and MiniMax:
+Before implementing real calls, confirm these remaining details:
 
-1. Authentication scheme.
-2. Submit endpoint and request schema.
-3. Whether generation is synchronous, polling-based, or callback-based.
-4. Callback signature verification, if callbacks exist.
-5. Provider task id field.
-6. Audio URL or object retrieval mechanism.
-7. Lyrics input format limits.
-8. Prompt/style/vocal fields and supported enum values.
-9. Duration limits and pricing units.
-10. Rate limit, retry, and backoff policy.
-11. Provider failure codes and their retryability.
-12. Content moderation behavior and blocked-content error codes.
-13. Generated audio file format and conversion requirements.
-14. Whether provider audio URLs expire and how to download into object storage.
+1. Real API key delivery path and local secret naming.
+2. Whether `Bearer <key>` differs by Suno and MiniMax or uses one shared DreamMaker key.
+3. Concrete non-zero `code` values and retryability.
+4. `failed` task response examples and failure-message schema.
+5. Rate limit, timeout, polling interval, and maximum polling duration.
+6. Whether status API `url` values are relative to the same DreamMaker domain.
+7. Whether audio URLs expire.
+8. Required file download API, if direct URL download is not allowed.
+9. Pricing or quota unit per task.
+10. Content moderation and blocked-content error codes.
 
 ## Implementation Plan When Docs Are Available
 
-1. Add provider-specific config properties, with no real defaults:
-   - `SUNO_API_BASE_URL`.
-   - `SUNO_API_KEY`.
-   - `MINIMAX_API_BASE_URL`.
-   - `MINIMAX_API_KEY`.
-   - timeout and polling settings.
-2. Implement request builders in `modules/suno` and `modules/minimax`.
-3. Add provider failure-code mapping tests.
-4. Add HTTP client tests with mocked provider responses.
-5. Store provider task ids in `provider_calls.provider_trace_id`.
-6. Download generated audio to object storage before returning success.
-7. Keep automated tests on mock provider only unless explicit test credentials are provided.
+1. Add DreamMaker config properties, with no real defaults:
+   - `DREAMMAKER_API_BASE_URL`.
+   - `DREAMMAKER_API_KEY`.
+   - `SUNO_MODEL`.
+   - `MINIMAX_MODEL`.
+   - submit timeout, poll interval, poll timeout.
+2. Implement request builders:
+   - Suno custom lyrics mode maps `lyricsText` to `prompt`, `musicPrompt` to `tags`, title to `title`, vocal preference to `metadata.vocal_gender` when possible.
+   - MiniMax maps `musicPrompt` to `prompt`, `lyricsText` to `lyrics`, default `audio_format=mp3`, `sample_rate=44100`, `bitrate=256000`.
+3. Implement DreamMaker submit + polling client.
+4. Add provider failure-code mapping tests.
+5. Add HTTP client tests with mocked DreamMaker responses.
+6. Store `data.task_id` in `provider_calls.provider_trace_id`.
+7. Download or import generated audio into object storage before returning success.
+8. Keep automated tests on mock provider only unless explicit test credentials are provided.
 
 ## Non-Goals
 

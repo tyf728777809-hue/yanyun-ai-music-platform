@@ -63,7 +63,7 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - 实现 `music-api` 主路径接口：`/api/v1/me`、灵感成歌、填词成歌、作品列表/详情、润色/续写、确认出歌、封面重生、视频重渲、发布包获取/刷新/标记交接。
 - 实现 Mock 作品生成闭环：创建作品后得到歌词草案；确认出歌后生成 Mock 媒体资源、发布包 JSON、下载 URL，并将状态推进到 `GENERATED` / `PACKAGE_READY`；标记交接后进入 `PACKAGE_FETCHED`。
 - 新增第 2 批 Gemini 前端任务包，明确移动端优先 + PC Web 的页面、接口、状态、错误和验收范围。
-- 根据用户补充，记录音乐生成后续需同时接入 Suno 与 MiniMax，并预留可配置开放策略；飞书资料链接当前需要登录权限，待可读后补真实协议细节。
+- 根据用户补充，记录音乐生成后续需同时接入 Suno 与 MiniMax，并预留可配置开放策略；飞书资料已通过 `lark-cli` 授权读取，真实 run/status 接口要点已整理到集成说明。
 - 实现 `Idempotency-Key` 基础语义，覆盖当前所有 POST 主路径，成功响应写入 `idempotency_keys`，重复提交可重放响应，参数冲突返回 `IDEMPOTENCY_CONFLICT`。
 - 新增 `modules:music-provider`，定义音乐生成统一 Provider 合约、请求、结果、状态、Provider 类型和注册选择器。
 - 新增 `modules:suno`，预置 `SunoMusicProvider` 边界；当前真实调用显式未实现，自动化测试验证不会调用真实 Suno API。
@@ -221,13 +221,13 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar` 成功。
 - HTTP smoke 成功：`MUSIC_PROVIDER=suno` 初始失败后，切换 `mock` 重试恢复成功。
 - PostgreSQL 抽查成功：同一作品写入两条 provider call，分别为 `SUNO|MUSIC_GENERATION|FAILED|PROVIDER_EXCEPTION` 和 `MOCK|MUSIC_GENERATION|SUCCEEDED`，`request_hash` 与 `prompt_hash` 均为 64 位 SHA-256 hex。
-- 新增 `docs/integrations/suno-minimax-preintegration-notes.md`，记录 Suno / MiniMax 真实接入前需要确认的鉴权、请求、回调、失败码、限流、下载和对象存储要求。
-- 飞书参考资料当前需要登录，Agent 环境无法读取具体内容；真实 Provider 请求/回调/失败码细节仍待用户或公司开发提供可读资料后补齐。
+- 新增 `docs/integrations/suno-minimax-preintegration-notes.md`，记录 Suno / MiniMax 的 DreamMaker run/status 接口、鉴权方式、请求字段、状态字段、输出文件字段和待确认项。
+- 飞书参考资料已通过 `lark-cli docs +fetch` 成功读取；文档中的 `Authorization: Bearer keys` 是占位写法，不是真实密钥，真实密钥交付方式仍待确认。
 
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
-- Suno 和 MiniMax 音乐模型真实接入资料仍待补齐：工程 Provider 边界已预置，但飞书链接需要登录权限，尚无法读取具体鉴权、请求、回调、限流、计费和失败码。
+- Suno 和 MiniMax 的 DreamMaker run/status API 资料已读取；真实 API key、非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 下载方式和计费口径仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
@@ -236,7 +236,7 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 
 ## 下一步建议
 
-1. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
+1. 基于已读取的 DreamMaker 文档实现 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实 submit + poll + 音频下载骨架，但继续禁止自动化测试调用真实外部 API。
 2. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
 3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
 4. 后续增强幂等：补过期键清理、更多集成测试和真实并发压测。
@@ -280,3 +280,4 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 | 2026-06-05 05:12 CST | 补失败恢复与重试闭环 | 新增音乐重试接口与请求级 Provider 覆盖；`suno` 失败后可用 `mock` 重试恢复到 `PACKAGE_READY`，测试、构建、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 10:07 CST | 增强重试稳定性 | 新增 `music_retry_count`、2 次音乐重试上限、状态抢占和失败推荐动作；次数耗尽、恢复成功、Flyway、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 10:22 CST | 启用 Provider 调用记录 | 出歌流程已写入 `provider_calls`，Suno 失败与 Mock 成功均可追踪；新增 Suno/MiniMax 真实接入前置说明 |
+| 2026-06-05 22:18 CST | 读取飞书模型接入资料 | 已通过 `lark-cli` 授权读取文档，整理 DreamMaker Suno / MiniMax run/status 接口、字段限制和剩余待确认项 |
