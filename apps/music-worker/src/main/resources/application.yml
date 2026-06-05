@@ -1,6 +1,12 @@
 spring:
   application:
     name: music-worker
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:yanyun_music}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+  flyway:
+    enabled: true
 
 server:
   port: ${MUSIC_WORKER_PORT:8081}
@@ -16,6 +22,8 @@ management:
         enabled: true
 
 yanyun:
+  music:
+    provider: ${MUSIC_PROVIDER:mock}
   temporal:
     target: ${TEMPORAL_TARGET:localhost:7233}
     namespace: ${TEMPORAL_NAMESPACE:default}

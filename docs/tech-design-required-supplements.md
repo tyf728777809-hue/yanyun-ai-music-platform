@@ -135,6 +135,8 @@ version INTEGER NOT NULL DEFAULT 0
 - 第 1-3 批可用状态补偿，降低初始复杂度。
 - 在 SongProductionWorkflow 进入真实模型调用前，引入可靠 Outbox 或等价补偿机制。
 - 第 3 批已落地 Outbox v0.1：默认 sync 保持本地 Mock 兼容；显式 outbox 模式会同事务写入 generation job 和 outbox event，由本地 dispatcher 异步推进作品状态。
+- 第 4 批已落地 Temporal v0.1：`WORKFLOW_OUTBOX_DISPATCH_TARGET=local|temporal` 可切换本地委托或 Temporal 启动；Temporal 模式下 API dispatcher 只负责按 `work_id + job_id` deterministic workflow id 启动 workflow，独立 `music-worker` 注册 workflow/activity 并复用当前生产委托推进作品。
+- Temporal activity 自动重试暂不放开，v0.1 固定 `maximumAttempts=1`，避免在权益、Provider 调用、媒体资产和发布包写入幂等性未审计前造成重复副作用。
 
 ### 2.7 Provider 模式与真实 API 调用边界（已决策）
 
@@ -237,6 +239,6 @@ version INTEGER NOT NULL DEFAULT 0
 
 ## 5. 推荐下一步
 
-1. 输出 OpenAPI v0.1。
-2. 按 `docs/codex-batch-01-repository-initialization.md` 执行第 1 批工程初始化。
-3. 第 1 批完成后更新 `docs/project-progress.md` 并提醒是否 commit。
+1. 第 5 批进入 DreamMaker Suno/MiniMax 受控真实联调准备：先补安全配置、联调 runbook、Provider 请求/响应记录与人工开关。
+2. 第 6 批补 DeepSeek/知识库写词润色链路。
+3. 第 7-8 批补封面、Remotion/FFmpeg MP4 成片和 MinIO/S3 发布包强化。

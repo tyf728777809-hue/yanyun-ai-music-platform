@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.api.work.WorkDtos.QuotaHint;
-import com.yanyun.music.api.work.WorkRepository;
-import com.yanyun.music.api.work.WorkRepository.IdempotencyRecord;
+import com.yanyun.music.workpersistence.WorkRepository;
+import com.yanyun.music.workpersistence.WorkRepository.IdempotencyRecord;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Optional;

@@ -41,8 +41,13 @@ yanyun:
     dispatch-mode: ${MUSIC_WORKFLOW_DISPATCH_MODE:sync}
     outbox:
       dispatcher-enabled: ${WORKFLOW_OUTBOX_DISPATCHER_ENABLED:false}
+      dispatch-target: ${WORKFLOW_OUTBOX_DISPATCH_TARGET:local}
       poll-interval: ${WORKFLOW_OUTBOX_POLL_INTERVAL:5s}
       batch-size: ${WORKFLOW_OUTBOX_BATCH_SIZE:5}
       max-attempts: ${WORKFLOW_OUTBOX_MAX_ATTEMPTS:3}
       lock-timeout: ${WORKFLOW_OUTBOX_LOCK_TIMEOUT:60s}
       retry-delay: ${WORKFLOW_OUTBOX_RETRY_DELAY:10s}
+  temporal:
+    target: ${TEMPORAL_TARGET:localhost:7233}
+    namespace: ${TEMPORAL_NAMESPACE:default}
+    task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}

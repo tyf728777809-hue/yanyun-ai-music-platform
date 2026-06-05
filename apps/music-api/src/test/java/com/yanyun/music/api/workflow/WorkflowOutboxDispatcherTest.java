@@ -1,5 +1,8 @@
 package com.yanyun.music.api.workflow;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -10,8 +13,6 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.api.work.WorkRepository;
-import com.yanyun.music.api.work.WorkRepository.WorkRow;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
@@ -19,16 +20,21 @@ import com.yanyun.music.workdomain.WorkStatus;
 import com.yanyun.music.workflow.SongProductionWorkflow;
 import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
+import com.yanyun.music.workflow.TemporalSongProductionWorkflowIds;
+import com.yanyun.music.workpersistence.WorkRepository;
+import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 class WorkflowOutboxDispatcherTest {
 
   private final WorkflowOutboxRepository outboxRepository = mock(WorkflowOutboxRepository.class);
-  private final SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
+  private final SongProductionWorkflowStarter workflowStarter =
+      mock(SongProductionWorkflowStarter.class);
   private final WorkRepository workRepository = mock(WorkRepository.class);
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final WorkflowDispatchProperties properties = outboxProperties();
@@ -42,14 +48,11 @@ class WorkflowOutboxDispatcherTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING)));
-    when(songProductionWorkflow.produce(any()))
-        .thenReturn(
-            SongProductionWorkflowResult.packageReady(
-                UUID.randomUUID().toString(), "PACKAGE_READY"));
+    when(workflowStarter.start(any())).thenReturn(UUID.randomUUID().toString());
 
     dispatcher().drainOnce();
 
-    verify(songProductionWorkflow).produce(any());
+    verify(workflowStarter).start(any());
     verify(outboxRepository).markSucceeded(eventId);
   }
 
@@ -62,7 +65,7 @@ class WorkflowOutboxDispatcherTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING)));
-    when(songProductionWorkflow.produce(any())).thenThrow(new IllegalStateException("boom"));
+    when(workflowStarter.start(any())).thenThrow(new IllegalStateException("boom"));
 
     dispatcher().drainOnce();
 
@@ -81,13 +84,103 @@ class WorkflowOutboxDispatcherTest {
 
     dispatcher().drainOnce();
 
-    verify(songProductionWorkflow, never()).produce(any());
+    verify(workflowStarter, never()).start(any());
     verify(outboxRepository).markSucceeded(eventId);
+  }
+
+  @Test
+  void localStarterDelegatesToSpringWorkflow() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    SongProductionWorkflowInput input = input(workId, jobId);
+    SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
+    when(songProductionWorkflow.produce(input))
+        .thenReturn(SongProductionWorkflowResult.packageReady(jobId.toString(), "PACKAGE_READY"));
+
+    LocalSongProductionWorkflowStarter starter =
+        new LocalSongProductionWorkflowStarter(songProductionWorkflow);
+
+    assertEquals(jobId.toString(), starter.start(input));
+    verify(songProductionWorkflow).produce(input);
+  }
+
+  @Test
+  void workflowOutboxDispatchTargetDefaultsToLocal() {
+    WorkflowDispatchProperties properties = new WorkflowDispatchProperties();
+
+    assertEquals(
+        WorkflowDispatchProperties.DispatchTarget.LOCAL,
+        properties.getOutbox().getDispatchTarget());
+
+    properties.getOutbox().setDispatchTarget(null);
+
+    assertEquals(
+        WorkflowDispatchProperties.DispatchTarget.LOCAL,
+        properties.getOutbox().getDispatchTarget());
+  }
+
+  @Test
+  void temporalStarterUsesDeterministicWorkflowIdAndConfiguredTaskQueue() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    SongProductionWorkflowInput input = input(workId, jobId);
+    TemporalWorkflowClientProperties properties = new TemporalWorkflowClientProperties();
+    properties.setTaskQueue("song-production-test");
+    AtomicBoolean invoked = new AtomicBoolean(false);
+    TemporalSongProductionWorkflowStarter starter =
+        new TemporalSongProductionWorkflowStarter(
+            properties,
+            (workflowId, taskQueue, actualInput) -> {
+              invoked.set(true);
+              assertEquals(TemporalSongProductionWorkflowIds.workflowId(input), workflowId);
+              assertEquals("song-production-test", taskQueue);
+              assertEquals(input, actualInput);
+            });
+
+    String workflowId = starter.start(input);
+
+    assertEquals(TemporalSongProductionWorkflowIds.workflowId(input), workflowId);
+    assertTrue(invoked.get());
+  }
+
+  @Test
+  void temporalStarterTreatsAlreadyStartedAsIdempotentSuccess() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    SongProductionWorkflowInput input = input(workId, jobId);
+    TemporalWorkflowClientProperties properties = new TemporalWorkflowClientProperties();
+    TemporalSongProductionWorkflowStarter starter =
+        new TemporalSongProductionWorkflowStarter(
+            properties,
+            (workflowId, taskQueue, actualInput) -> {
+              throw new WorkflowExecutionAlreadyStarted("already started");
+            });
+
+    assertEquals(TemporalSongProductionWorkflowIds.workflowId(input), starter.start(input));
+  }
+
+  @Test
+  void temporalStarterWrapsStartFailureWithSanitizedMessage() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    SongProductionWorkflowInput input = input(workId, jobId);
+    TemporalWorkflowClientProperties properties = new TemporalWorkflowClientProperties();
+    TemporalSongProductionWorkflowStarter starter =
+        new TemporalSongProductionWorkflowStarter(
+            properties,
+            (workflowId, taskQueue, actualInput) -> {
+              throw new IllegalStateException("raw transport details");
+            });
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> starter.start(input));
+
+    assertEquals("Temporal workflow start failed", exception.getMessage());
   }
 
   private WorkflowOutboxDispatcher dispatcher() {
     return new WorkflowOutboxDispatcher(
-        outboxRepository, properties, songProductionWorkflow, workRepository, objectMapper);
+        outboxRepository, properties, workflowStarter, workRepository, objectMapper);
   }
 
   private WorkflowDispatchProperties outboxProperties() {
@@ -98,19 +191,26 @@ class WorkflowOutboxDispatcherTest {
   }
 
   private String inputJson(UUID workId) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(
-        new SongProductionWorkflowInput(
-            workId.toString(),
-            "user-1",
-            UUID.randomUUID().toString(),
-            "Mock title",
-            "Mock summary",
-            "Mock lyrics",
-            "Mock prompt",
-            "AUTO",
-            "mock",
-            true,
-            UUID.randomUUID().toString()));
+    return objectMapper.writeValueAsString(input(workId));
+  }
+
+  private SongProductionWorkflowInput input(UUID workId) {
+    return input(workId, UUID.randomUUID());
+  }
+
+  private SongProductionWorkflowInput input(UUID workId, UUID jobId) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        "user-1",
+        UUID.randomUUID().toString(),
+        "Mock title",
+        "Mock summary",
+        "Mock lyrics",
+        "Mock prompt",
+        "AUTO",
+        "mock",
+        true,
+        jobId.toString());
   }
 
   private WorkflowOutboxEvent event(UUID eventId, UUID workId, String payloadJson) {
@@ -159,5 +259,12 @@ class WorkflowOutboxDispatcherTest {
         OffsetDateTime.now(),
         status == WorkStatus.GENERATED ? OffsetDateTime.now() : null,
         1);
+  }
+
+  private static class WorkflowExecutionAlreadyStarted extends RuntimeException {
+
+    private WorkflowExecutionAlreadyStarted(String message) {
+      super(message);
+    }
   }
 }

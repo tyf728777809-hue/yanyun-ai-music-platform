@@ -1,10 +1,10 @@
 # 项目进度记录
 
-更新时间：2026-06-06 00:12 CST
+更新时间：2026-06-06 01:35 CST
 
 ## 当前阶段
 
-项目第 2 批已启动并完成首个可运行后端 Mock 业务闭环：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API 和本地 smoke 已跑通。当前仍不接真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
+项目已完成第 4 批 Temporal 真实编排基础：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1，以及 API outbox 到独立 Temporal worker 的编排边界均已跑通。当前仍不自动调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
@@ -23,6 +23,8 @@ DreamMaker / Suno / MiniMax 接入骨架已落地：新增共享 `modules:dreamm
 DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策：每次请求使用 AccessKey 作为 JWT `iss`、SecretKey 做 HS256 签名，`exp=now+1800s`、`nbf=now-5s`，并以 `Authorization: Bearer <jwt>` 发起请求；`DREAMMAKER_USER_ACCESS_TOKEN` 仅作为可选 `X-Access-Token` 透传。
 
 第 3 批可靠编排基础已启动并完成 Outbox v0.1：新增 `workflow_outbox` 表、`MUSIC_WORKFLOW_DISPATCH_MODE=sync|outbox`、本地 outbox dispatcher 和确认出歌/音乐重试的异步启动边界。默认 `sync` 保持现有 Mock 主链路兼容；显式 `outbox` 模式会在 API 事务内抢占作品状态、写入 generation job 和 outbox event，随后由 dispatcher 异步推进到 `GENERATED / PACKAGE_READY`。
+
+第 4 批 Temporal 真实编排基础已完成：`WORKFLOW_OUTBOX_DISPATCH_TARGET=local|temporal` 可切换本地委托和 Temporal 启动；Temporal 模式下 API dispatcher 只负责按 `work_id + job_id` deterministic workflow id 启动 workflow，独立 `music-worker` 注册 workflow/activity 并复用当前生产委托推进作品到 `GENERATED / PACKAGE_READY`。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -95,6 +97,7 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 用户侧由本项目提供 `apps/web`，移动端优先，同时兼容 PC Web。
 - 前端视觉和页面实现优先整理成可转交 Gemini 的任务包，本 Agent 不默认承担最终高保真前端实现。
 - 后续如需要图片资产，优先使用 Image 生成，并在提交前确认用途、尺寸、来源和是否纳入仓库。
+- Temporal v0.1 先证明 API outbox 到独立 worker 的可靠启动边界；activity 自动重试固定为 1 次，等权益、Provider、媒体和发布包写入幂等性审计完成后再放开。
 - 第 1 批代码应搭建完整商用级工程边界和本地基础设施，不实现业务主链路。
 - Boot 应用只产出可执行 jar，不提交 plain jar、构建缓存、node_modules、大体积媒体或真实密钥。
 
@@ -243,6 +246,13 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `WorkService.retryMusic` 在 outbox 模式下沿用 `works.version` 和重试次数抢占逻辑，随后写入 outbox event 异步执行。
 - `MockSongProductionWorkflow` 已支持复用既有 `generation_jobs.id`，dispatcher 执行时不会重复创建 job。
 - 新增 `WorkflowOutboxDispatcher`，可 claim due outbox events，执行 `SongProductionWorkflow`，并将事件标记为 `SUCCEEDED` / `FAILED` / `SKIPPED`；已处理终态作品不重复执行的问题。
+- 新增 `docs/specs/temporal-song-production-orchestration-v0.1.md`，定义第 4 批 Temporal 真实编排基础规格、验收口径和非目标。
+- 新增 `modules:production`，把 `WorkRepository` 与当前 `MockSongProductionWorkflow` 业务委托从 API 应用中抽出，供 API local 模式和 worker activity 复用。
+- 新增 `modules:workflow`，定义 Temporal workflow/activity 合约、deterministic workflow id 和 `TemporalSongProductionWorkflowImpl`。
+- `WorkflowOutboxDispatcher` 已改为依赖 `SongProductionWorkflowStarter`，可按配置走 local starter 或 Temporal starter。
+- `TemporalSongProductionWorkflowStarter` 已用 `work_id + job_id` 生成 deterministic workflow id；重复启动命中 `AlreadyStarted` 时按幂等成功处理。
+- `music-worker` 已注册 Temporal workflow 与 activity；activity 通过 `SongProductionActivityAdapter` 委托当前生产链路，worker 生命周期会启动并关闭 `WorkerFactory` 和 Temporal stubs。
+- `music-worker` 已补齐本地 Mock 生产链路所需 Spring bean：Mock 权益、审核、发布、对象存储、远程对象导入和音乐 Provider 选择。
 
 ## 第 2 批 DreamMaker Provider 接入骨架验证结果
 
@@ -284,23 +294,38 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `env_auditor.py` 密钥扫描成功：0 findings。
 - 已额外扫描用户提供过的真实 DreamMaker AccessKey/SecretKey 原文，仓库内无匹配。
 
+## 第 4 批 Temporal 真实编排基础验证结果
+
+- `./gradlew :modules:production:compileJava :apps:music-api:compileJava :apps:music-worker:compileJava` 成功。
+- `./gradlew :modules:workflow:test :modules:production:compileJava` 成功。
+- `./gradlew :apps:music-api:test --tests com.yanyun.music.api.workflow.WorkflowOutboxDispatcherTest` 成功。
+- `./gradlew :apps:music-worker:test` 成功。
+- `./gradlew spotlessApply` 成功。
+- `./gradlew spotlessCheck test :apps:music-api:bootJar :apps:music-worker:bootJar` 成功。
+- 本地 Docker 基础设施仍健康运行：PostgreSQL、Redis、Temporal、Temporal UI、MinIO、OpenSearch、Prometheus、Grafana 均为 up/healthy。
+- outbox local JAR smoke 成功：`WORKFLOW_OUTBOX_DISPATCH_TARGET=local` 下，填词创建作品、确认出歌、dispatcher 本地委托执行后，作品推进到 `GENERATED / PACKAGE_READY`，发布包 URL 存在。
+- Temporal JAR smoke 成功：先启动 `music-worker` 注册 `song-production-local` task queue，再启动 API 的 `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`，填词创建作品并确认出歌后，worker activity 将作品推进到 `GENERATED / PACKAGE_READY`。
+- PostgreSQL 抽查成功：Temporal smoke 作品对应 outbox 为 `SUCCEEDED / attempt_count=0`，generation job 为 `SUCCEEDED / PACKAGE_READY`，work 为 `GENERATED / PACKAGE_READY / PACKAGE_READY`。
+- 修复并验证了一个 Temporal starter 装配问题：`TemporalSongProductionWorkflowStarter` 不再作为 `@Service` 被无参实例化，而是在 Temporal dispatch 配置类中显式创建。
+- smoke 后已停止 `music-api` 和 `music-worker`，未留下占用 `8080` / `8081` 的应用进程。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 的 DreamMaker run/status 接入骨架与 JWT 鉴权已实现；非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
-- Outbox v0.1 已落地并可本地验证；完整 Temporal Java Workflow / Activity 实现仍未接入，后续进入真实模型链路时还需把 dispatcher 执行替换或升级为 Temporal Worker 编排。
+- Outbox v0.1 与 Temporal v0.1 已落地并可本地验证；后续进入真实模型链路前，还需要把当前单一 activity 委托拆成更细粒度、可幂等重试的音乐生成、封面、视频、发布包等活动。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
 - 当前音乐重试已有次数上限和状态抢占，DreamMaker 失败码也已有保守映射；真实联调后仍需根据具体非零 code 和 failed payload 精细化 retryable / non-retryable 规则。
 - 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
 
 ## 下一步建议
 
-1. 使用安全环境变量做一次手动真实 Suno / MiniMax 联调；联调过程不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
-2. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
-3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
-4. 后续增强幂等：补过期键清理、更多集成测试和真实并发压测。
-5. 在 Outbox v0.1 基础上设计 Temporal `SongProductionWorkflow` / Activity 详细方案，把本地 dispatcher 升级为真实 worker 编排。
+1. 第 5 批先整理 DreamMaker Suno / MiniMax 受控真实联调 runbook、环境变量注入方式、请求/响应记录边界和人工开关，确保不泄露密钥、JWT 或用户 token。
+2. 使用安全环境变量做手动真实 Suno / MiniMax 联调；联调过程不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
+3. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
+4. 第 6 批补 DeepSeek / 知识库写词润色链路，保持自动化测试使用 Mock/Fake。
+5. 第 7-8 批补封面、Remotion/FFmpeg MP4 成片和 MinIO/S3 发布包强化。
 
 ## 工作日志
 
@@ -344,3 +369,4 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-05 22:52 CST | 实现 DreamMaker Provider 接入骨架 | 新增 `modules:dreammaker`、Suno/MiniMax submit+poll、DreamMaker HTTP client、远程音频导入对象存储和规格/运行文档；测试、bootJar、OpenAPI 解析和本地 API smoke 均通过 |
 | 2026-06-05 23:55 CST | 实现 Outbox 可靠编排基础 | 新增 `workflow_outbox`、可切换 sync/outbox 模式、本地 dispatcher、确认出歌/音乐重试异步启动边界和规格/运行文档；测试、bootJar、Flyway、sync smoke、outbox smoke 和 DB 抽查均通过 |
 | 2026-06-06 00:12 CST | 补齐 DreamMaker JWT 鉴权 | 根据用户补充资料确认 AK/SK 生成 HS256 JWT；`DreamMakerHttpClient` 已改为 `Authorization: Bearer <jwt>`，可选透传 `X-Access-Token`；测试、bootJar、OpenAPI 解析和密钥扫描均通过 |
+| 2026-06-06 01:35 CST | 完成 Temporal 真实编排基础 | 新增 `modules:production`、`modules:workflow`、API local/temporal starter、worker workflow/activity 注册和生命周期；local outbox smoke、Temporal worker smoke、全量 Gradle 验证和 DB 抽查均通过 |

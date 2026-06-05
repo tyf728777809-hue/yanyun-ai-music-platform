@@ -1,11 +1,7 @@
-package com.yanyun.music.api.production;
+package com.yanyun.music.production;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.api.work.WorkRepository;
-import com.yanyun.music.api.work.WorkRepository.MediaAssetRow;
-import com.yanyun.music.api.work.WorkRepository.ProviderCallRow;
-import com.yanyun.music.api.work.WorkRepository.PublishPackageRow;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
@@ -30,6 +26,10 @@ import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workflow.SongProductionWorkflow;
 import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
+import com.yanyun.music.workpersistence.WorkRepository;
+import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
+import com.yanyun.music.workpersistence.WorkRepository.ProviderCallRow;
+import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

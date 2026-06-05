@@ -2,8 +2,8 @@ package com.yanyun.music.api.idempotency;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.api.work.WorkRepository;
-import com.yanyun.music.api.work.WorkRepository.IdempotencyRecord;
+import com.yanyun.music.workpersistence.WorkRepository;
+import com.yanyun.music.workpersistence.WorkRepository.IdempotencyRecord;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

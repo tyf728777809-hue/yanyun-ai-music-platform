@@ -36,9 +36,15 @@ public class WorkflowDispatchProperties {
     OUTBOX
   }
 
+  public enum DispatchTarget {
+    LOCAL,
+    TEMPORAL
+  }
+
   public static class Outbox {
 
     private boolean dispatcherEnabled;
+    private DispatchTarget dispatchTarget = DispatchTarget.LOCAL;
     private Duration pollInterval = Duration.ofSeconds(5);
     private int batchSize = 5;
     private int maxAttempts = 3;
@@ -51,6 +57,14 @@ public class WorkflowDispatchProperties {
 
     public void setDispatcherEnabled(boolean dispatcherEnabled) {
       this.dispatcherEnabled = dispatcherEnabled;
+    }
+
+    public DispatchTarget getDispatchTarget() {
+      return dispatchTarget;
+    }
+
+    public void setDispatchTarget(DispatchTarget dispatchTarget) {
+      this.dispatchTarget = dispatchTarget == null ? DispatchTarget.LOCAL : dispatchTarget;
     }
 
     public Duration getPollInterval() {

@@ -2,12 +2,11 @@ package com.yanyun.music.api.workflow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yanyun.music.api.work.WorkRepository;
-import com.yanyun.music.api.work.WorkRepository.WorkRow;
 import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workdomain.WorkStatus;
-import com.yanyun.music.workflow.SongProductionWorkflow;
 import com.yanyun.music.workflow.SongProductionWorkflowInput;
+import com.yanyun.music.workpersistence.WorkRepository;
+import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -30,7 +29,7 @@ public class WorkflowOutboxDispatcher {
 
   private final WorkflowOutboxRepository outboxRepository;
   private final WorkflowDispatchProperties properties;
-  private final SongProductionWorkflow songProductionWorkflow;
+  private final SongProductionWorkflowStarter workflowStarter;
   private final WorkRepository workRepository;
   private final ObjectMapper objectMapper;
   private final String workerId;
@@ -38,12 +37,12 @@ public class WorkflowOutboxDispatcher {
   public WorkflowOutboxDispatcher(
       WorkflowOutboxRepository outboxRepository,
       WorkflowDispatchProperties properties,
-      SongProductionWorkflow songProductionWorkflow,
+      SongProductionWorkflowStarter workflowStarter,
       WorkRepository workRepository,
       ObjectMapper objectMapper) {
     this.outboxRepository = outboxRepository;
     this.properties = properties;
-    this.songProductionWorkflow = songProductionWorkflow;
+    this.workflowStarter = workflowStarter;
     this.workRepository = workRepository;
     this.objectMapper = objectMapper;
     this.workerId = workerId();
@@ -83,7 +82,7 @@ public class WorkflowOutboxDispatcher {
         outboxRepository.markSucceeded(event.id());
         return;
       }
-      songProductionWorkflow.produce(input);
+      workflowStarter.start(input);
       outboxRepository.markSucceeded(event.id());
     } catch (JsonProcessingException exception) {
       outboxRepository.markFailed(

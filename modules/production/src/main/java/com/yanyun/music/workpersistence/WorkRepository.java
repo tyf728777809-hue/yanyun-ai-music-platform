@@ -1,4 +1,4 @@
-package com.yanyun.music.api.work;
+package com.yanyun.music.workpersistence;
 
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;

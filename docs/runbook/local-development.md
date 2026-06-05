@@ -43,11 +43,12 @@ MUSIC_WORKFLOW_DISPATCH_MODE=sync WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
   ./gradlew :apps:music-api:bootRun
 ```
 
-如果要验证真实模型链路前的可靠启动边界，可切到 Outbox 模式：
+如果要验证真实模型链路前的可靠启动边界，可切到 Outbox 本地 dispatcher 模式：
 
 ```bash
 MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
 WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+WORKFLOW_OUTBOX_DISPATCH_TARGET=local \
 WORKFLOW_OUTBOX_POLL_INTERVAL=1s \
 WORKFLOW_OUTBOX_RETRY_DELAY=1s \
 ./gradlew :apps:music-api:bootRun
@@ -61,6 +62,36 @@ Outbox 状态可用 PostgreSQL 抽查：
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
   "select status, event_type, attempt_count, processed_at is not null from workflow_outbox where aggregate_id = '{work_id}' order by created_at"
+```
+
+如果要验证 API 与 worker 分进程的 Temporal 编排边界，先启动 worker：
+
+```bash
+MUSIC_PROVIDER=mock ./gradlew :apps:music-worker:bootRun
+```
+
+再启动 API，并把 outbox dispatcher 目标切到 Temporal：
+
+```bash
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \
+WORKFLOW_OUTBOX_POLL_INTERVAL=1s \
+./gradlew :apps:music-api:bootRun
+```
+
+Temporal v0.1 的工作方式是：API 事务内抢占作品、写入 `generation_jobs` 和
+`workflow_outbox`；API dispatcher 只负责启动 deterministic workflow，并在启动成功后把
+outbox 标记为 `SUCCEEDED`；`music-worker` 的 activity 复用当前 `SongProductionWorkflow`
+业务委托，把作品推进到 `GENERATED / PACKAGE_READY`。本阶段 activity 最大尝试次数固定为 1，
+等权益、Provider、媒体和发布包写入幂等性审计完成后，再放开 Temporal activity 自动重试。
+
+Temporal 模式完成后可抽查 outbox、job 和 work 状态：
+
+```bash
+docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
+  "select o.status, o.attempt_count, j.status, j.stage, w.status, w.generation_stage, w.package_status from workflow_outbox o join generation_jobs j on j.work_id = o.aggregate_id join works w on w.id = o.aggregate_id where o.aggregate_id = '{work_id}' order by o.created_at desc limit 1"
 ```
 
 也可以显式选择 `suno` 或 `minimax` 验证 DreamMaker Provider 边界。默认不配置
@@ -131,7 +162,7 @@ build/local-object-storage/yanyun-works-local/packages/{work_id}.json
 
 确认出歌后可用 `GET /api/v1/works/{work_id}/publish-package` 查看 `package_url`，并用本地文件检查 package JSON 内容。
 
-Worker：
+Worker 单独健康检查：
 
 ```bash
 ./gradlew :apps:music-worker:bootRun
@@ -158,4 +189,6 @@ npm test
 
 ## Current Boundary
 
-当前自动化测试只验证工程、Mock 业务链路、Outbox/Workflow 启动边界、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。
+当前自动化测试只验证工程、Mock 业务链路、Outbox/Workflow 启动边界、Temporal worker
+注册和 activity 委托、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实
+DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。
