@@ -5,4 +5,5 @@ public record WorkSnapshot(
     GenerationStage generationStage,
     PackageStatus packageStatus,
     FailureCode failureCode,
-    boolean retryable) {}
+    boolean retryable,
+    int remainingMusicRetryCount) {}

@@ -9,4 +9,5 @@ public record SongProductionWorkflowInput(
     String lyricsText,
     String musicPrompt,
     String vocalPreference,
-    String musicProvider) {}
+    String musicProvider,
+    boolean musicRetryAllowedAfterFailure) {}

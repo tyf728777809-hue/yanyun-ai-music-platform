@@ -86,6 +86,9 @@
 - `quota_hint.message`。
 - `publish_handoff_hint.message`。
 - 失败原因 `failure.failure_message`。
+- 失败码 `failure.failure_code`。
+- 失败推荐动作 `failure.recommended_action`。
+- 音乐重试次数 `failure.retry_count` / `failure.retry_limit` / `failure.remaining_retry_count`。
 - 当前 `available_actions` 对应的操作按钮。
 
 动作映射：
@@ -102,6 +105,13 @@
 | `MARK_PACKAGE_FETCHED` | 标记已交接 | `POST /api/v1/works/{work_id}/publish-package/mark-fetched` |
 | `RETURN_TO_EDIT` | 返回编辑 | 本地路由处理 |
 | `CONTACT_SUPPORT` | 联系支持 | 本地占位，不接真实客服 |
+
+失败态按钮渲染规则：
+
+- 前端必须以 `available_actions` 为唯一按钮开关来源。
+- 音乐失败时可以显示 `remaining_retry_count`，例如“还可重试 1 次”。
+- `remaining_retry_count = 0` 或 `available_actions` 不包含 `RETRY_MUSIC` 时，不显示重试出歌按钮。
+- 重试接口返回 HTTP 409 时，重新拉取 `GET /api/v1/works/{work_id}`，按最新状态刷新按钮。
 
 ### 3.5 成品/发布包区域
 

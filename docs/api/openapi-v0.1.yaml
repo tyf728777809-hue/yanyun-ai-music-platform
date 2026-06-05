@@ -217,7 +217,7 @@ paths:
     post:
       tags: [Generation]
       summary: 重试音乐生成
-      description: 仅当作品处于可重试的音乐失败状态时可用。可用 `music_provider` 切换 Provider 后重试，例如从未实现的 `suno` 边界切回 `mock`。
+      description: 仅当作品处于可重试的音乐失败状态且仍有剩余重试次数时可用。可用 `music_provider` 切换 Provider 后重试，例如从未实现的 `suno` 边界切回 `mock`。当前本地阶段音乐重试上限为 2 次；并发重复重试或次数耗尽返回 HTTP 409。
       operationId: retryMusic
       parameters:
         - $ref: "#/components/parameters/MockUserId"
@@ -720,9 +720,26 @@ components:
           type: string
         retryable:
           type: boolean
+          description: 是否仍有可执行恢复动作；音乐类失败会同时受剩余重试次数限制。
         failed_at:
           type: string
           format: date-time
+        retry_count:
+          type: [integer, "null"]
+          minimum: 0
+          description: 音乐重试已执行次数；非音乐类失败可为空。
+        retry_limit:
+          type: [integer, "null"]
+          minimum: 0
+          description: 音乐重试上限；非音乐类失败可为空。当前本地阶段固定为 2。
+        remaining_retry_count:
+          type: [integer, "null"]
+          minimum: 0
+          description: 音乐重试剩余次数；为 0 时不再返回 `RETRY_MUSIC`。
+        recommended_action:
+          anyOf:
+            - $ref: "#/components/schemas/AvailableAction"
+            - type: "null"
     PublishHandoffHint:
       type: object
       required: [ready_for_handoff, message]

@@ -192,6 +192,37 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void marksMusicFailureNonRetryableWhenRetryLimitWillBeExhausted() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.failed(
+                MusicProviderType.MOCK, "task-1", "PROVIDER_FAILED", "provider failed"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider).produce(input(workId, null, false));
+
+    assertThat(result.packageReady()).isFalse();
+    verify(workRepository)
+        .markFailure(workId, FailureCode.MUSIC_GENERATION_FAILED, "provider failed", false);
+  }
+
+  @Test
   void usesConfiguredMusicProviderSelection() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -411,10 +442,15 @@ class MockSongProductionWorkflowTest {
   }
 
   private SongProductionWorkflowInput input(UUID workId) {
-    return input(workId, null);
+    return input(workId, null, true);
   }
 
   private SongProductionWorkflowInput input(UUID workId, String musicProvider) {
+    return input(workId, musicProvider, true);
+  }
+
+  private SongProductionWorkflowInput input(
+      UUID workId, String musicProvider, boolean musicRetryAllowedAfterFailure) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         "user-1",
@@ -424,6 +460,7 @@ class MockSongProductionWorkflowTest {
         "Mock lyrics",
         "Mock prompt",
         "AUTO",
-        musicProvider);
+        musicProvider,
+        musicRetryAllowedAfterFailure);
   }
 }

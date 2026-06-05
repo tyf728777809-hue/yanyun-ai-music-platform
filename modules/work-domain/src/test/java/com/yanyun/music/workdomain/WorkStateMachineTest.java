@@ -17,7 +17,8 @@ class WorkStateMachineTest {
                 GenerationStage.WAITING_CONFIRM,
                 PackageStatus.PACKAGE_NOT_READY,
                 null,
-                true));
+                true,
+                0));
 
     assertTrue(actions.contains(AvailableAction.CONFIRM_WORK));
     assertTrue(actions.contains(AvailableAction.POLISH_LYRICS));
@@ -34,7 +35,8 @@ class WorkStateMachineTest {
                 GenerationStage.PACKAGE_READY,
                 PackageStatus.PACKAGE_READY,
                 null,
-                true));
+                true,
+                0));
 
     assertTrue(actions.contains(AvailableAction.REFRESH_PACKAGE_URL));
     assertTrue(actions.contains(AvailableAction.MARK_PACKAGE_FETCHED));
@@ -50,7 +52,8 @@ class WorkStateMachineTest {
                 GenerationStage.FAILED,
                 PackageStatus.PACKAGE_NOT_READY,
                 FailureCode.PACKAGE_BLOCKED,
-                false));
+                false,
+                0));
 
     assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
     assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
@@ -65,7 +68,8 @@ class WorkStateMachineTest {
             GenerationStage.FAILED,
             PackageStatus.PACKAGE_NOT_READY,
             FailureCode.MUSIC_GENERATION_FAILED,
-            true);
+            true,
+            2);
 
     List<AvailableAction> actions = WorkStateMachine.availableActions(work);
 
@@ -82,8 +86,27 @@ class WorkStateMachineTest {
             GenerationStage.FAILED,
             PackageStatus.PACKAGE_NOT_READY,
             FailureCode.PACKAGE_BUILD_FAILED,
-            true);
+            true,
+            2);
 
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
+  void retryMusicRejectsExhaustedMusicFailure() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            true,
+            0);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
     assertFalse(WorkStateMachine.canRetryMusic(work));
   }
 }

@@ -112,7 +112,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.MUSIC_GENERATION_FAILED,
           firstNonBlank(exception.getMessage(), "Music generation failed"),
-          true,
+          input.musicRetryAllowedAfterFailure(),
           input.userId(),
           lock.lockId());
     }
@@ -122,7 +122,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.MUSIC_GENERATION_FAILED,
           firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
-          true,
+          input.musicRetryAllowedAfterFailure(),
           input.userId(),
           lock.lockId());
     }

@@ -50,6 +50,8 @@ curl -X POST "http://localhost:8080/api/v1/works/{work_id}/music/retry" \
 
 预期结果是作品从 `FAILED / MUSIC_GENERATION_FAILED` 恢复到 `GENERATED / PACKAGE_READY`。权益流水应体现首次失败释放、重试成功提交：`LOCK_GENERATE -> RELEASE_GENERATE -> LOCK_GENERATE -> COMMIT_GENERATE`。
 
+当前音乐重试上限为 2 次。作品详情的 `failure.retry_count`、`failure.retry_limit`、`failure.remaining_retry_count` 和 `failure.recommended_action` 可用于验证失败页展示；当 `remaining_retry_count = 0` 时，`available_actions` 不再包含 `RETRY_MUSIC`，继续调用重试接口会返回 HTTP 409。
+
 健康检查：
 
 ```bash

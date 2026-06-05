@@ -199,6 +199,21 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - 新 JAR HTTP smoke 成功：调用 `POST /api/v1/works/{work_id}/music/retry` 且请求体为 `{"music_provider":"mock"}` 后，作品恢复到 `GENERATED / PACKAGE_READY`，发布包文件写入 `build/local-object-storage/yanyun-works-local/packages/{work_id}.json`。
 - PostgreSQL 抽查成功：同一作品先有 `SONG_PRODUCTION|FAILED|FAILED|MUSIC_GENERATION_FAILED`，后有 `SONG_PRODUCTION|SUCCEEDED|PACKAGE_READY`；权益流水为 `LOCK_GENERATE -> RELEASE_GENERATE -> LOCK_GENERATE -> COMMIT_GENERATE`。
 
+## 第 2 批重试稳定性增强验证结果
+
+- 新增 Flyway migration `V202606050520__add_music_retry_count.sql`，为 `works` 增加 `music_retry_count` 和非负约束。
+- 音乐重试上限固定为 2 次；作品详情的 `failure` 新增 `retry_count`、`retry_limit`、`remaining_retry_count` 和 `recommended_action`。
+- `retryMusic` 在启动 Workflow 前会用 `works.version` 和条件更新预约本次重试，只允许当前版本、当前用户、音乐类失败、`retryable=true` 且次数未耗尽的作品进入 `GENERATING / QUOTA_LOCKING`。
+- `WorkStateMachine` 已把剩余重试次数纳入 `RETRY_MUSIC` 暴露条件；次数耗尽后不再返回 `RETRY_MUSIC`，改由 `CONTACT_SUPPORT` / `RETURN_TO_EDIT` 承接。
+- `MockSongProductionWorkflow` 已支持“本次失败后是否仍可重试”的输入；最后一次音乐重试失败会写入 `retryable=false`。
+- `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar` 成功。
+- Flyway 启动验证成功：本地 PostgreSQL 从版本 `202606050245` 迁移到 `202606050520`。
+- HTTP smoke 成功：`MUSIC_PROVIDER=suno` 下，初始确认失败返回 `retry_count=0 / retry_limit=2 / remaining_retry_count=2`，第一次重试失败后剩余 1 次，第二次重试失败后 `remaining_retry_count=0`、`retryable=false` 且不再返回 `RETRY_MUSIC`。
+- HTTP smoke 成功：次数耗尽后即使请求 `{"music_provider":"mock"}`，`POST /api/v1/works/{work_id}/music/retry` 仍返回 HTTP 409。
+- HTTP smoke 成功：另一条作品在初始 `suno` 失败后请求 `{"music_provider":"mock"}`，仍可恢复到 `GENERATED / PACKAGE_READY` 并写出本地发布包。
+- HTTP smoke 成功：非法 `music_provider` 返回 HTTP 400，作品保持 `FAILED / MUSIC_GENERATION_FAILED`，`music_retry_count` 不增加，随后仍可用 `mock` 重试恢复成功。
+- PostgreSQL 抽查成功：耗尽作品为 `FAILED / MUSIC_GENERATION_FAILED / retryable=false / music_retry_count=2`；恢复作品为 `GENERATED / PACKAGE_READY / music_retry_count=1`；权益流水符合失败释放、成功提交口径。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
@@ -206,14 +221,15 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - 当前 `Workflow` 仍是同步 Mock 实现；进入真实模型链路前必须接入 Temporal Workflow 与 Outbox 或等价补偿机制。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
-- 当前音乐重试已具备基础恢复闭环，但尚未补并发重试防重、重试次数上限和运营侧模型降级策略。
+- 当前音乐重试已有次数上限和状态抢占，但真实 Provider 接入后仍需把 Suno/MiniMax 失败码映射到 `PROVIDER_TIMEOUT`、`RATE_LIMITED`、`MUSIC_QUALITY_FAILED` 等内部失败码。
+- 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
 
 ## 下一步建议
 
-1. 补重试并发防重、重试次数上限、失败码到用户文案/运营动作的映射。
-2. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
-3. 后续增强幂等：补并发冲突处理、过期键清理、更多集成测试。
-4. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
+1. 读取飞书资料后补 `SunoMusicProvider` 和 `MiniMaxMusicProvider` 的真实请求/回调/失败码映射。
+2. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
+3. 按 Gemini 前端任务包实现或外包前端页面，并用本地 API 做联调。
+4. 后续增强幂等：补过期键清理、更多集成测试和真实并发压测。
 5. 进入真实模型链路前接入 Temporal `SongProductionWorkflow` 与 Outbox 或等价补偿机制。
 
 ## 工作日志
@@ -252,3 +268,4 @@ Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient
 | 2026-06-05 04:29 CST | 接入 Mock 对象存储写入 | 新增 `ObjectStorageClient` 与本地文件实现，发布包 JSON 已可写入 `build/local-object-storage`，单元测试、构建、HTTP smoke、本地文件检查和 DB 抽查均通过 |
 | 2026-06-05 04:50 CST | 补 Provider 配置选择 | `MUSIC_PROVIDER=mock|suno|minimax` 已接入 Workflow；默认 mock 成功，suno 未实现边界会持久化失败并释放权益，测试、构建、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-05 05:12 CST | 补失败恢复与重试闭环 | 新增音乐重试接口与请求级 Provider 覆盖；`suno` 失败后可用 `mock` 重试恢复到 `PACKAGE_READY`，测试、构建、HTTP smoke 和 DB 抽查均通过 |
+| 2026-06-05 10:07 CST | 增强重试稳定性 | 新增 `music_retry_count`、2 次音乐重试上限、状态抢占和失败推荐动作；次数耗尽、恢复成功、Flyway、HTTP smoke 和 DB 抽查均通过 |

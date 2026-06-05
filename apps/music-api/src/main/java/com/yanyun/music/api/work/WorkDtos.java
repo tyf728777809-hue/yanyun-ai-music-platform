@@ -119,7 +119,14 @@ public final class WorkDtos {
       String message) {}
 
   public record FailureInfo(
-      FailureCode failureCode, String failureMessage, boolean retryable, OffsetDateTime failedAt) {}
+      FailureCode failureCode,
+      String failureMessage,
+      boolean retryable,
+      OffsetDateTime failedAt,
+      Integer retryCount,
+      Integer retryLimit,
+      Integer remainingRetryCount,
+      AvailableAction recommendedAction) {}
 
   public record PublishHandoffHint(boolean readyForHandoff, String message) {}
 

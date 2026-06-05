@@ -23,7 +23,9 @@ public final class WorkStateMachine {
         actions.add(AvailableAction.RETURN_TO_EDIT);
       }
       case GENERATED -> appendGeneratedActions(actions, work.packageStatus());
-      case FAILED -> appendFailureActions(actions, work.failureCode(), work.retryable());
+      case FAILED ->
+          appendFailureActions(
+              actions, work.failureCode(), work.retryable(), work.remainingMusicRetryCount());
       case CANCELLED -> actions.add(AvailableAction.RETURN_TO_EDIT);
       case LYRICS_GENERATING, GENERATING -> {
         // In-flight states intentionally expose no mutating action in v0.1.
@@ -38,7 +40,10 @@ public final class WorkStateMachine {
   }
 
   public static boolean canRetryMusic(WorkSnapshot work) {
-    if (work.status() != WorkStatus.FAILED || !work.retryable() || work.failureCode() == null) {
+    if (work.status() != WorkStatus.FAILED
+        || !work.retryable()
+        || work.failureCode() == null
+        || work.remainingMusicRetryCount() <= 0) {
       return false;
     }
     return switch (work.failureCode()) {
@@ -57,7 +62,8 @@ public final class WorkStateMachine {
         GenerationStage.QUOTA_LOCKING,
         PackageStatus.PACKAGE_NOT_READY,
         null,
-        true);
+        true,
+        0);
   }
 
   public static WorkSnapshot packageReady() {
@@ -66,7 +72,8 @@ public final class WorkStateMachine {
         GenerationStage.PACKAGE_READY,
         PackageStatus.PACKAGE_READY,
         null,
-        true);
+        true,
+        0);
   }
 
   public static WorkSnapshot failed(FailureCode failureCode, boolean retryable) {
@@ -75,7 +82,8 @@ public final class WorkStateMachine {
         GenerationStage.FAILED,
         PackageStatus.PACKAGE_NOT_READY,
         failureCode,
-        retryable);
+        retryable,
+        retryable ? 1 : 0);
   }
 
   private static void appendGeneratedActions(
@@ -96,7 +104,10 @@ public final class WorkStateMachine {
   }
 
   private static void appendFailureActions(
-      List<AvailableAction> actions, FailureCode failureCode, boolean retryable) {
+      List<AvailableAction> actions,
+      FailureCode failureCode,
+      boolean retryable,
+      int remainingMusicRetryCount) {
     if (!retryable || failureCode == null) {
       actions.add(AvailableAction.CONTACT_SUPPORT);
       actions.add(AvailableAction.RETURN_TO_EDIT);
@@ -106,8 +117,13 @@ public final class WorkStateMachine {
     switch (failureCode) {
       case LYRICS_GENERATION_FAILED, LYRICS_PRECHECK_FAILED ->
           actions.add(AvailableAction.RETRY_LYRICS);
-      case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED ->
+      case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED -> {
+        if (remainingMusicRetryCount > 0) {
           actions.add(AvailableAction.RETRY_MUSIC);
+        } else {
+          actions.add(AvailableAction.CONTACT_SUPPORT);
+        }
+      }
       case COVER_GENERATION_FAILED -> actions.add(AvailableAction.RETRY_COVER);
       case VIDEO_RENDER_FAILED, PACKAGE_BUILD_FAILED -> actions.add(AvailableAction.RERENDER_VIDEO);
       case USER_INPUT_BLOCKED -> actions.add(AvailableAction.RETURN_TO_EDIT);

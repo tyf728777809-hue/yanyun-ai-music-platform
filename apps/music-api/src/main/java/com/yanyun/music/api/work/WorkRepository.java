@@ -339,6 +339,45 @@ public class WorkRepository {
         workId);
   }
 
+  public boolean reserveMusicRetry(
+      UUID workId, String userId, int expectedVersion, int retryLimit) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET status = ?,
+                generation_stage = ?,
+                package_status = ?,
+                failure_code = NULL,
+                failure_message = NULL,
+                retryable = NULL,
+                failed_at = NULL,
+                music_retry_count = music_retry_count + 1,
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND user_id = ?
+              AND version = ?
+              AND status = ?
+              AND retryable IS TRUE
+              AND failure_code IN (?, ?, ?, ?)
+              AND music_retry_count < ?
+            """,
+            WorkStatus.GENERATING.name(),
+            GenerationStage.QUOTA_LOCKING.name(),
+            PackageStatus.PACKAGE_NOT_READY.name(),
+            workId,
+            userId,
+            expectedVersion,
+            WorkStatus.FAILED.name(),
+            FailureCode.MUSIC_GENERATION_FAILED.name(),
+            FailureCode.MUSIC_QUALITY_FAILED.name(),
+            FailureCode.PROVIDER_TIMEOUT.name(),
+            FailureCode.RATE_LIMITED.name(),
+            retryLimit);
+    return updated == 1;
+  }
+
   public void upsertMediaAsset(MediaAssetRow asset) {
     jdbcTemplate.update(
         """
@@ -591,6 +630,7 @@ public class WorkRepository {
         resultSet.getObject("failed_at", OffsetDateTime.class),
         resultSet.getBoolean("quota_locked"),
         resultSet.getBoolean("quota_committed"),
+        resultSet.getInt("music_retry_count"),
         resultSet.getObject("created_at", OffsetDateTime.class),
         resultSet.getObject("updated_at", OffsetDateTime.class),
         resultSet.getObject("generated_at", OffsetDateTime.class),
@@ -689,6 +729,7 @@ public class WorkRepository {
       OffsetDateTime failedAt,
       boolean quotaLocked,
       boolean quotaCommitted,
+      int musicRetryCount,
       OffsetDateTime createdAt,
       OffsetDateTime updatedAt,
       OffsetDateTime generatedAt,

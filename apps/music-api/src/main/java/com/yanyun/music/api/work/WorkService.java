@@ -61,6 +61,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class WorkService {
 
   private static final int POLISH_LIMIT = 2;
+  private static final int MUSIC_RETRY_LIMIT = 2;
   private static final String ASSET_BASE_URL = "http://localhost:9000/yanyun-works-local/";
   private static final TypeReference<List<String>> STRING_LIST = new TypeReference<>() {};
   private static final TypeReference<Map<String, Object>> JSON_OBJECT = new TypeReference<>() {};
@@ -250,7 +251,8 @@ public class WorkService {
                 workId,
                 userId,
                 draft,
-                musicProvider(request == null ? null : request.musicProvider())));
+                musicProvider(request == null ? null : request.musicProvider()),
+                true));
     if (!workflowResult.packageReady()) {
       throw workflowFailure(workflowResult);
     }
@@ -262,26 +264,21 @@ public class WorkService {
   @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse retryMusic(String userId, UUID workId, RetryMusicRequest request) {
     WorkRow work = getRequiredWork(workId, userId);
-    WorkSnapshot snapshot =
-        new WorkSnapshot(
-            work.status(),
-            work.generationStage(),
-            work.packageStatus(),
-            work.failureCode(),
-            Boolean.TRUE.equals(work.retryable()));
-    if (!WorkStateMachine.canRetryMusic(snapshot)) {
+    if (!WorkStateMachine.canRetryMusic(workSnapshot(work))) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Current work cannot retry music generation");
     }
 
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
+    String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
+    if (!workRepository.reserveMusicRetry(workId, userId, work.version(), MUSIC_RETRY_LIMIT)) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Music retry is already running or retry limit reached");
+    }
+    boolean retryAllowedAfterFailure = work.musicRetryCount() + 1 < MUSIC_RETRY_LIMIT;
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
-            workflowInput(
-                workId,
-                userId,
-                draft,
-                musicProvider(request == null ? null : request.musicProvider())));
+            workflowInput(workId, userId, draft, selectedMusicProvider, retryAllowedAfterFailure));
     if (!workflowResult.packageReady()) {
       throw workflowFailure(workflowResult);
     }
@@ -385,7 +382,11 @@ public class WorkService {
   }
 
   private SongProductionWorkflowInput workflowInput(
-      UUID workId, String userId, LyricsDraftRow draft, String musicProvider) {
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         userId,
@@ -395,7 +396,8 @@ public class WorkService {
         draft.lyricsText(),
         draft.musicPrompt(),
         "AUTO",
-        musicProvider);
+        musicProvider,
+        musicRetryAllowedAfterFailure);
   }
 
   private String musicProvider(String requestedProvider) {
@@ -447,6 +449,7 @@ public class WorkService {
             null,
             false,
             false,
+            0,
             null,
             null,
             null,
@@ -620,8 +623,12 @@ public class WorkService {
     return new FailureInfo(
         work.failureCode(),
         work.failureMessage(),
-        Boolean.TRUE.equals(work.retryable()),
-        work.failedAt());
+        effectiveRetryable(work),
+        work.failedAt(),
+        isMusicRetryFailure(work.failureCode()) ? work.musicRetryCount() : null,
+        isMusicRetryFailure(work.failureCode()) ? MUSIC_RETRY_LIMIT : null,
+        isMusicRetryFailure(work.failureCode()) ? remainingMusicRetries(work) : null,
+        recommendedAction(work));
   }
 
   private PublishHandoffHint publishHandoffHint(WorkRow work) {
@@ -634,13 +641,42 @@ public class WorkService {
   }
 
   private List<AvailableAction> availableActions(WorkRow work) {
-    return WorkStateMachine.availableActions(
-        new WorkSnapshot(
-            work.status(),
-            work.generationStage(),
-            work.packageStatus(),
-            work.failureCode(),
-            Boolean.TRUE.equals(work.retryable())));
+    return WorkStateMachine.availableActions(workSnapshot(work));
+  }
+
+  private WorkSnapshot workSnapshot(WorkRow work) {
+    return new WorkSnapshot(
+        work.status(),
+        work.generationStage(),
+        work.packageStatus(),
+        work.failureCode(),
+        Boolean.TRUE.equals(work.retryable()),
+        remainingMusicRetries(work));
+  }
+
+  private boolean effectiveRetryable(WorkRow work) {
+    if (!Boolean.TRUE.equals(work.retryable())) {
+      return false;
+    }
+    return !isMusicRetryFailure(work.failureCode()) || remainingMusicRetries(work) > 0;
+  }
+
+  private int remainingMusicRetries(WorkRow work) {
+    return Math.max(0, MUSIC_RETRY_LIMIT - work.musicRetryCount());
+  }
+
+  private boolean isMusicRetryFailure(FailureCode failureCode) {
+    if (failureCode == null) {
+      return false;
+    }
+    return switch (failureCode) {
+      case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED -> true;
+      default -> false;
+    };
+  }
+
+  private AvailableAction recommendedAction(WorkRow work) {
+    return availableActions(work).stream().findFirst().orElse(null);
   }
 
   private JobAcceptedResponse accepted(WorkRow work, UUID jobId) {
