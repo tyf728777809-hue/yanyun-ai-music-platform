@@ -109,9 +109,13 @@ public class WorkRepository {
           sections_json,
           music_prompt,
           risk_notes_json,
-          yanyun_references_json
+          yanyun_references_json,
+          cover_prompt_seed,
+          quality_score,
+          knowledge_base_version,
+          prompt_template_versions
         )
-        VALUES (?, ?, ?, ?, ?, ?, '{}'::jsonb, NULL, ?, ?::jsonb, ?::jsonb)
+        VALUES (?, ?, ?, ?, ?, ?, '{}'::jsonb, NULL, ?, ?::jsonb, ?::jsonb, ?, ?, ?, ?::jsonb)
         """,
         draft.id(),
         draft.workId(),
@@ -121,7 +125,11 @@ public class WorkRepository {
         draft.lyricsText(),
         draft.musicPrompt(),
         draft.riskNotesJson(),
-        draft.yanyunReferencesJson());
+        draft.yanyunReferencesJson(),
+        draft.coverPromptSeed(),
+        draft.qualityScore(),
+        draft.knowledgeBaseVersion(),
+        draft.promptTemplateVersionsJson());
   }
 
   public UUID insertGenerationJob(
@@ -724,6 +732,10 @@ public class WorkRepository {
         resultSet.getString("music_prompt"),
         jsonText(resultSet, "risk_notes_json"),
         jsonText(resultSet, "yanyun_references_json"),
+        resultSet.getString("cover_prompt_seed"),
+        resultSet.getBigDecimal("quality_score"),
+        resultSet.getString("knowledge_base_version"),
+        jsonText(resultSet, "prompt_template_versions"),
         resultSet.getObject("created_at", OffsetDateTime.class));
   }
 
@@ -821,6 +833,10 @@ public class WorkRepository {
       String musicPrompt,
       String riskNotesJson,
       String yanyunReferencesJson,
+      String coverPromptSeed,
+      BigDecimal qualityScore,
+      String knowledgeBaseVersion,
+      String promptTemplateVersionsJson,
       OffsetDateTime createdAt) {}
 
   public record MediaAssetRow(

@@ -23,6 +23,10 @@ import com.yanyun.music.api.work.WorkDtos.WorkListResponse;
 import com.yanyun.music.api.work.WorkDtos.WorkSummary;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
+import com.yanyun.music.lyrics.LyricsGenerationRequest;
+import com.yanyun.music.lyrics.LyricsGenerationResult;
+import com.yanyun.music.lyrics.LyricsGenerationService;
+import com.yanyun.music.lyrics.LyricsOperation;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
@@ -73,6 +77,7 @@ public class WorkService {
   private final QuotaAdapter quotaAdapter;
   private final ModerationAdapter moderationAdapter;
   private final PublishAdapter publishAdapter;
+  private final LyricsGenerationService lyricsGenerationService;
   private final SongProductionWorkflow songProductionWorkflow;
   private final WorkflowDispatchProperties workflowDispatchProperties;
   private final WorkflowOutboxService workflowOutboxService;
@@ -83,6 +88,7 @@ public class WorkService {
       QuotaAdapter quotaAdapter,
       ModerationAdapter moderationAdapter,
       PublishAdapter publishAdapter,
+      LyricsGenerationService lyricsGenerationService,
       SongProductionWorkflow songProductionWorkflow,
       WorkflowDispatchProperties workflowDispatchProperties,
       WorkflowOutboxService workflowOutboxService,
@@ -91,13 +97,14 @@ public class WorkService {
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
     this.publishAdapter = publishAdapter;
+    this.lyricsGenerationService = lyricsGenerationService;
     this.songProductionWorkflow = songProductionWorkflow;
     this.workflowDispatchProperties = workflowDispatchProperties;
     this.workflowOutboxService = workflowOutboxService;
     this.objectMapper = objectMapper;
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public CreateWorkResponse createFromInspiration(String userId, InspirationCreateRequest request) {
     requireText(request == null ? null : request.storyInput(), "story_input is required");
     ModerationDecision decision = moderationAdapter.preCheckUserInput(userId, request.storyInput());
@@ -105,20 +112,25 @@ public class WorkService {
 
     UUID workId = UUID.randomUUID();
     UUID draftId = UUID.randomUUID();
-    String title = "Yanyun Mock Song";
-    String summary = compactSummary(request.storyInput());
-    String lyricsText = buildLyricsFromStory(request.storyInput());
-    String musicPrompt = buildMusicPrompt(request.musicStyle(), request.vocalPreference());
+    LyricsGenerationResult lyrics =
+        lyricsGenerationService.generate(
+            new LyricsGenerationRequest(
+                userId,
+                workId.toString(),
+                LyricsOperation.INSPIRATION,
+                request.storyInput(),
+                null,
+                null,
+                null,
+                request.musicStyle(),
+                request.vocalPreference()));
     UUID jobId =
         createWorkWithDraft(
             workId,
             draftId,
             userId,
             CreationMode.INSPIRATION,
-            title,
-            summary,
-            lyricsText,
-            musicPrompt,
+            lyrics,
             request.storyInput(),
             null,
             request.mood(),
@@ -138,7 +150,7 @@ public class WorkService {
         availableActions(work));
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public CreateWorkResponse createFromLyrics(String userId, LyricsCreateRequest request) {
     requireText(request == null ? null : request.lyricsInput(), "lyrics_input is required");
     ModerationDecision decision = moderationAdapter.preCheckLyrics(userId, request.lyricsInput());
@@ -146,19 +158,25 @@ public class WorkService {
 
     UUID workId = UUID.randomUUID();
     UUID draftId = UUID.randomUUID();
-    String title = firstNonBlank(request.songTitle(), "Yanyun Lyrics Song");
-    String summary = "Created from user-provided lyrics.";
-    String musicPrompt = buildMusicPrompt(request.musicStyle(), request.vocalPreference());
+    LyricsGenerationResult lyrics =
+        lyricsGenerationService.generate(
+            new LyricsGenerationRequest(
+                userId,
+                workId.toString(),
+                LyricsOperation.LYRICS,
+                request.lyricsInput(),
+                null,
+                null,
+                request.songTitle(),
+                request.musicStyle(),
+                request.vocalPreference()));
     UUID jobId =
         createWorkWithDraft(
             workId,
             draftId,
             userId,
             CreationMode.LYRICS,
-            title,
-            summary,
-            request.lyricsInput(),
-            musicPrompt,
+            lyrics,
             null,
             request.lyricsInput(),
             null,
@@ -198,7 +216,7 @@ public class WorkService {
     return toDetail(getRequiredWork(workId, userId));
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse polishLyrics(String userId, UUID workId, LyricsPolishRequest request) {
     requireText(request == null ? null : request.instruction(), "instruction is required");
     WorkRow work = getRequiredWork(workId, userId);
@@ -210,21 +228,32 @@ public class WorkService {
     }
 
     LyricsDraftRow latest = getRequiredLyricsDraft(workId);
-    String nextLyrics =
-        latest.lyricsText() + "\n\n[Mock polish instruction]\n" + request.instruction().trim();
-    UUID jobId =
-        replaceLyricsDraft(
-            work, latest.songTitle(), latest.songSummary(), nextLyrics, latest.musicPrompt(), true);
+    LyricsGenerationResult lyrics =
+        lyricsGenerationService.generate(
+            new LyricsGenerationRequest(
+                userId,
+                workId.toString(),
+                LyricsOperation.POLISH,
+                null,
+                latest.lyricsText(),
+                request.instruction(),
+                latest.songTitle(),
+                latest.musicPrompt(),
+                null));
+    UUID jobId = replaceLyricsDraft(work, lyrics, "LYRICS_POLISH", true);
     WorkRow updated = getRequiredWork(workId, userId);
     return accepted(updated, jobId);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse continueLyrics(
       String userId, UUID workId, LyricsContinueRequest request) {
     WorkRow work = getRequiredWork(workId, userId);
     if (!WorkStateMachine.canEditLyrics(work.status())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Current work cannot edit lyrics");
+    }
+    if (work.polishUsedCount() >= POLISH_LIMIT) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "No remaining AI edit attempts");
     }
 
     LyricsDraftRow latest = getRequiredLyricsDraft(workId);
@@ -232,15 +261,19 @@ public class WorkService {
         request == null || request.instruction() == null || request.instruction().isBlank()
             ? "Continue current lyrics."
             : request.instruction().trim();
-    String nextLyrics = latest.lyricsText() + "\n\n[Mock continued section]\n" + instruction;
-    UUID jobId =
-        replaceLyricsDraft(
-            work,
-            latest.songTitle(),
-            latest.songSummary(),
-            nextLyrics,
-            latest.musicPrompt(),
-            false);
+    LyricsGenerationResult lyrics =
+        lyricsGenerationService.generate(
+            new LyricsGenerationRequest(
+                userId,
+                workId.toString(),
+                LyricsOperation.CONTINUE,
+                null,
+                latest.lyricsText(),
+                instruction,
+                latest.songTitle(),
+                latest.musicPrompt(),
+                null));
+    UUID jobId = replaceLyricsDraft(work, lyrics, "LYRICS_CONTINUE", true);
     WorkRow updated = getRequiredWork(workId, userId);
     return accepted(updated, jobId);
   }
@@ -340,7 +373,7 @@ public class WorkService {
     return accepted(getRequiredWork(workId, userId), jobId);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse regenerateCover(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
     if (work.status() != WorkStatus.GENERATED) {
@@ -370,7 +403,7 @@ public class WorkService {
     return accepted(getRequiredWork(workId, userId), jobId);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse rerenderVideo(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
     if (work.status() != WorkStatus.GENERATED) {
@@ -409,7 +442,7 @@ public class WorkService {
         .orElseGet(() -> emptyPackage(work));
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public PublishPackage markPublishPackageFetched(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
     if (work.packageStatus() != PackageStatus.PACKAGE_READY) {
@@ -419,7 +452,7 @@ public class WorkService {
     return getPublishPackage(userId, workId);
   }
 
-  @Transactional
+  @Transactional(noRollbackFor = ResponseStatusException.class)
   public PublishPackage refreshPublishPackageUrl(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
     if (work.status() != WorkStatus.GENERATED) {
@@ -483,10 +516,7 @@ public class WorkService {
       UUID draftId,
       String userId,
       CreationMode creationMode,
-      String title,
-      String summary,
-      String lyricsText,
-      String musicPrompt,
+      LyricsGenerationResult lyrics,
       String storyInput,
       String lyricsInput,
       String mood,
@@ -503,8 +533,8 @@ public class WorkService {
             WorkStatus.LYRICS_READY,
             GenerationStage.WAITING_CONFIRM,
             PackageStatus.PACKAGE_NOT_READY,
-            title,
-            summary,
+            firstNonBlank(lyrics.songTitle(), "Yanyun Lyrics"),
+            firstNonBlank(lyrics.songSummary(), "Yanyun lyrics draft."),
             0,
             0,
             null,
@@ -541,12 +571,16 @@ public class WorkService {
             draftId,
             workId,
             1,
-            title,
-            summary,
-            lyricsText,
-            musicPrompt,
-            writeJson(List.of()),
-            writeJson(List.of("mock-yanyun-kb-v0")),
+            firstNonBlank(lyrics.songTitle(), "Yanyun Lyrics"),
+            firstNonBlank(lyrics.songSummary(), "Yanyun lyrics draft."),
+            lyrics.lyricsText(),
+            lyrics.musicPrompt(),
+            writeJson(lyrics.riskNotes()),
+            writeJson(lyrics.yanyunReferences()),
+            lyrics.coverPromptSeed(),
+            lyrics.qualityScore(),
+            lyrics.knowledgeBaseVersion(),
+            writeJson(lyrics.promptTemplateVersions()),
             null));
     return workRepository.insertGenerationJob(
         workId,
@@ -558,13 +592,10 @@ public class WorkService {
   }
 
   private UUID replaceLyricsDraft(
-      WorkRow work,
-      String title,
-      String summary,
-      String lyricsText,
-      String musicPrompt,
-      boolean incrementPolish) {
+      WorkRow work, LyricsGenerationResult lyrics, String jobType, boolean incrementEditCount) {
     UUID draftId = UUID.randomUUID();
+    String title = firstNonBlank(lyrics.songTitle(), work.songTitle());
+    String summary = firstNonBlank(lyrics.songSummary(), work.songSummary());
     workRepository.insertLyricsDraft(
         new LyricsDraftRow(
             draftId,
@@ -572,15 +603,19 @@ public class WorkService {
             workRepository.nextLyricsVersion(work.id()),
             title,
             summary,
-            lyricsText,
-            musicPrompt,
-            writeJson(List.of()),
-            writeJson(List.of("mock-yanyun-kb-v0")),
+            lyrics.lyricsText(),
+            lyrics.musicPrompt(),
+            writeJson(lyrics.riskNotes()),
+            writeJson(lyrics.yanyunReferences()),
+            lyrics.coverPromptSeed(),
+            lyrics.qualityScore(),
+            lyrics.knowledgeBaseVersion(),
+            writeJson(lyrics.promptTemplateVersions()),
             null));
-    workRepository.markLyricsReady(work.id(), title, summary, incrementPolish);
+    workRepository.markLyricsReady(work.id(), title, summary, incrementEditCount);
     return workRepository.insertGenerationJob(
         work.id(),
-        incrementPolish ? "LYRICS_POLISH" : "LYRICS_CONTINUE",
+        jobType,
         "SUCCEEDED",
         GenerationStage.WAITING_CONFIRM,
         OffsetDateTime.now(),
@@ -788,29 +823,6 @@ public class WorkService {
     String date = LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
     String suffix = UUID.randomUUID().toString().substring(0, 6).toUpperCase(Locale.ROOT);
     return "YYM-" + date + "-" + suffix;
-  }
-
-  private String buildLyricsFromStory(String storyInput) {
-    String summary = compactSummary(storyInput);
-    return "[Verse]\n"
-        + summary
-        + "\n\n[Chorus]\nThe wind carries the name across Yanyun.\nThe old vow becomes a new song.";
-  }
-
-  private String buildMusicPrompt(String musicStyle, String vocalPreference) {
-    return "Commercial Chinese game OST ballad, style="
-        + firstNonBlank(musicStyle, "cinematic folk pop")
-        + ", vocal="
-        + firstNonBlank(vocalPreference, "AUTO")
-        + ", vertical MP4 ready.";
-  }
-
-  private String compactSummary(String value) {
-    String trimmed = value == null ? "" : value.trim().replaceAll("\\s+", " ");
-    if (trimmed.length() <= 96) {
-      return trimmed;
-    }
-    return trimmed.substring(0, 96);
   }
 
   private String firstNonBlank(String value, String fallback) {

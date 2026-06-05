@@ -15,6 +15,7 @@ import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
 import com.yanyun.music.api.work.WorkDtos.JobAcceptedResponse;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
+import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.QuotaAdapter;
@@ -40,6 +41,8 @@ class WorkServiceWorkflowDispatchTest {
   private final QuotaAdapter quotaAdapter = mock(QuotaAdapter.class);
   private final ModerationAdapter moderationAdapter = mock(ModerationAdapter.class);
   private final PublishAdapter publishAdapter = mock(PublishAdapter.class);
+  private final LyricsGenerationService lyricsGenerationService =
+      mock(LyricsGenerationService.class);
   private final SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
   private final WorkflowOutboxService workflowOutboxService = mock(WorkflowOutboxService.class);
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -114,6 +117,7 @@ class WorkServiceWorkflowDispatchTest {
         quotaAdapter,
         moderationAdapter,
         publishAdapter,
+        lyricsGenerationService,
         songProductionWorkflow,
         properties,
         workflowOutboxService,
@@ -169,6 +173,10 @@ class WorkServiceWorkflowDispatchTest {
         "Mock prompt",
         "[]",
         "[]",
+        "mock cover seed",
+        null,
+        "mock-yanyun-kb-v0",
+        "{}",
         OffsetDateTime.now());
   }
 }

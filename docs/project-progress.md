@@ -1,10 +1,10 @@
 # 项目进度记录
 
-更新时间：2026-06-06 02:20 CST
+更新时间：2026-06-06 03:01 CST
 
 ## 当前阶段
 
-项目已完成第 5 批 DreamMaker Suno/MiniMax 受控真实联调准备：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界，以及真实 Provider 硬开关、共享 DreamMaker client、联调 runbook、安全/验收/交接文档均已落地。当前仍未执行真实 Suno/MiniMax 调用，不自动调用真实 DeepSeek、Image 2 或公司系统。
+项目已完成第 6 批 DeepSeek / 知识库写词润色 Mock 链路：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关，以及 DeepSeek / Knowledge / Prompt / Lyrics 四个写词边界均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、Image 2 或公司系统调用。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
@@ -28,6 +28,8 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 
 第 5 批 DreamMaker 受控真实联调准备已完成：`DREAMMAKER_REAL_CALLS_ENABLED=false` 作为默认硬开关，API 和 worker 共享 `modules:dreammaker` 中的 HTTP client 与 properties；Temporal worker 已注册 Suno/MiniMax Provider；联调需按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动开启。
 
+第 6 批 DeepSeek / 知识库写词润色 Mock 链路已完成：`WorkService` 不再硬编码灵感成歌、填词成歌、润色和续写文本，而是通过 `LyricsGenerationService` 编排 `KnowledgeService`、`PromptTemplateService` 和 `DeepSeekLyricsClient`；当前默认均为 Mock/Fake，不调用真实 DeepSeek。AI 润色和 AI 续写共享 2 次用户侧编辑次数，低质量结果的内部自动重写不消耗用户次数。
+
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
 - `docs/adr/0001-user-web-scope.md`：用户侧 Web 范围决策。
@@ -35,6 +37,7 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `docs/api/openapi-v0.1.yaml`：作品、生成阶段、失败动作、权益提示和发布包交接接口契约。
 - `database/migrations/V202606050245__init_work_domain.sql`：作品域核心业务表。
 - `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`：交给 Gemini 的第 2 批前端任务包。
+- `docs/specs/deepseek-knowledge-lyrics-v0.1.md`：第 6 批 DeepSeek / 知识库写词润色 Mock 链路规格。
 
 ## 进度记录规则
 
@@ -258,6 +261,16 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `music-worker` 已补齐本地 Mock 生产链路所需 Spring bean：Mock 权益、审核、发布、对象存储、远程对象导入和音乐 Provider 选择。
 - `DreamMakerHttpClient` 与 `DreamMakerProperties` 已从 API 应用移动到共享 `modules:dreammaker`，API sync/local 和 Temporal worker 路径共用同一套 JWT、配置和安全检查。
 - 新增 `DREAMMAKER_REAL_CALLS_ENABLED`，默认 false；未显式打开时，即使请求级 `music_provider=suno|minimax` 也会在外部 HTTP 请求前失败。
+- 新增 `docs/specs/deepseek-knowledge-lyrics-v0.1.md`，定义第 6 批 DeepSeek / 知识库写词润色 Mock 链路规格、非目标、持久化口径和验收标准。
+- 新增 `modules:knowledge`，定义 `KnowledgeService`、检索请求/结果、知识库引用和 `MockKnowledgeService`。
+- 新增 `modules:prompt`，定义 `PromptTemplateService`、Prompt 渲染请求/结果和 `MockPromptTemplateService`。
+- 新增 `modules:deepseek`，定义 `DeepSeekLyricsClient`、写词请求/响应和 `MockDeepSeekLyricsClient`。
+- 新增 `modules:lyrics`，定义 `LyricsGenerationService`、写词请求/结果、操作类型和 `DefaultLyricsGenerationService`，负责知识库检索、Prompt 渲染、模型生成和低质量自动重写。
+- `WorkService` 已接入统一写词链路，灵感成歌、填词成歌、AI 润色、AI 续写都通过 `LyricsGenerationService` 产出歌词草案。
+- `lyrics_drafts` 已启用既有 `cover_prompt_seed`、`quality_score`、`knowledge_base_version` 和 `prompt_template_versions` 字段，用于后续封面链路、审计和回放。
+- AI 润色和 AI 续写已共享 2 次用户侧编辑上限；第三次 AI 编辑返回业务冲突。
+- 修复幂等层包裹写操作时业务 4xx 被事务提交异常覆盖成 500 的问题；相关写方法已声明 `noRollbackFor = ResponseStatusException.class`。
+- `Idempotency-Key` 缺失或过短现在由业务校验返回 400，不再被 Spring 缺失 header 异常兜底成 500。
 - `music-worker` 已注册 DreamMaker client、Suno Provider 和 MiniMax Provider；Temporal 模式真实联调不会因为 worker 仅有 Mock Provider 而失败。
 - `MusicGenerationResult` 已增加 `modelName`，`provider_calls.model_name` 可写入 `suno:music-gen:{model}`、`music-minimax:text-to-music:{model}` 或 `mock`。
 - 供应商失败消息进入 `provider_calls`、作品失败状态和用户响应前会脱敏 Bearer token、JWT、key/token 字段并截断。
@@ -331,10 +344,24 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - JAR HTTP guard smoke 成功：API 在 `DREAMMAKER_ACCESS_KEY=fake`、`DREAMMAKER_SECRET_KEY=fake`、`DREAMMAKER_REAL_CALLS_ENABLED=false` 下启动；请求 `music_provider=suno` 确认出歌返回本地保护失败，作品为 `FAILED / MUSIC_GENERATION_FAILED`，`provider_calls` 记录 `SUNO|suno:music-gen:chirp-crow|FAILED`，没有真实外部调用。
 - smoke 后已停止 `music-api`，`8080` 未残留监听进程。
 
+## 第 6 批 DeepSeek / 知识库写词润色 Mock 链路验证结果
+
+- `./gradlew :modules:lyrics:test :apps:music-api:compileJava :apps:music-api:compileTestJava` 成功。
+- `./gradlew spotlessApply spotlessCheck test :apps:music-api:bootJar :apps:music-worker:bootJar` 成功。
+- `DefaultLyricsGenerationServiceTest` 成功：写词结果携带知识库版本、燕云引用、Prompt 模板版本和质量分；低质量 Fake 结果会触发一次内部重写。
+- `WorkServiceTransactionPolicyTest` 成功：被幂等层包裹的主要写方法均声明 `noRollbackFor = ResponseStatusException.class`，避免业务 4xx 被事务提交异常覆盖成 500。
+- JAR HTTP smoke 成功：缺失 `Idempotency-Key` 的 `POST /works/inspiration` 返回 HTTP 400。
+- JAR HTTP smoke 成功：`POST /works/inspiration` 通过 Mock 写词链路创建作品，状态为 `LYRICS_READY / WAITING_CONFIRM`，作品详情返回燕云引用 `Yanyun frontier imagery` 和 `Yanyun ensemble motifs`。
+- JAR HTTP smoke 成功：AI 润色后剩余编辑次数从 2 变 1，AI 续写后剩余编辑次数从 1 变 0。
+- JAR HTTP smoke 成功：第三次 AI 润色返回 HTTP 409，不再被事务异常覆盖为 500。
+- PostgreSQL 抽查成功：最新 smoke 作品的 `lyrics_drafts` 已持久化 `knowledge_base_version=mock-yanyun-kb-v0`、`prompt_template_versions={"lyrics.continue.v1": 1}`，且 `cover_prompt_seed`、`quality_score` 均非空。
+- smoke 后已停止 `music-api`，未留下占用 `8080` 的 API 进程。
+
 ## 待确认事项
 
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认。
 - Suno 和 MiniMax 的 DreamMaker run/status 接入骨架、JWT 鉴权、真实调用硬开关和受控联调文档已实现；非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待真实联调确认。
+- DeepSeek 真实 API 协议、模型参数、失败码、限流策略、计费口径、日志脱敏和受控联调窗口仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认。
 - Outbox v0.1 与 Temporal v0.1 已落地并可本地验证；后续进入真实模型链路前，还需要把当前单一 activity 委托拆成更细粒度、可幂等重试的音乐生成、封面、视频、发布包等活动。
 - 当前发布包已写入本地 mock 对象存储目录，但尚未写入真实 MinIO/S3。
@@ -343,11 +370,11 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 
 ## 下一步建议
 
-1. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
-2. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
-3. 设计运营侧模型选择和降级策略：用户可见模型、后台兜底模型、失败后推荐动作。
-4. 第 6 批补 DeepSeek / 知识库写词润色链路，保持自动化测试使用 Mock/Fake。
-5. 第 7-8 批补封面、Remotion/FFmpeg MP4 成片和 MinIO/S3 发布包强化。
+1. 第 7 批优先补封面生成链路：先写 Image 2 / Mock Cover Adapter 规格，再读取 `lyrics_drafts.cover_prompt_seed` 生成封面资产。
+2. 第 7 批继续补 Remotion/FFmpeg MP4 成片：先用 Mock 音频和 Mock 封面做本地可验证成片，再接真实渲染参数。
+3. 第 8 批补 MinIO/S3 发布包强化：发布包文件结构、URL 有效期、交接状态、清理策略和对象存储配置。
+4. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
+5. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
 
 ## 工作日志
 
@@ -393,3 +420,4 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 00:12 CST | 补齐 DreamMaker JWT 鉴权 | 根据用户补充资料确认 AK/SK 生成 HS256 JWT；`DreamMakerHttpClient` 已改为 `Authorization: Bearer <jwt>`，可选透传 `X-Access-Token`；测试、bootJar、OpenAPI 解析和密钥扫描均通过 |
 | 2026-06-06 01:35 CST | 完成 Temporal 真实编排基础 | 新增 `modules:production`、`modules:workflow`、API local/temporal starter、worker workflow/activity 注册和生命周期；local outbox smoke、Temporal worker smoke、全量 Gradle 验证和 DB 抽查均通过 |
 | 2026-06-06 02:20 CST | 完成 DreamMaker 受控真实联调准备 | 新增真实调用硬开关、共享 DreamMaker client、worker Suno/MiniMax 注册、provider 模型标识、失败信息脱敏和第 5 批联调/安全/验收/交接文档；全量测试、bootJar 和硬开关 HTTP smoke 均通过 |
+| 2026-06-06 03:01 CST | 完成 DeepSeek / 知识库写词润色 Mock 链路 | 新增 Knowledge/Prompt/DeepSeek/Lyrics 模块、统一写词服务、低质量内部重写、AI 编辑次数共享、持久化写词元数据和事务 4xx 修复；全量测试、bootJar、HTTP smoke 和 DB 抽查均通过 |

@@ -47,7 +47,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @RequestBody InspirationCreateRequest request) {
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
@@ -68,7 +68,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @RequestBody LyricsCreateRequest request) {
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
@@ -113,7 +113,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody LyricsPolishRequest request) {
     requireIdempotencyKey(idempotencyKey);
@@ -135,7 +135,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) LyricsContinueRequest request) {
     requireIdempotencyKey(idempotencyKey);
@@ -157,7 +157,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) ConfirmWorkRequest request) {
     requireIdempotencyKey(idempotencyKey);
@@ -179,7 +179,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
@@ -200,7 +200,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) RetryMusicRequest request) {
     requireIdempotencyKey(idempotencyKey);
@@ -222,7 +222,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
@@ -254,7 +254,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
     return idempotencyService.execute(
@@ -273,7 +273,7 @@ public class WorkController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
-      @RequestHeader("Idempotency-Key") String idempotencyKey,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
     requireIdempotencyKey(idempotencyKey);
     return idempotencyService.execute(
