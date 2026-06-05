@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -85,6 +86,12 @@ class HttpRemoteObjectImporterTest {
           "http://localhost/" + request.objectKey(),
           request.contentType(),
           request.content().length);
+    }
+
+    @Override
+    public ObjectStorageDownloadUrl createDownloadUrl(String objectKey) {
+      return new ObjectStorageDownloadUrl(
+          objectKey, "http://localhost/" + objectKey, OffsetDateTime.now().plusHours(1));
     }
   }
 }

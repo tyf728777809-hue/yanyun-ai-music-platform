@@ -30,10 +30,10 @@ import com.yanyun.music.lyrics.LyricsOperation;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
-import com.yanyun.music.publish.PublishAdapter;
-import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaDecision;
+import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
@@ -69,14 +69,13 @@ public class WorkService {
 
   private static final int POLISH_LIMIT = 2;
   private static final int MUSIC_RETRY_LIMIT = 2;
-  private static final String ASSET_BASE_URL = "http://localhost:9000/yanyun-works-local/";
   private static final TypeReference<List<String>> STRING_LIST = new TypeReference<>() {};
   private static final TypeReference<Map<String, Object>> JSON_OBJECT = new TypeReference<>() {};
 
   private final WorkRepository workRepository;
   private final QuotaAdapter quotaAdapter;
   private final ModerationAdapter moderationAdapter;
-  private final PublishAdapter publishAdapter;
+  private final ObjectStorageClient objectStorageClient;
   private final LyricsGenerationService lyricsGenerationService;
   private final SongProductionWorkflow songProductionWorkflow;
   private final WorkflowDispatchProperties workflowDispatchProperties;
@@ -87,7 +86,7 @@ public class WorkService {
       WorkRepository workRepository,
       QuotaAdapter quotaAdapter,
       ModerationAdapter moderationAdapter,
-      PublishAdapter publishAdapter,
+      ObjectStorageClient objectStorageClient,
       LyricsGenerationService lyricsGenerationService,
       SongProductionWorkflow songProductionWorkflow,
       WorkflowDispatchProperties workflowDispatchProperties,
@@ -96,7 +95,7 @@ public class WorkService {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
-    this.publishAdapter = publishAdapter;
+    this.objectStorageClient = objectStorageClient;
     this.lyricsGenerationService = lyricsGenerationService;
     this.songProductionWorkflow = songProductionWorkflow;
     this.workflowDispatchProperties = workflowDispatchProperties;
@@ -459,11 +458,18 @@ public class WorkService {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Only generated works can refresh package URL");
     }
-    if (workRepository.findPublishPackage(workId).isEmpty()) {
+    PublishPackageRow packageRow =
+        workRepository
+            .findPublishPackage(workId)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Publish package not found"));
+    if (packageRow.packageObjectKey() == null || packageRow.packageObjectKey().isBlank()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Publish package not found");
     }
-    PublishHandoff handoff = publishAdapter.refreshPackageUrl(workId.toString());
-    workRepository.updatePublishPackageUrl(workId, handoff.packageUrl(), handoff.expiresAt());
+    ObjectStorageDownloadUrl downloadUrl =
+        objectStorageClient.createDownloadUrl(packageRow.packageObjectKey());
+    workRepository.updatePublishPackageUrl(workId, downloadUrl.url(), downloadUrl.expiresAt());
     return getPublishPackage(userId, workId);
   }
 
@@ -830,7 +836,7 @@ public class WorkService {
   }
 
   private String assetUrl(String objectKey) {
-    return ASSET_BASE_URL + objectKey;
+    return objectStorageClient.createDownloadUrl(objectKey).url();
   }
 
   private String writeJson(Object value) {

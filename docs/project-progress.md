@@ -1,10 +1,10 @@
 # 项目进度记录
 
-更新时间：2026-06-06 03:44 CST
+更新时间：2026-06-06 04:36 CST
 
 ## 当前阶段
 
-项目已完成第 7 批封面与 Remotion/FFmpeg MP4 成片基础：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、CoverGenerationService / VideoRenderService 媒体生成边界，以及 render-worker 本地 16:9 MP4 样例渲染均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用。
+项目已完成第 8 批 MinIO/S3 发布包强化：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、CoverGenerationService / VideoRenderService 媒体生成边界、render-worker 本地 16:9 MP4 样例渲染，以及发布包 JSON 的 local / S3-MinIO 可切换对象存储均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
@@ -14,7 +14,7 @@
 
 `confirmWork` 已进一步拆到 `MockSongProductionWorkflow`：`WorkService` 只负责状态校验和接口返回，出歌编排集中处理权益锁定、音乐 Provider、媒体资产、发布包、发布包审核、权益扣减、失败释放和 generation job 收口。当前仍是同步 Mock Workflow，为后续 Temporal Workflow 接入做准备。
 
-Mock 对象存储边界已落地：发布包 JSON 会通过 `ObjectStorageClient` 写入本地 `build/local-object-storage/yanyun-works-local/packages/{work_id}.json`，接口返回的 `package_url` 与本地写出的对象 key 保持一致。当前仍不写入真实 MinIO/S3，公司对象存储协议待后续确认。
+对象存储边界已升级：发布包 JSON 会通过 `ObjectStorageClient` 写入本地文件存储或 S3/MinIO 兼容对象存储，object key 使用 `yanyun-ai-music/{env}/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json` 分层结构；`package_url` 由对象存储客户端按持久化 `package_object_key` 签发或刷新，不再在业务代码中硬编码本地 URL。
 
 音乐 Provider 选择已从硬编码 `MOCK` 改为配置驱动：`MUSIC_PROVIDER=mock|suno|minimax` 会映射到统一 `MusicProviderSelection`。当前默认 `mock` 可完整成功；`suno` / `minimax` 已接入 DreamMaker submit + poll 骨架，但缺少 `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 时会在发起外部请求前进入 `MUSIC_GENERATION_FAILED` 可重试失败，并释放已锁权益。
 
@@ -32,6 +32,8 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 
 第 7 批封面与视频成片基础已完成：`MockSongProductionWorkflow` 不再直接硬编码封面、视频和时间轴路径，而是通过 `CoverGenerationService` 与 `VideoRenderService` 生成 `COVER`、`VIDEO`、`TIMELINE` 资产描述，并连同 `AUDIO` 统一写入 `media_assets`；发布包 JSON 已按媒体资产 object key 组装 `video.url`、`cover.url` 和 `lyrics.timeline_url`。`apps/render-worker` 已新增 `LyricVideo16x9` composition，并可本地渲染 H.264/AAC、1920x1080、约 8 秒的 MP4 样例。
 
+第 8 批 MinIO/S3 发布包强化已完成：新增 S3/MinIO 兼容 `ObjectStorageClient`、统一对象存储配置、结构化发布包 object key、presigned GET URL 签发、`refresh-url` 按数据库 `package_object_key` 重新签发，以及本地文件模式 TTL 口径。Docker Compose 内置 MinIO 已完成发布包写入、对象存在性、URL 下载和刷新签名 smoke；默认 local 模式仍可跑通。
+
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
 - `docs/adr/0001-user-web-scope.md`：用户侧 Web 范围决策。
@@ -41,6 +43,7 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `docs/frontend/gemini-batch-02-mock-workflow-task-package.md`：交给 Gemini 的第 2 批前端任务包。
 - `docs/specs/deepseek-knowledge-lyrics-v0.1.md`：第 6 批 DeepSeek / 知识库写词润色 Mock 链路规格。
 - `docs/specs/cover-video-rendering-v0.1.md`：第 7 批封面与 Remotion/FFmpeg MP4 成片基础规格。
+- `docs/specs/minio-s3-publish-package-storage-v0.1.md`：第 8 批 MinIO/S3 发布包强化规格。
 
 ## 进度记录规则
 
@@ -93,6 +96,9 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 新增 `modules:storage` 对象存储合约和 `LocalObjectStorageClient`，本地阶段可把发布包 JSON 写到 `build/local-object-storage/yanyun-works-local`。
 - `MockSongProductionWorkflow` 已接入对象存储写入；发布包准备或写入失败会进入 `PACKAGE_BUILD_FAILED`，释放已锁权益，并标记为可重试失败。
 - 本地运行手册已补充 package JSON 写入位置和检查方式。
+- 新增 S3/MinIO 兼容对象存储实现，支持 endpoint override、bucket、region、path-style、自动创建本地 bucket 和 presigned GET URL。
+- 发布包 object key 已改为 `yanyun-ai-music/{env}/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json`；`refresh-url` 已改为使用持久化 `package_object_key` 重新签发 URL。
+- `.env.example` 和 API/worker 配置已补齐 `OBJECT_STORAGE_PROVIDER=local|s3`、`S3_ENDPOINT`、`S3_PUBLIC_ENDPOINT`、bucket、region、TTL 等本地对象存储变量。
 - 新增 `MusicProviderSelection`，解析 `MUSIC_PROVIDER=mock|suno|minimax`；`music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean。
 - `MockSongProductionWorkflow` 已按配置选择音乐 Provider；Provider 未实现或抛异常时会进入 `MUSIC_GENERATION_FAILED`，释放权益并关闭 job。
 - 修正 `IdempotencyService` 外层事务边界：`ResponseStatusException` 不再回滚业务失败状态，避免配置到未实现 Provider 时作品仍停留在 `LYRICS_READY`。
@@ -380,7 +386,20 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 发布包 smoke 成功：`GET /api/v1/works/{work_id}/publish-package` 返回 `PACKAGE_READY`，`video.url`、`cover.url`、`lyrics.timeline_url` 均由对应媒体资产 object key 推导。
 - 本地文件 smoke 成功：`build/local-object-storage/yanyun-works-local/packages/{work_id}.json` 已真实写出。
 - smoke 后已停止 `music-api`，未留下占用 `8080` 的 API 进程。
-- 当前 Java workflow 仍未直接调用 render-worker 生成真实业务 MP4 文件；本批完成的是媒体生成边界、发布包引用和 render-worker 工具链样例。后续需把 render-worker 输出、对象存储写入和发布包真实视频文件纳入第 8 批/后续真实成片链路。
+- 当前 Java workflow 仍未直接调用 render-worker 生成真实业务 MP4 文件；本批完成的是媒体生成边界、发布包引用和 render-worker 工具链样例。后续需把 render-worker 输出、对象存储写入和发布包真实视频文件纳入真实成片链路。
+
+## 第 8 批 MinIO/S3 发布包强化验证结果
+
+- 新增 `docs/specs/minio-s3-publish-package-storage-v0.1.md`，明确本批只强化发布包 JSON 对象存储、URL 签发/刷新和本地 MinIO smoke，不把真实媒体文件上传、真实云账号或公司对象存储纳入完成条件。
+- `./gradlew :modules:storage:test :apps:music-api:compileJava :apps:music-api:compileTestJava :apps:music-worker:compileJava` 成功。
+- `./gradlew spotlessApply :modules:storage:test :modules:publish:test :apps:music-api:test --tests com.yanyun.music.api.work.WorkServiceWorkflowDispatchTest --tests com.yanyun.music.production.MockSongProductionWorkflowTest` 成功。
+- `./gradlew spotlessCheck test :apps:music-api:bootJar :apps:music-worker:bootJar` 成功。
+- S3/MinIO JAR smoke 成功：`OBJECT_STORAGE_PROVIDER=s3`、`S3_ENDPOINT=http://localhost:9000`、`S3_BUCKET_YANYUN_WORKS=yanyun-works-local` 下，填词创建作品并确认出歌后进入 `PACKAGE_READY`。
+- MinIO 对象抽查成功：发布包写入 `yanyun-ai-music/local/2026/06/06/{work_id}/package/publish-package.json`，`mc stat` 可见对象，下载后的 package JSON `work_id` 与作品一致。
+- 发布包刷新 smoke 成功：`POST /api/v1/works/{work_id}/publish-package/refresh-url` 使用数据库中的 `package_object_key` 重新签发 URL，返回 URL 包含 S3 签名参数。
+- 默认 local JAR smoke 成功：`OBJECT_STORAGE_PROVIDER=local` 下，确认出歌后发布包 JSON 写入 `build/local-object-storage/yanyun-works-local/yanyun-ai-music/local/2026/06/06/{work_id}/package/publish-package.json`，作品为 `GENERATED / PACKAGE_READY`。
+- smoke 后已停止 `music-api`，未留下占用 `8080` 的 API 进程。
+- 当前 Java workflow 的 `AUDIO`、`COVER`、`VIDEO`、`TIMELINE` 仍是 Mock asset object key/URL 口径；本批只保证发布包 JSON 自身可写入 local 或 MinIO/S3。
 
 ## 待确认事项
 
@@ -389,15 +408,15 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - DeepSeek 真实 API 协议、模型参数、失败码、限流策略、计费口径、日志脱敏和受控联调窗口仍待确认。
 - Image 2 API 细节、公司对象存储规范、日志与数据留存规范仍待确认；本地 Mock 封面边界已完成，真实 Image 2 接入尚未开始。
 - Outbox v0.1 与 Temporal v0.1 已落地并可本地验证；后续进入真实模型链路前，还需要把当前单一 activity 委托拆成更细粒度、可幂等重试的音乐生成、封面、视频、发布包等活动。
-- 当前发布包 JSON 已写入本地 mock 对象存储目录，但封面、视频、时间轴仍是 Mock asset 描述和 URL 口径，尚未把真实媒体文件写入 MinIO/S3。
+- 当前发布包 JSON 已可写入本地文件存储和 MinIO/S3 兼容对象存储；封面、视频、时间轴仍是 Mock asset 描述和 URL 口径，尚未把真实媒体文件写入 MinIO/S3。
 - 当前音乐重试已有次数上限和状态抢占，DreamMaker 失败码也已有保守映射；真实联调后仍需根据具体非零 code 和 failed payload 精细化 retryable / non-retryable 规则。
 - 运营侧模型降级策略仍待定义：例如 Suno 连续失败是否自动推荐 MiniMax，哪些模型对用户可见，哪些仅作为后台兜底。
 
 ## 下一步建议
 
-1. 第 8 批补 MinIO/S3 发布包强化：明确真实媒体对象写入、发布包文件结构、URL 有效期、交接状态、清理策略和对象存储配置。
-2. 补 Java workflow 到 render-worker 的真实成片调用边界，逐步从 Mock `VideoRenderService` 过渡到可落盘/可上传的 MP4 文件。
-3. 审查 Gemini CLI 生成的独立前端原型 `prototypes/gemini-web-v1`，确认移动端 390px 与桌面 1440px 的页面流程、状态驱动和 API 调用符合 OpenAPI v0.1。
+1. 第 9 批重新整理前端高保真任务包与验收标准；本轮 Gemini 生成的 `prototypes/gemini-web-v1` 因视觉质量不达标已删除，不作为后续审查基线。
+2. 补 Java workflow 到 render-worker 的真实成片调用边界，逐步从 Mock `VideoRenderService` 过渡到可落盘/可上传的 MP4 文件，并把真实视频/封面/时间轴对象写入 MinIO/S3。
+3. 规划公司 Adapter 接入与部署交接包，明确账号、审核、权益、发布、分享、对象存储和部署变量的替换清单。
 4. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
 5. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
 
@@ -447,3 +466,5 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 02:20 CST | 完成 DreamMaker 受控真实联调准备 | 新增真实调用硬开关、共享 DreamMaker client、worker Suno/MiniMax 注册、provider 模型标识、失败信息脱敏和第 5 批联调/安全/验收/交接文档；全量测试、bootJar 和硬开关 HTTP smoke 均通过 |
 | 2026-06-06 03:01 CST | 完成 DeepSeek / 知识库写词润色 Mock 链路 | 新增 Knowledge/Prompt/DeepSeek/Lyrics 模块、统一写词服务、低质量内部重写、AI 编辑次数共享、持久化写词元数据和事务 4xx 修复；全量测试、bootJar、HTTP smoke 和 DB 抽查均通过 |
 | 2026-06-06 03:44 CST | 完成封面与 MP4 成片基础 | 新增 Image2/Media 边界、Cover/Video Mock 服务、发布包媒体引用更新和 `LyricVideo16x9` Remotion 样例；全量 Gradle、render-worker build/test/render、ffprobe、HTTP smoke 和 DB 抽查均通过 |
+| 2026-06-06 04:36 CST | 完成 MinIO/S3 发布包强化 | 新增 S3/MinIO 对象存储客户端、结构化发布包 object key、presigned URL 签发/刷新和对象存储运行手册；全量 Gradle、MinIO smoke、local smoke 和 8080 清理检查均通过 |
+| 2026-06-06 04:40 CST | Gemini 前端原型废弃 | 子 Agent 调用 Gemini 生成的 `prototypes/gemini-web-v1` 因视觉质量不达标已删除；后续第 9 批需重新整理更强约束的高保真前端任务包 |

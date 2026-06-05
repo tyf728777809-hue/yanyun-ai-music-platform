@@ -23,6 +23,7 @@ import com.yanyun.music.quota.QuotaCommit;
 import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
 import com.yanyun.music.storage.RemoteObjectImportRequest;
 import com.yanyun.music.storage.RemoteObjectImporter;
@@ -51,7 +52,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
-  private static final String ASSET_BASE_URL = "http://localhost:9000/yanyun-works-local/";
   private static final Pattern BEARER_TOKEN_PATTERN =
       Pattern.compile("(?i)bearer\\s+[a-z0-9._~+/=-]+");
   private static final Pattern JWT_PATTERN =
@@ -213,6 +213,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     String packageJson;
     StoredObject storedPackage;
+    ObjectStorageDownloadUrl packageDownloadUrl;
     try {
       packageJson = writeJson(buildPackageJson(workId, input, mediaAssets));
       storedPackage =
@@ -221,6 +222,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                   handoff.packageObjectKey(),
                   "application/json",
                   packageJson.getBytes(StandardCharsets.UTF_8)));
+      packageDownloadUrl = objectStorageClient.createDownloadUrl(storedPackage.objectKey());
     } catch (RuntimeException exception) {
       return fail(
           workId,
@@ -239,8 +241,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             PackageStatus.PACKAGE_READY,
             packageJson,
             storedPackage.objectKey(),
-            storedPackage.url(),
-            handoff.expiresAt(),
+            packageDownloadUrl.url(),
+            packageDownloadUrl.expiresAt(),
             null,
             null,
             null));
@@ -482,7 +484,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   }
 
   private String assetUrl(MediaAssetRow asset) {
-    return ASSET_BASE_URL + asset.objectKey();
+    return objectStorageClient.createDownloadUrl(asset.objectKey()).url();
   }
 
   private String firstNonBlank(String value, String fallback) {

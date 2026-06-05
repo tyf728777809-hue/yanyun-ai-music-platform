@@ -17,8 +17,9 @@ import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.moderation.ModerationAdapter;
-import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.QuotaAdapter;
+import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
@@ -28,6 +29,7 @@ import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.LyricsDraftRow;
+import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -40,7 +42,7 @@ class WorkServiceWorkflowDispatchTest {
   private final WorkRepository workRepository = mock(WorkRepository.class);
   private final QuotaAdapter quotaAdapter = mock(QuotaAdapter.class);
   private final ModerationAdapter moderationAdapter = mock(ModerationAdapter.class);
-  private final PublishAdapter publishAdapter = mock(PublishAdapter.class);
+  private final ObjectStorageClient objectStorageClient = mock(ObjectStorageClient.class);
   private final LyricsGenerationService lyricsGenerationService =
       mock(LyricsGenerationService.class);
   private final SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
@@ -111,12 +113,49 @@ class WorkServiceWorkflowDispatchTest {
     verify(songProductionWorkflow, never()).produce(any());
   }
 
+  @Test
+  void refreshPublishPackageUrlUsesPersistedPackageObjectKey() {
+    UUID workId = UUID.randomUUID();
+    WorkRow generated = work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY);
+    PublishPackageRow packageRow =
+        new PublishPackageRow(
+            UUID.randomUUID(),
+            workId,
+            PackageStatus.PACKAGE_READY,
+            "{}",
+            "yanyun-ai-music/local/2026/06/06/" + workId + "/package/publish-package.json",
+            "http://old-url",
+            OffsetDateTime.parse("2026-06-06T01:00:00Z"),
+            null,
+            OffsetDateTime.parse("2026-06-06T00:00:00Z"),
+            OffsetDateTime.parse("2026-06-06T00:00:00Z"));
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(generated))
+        .thenReturn(Optional.of(generated));
+    when(workRepository.findPublishPackage(workId)).thenReturn(Optional.of(packageRow));
+    when(objectStorageClient.createDownloadUrl(packageRow.packageObjectKey()))
+        .thenReturn(
+            new ObjectStorageDownloadUrl(
+                packageRow.packageObjectKey(),
+                "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey(),
+                OffsetDateTime.parse("2026-06-07T00:00:00Z")));
+
+    service(syncProperties()).refreshPublishPackageUrl("user-1", workId);
+
+    verify(objectStorageClient).createDownloadUrl(packageRow.packageObjectKey());
+    verify(workRepository)
+        .updatePublishPackageUrl(
+            workId,
+            "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey(),
+            OffsetDateTime.parse("2026-06-07T00:00:00Z"));
+  }
+
   private WorkService service(WorkflowDispatchProperties properties) {
     return new WorkService(
         workRepository,
         quotaAdapter,
         moderationAdapter,
-        publishAdapter,
+        objectStorageClient,
         lyricsGenerationService,
         songProductionWorkflow,
         properties,

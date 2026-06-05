@@ -4,26 +4,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 
 public final class LocalObjectStorageClient implements ObjectStorageClient {
 
   private final Path rootDirectory;
   private final String publicBaseUrl;
+  private final Duration urlTtl;
 
   public LocalObjectStorageClient(Path rootDirectory, String publicBaseUrl) {
+    this(rootDirectory, publicBaseUrl, Duration.ofHours(24));
+  }
+
+  public LocalObjectStorageClient(Path rootDirectory, String publicBaseUrl, Duration urlTtl) {
     if (rootDirectory == null) {
       throw new IllegalArgumentException("rootDirectory is required");
     }
     if (publicBaseUrl == null || publicBaseUrl.isBlank()) {
       throw new IllegalArgumentException("publicBaseUrl is required");
     }
+    if (urlTtl == null || urlTtl.isNegative() || urlTtl.isZero()) {
+      throw new IllegalArgumentException("urlTtl must be positive");
+    }
     this.rootDirectory = rootDirectory.toAbsolutePath().normalize();
     this.publicBaseUrl = trimTrailingSlash(publicBaseUrl);
+    this.urlTtl = urlTtl;
   }
 
   @Override
   public StoredObject putObject(ObjectStoragePutRequest request) {
-    Path target = rootDirectory.resolve(request.objectKey()).normalize();
+    String objectKey = ObjectStorageKeys.requireSafeObjectKey(request.objectKey());
+    Path target = rootDirectory.resolve(objectKey).normalize();
     if (!target.startsWith(rootDirectory)) {
       throw new IllegalArgumentException("objectKey escapes storage root");
     }
@@ -39,13 +51,17 @@ public final class LocalObjectStorageClient implements ObjectStorageClient {
           StandardOpenOption.TRUNCATE_EXISTING,
           StandardOpenOption.WRITE);
       return new StoredObject(
-          request.objectKey(),
-          publicBaseUrl + "/" + request.objectKey(),
-          request.contentType(),
-          content.length);
+          objectKey, createDownloadUrl(objectKey).url(), request.contentType(), content.length);
     } catch (IOException exception) {
-      throw new IllegalStateException("Failed to write object: " + request.objectKey(), exception);
+      throw new IllegalStateException("Failed to write object: " + objectKey, exception);
     }
+  }
+
+  @Override
+  public ObjectStorageDownloadUrl createDownloadUrl(String objectKey) {
+    String safeObjectKey = ObjectStorageKeys.requireSafeObjectKey(objectKey);
+    return new ObjectStorageDownloadUrl(
+        safeObjectKey, publicBaseUrl + "/" + safeObjectKey, OffsetDateTime.now().plus(urlTtl));
   }
 
   private String trimTrailingSlash(String value) {

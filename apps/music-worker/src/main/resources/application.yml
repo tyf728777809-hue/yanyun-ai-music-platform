@@ -24,6 +24,20 @@ management:
 yanyun:
   music:
     provider: ${MUSIC_PROVIDER:mock}
+  storage:
+    provider: ${OBJECT_STORAGE_PROVIDER:local}
+    environment: ${YANYUN_ENV:local}
+    local-root-directory: ${OBJECT_STORAGE_LOCAL_ROOT:build/local-object-storage/${S3_BUCKET_YANYUN_WORKS:yanyun-works-local}}
+    public-base-url: ${OBJECT_STORAGE_PUBLIC_BASE_URL:http://localhost:9000/${S3_BUCKET_YANYUN_WORKS:yanyun-works-local}}
+    endpoint: ${S3_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
+    public-endpoint: ${S3_PUBLIC_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
+    region: ${S3_REGION:us-east-1}
+    bucket: ${S3_BUCKET_YANYUN_WORKS:yanyun-works-local}
+    access-key: ${S3_ACCESS_KEY:${MINIO_ROOT_USER:minioadmin}}
+    secret-key: ${S3_SECRET_KEY:${MINIO_ROOT_PASSWORD:minioadmin}}
+    path-style-enabled: ${S3_PATH_STYLE_ENABLED:true}
+    auto-create-bucket: ${S3_AUTO_CREATE_BUCKET:true}
+    url-ttl: ${OBJECT_STORAGE_URL_TTL:24h}
   dreammaker:
     base-url: ${DREAMMAKER_API_BASE_URL:https://api-all.dreammaker.netease.com}
     access-key: ${DREAMMAKER_ACCESS_KEY:}

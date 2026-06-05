@@ -160,13 +160,48 @@ curl http://localhost:8080/health
 curl http://localhost:8080/actuator/health
 ```
 
-本地 Mock 发布包文件会写入：
+对象存储默认走本地文件模式：
 
 ```text
-build/local-object-storage/yanyun-works-local/packages/{work_id}.json
+build/local-object-storage/yanyun-works-local/yanyun-ai-music/local/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json
 ```
 
-确认出歌后可用 `GET /api/v1/works/{work_id}/publish-package` 查看 `package_url`，并用本地文件检查 package JSON 内容。
+确认出歌后可用 `GET /api/v1/works/{work_id}/publish-package` 查看当前可访问链接和
+`package_url_expires_at`，并用本地文件检查 package JSON 内容。刷新链接接口会复用数据库中的
+`package_object_key`，不会重新猜测文件路径。
+
+如需验证 Docker Compose 内置 MinIO，可用 S3 兼容模式启动 API：
+
+```bash
+OBJECT_STORAGE_PROVIDER=s3 \
+S3_ENDPOINT=http://localhost:9000 \
+S3_PUBLIC_ENDPOINT=http://localhost:9000 \
+S3_ACCESS_KEY=minioadmin \
+S3_SECRET_KEY=minioadmin \
+S3_BUCKET_YANYUN_WORKS=yanyun-works-local \
+S3_PATH_STYLE_ENABLED=true \
+S3_AUTO_CREATE_BUCKET=true \
+MUSIC_PROVIDER=mock \
+DREAMMAKER_REAL_CALLS_ENABLED=false \
+./gradlew :apps:music-api:bootRun
+```
+
+`minioadmin` 只用于本地 Docker 开发默认账号，不得替代公司或生产对象存储凭据。MinIO 模式生成后可抽查对象：
+
+```bash
+docker exec yanyun-minio mc alias set ylocal http://localhost:9000 minioadmin minioadmin
+docker exec yanyun-minio mc stat \
+  ylocal/yanyun-works-local/yanyun-ai-music/local/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json
+```
+
+发布包 URL 为 presigned GET URL，过期后调用：
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/works/{work_id}/publish-package/refresh-url" \
+  -H "Content-Type: application/json" \
+  -H "X-Mock-User-Id: local-user" \
+  -H "Idempotency-Key: refresh-package-{uuid}"
+```
 
 Worker 单独健康检查：
 
@@ -196,5 +231,5 @@ npm test
 ## Current Boundary
 
 当前自动化测试只验证工程、Mock 业务链路、Outbox/Workflow 启动边界、Temporal worker
-注册和 activity 委托、DreamMaker Provider/Adapter 边界和本地发布包文件写入，不调用真实
-DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。
+注册和 activity 委托、DreamMaker Provider/Adapter 边界、发布包 JSON 的本地文件和 MinIO/S3
+写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。

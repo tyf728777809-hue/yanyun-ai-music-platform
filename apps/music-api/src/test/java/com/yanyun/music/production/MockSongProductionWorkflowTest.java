@@ -30,6 +30,7 @@ import com.yanyun.music.quota.QuotaCommit;
 import com.yanyun.music.quota.QuotaLock;
 import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
 import com.yanyun.music.storage.RemoteObjectImportRequest;
 import com.yanyun.music.storage.RemoteObjectImporter;
@@ -620,6 +621,7 @@ class MockSongProductionWorkflowTest {
       MusicProvider musicProvider,
       MusicProviderType providerType,
       VideoRenderService videoRenderer) {
+    stubObjectStorageDownloadUrls();
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,
@@ -632,6 +634,18 @@ class MockSongProductionWorkflowTest {
         new MockCoverGenerationService(),
         videoRenderer,
         objectMapper);
+  }
+
+  private void stubObjectStorageDownloadUrls() {
+    when(objectStorageClient.createDownloadUrl(any()))
+        .thenAnswer(
+            invocation -> {
+              String objectKey = invocation.getArgument(0, String.class);
+              return new ObjectStorageDownloadUrl(
+                  objectKey,
+                  "http://localhost/" + objectKey,
+                  OffsetDateTime.parse("2026-06-05T12:00:00Z"));
+            });
   }
 
   private MusicProvider mockMusicProvider() {

@@ -17,12 +17,12 @@ import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.MockQuotaAdapter;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.storage.HttpRemoteObjectImporter;
-import com.yanyun.music.storage.LocalObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageClient;
+import com.yanyun.music.storage.ObjectStorageClientFactory;
+import com.yanyun.music.storage.ObjectStorageProperties;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.suno.SunoMusicProvider;
 import com.yanyun.music.suno.SunoMusicProviderOptions;
-import java.nio.file.Path;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -43,15 +43,19 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
-  PublishAdapter publishAdapter() {
-    return new MockPublishAdapter();
+  PublishAdapter publishAdapter(@Value("${yanyun.storage.environment:local}") String environment) {
+    return new MockPublishAdapter(environment);
   }
 
   @Bean
-  ObjectStorageClient objectStorageClient() {
-    return new LocalObjectStorageClient(
-        Path.of("build/local-object-storage/yanyun-works-local"),
-        "http://localhost:9000/yanyun-works-local");
+  @ConfigurationProperties(prefix = "yanyun.storage")
+  ObjectStorageProperties objectStorageProperties() {
+    return new ObjectStorageProperties();
+  }
+
+  @Bean
+  ObjectStorageClient objectStorageClient(ObjectStorageProperties objectStorageProperties) {
+    return ObjectStorageClientFactory.create(objectStorageProperties);
   }
 
   @Bean
