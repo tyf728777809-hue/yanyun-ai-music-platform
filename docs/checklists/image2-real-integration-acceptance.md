@@ -49,6 +49,7 @@
 - [ ] 发布包不包含供应商原始图片 URL 或供应商凭据。
 - [ ] 终端联调结束后已 `unset` 敏感环境变量。
 - [ ] 可选使用 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行单作品公网 smoke；若 API 已手动启动，则使用 `scripts/smoke/wellapi-image2-real-cover-smoke.sh`。
+- [ ] 生产目标 DreamMaker Image 2 可用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行单作品 smoke；若 API 已手动启动，则使用 `scripts/smoke/dreammaker-image2-real-cover-smoke.sh`。
 
 ## 交接
 

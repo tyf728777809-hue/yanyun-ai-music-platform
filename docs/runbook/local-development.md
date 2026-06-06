@@ -148,6 +148,7 @@ TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 只读预检可以通过总入口委托执行。它只检查当前 shell 环境变量和可选 API readiness，不调用供应商：
@@ -156,6 +157,7 @@ TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 真实执行必须显式使用 `MODE=execute`，同时提供 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的

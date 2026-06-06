@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 03:42 CST
+更新时间：2026-06-07 03:53 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -68,7 +68,7 @@
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认当前后端凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式；当前公网联调用 WellAPI，正式生产目标 DreamMaker Image 2 路径必须保留。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
-- [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、render-worker 和公司 Adapter 仍保持 Mock。
+- [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
 
 ## F. 公司 Adapter 交接

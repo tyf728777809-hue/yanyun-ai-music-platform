@@ -23,7 +23,7 @@ Targets:
   dreammaker-minimax  Production-target MiniMax path through DreamMaker.
   deepseek            Real lyrics model path; script: deepseek-real-lyrics-smoke.sh
   wellapi-image2      Public-network Image 2 smoke path; not the production replacement for DreamMaker.
-  dreammaker-image2   Production-target Image 2 path through DreamMaker; preflight/manual for now.
+  dreammaker-image2   Production-target Image 2 path through DreamMaker.
 
 Modes:
   list       Print target matrix only.
@@ -51,7 +51,7 @@ dreammaker-suno    production-target music       script: dreammaker-real-music-s
 dreammaker-minimax production-target music       script: dreammaker-real-music-stack-smoke.sh REAL_PROVIDER=minimax
 deepseek           real lyrics model             script: deepseek-real-lyrics-smoke.sh
 wellapi-image2     public-network smoke          script: wellapi-image2-real-cover-stack-smoke.sh
-dreammaker-image2  production-target image2      preflight + runbook/manual
+dreammaker-image2  production-target image2      script: dreammaker-image2-real-cover-stack-smoke.sh
 
 DreamMaker music and DreamMaker Image 2 must remain the production-target paths.
 Yunwu and WellAPI are current public-network controlled smoke paths only.
@@ -86,7 +86,7 @@ target_note() {
       printf '%s\n' "WellAPI Image 2 is for current public-network controlled smoke. It does not replace DreamMaker Image 2 production."
       ;;
     dreammaker-image2)
-      printf '%s\n' "DreamMaker Image 2 is a production-target path. A dedicated stack smoke is not available yet."
+      printf '%s\n' "DreamMaker Image 2 is a production-target path. Open only the Image 2 path for first smoke; keep music/DeepSeek/company systems mocked."
       ;;
     *)
       fail "Unsupported target: $1"
@@ -122,7 +122,7 @@ print_plan() {
       printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 TARGET=wellapi-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
       ;;
     dreammaker-image2)
-      printf 'Execute: not available through this index yet; use the runbook after preflight.\n'
+      printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
       ;;
     *)
       fail "Unsupported target: $target"
@@ -163,7 +163,7 @@ execute_target() {
       ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-smoke.sh"
       ;;
     dreammaker-image2)
-      fail "No dedicated DreamMaker Image 2 stack smoke script yet. Run preflight, then follow docs/runbook/image2-controlled-real-integration.md."
+      ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE="${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-image2-real-cover-stack-smoke.sh"
       ;;
     *)
       fail "Unsupported target: $target"

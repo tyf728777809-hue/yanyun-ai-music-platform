@@ -48,7 +48,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - EC-2: Unknown mode MUST fail with supported mode names.
 - EC-3: `MODE=execute` for DreamMaker music MUST set `REAL_PROVIDER=suno|minimax` only for the delegated command scope.
 - EC-4: `MODE=execute` for WellAPI Image 2 MUST not open music, DeepSeek, render-worker, or company Adapter real paths by itself.
-- EC-5: `dreammaker-image2` remains preflight/manual until a dedicated safe stack smoke exists.
+- EC-5: `dreammaker-image2` MUST delegate to its dedicated stack smoke and still require `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1`.
 
 ## API Contracts
 
@@ -62,11 +62,12 @@ N/A - this feature is a local shell orchestration entry point and does not add H
 | `MODE` | string | Optional; `list`, `plan`, `preflight`, `execute` | Operation mode. Defaults to `list` when target is omitted, otherwise `plan`. |
 | `ALLOW_REAL_MODEL_SMOKE` | string | Required as `1` only for `MODE=execute` | Global explicit real-call gate. |
 | `ALLOW_DEEPSEEK_REAL_SMOKE` | string | Required as `1` only for DeepSeek delegated execution | Target-specific explicit real-call gate for `scripts/smoke/deepseek-real-lyrics-smoke.sh`. |
+| `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE` | string | Required as `1` only for DreamMaker Image 2 delegated execution | Target-specific explicit real-call gate for `scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh`. |
 
 ## Out of Scope
 
 - OS-1: This does not run all real providers as a suite.
 - OS-2: This does not replace per-provider runbooks or checklists.
-- OS-3: This does not add a DreamMaker Image 2 full-stack smoke script.
+- OS-3: This does not run DreamMaker Image 2 unless the operator explicitly uses `MODE=execute` with both global and target allow gates.
 - OS-4: This does not store credentials, read `.env`, or prompt for secrets.
 - OS-5: This does not call real providers unless the operator explicitly uses `MODE=execute` with all required allow gates.

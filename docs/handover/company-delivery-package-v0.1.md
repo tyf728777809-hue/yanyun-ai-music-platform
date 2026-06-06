@@ -1,6 +1,6 @@
 # 公司开发交接包 v0.1
 
-更新时间：2026-06-07 03:42 CST
+更新时间：2026-06-07 03:53 CST
 状态：本地 Mock 闭环可实测；真实模型和公司系统仍按受控联调 / 公司接入推进。
 
 ## 1. 先读结论
@@ -91,13 +91,14 @@ TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 首次真实模型联调建议一次只打开一个外部成本点：
 
 1. 真实音乐：当前公网可先测 `yunwu-suno`；公司内网或生产目标切回 `dreammaker-suno` / `dreammaker-minimax`。
 2. 真实写词：单独按 DeepSeek runbook 打开 `AGENT_REAL_CALLS_ENABLED=true` 和 `DEEPSEEK_REAL_CALLS_ENABLED=true`，再通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 跑 1 条写词样本。
-3. 真实封面：当前公网可先测 `wellapi-image2`；生产目标切回 `dreammaker-image2`。
+3. 真实封面：当前公网可先测 `wellapi-image2`；生产目标通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 验证 `dreammaker-image2`。
 
 真实执行必须显式走 `MODE=execute`，同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的 `ALLOW_*` 开关。真实密钥只允许通过 shell、部署 Secret 或公司配置中心注入，不能写入仓库、镜像、文档、截图、日志或提交信息。
 
@@ -133,6 +134,7 @@ TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 | 前端真实后端模式 | `cd prototypes/Claude-web-v1 && npm run smoke:real-backend` |
 | 真实模型计划 / 预检 | `TARGET=<target> MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh` |
 | DeepSeek 单样本写词 smoke | `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` |
+| DreamMaker Image 2 单作品封面 smoke | `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` |
 
 ## 10. 当前仍需公司或后续阶段完成
 

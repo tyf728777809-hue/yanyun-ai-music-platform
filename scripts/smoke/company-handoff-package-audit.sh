@@ -73,6 +73,7 @@ required_executables=(
   "scripts/smoke/api-main-flow.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
+  "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
 )
 
 for file in "${required_executables[@]}"; do
@@ -93,6 +94,7 @@ require_package_pattern 'company-adapter-readiness-smoke\.sh' 'package reference
 require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references local delivery evidence audit'
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
 require_package_pattern 'deepseek-real-lyrics-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek single-sample smoke'
+require_package_pattern 'dreammaker-image2-real-cover-stack-smoke\.sh|TARGET=dreammaker-image2 MODE=execute' 'package references DreamMaker Image2 single-work smoke'
 require_package_pattern '公司系统负责|公司社区系统' 'package states company-system responsibility'
 require_package_pattern '不调用真实模型|不访问真实公司系统|不调用真实供应商' 'package includes no-real-call safety language'
 require_package_pattern 'prototypes/Claude-web-v1' 'package references current frontend acceptance target'

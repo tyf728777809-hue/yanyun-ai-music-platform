@@ -83,6 +83,49 @@ scripts/smoke/wellapi-image2-real-cover-smoke.sh
 
 两个脚本都会真实调用 WellAPI；不要作为普通自动化测试运行。当前 workflow 的封面请求尺寸固定为 1920x1080，`IMAGE2_SIZE=2048x1152` 只是 Image 2 客户端在直接请求尺寸无效时使用的兜底值。
 
+若要验证正式生产目标 DreamMaker Image 2 路径，先切换凭据和后端：
+
+```bash
+export IMAGE_PROVIDER=image2
+export IMAGE2_BACKEND=dreammaker
+export IMAGE_REAL_CALLS_ENABLED=true
+export DREAMMAKER_REAL_CALLS_ENABLED=true
+export DREAMMAKER_API_BASE_URL=https://api-all.dreammaker.netease.com
+export DREAMMAKER_ACCESS_KEY="<from-secure-channel>"
+export DREAMMAKER_SECRET_KEY="<from-secure-channel>"
+export IMAGE2_MODEL_NAME=gpt-image-2
+```
+
+只读预检：
+
+```bash
+TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+```
+
+一键 stack smoke：
+
+```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
+ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 \
+TARGET=dreammaker-image2 \
+MODE=execute \
+scripts/smoke/real-model-controlled-smoke.sh
+```
+
+API 已手动启动时可使用低层脚本：
+
+```bash
+ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 \
+IMAGE_PROVIDER=image2 \
+IMAGE2_BACKEND=dreammaker \
+IMAGE_REAL_CALLS_ENABLED=true \
+DREAMMAKER_REAL_CALLS_ENABLED=true \
+MUSIC_PROVIDER=mock \
+scripts/smoke/dreammaker-image2-real-cover-smoke.sh
+```
+
+DreamMaker Image 2 脚本会真实调用 DreamMaker；不要作为普通自动化测试运行。Yunwu 和 WellAPI 的公网 smoke 成功不代表 DreamMaker 生产路径完成。
+
 ```bash
 IMAGE_PROVIDER=image2 \
 IMAGE2_BACKEND=wellapi \
@@ -171,6 +214,7 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 
 ```bash
 unset WELLAPI_API_KEY
+unset DREAMMAKER_ACCESS_KEY DREAMMAKER_SECRET_KEY DREAMMAKER_USER_ACCESS_TOKEN
 unset IMAGE2_MODEL_NAME IMAGE2_SIZE IMAGE2_QUALITY IMAGE2_OUTPUT_FORMAT
 unset IMAGE_REAL_CALLS_ENABLED IMAGE_PROVIDER
 export IMAGE_PROVIDER=mock
