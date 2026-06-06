@@ -59,9 +59,10 @@
 - [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式。
-- [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认 DreamMaker 凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式。
+- [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认当前后端凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式；当前公网联调用 WellAPI，正式生产目标 DreamMaker Image 2 路径必须保留。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
-- [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 或 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行，确认是真的打到 DreamMaker 而不是仍在 Mock。
+- [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
+- [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、render-worker 和公司 Adapter 仍保持 Mock。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
 
 ## F. 公司 Adapter 交接

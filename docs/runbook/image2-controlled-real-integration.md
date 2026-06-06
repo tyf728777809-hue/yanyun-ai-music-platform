@@ -56,6 +56,26 @@ unset IMAGE_REAL_CALLS_ENABLED IMAGE_PROVIDER
 
 Image 2 封面生成发生在确认出歌后的生产 workflow 中。真实联调建议仍保持音乐和 DeepSeek Mock，避免一次打开多个外部成本点：
 
+如果本地 8080 没有已启动 API，优先使用一键 stack smoke。脚本会静默读取缺失的 `WELLAPI_API_KEY`、启动 API、执行 1 个作品、结束后自动停止它启动的进程：
+
+```bash
+ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 \
+scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh
+```
+
+如果 API 已经手动按本 runbook 启动，使用低层单作品 smoke：
+
+```bash
+ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 \
+IMAGE_PROVIDER=image2 \
+IMAGE2_BACKEND=wellapi \
+IMAGE_REAL_CALLS_ENABLED=true \
+MUSIC_PROVIDER=mock \
+scripts/smoke/wellapi-image2-real-cover-smoke.sh
+```
+
+两个脚本都会真实调用 WellAPI；不要作为普通自动化测试运行。当前 workflow 的封面请求尺寸固定为 1920x1080，`IMAGE2_SIZE=2048x1152` 只是 Image 2 客户端在直接请求尺寸无效时使用的兜底值。
+
 ```bash
 IMAGE_PROVIDER=image2 \
 IMAGE2_BACKEND=wellapi \
@@ -107,8 +127,9 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 - `asset_type=COVER`。
 - `provider` 或 metadata 能区分 `wellapi-image2` 或 `dreammaker-image2`。
 - `width=1920`、`height=1080`。
+- `metadata_json.object_storage_imported=true`。
 - `object_key` 指向平台对象存储，不是供应商原始 URL。
-- metadata 不包含 API Key、鉴权 header 或完整供应商 payload。
+- metadata 不包含 API Key、鉴权 header、完整供应商 payload、供应商原始 URL 或 inline base64 原文。
 
 ### 4. 验证发布包
 

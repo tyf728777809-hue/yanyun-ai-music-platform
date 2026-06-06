@@ -18,9 +18,10 @@
 - [ ] `CoverGenerationService` 受控调用真实 Image 2。
 - [ ] 供应商封面图被导入平台对象存储。
 - [ ] `media_assets` 写入 `COVER` 资产。
-- [ ] `COVER.width` / `COVER.height` 符合 `IMAGE2_SIZE`；默认是 `2048x1152`。
+- [ ] 当前 workflow 的 `COVER.width` / `COVER.height` 为 1920x1080；`IMAGE2_SIZE=2048x1152` 只是客户端兜底值，不作为本链路验收尺寸。
 - [ ] `COVER.mime_type` 与真实文件一致。
-- [ ] `media_assets.metadata_json` 不包含 API Key、鉴权 header 或供应商完整 payload。
+- [ ] `media_assets.metadata_json.object_storage_imported=true`。
+- [ ] `media_assets.metadata_json` 不包含 API Key、鉴权 header、供应商完整 payload、供应商原始图片 URL 或 inline base64 原文。
 
 ## 发布包闭环
 
@@ -47,6 +48,7 @@
 - [ ] 日志、截图和联调记录不包含完整图像 Prompt、完整请求或完整响应。
 - [ ] 发布包不包含供应商原始图片 URL 或供应商凭据。
 - [ ] 终端联调结束后已 `unset` 敏感环境变量。
+- [ ] 可选使用 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行单作品公网 smoke；若 API 已手动启动，则使用 `scripts/smoke/wellapi-image2-real-cover-smoke.sh`。
 
 ## 交接
 

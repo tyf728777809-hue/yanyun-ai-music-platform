@@ -1,7 +1,7 @@
 # 本地商用闭环交付走查记录
 
 日期：2026-06-06 17:37 CST
-最新更新：2026-06-07 00:10 CST
+最新更新：2026-06-07 02:20 CST
 状态：本地 Mock / 前端 / MP4 成片链路已复验通过；用户已可用 `prototypes/Claude-web-v1 + music-api` 做本地完整链路实测。真实 AI 出歌尚未完成供应商真实调用 smoke，真实公司系统仍为外部接入项。
 
 ## 当前可测范围
@@ -10,9 +10,9 @@
 |---|---|---|
 | 本地用户创作链路 | 可测 | 用 Claude Web v1 前端连接真实后端，走灵感成歌、填词成歌、润色/续写限制、确认出歌、生成中、成品页、发布交接和失败重试。 |
 | 本地 MP4 成片链路 | 可测 | `RENDER_WORKER_MODE=local-process` 下已跑通 Java 调用 render-worker 并用 `ffprobe` 验证 MP4。 |
-| 真实 Suno / MiniMax 音乐 | 准备好进入首次受控 smoke | DreamMaker Provider、JWT 鉴权、安全硬开关、runtime sync 保护、readiness AK/SK 配置检查、runbook、10 分钟 smoke 清单和脚本化单作品 smoke 已准备；尚未真正向 DreamMaker 发起真实生成请求。 |
+| 真实 Suno / MiniMax 音乐 | 准备好进入受控 smoke | DreamMaker Provider、JWT 鉴权、安全硬开关、runtime sync 保护、readiness AK/SK 配置检查、runbook、10 分钟 smoke 清单和脚本化单作品 smoke 已准备；Suno via DreamMaker 已触达创建任务但返回 403，当前公网补 Yunwu 脚本化 smoke；MiniMax 尚未真实调用。 |
 | 真实 DeepSeek 写词 | 准备好进入首次受控 smoke | OpenAI 兼容 `RealDeepSeekLyricsClient`、双开关、runbook、验收清单和 readiness guard 已准备；尚未真正向 DeepSeek 发起真实请求。 |
-| 真实 Image 2 封面 | 准备好进入首次受控 smoke | DreamMaker `gpt-image-2` 封面客户端、对象存储导入、runbook、验收清单和 readiness guard 已准备；尚未真正向 DreamMaker Image2 发起真实请求。 |
+| 真实 Image 2 封面 | 准备好进入首次受控 smoke | DreamMaker `gpt-image-2` 生产目标客户端和 WellAPI 当前公网客户端均已实现；对象存储导入、runbook、验收清单、readiness guard 和 WellAPI 脚本化单作品 smoke 已准备；尚未真正发起真实 Image2 请求。 |
 | 公司账号/审核/权益/发布/分享 | 外部接入项 | 本平台只提供 Adapter 边界、readiness 报告和交接清单，真实接入由公司开发替换。 |
 
 ## 交付阻塞矩阵
@@ -22,7 +22,7 @@
 | DreamMaker / Suno 真实音乐 | 待首次受控 smoke | 本项目 + 用户提供联调窗口和凭据 | 不建议豁免；真实 AI 出歌必须验证 | 按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 或 `scripts/smoke/dreammaker-real-music-smoke.sh` 单作品执行 |
 | DreamMaker / MiniMax 真实音乐 | 待首次受控 smoke | 本项目 + 用户提供联调窗口和凭据 | 不建议豁免；若首发只开放一个 Provider，可记录产品豁免 | Suno 成功后再跑或反向先跑 MiniMax；同样使用受控 smoke 清单或脚本 |
 | DeepSeek 真实写词 | 待首次受控 smoke | 本项目 + 用户安全注入 API Key 并确认联调窗口 | 可阶段性豁免，用 Mock 写词先测音乐 | 按 DeepSeek runbook 单样本联调 |
-| Image 2 真实封面 | 待首次受控 smoke | 本项目 + 用户安全注入 DreamMaker AK/SK 并确认联调窗口 | 可阶段性豁免，用 Mock 封面先测音乐 | 按 Image 2 runbook 单样本联调 |
+| Image 2 真实封面 | 待首次受控 smoke | 本项目 + 用户安全注入 WellAPI Key 或生产目标 DreamMaker AK/SK 并确认联调窗口 | 可阶段性豁免，用 Mock 封面先测音乐 | 当前公网可用 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh`；生产目标 DreamMaker 路径仍按 Image 2 runbook 单样本联调 |
 | render-worker 生产形态 | 待公司部署确认 | 公司开发 / 运维 | 不可长期豁免 | 确认本地进程、独立服务或队列化 worker |
 | `prototypes/Claude-web-v1` 前端承接 | 待决策 | 用户 / 公司前端 / 本项目 | 不可长期豁免 | 决定保留原型、迁移到 `apps/web` 或公司重建 |
 | 公司账号 Adapter | 外部接入 | 公司开发 | 生产不可豁免 | 替换 `MockAccountAdapter`，禁用 `X-Mock-User-Id` 信任 |
@@ -47,6 +47,8 @@
 | 公司 Adapter 交接资料 | 通过 | 已新增 `docs/checklists/company-adapter-replacement-readiness.md`，覆盖账号、审核、权益、发布、分享替换证据和禁止事项 |
 | DreamMaker 真实联调保护 | 通过 | 已补 runtime guard：`DREAMMAKER_REAL_CALLS_ENABLED=true` 且 Provider 为 `suno` / `minimax` 时，确认/重试必须走 `outbox + temporal`；readiness 会在缺 AK/SK 时显示 `BLOCKED` |
 | DreamMaker 脚本化 smoke | 待人工执行 | 新增 `scripts/smoke/dreammaker-real-music-smoke.sh`；脚本需要 `ALLOW_DREAMMAKER_REAL_SMOKE=1`，本轮未执行真实供应商调用 |
+| Yunwu Suno 脚本化 smoke | 待人工执行 | 新增 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 和低层脚本；脚本需要 `ALLOW_YUNWU_REAL_SMOKE=1`，当前未执行真实 Yunwu 调用 |
+| WellAPI Image2 脚本化 smoke | 待人工执行 | 新增 `scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 和低层脚本；脚本需要 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1`，当前未执行真实 WellAPI 调用 |
 | 进程清理 | 通过 | 验证结束后 `8080`、`5274` 无监听进程 |
 
 ## 仍不能判定完成的项
@@ -55,7 +57,7 @@
 |---|---|---|
 | Suno / MiniMax 真实成功路径 | 待首次受控 smoke | DreamMaker Provider 最小真实调用实现、硬开关、runtime guard、readiness AK/SK 检查、runbook、10 分钟 smoke 清单和脚本化 smoke 已准备；尚未用真实凭据发起供应商请求 |
 | DeepSeek 真实写词 | 准备中 / 阻塞 | 受控联调 Runbook、安全规则、验收清单已补齐；真实客户端、API 协议、失败码、限流和计费口径仍待确认 |
-| Image 2 真实封面 | 准备中 / 阻塞 | 受控联调 Runbook、安全规则、验收清单已补齐；真实客户端、API 协议、素材规范和对象存储规范仍待确认 |
+| Image 2 真实封面 | 准备好进入受控 smoke | 受控联调 Runbook、安全规则、验收清单、DreamMaker 生产目标客户端、WellAPI 公网客户端和脚本化 smoke 已补齐；真实图片调用尚未执行，失败码、限流、计费和内容安全样本仍待真实联调确认 |
 | 公司账号 Adapter | 外部接入项 | 需要公司开发替换 `MockAccountAdapter`，生产不得信任 `X-Mock-User-Id` |
 | 公司审核 Adapter | 外部接入项 | 需要公司审核协议覆盖输入、歌词、发布包交接前审核 |
 | 公司权益 Adapter | 外部接入项 | 需要公司权益系统实现 `lock / commit / release` 幂等语义 |
@@ -64,6 +66,7 @@
 
 ## 下一步建议
 
-1. 若用户要测真实 AI 出歌，优先只开 DreamMaker 音乐一环：按 `docs/checklists/dreammaker-real-music-smoke-10min.md`，或在确认 worker/API 已按 outbox+Temporal 启动后用 `scripts/smoke/dreammaker-real-music-smoke.sh`，先跑 Suno 或 MiniMax 其中一个 Provider 的单作品受控 smoke。
-2. 把 `prototypes/Claude-web-v1` 的去向定下来：保留为原型、迁移到 `apps/web`，或交给公司前端按它重做。
-3. 公司开发进入前，按 `docs/handover/company-adapter-deployment-handoff-v0.1.md` 确认账号、审核、权益、发布、分享五类 Adapter 替换方案。
+1. 若用户要测真实 AI 出歌，当前公网先用 Yunwu Suno 单作品受控 smoke；进入公司内网或生产路径时再按 DreamMaker runbook 跑 Suno / MiniMax。
+2. 若用户要测真实封面，先只打开 WellAPI Image2 一环，运行 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh`，保持音乐、DeepSeek、render-worker 和公司 Adapter 为 Mock。
+3. 把 `prototypes/Claude-web-v1` 的去向定下来：保留为原型、迁移到 `apps/web`，或交给公司前端按它重做。
+4. 公司开发进入前，按 `docs/handover/company-adapter-deployment-handoff-v0.1.md` 确认账号、审核、权益、发布、分享五类 Adapter 替换方案。
