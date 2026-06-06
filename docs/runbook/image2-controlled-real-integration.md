@@ -56,11 +56,13 @@ unset IMAGE_REAL_CALLS_ENABLED IMAGE_PROVIDER
 
 Image 2 封面生成发生在确认出歌后的生产 workflow 中。真实联调建议仍保持音乐和 DeepSeek Mock，避免一次打开多个外部成本点：
 
-真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 WellAPI、DreamMaker、DeepSeek、Suno、MiniMax 或公司系统：
+真实调用前先从统一总入口查看目标矩阵和执行路线，再做只读预检。总入口会标明 WellAPI 只是当前公网受控 smoke 路径，DreamMaker Image 2 仍是生产目标；底层 `real-model-readiness-preflight.sh` 只作为总入口调用的实现细节，不建议交接方直接绕过总入口。
 
 ```bash
-TARGET=wellapi-image2 STRICT=true \
-scripts/smoke/real-model-readiness-preflight.sh
+TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=wellapi-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 如果本地 8080 没有已启动 API，优先使用一键 stack smoke。脚本会静默读取缺失的 `WELLAPI_API_KEY`、启动 API、执行 1 个作品、结束后自动停止它启动的进程：

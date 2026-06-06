@@ -83,6 +83,7 @@ check_git_status() {
 check_smoke_index() {
   local list_output
   local plan_output
+  local target
 
   if ! list_output="$(scripts/smoke/real-model-controlled-smoke.sh 2>&1)"; then
     fail_check "real-model controlled smoke index list mode failed"
@@ -95,16 +96,18 @@ check_smoke_index() {
     fail_check "real-model controlled smoke index missing DreamMaker production-target rule"
   fi
 
-  if ! plan_output="$(TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh 2>&1)"; then
-    fail_check "real-model controlled smoke index DreamMaker plan failed"
-    return
-  fi
+  for target in dreammaker-suno dreammaker-minimax; do
+    if ! plan_output="$(TARGET="$target" MODE=plan scripts/smoke/real-model-controlled-smoke.sh 2>&1)"; then
+      fail_check "real-model controlled smoke index ${target} plan failed"
+      return
+    fi
 
-  if [[ "$plan_output" == *"production-target path"* && "$plan_output" == *"ALLOW_DREAMMAKER_REAL_SMOKE=1"* ]]; then
-    pass "real-model controlled smoke index prints DreamMaker execution gate"
-  else
-    fail_check "real-model controlled smoke index DreamMaker plan missing production/gate text"
-  fi
+    if [[ "$plan_output" == *"production-target path"* && "$plan_output" == *"ALLOW_DREAMMAKER_REAL_SMOKE=1"* ]]; then
+      pass "real-model controlled smoke index prints ${target} execution gate"
+    else
+      fail_check "real-model controlled smoke index ${target} plan missing production/gate text"
+    fi
+  done
 }
 
 check_real_model_gate_audit() {

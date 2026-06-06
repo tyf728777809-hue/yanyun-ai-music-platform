@@ -145,6 +145,7 @@ DreamMaker 接入。默认不开真实调用硬开关时，不会发起真实供
 ```bash
 scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-minimax MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
@@ -155,6 +156,8 @@ TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 
 ```bash
 TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-minimax MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh

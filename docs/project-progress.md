@@ -1,12 +1,14 @@
 # 项目进度记录
 
-更新时间：2026-06-07 04:03 CST
+更新时间：2026-06-07 04:24 CST
 
 ## 当前阶段
 
 项目已完成第 8 批 MinIO/S3 发布包强化，并已按用户要求在前端并行开发期间推进第 10 批公司 Adapter 接入与部署交接准备和第 11 批 render-worker 本地进程调用边界：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker / Suno / MiniMax 受控真实调用实现、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、真实音乐 Provider 运行时硬保护、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、OpenAI 兼容 `RealDeepSeekLyricsClient`、CoverGenerationService / VideoRenderService 媒体生成边界、DreamMaker Image2 与 WellAPI Image2 封面真实客户端、render-worker 本地 16:9 MP4 样例渲染、Java 可配置调用 render-worker CLI 的本地进程模式、发布包 JSON 的 local / S3-MinIO 可切换对象存储，以及内部公司接入 readiness 报告均已落地。2026-06-07 已执行一次真实 Suno 单作品 smoke，链路触达 DreamMaker 创建任务阶段但返回 HTTP 403；用户判断当前不在公司内网，DreamMaker 可能只支持内网环境。本地编排、失败收口、权益释放、provider_call 记录和进程清理正常。当前已保留 DreamMaker 为正式生产目标，同时新增 Yunwu Suno 公网联调后端与 WellAPI gpt-image-2 公网联调后端。真实 MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用仍未执行；所有真实外部调用仍需显式开关和安全注入凭据。
 
 2026-06-07 04:03 CST 已补齐真实模型安全门矩阵只读审计：新增规格 `docs/specs/real-model-safety-gates-audit-v0.1.md` 和脚本 `scripts/smoke/real-model-safety-gates-audit.sh`。该脚本覆盖 `yunwu-suno`、`dreammaker-suno`、`dreammaker-minimax`、`deepseek`、`wellapi-image2`、`dreammaker-image2` 六个目标：验证 list/plan 输出、无 `ALLOW_REAL_MODEL_SMOKE=1` 时 execute 必须拒绝，以及即使使用占位变量通过严格 preflight，缺少目标 `ALLOW_*` 时仍由下游脚本拒绝。脚本不启动 API/worker/Docker/浏览器，不创建作品，不访问数据库，不调用真实供应商或公司系统；输出会扫描明显密钥形态。`local-delivery-evidence-audit.sh` 已纳入该审计，README、状态说明、公司交接包、验收清单和本地运行手册已同步。本轮未执行真实外部调用。
+
+2026-06-07 04:24 CST 已补强 DreamMaker MiniMax 生产目标交接口径：README、本地运行手册、DreamMaker/Yunwu/Image2 真实联调 runbook 和公司交接包统一要求先从 `scripts/smoke/real-model-controlled-smoke.sh` 执行 `MODE=plan/preflight`，避免交接方直接绕过统一目标矩阵调用底层 preflight。`dreammaker-minimax` 已在 README、本地 runbook、DreamMaker runbook 和公司交接包中与 `dreammaker-suno` 同级展示；`local-delivery-evidence-audit.sh` 现在同时检查 `dreammaker-suno` 与 `dreammaker-minimax` 的生产目标 plan 和 `ALLOW_DREAMMAKER_REAL_SMOKE=1` gate，`company-handoff-package-audit.sh` 也会卡住公司交接包是否出现 `dreammaker-minimax`。本轮未改业务代码，未调用真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Suno、MiniMax 或公司系统。
 
 2026-06-07 03:53 CST 已补齐 DreamMaker Image2 生产目标单作品真实封面受控 smoke 入口：新增规格 `docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md`、一键脚本 `scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh` 和低层脚本 `scripts/smoke/dreammaker-image2-real-cover-smoke.sh`，并接入 `TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh`。该入口必须同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和 `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1`，只打开真实 DreamMaker Image2 封面，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock 或关闭；低层脚本会验证 `image2_guard=real-calls-enabled/dreammaker`、`dreammaker_guard=READY_FOR_LOCAL`、封面 `provider=dreammaker-image2`、对象存储导入和 metadata 不保留供应商原始 URL/base64。README、Image2 runbook、验收清单、状态说明、公司交接包和只读审计脚本已同步。本轮尚未执行真实 DreamMaker Image2 调用。
 

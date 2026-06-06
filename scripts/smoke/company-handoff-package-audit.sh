@@ -96,6 +96,7 @@ require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references 
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
 require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references real-model safety gates audit'
 require_package_pattern 'deepseek-real-lyrics-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek single-sample smoke'
+require_package_pattern 'dreammaker-minimax' 'package references DreamMaker MiniMax production target'
 require_package_pattern 'dreammaker-image2-real-cover-stack-smoke\.sh|TARGET=dreammaker-image2 MODE=execute' 'package references DreamMaker Image2 single-work smoke'
 require_package_pattern '公司系统负责|公司社区系统' 'package states company-system responsibility'
 require_package_pattern '不调用真实模型|不访问真实公司系统|不调用真实供应商' 'package includes no-real-call safety language'

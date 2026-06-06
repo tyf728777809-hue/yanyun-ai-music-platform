@@ -51,14 +51,21 @@ export DREAMMAKER_REAL_CALLS_ENABLED=false
 
 ## 推荐启动方式
 
-真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 DreamMaker、Yunwu、WellAPI、DeepSeek 或公司系统：
+真实调用前先从统一总入口查看目标矩阵和执行路线，再做只读预检。总入口会标明 DreamMaker Suno / MiniMax 是生产目标路径，并委托底层 preflight；底层 `real-model-readiness-preflight.sh` 只作为总入口调用的实现细节，不建议交接方直接绕过总入口。
 
 ```bash
-TARGET=dreammaker-suno STRICT=true \
-scripts/smoke/real-model-readiness-preflight.sh
+TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
-如需测试 MiniMax，把 `TARGET` 改成 `dreammaker-minimax`。预检通过不代表真实供应商成功，只代表当前环境变量和真实音乐 dispatch 口径适合进入受控 smoke。
+如需测试 MiniMax，使用同级生产目标：
+
+```bash
+TARGET=dreammaker-minimax MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-minimax MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+```
+
+预检通过不代表真实供应商成功，只代表当前环境变量和真实音乐 dispatch 口径适合进入受控 smoke。
 
 ### 一键 Stack Smoke
 
@@ -70,7 +77,14 @@ REAL_PROVIDER=suno \
 scripts/smoke/dreammaker-real-music-stack-smoke.sh
 ```
 
-如需测试 MiniMax，把 `REAL_PROVIDER` 改为 `minimax`。该脚本会真实调用 DreamMaker，只能在手动联调窗口内运行；如果本地已经手动启动了 API 或 worker，则改用下方手动启动方式和单作品 smoke。
+MiniMax 使用同一个 stack smoke，显式切换 `REAL_PROVIDER=minimax`；通过统一总入口执行时仍需要全局 gate 和 DreamMaker 目标 gate：
+
+```bash
+ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+TARGET=dreammaker-minimax MODE=execute scripts/smoke/real-model-controlled-smoke.sh
+```
+
+该脚本会真实调用 DreamMaker，只能在手动联调窗口内运行；如果本地已经手动启动了 API 或 worker，则改用下方手动启动方式和单作品 smoke。
 
 ### 手动启动
 

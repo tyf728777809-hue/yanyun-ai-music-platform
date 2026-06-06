@@ -90,6 +90,7 @@ npm run smoke:real-backend
 scripts/smoke/real-model-controlled-smoke.sh
 TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-minimax MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
