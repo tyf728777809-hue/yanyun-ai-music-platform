@@ -158,7 +158,7 @@ interface SongProductionStepActivities {
 | `publish_packages` | 记录发布包 JSON、object key、URL 和交接状态 |
 | `workflow_outbox` | 记录 API 到 Temporal worker 的启动请求 |
 
-若后续需要更细审计，SHOULD 新增 `generation_job_steps`：
+当前已新增 `generation_job_steps` 作为后续 activity 拆分的 step audit 基础：
 
 | 字段 | 口径 |
 |---|---|

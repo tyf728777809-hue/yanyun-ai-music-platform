@@ -198,6 +198,74 @@ public class WorkRepository {
         jobId);
   }
 
+  public void upsertGenerationJobStep(GenerationJobStepRow step) {
+    jdbcTemplate.update(
+        """
+        INSERT INTO generation_job_steps (
+          id,
+          job_id,
+          work_id,
+          step_name,
+          idempotency_key,
+          status,
+          attempt_count,
+          external_trace_id,
+          failure_code,
+          failure_message,
+          started_at,
+          completed_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT (job_id, step_name, idempotency_key)
+        DO UPDATE SET
+          status = EXCLUDED.status,
+          attempt_count = EXCLUDED.attempt_count,
+          external_trace_id = EXCLUDED.external_trace_id,
+          failure_code = EXCLUDED.failure_code,
+          failure_message = EXCLUDED.failure_message,
+          started_at = COALESCE(generation_job_steps.started_at, EXCLUDED.started_at),
+          completed_at = EXCLUDED.completed_at,
+          updated_at = now()
+        """,
+        step.id(),
+        step.jobId(),
+        step.workId(),
+        step.stepName(),
+        step.idempotencyKey(),
+        step.status(),
+        step.attemptCount(),
+        step.externalTraceId(),
+        step.failureCode(),
+        step.failureMessage(),
+        step.startedAt(),
+        step.completedAt());
+  }
+
+  public List<GenerationJobStepRow> findGenerationJobSteps(UUID jobId) {
+    return jdbcTemplate.query(
+        """
+        SELECT id,
+               job_id,
+               work_id,
+               step_name,
+               idempotency_key,
+               status,
+               attempt_count,
+               external_trace_id,
+               failure_code,
+               failure_message,
+               started_at,
+               completed_at,
+               created_at,
+               updated_at
+        FROM generation_job_steps
+        WHERE job_id = ?
+        ORDER BY created_at, step_name
+        """,
+        this::mapGenerationJobStep,
+        jobId);
+  }
+
   public Optional<WorkRow> findWorkForUser(UUID workId, String userId) {
     try {
       return Optional.of(
@@ -767,6 +835,25 @@ public class WorkRepository {
         resultSet.getObject("updated_at", OffsetDateTime.class));
   }
 
+  private GenerationJobStepRow mapGenerationJobStep(ResultSet resultSet, int rowNum)
+      throws SQLException {
+    return new GenerationJobStepRow(
+        resultSet.getObject("id", UUID.class),
+        resultSet.getObject("job_id", UUID.class),
+        resultSet.getObject("work_id", UUID.class),
+        resultSet.getString("step_name"),
+        resultSet.getString("idempotency_key"),
+        resultSet.getString("status"),
+        resultSet.getInt("attempt_count"),
+        resultSet.getString("external_trace_id"),
+        resultSet.getString("failure_code"),
+        resultSet.getString("failure_message"),
+        resultSet.getObject("started_at", OffsetDateTime.class),
+        resultSet.getObject("completed_at", OffsetDateTime.class),
+        resultSet.getObject("created_at", OffsetDateTime.class),
+        resultSet.getObject("updated_at", OffsetDateTime.class));
+  }
+
   private IdempotencyRecord mapIdempotencyRecord(ResultSet resultSet, int rowNum)
       throws SQLException {
     return new IdempotencyRecord(
@@ -877,6 +964,22 @@ public class WorkRepository {
       BigDecimal costUnits,
       String errorCode,
       String errorMessage) {}
+
+  public record GenerationJobStepRow(
+      UUID id,
+      UUID jobId,
+      UUID workId,
+      String stepName,
+      String idempotencyKey,
+      String status,
+      int attemptCount,
+      String externalTraceId,
+      String failureCode,
+      String failureMessage,
+      OffsetDateTime startedAt,
+      OffsetDateTime completedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt) {}
 
   public record IdempotencyRecord(
       String userId,
