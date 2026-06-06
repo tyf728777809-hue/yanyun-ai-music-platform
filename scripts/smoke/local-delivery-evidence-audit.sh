@@ -107,6 +107,17 @@ check_smoke_index() {
   fi
 }
 
+check_real_model_gate_audit() {
+  local output
+  if output="$(scripts/smoke/real-model-safety-gates-audit.sh 2>&1)"; then
+    pass "real-model safety gates audit passes"
+    return
+  fi
+
+  fail_check "real-model safety gates audit failed"
+  printf '%s\n' "$output" | tail -40
+}
+
 check_secret_patterns() {
   local matches
   matches="$(
@@ -174,6 +185,7 @@ required_files=(
   "docs/api/openapi-v0.1.yaml"
   "docs/specs/real-model-controlled-smoke-index-v0.1.md"
   "docs/specs/real-model-readiness-preflight-v0.1.md"
+  "docs/specs/real-model-safety-gates-audit-v0.1.md"
   "docs/specs/deepseek-real-lyrics-smoke-v0.1.md"
   "docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
@@ -190,6 +202,7 @@ required_executables=(
   "scripts/smoke/company-adapter-readiness-smoke.sh"
   "scripts/smoke/real-model-readiness-preflight.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
+  "scripts/smoke/real-model-safety-gates-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
@@ -206,6 +219,7 @@ done
 
 require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps DreamMaker production-target rule"
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
+require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
 require_pattern "README.md" "Yunwu.*公网联调" "README labels Yunwu as public-network integration"
@@ -220,6 +234,7 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "MODE=
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_REAL_MODEL_SMOKE=1" "acceptance checklist requires global real-smoke allow gate"
 
 check_smoke_index
+check_real_model_gate_audit
 check_secret_patterns
 check_large_tracked_files
 

@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 03:53 CST
+更新时间：2026-06-07 04:03 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -62,6 +62,7 @@
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
 - [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
 - [ ] 真实模型 smoke 前已先运行 `scripts/smoke/real-model-controlled-smoke.sh` 查看目标矩阵/计划，再通过 `MODE=preflight` 做只读预检，且未打印真实密钥。
+- [ ] 真实模型安全门矩阵审计 `scripts/smoke/real-model-safety-gates-audit.sh` 通过，证明所有真实模型 target 仍需要全局 gate 和目标 `ALLOW_*` gate。
 - [ ] 若使用 `MODE=execute`，已同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的 `ALLOW_*` 开关，并记录目标供应商、执行窗口和回滚方式。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式；首次单样本 smoke 可通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，且音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 必须保持 Mock 或关闭。

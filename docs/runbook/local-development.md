@@ -163,6 +163,12 @@ TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smok
 真实执行必须显式使用 `MODE=execute`，同时提供 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的
 `ALLOW_*` 开关；不要从总入口绕过各 Provider 的 runbook 和安全门。
 
+不触发真实调用的安全门矩阵审计：
+
+```bash
+scripts/smoke/real-model-safety-gates-audit.sh
+```
+
 DeepSeek 单样本真实写词 smoke 的统一入口是：
 
 ```bash

@@ -72,6 +72,7 @@ required_executables=(
   "scripts/smoke/openapi-contract.sh"
   "scripts/smoke/api-main-flow.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
+  "scripts/smoke/real-model-safety-gates-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
 )
@@ -93,6 +94,7 @@ require_package_pattern 'WellAPI.*公网|WellAPI.*public-network' 'package label
 require_package_pattern 'company-adapter-readiness-smoke\.sh' 'package references company readiness smoke'
 require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references local delivery evidence audit'
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
+require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references real-model safety gates audit'
 require_package_pattern 'deepseek-real-lyrics-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek single-sample smoke'
 require_package_pattern 'dreammaker-image2-real-cover-stack-smoke\.sh|TARGET=dreammaker-image2 MODE=execute' 'package references DreamMaker Image2 single-work smoke'
 require_package_pattern '公司系统负责|公司社区系统' 'package states company-system responsibility'

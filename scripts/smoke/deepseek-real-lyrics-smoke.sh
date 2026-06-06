@@ -59,13 +59,13 @@ get_json() {
   curl -fsS "$API_BASE$path" -H "X-Mock-User-Id: $MOCK_USER"
 }
 
-require_command curl
-require_command jq
-require_command docker
-
 if [ "${ALLOW_DEEPSEEK_REAL_SMOKE:-}" != "1" ]; then
   fail "refusing to run. Set ALLOW_DEEPSEEK_REAL_SMOKE=1 to confirm this real DeepSeek smoke."
 fi
+
+require_command curl
+require_command jq
+require_command docker
 
 require_flag AGENT_REAL_CALLS_ENABLED
 require_flag DEEPSEEK_REAL_CALLS_ENABLED
