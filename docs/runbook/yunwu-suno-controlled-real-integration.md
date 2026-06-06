@@ -38,6 +38,24 @@ export MUSIC_PROVIDER=mock
 
 ## 最小联调步骤
 
+如果本地 8080/8081 没有已启动服务，优先使用一键 stack smoke。脚本会静默读取缺失的 `YUNWU_API_KEY`、启动 worker/API、执行 1 个 Suno 作品、结束后自动停止它启动的进程：
+
+```bash
+ALLOW_YUNWU_REAL_SMOKE=1 \
+scripts/smoke/yunwu-suno-real-music-stack-smoke.sh
+```
+
+如果 worker/API 已经手动按本 runbook 启动，使用低层单作品 smoke：
+
+```bash
+ALLOW_YUNWU_REAL_SMOKE=1 \
+SUNO_BACKEND=yunwu \
+YUNWU_REAL_CALLS_ENABLED=true \
+scripts/smoke/yunwu-suno-real-music-smoke.sh
+```
+
+两个脚本都会真实调用 Yunwu；不要作为普通自动化测试运行。
+
 1. 启动本地基础设施和 Temporal worker，worker 进程必须拿到同一组 `YUNWU_*` 环境变量。
 2. 启动 API，确认 `/internal/integration-readiness` 中 `music_provider=suno/yunwu`、`yunwu_suno_guard=real-calls-enabled`。
 3. 创建作品，确认歌词后用 `music_provider=suno` 发起确认出歌。

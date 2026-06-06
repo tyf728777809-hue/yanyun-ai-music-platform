@@ -51,6 +51,7 @@
 - 视频成片使用 Node.js 22 + Remotion + FFmpeg/FFprobe。
 - 可观测保留 OpenTelemetry + Prometheus + Grafana。
 - DeepSeek、MiniMax、Image 2、公司系统都必须通过 Provider/Adapter 边界接入。
+- DreamMaker 音乐和 DreamMaker Image 2 接口必须保留为正式生产目标；Yunwu / WellAPI 只作为当前非公司内网环境下的公网联调后端，不得因为临时联调成功而删除、弱化或绕开 DreamMaker 路径。
 - 不为短期提速移除核心商用级组件；业务能力可以分批启用。
 
 核心技术栈或用户侧范围如需改变，必须先新增或更新 ADR、PRD/技术方案和项目进度文档。
