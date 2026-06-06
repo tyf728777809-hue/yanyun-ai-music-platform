@@ -28,6 +28,8 @@ activity implementation. It avoids rewriting the whole production chain at once.
 split music generation, cover generation, video rendering, package build, moderation, and quota
 steps into separate Temporal activities after the basic worker/client path is proven.
 
+Activity 拆分方向已在 `docs/specs/temporal-activity-decomposition-v0.1.md` 记录。真实模型阶段前，应按该规格把当前单 activity 逐步拆成可重试、可幂等、可定位失败的步骤。
+
 ## Functional Requirements
 
 - FR-1: The system MUST keep the existing `sync` dispatch mode for local compatibility.
@@ -163,6 +165,8 @@ Temporal workflow id:
 
 - OS-1: Splitting music generation, cover generation, video rendering, moderation, and package build
   into separate activities is out of scope for this stage; this stage uses one delegate activity.
+  The follow-up decomposition contract is tracked in
+  `docs/specs/temporal-activity-decomposition-v0.1.md`.
 - OS-2: Real DeepSeek, DreamMaker, Image 2, and company API calls are out of scope for automated
   tests.
 - OS-3: Changing OpenAPI v0.1 response shapes is out of scope.
