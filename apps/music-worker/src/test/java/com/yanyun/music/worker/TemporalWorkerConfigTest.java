@@ -24,7 +24,7 @@ class TemporalWorkerConfigTest {
     SongProductionActivities activities = mock(SongProductionActivities.class);
     ObjectProvider<SongProductionStepActivities> stepActivities = mockStepActivityProvider();
     TemporalWorkerProperties properties =
-        new TemporalWorkerProperties("localhost:7233", "default", "song-production-local");
+        new TemporalWorkerProperties("localhost:7233", "default", "song-production-local", null);
     TemporalWorkerConfig config = new TemporalWorkerConfig();
 
     when(workerFactory.newWorker(properties.taskQueue())).thenReturn(worker);

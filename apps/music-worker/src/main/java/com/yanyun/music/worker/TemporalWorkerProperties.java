@@ -11,10 +11,6 @@ public record TemporalWorkerProperties(
   static final String WORKFLOW_MODE_LEGACY = "legacy";
   static final String WORKFLOW_MODE_STEPWISE_RECORDING = "stepwise-recording";
 
-  public TemporalWorkerProperties(String target, String namespace, String taskQueue) {
-    this(target, namespace, taskQueue, WORKFLOW_MODE_LEGACY);
-  }
-
   public TemporalWorkerProperties {
     songProductionWorkflowMode = normalizeWorkflowMode(songProductionWorkflowMode);
   }

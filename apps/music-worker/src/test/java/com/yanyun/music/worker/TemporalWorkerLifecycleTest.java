@@ -47,6 +47,6 @@ class TemporalWorkerLifecycleTest {
   }
 
   private TemporalWorkerProperties properties() {
-    return new TemporalWorkerProperties("localhost:7233", "default", "song-production-local");
+    return new TemporalWorkerProperties("localhost:7233", "default", "song-production-local", null);
   }
 }
