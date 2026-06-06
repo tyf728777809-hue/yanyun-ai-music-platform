@@ -110,7 +110,14 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-worker:bootRun
 `scripts/smoke/api-main-flow.sh` 验证它。
 
 `stepwise-recording` 的最小验收口径是：outbox 已启动 Temporal workflow，且 step audit 已写入。
-创建作品并确认出歌后，抽查：
+在 worker 和 API 都已按上面方式启动后，可运行：
+
+```bash
+scripts/smoke/temporal-stepwise-recording.sh
+```
+
+脚本会创建作品、确认出歌、等待 outbox 成功，并检查 `generation_job_steps` 是否写入 13 条
+`SUCCEEDED` 记录。也可手工抽查：
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
