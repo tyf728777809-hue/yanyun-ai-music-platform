@@ -3,6 +3,7 @@ package com.yanyun.music.media;
 public record VideoRenderRequest(
     String workId,
     String songTitle,
+    String songSummary,
     String lyricsText,
     String audioObjectKey,
     String audioMimeType,

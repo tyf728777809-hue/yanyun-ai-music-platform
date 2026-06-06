@@ -16,12 +16,22 @@ export function LyricVideo16x9({
 }: LyricVideoProps) {
   const frame = useCurrentFrame();
   const line = activeLine(lyrics, frame);
-  const lineOpacity = interpolate(
-    frame,
-    [line.startFrame, line.startFrame + 12, line.endFrame - 12, line.endFrame],
-    [0, 1, 1, 0],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
-  );
+  const lineFrameCount = Math.max(1, line.endFrame - line.startFrame + 1);
+  const fadeFrames = Math.min(12, Math.floor(lineFrameCount / 3));
+  const lineOpacity =
+    lineFrameCount >= 4
+      ? interpolate(
+          frame,
+          [
+            line.startFrame,
+            line.startFrame + fadeFrames,
+            line.endFrame - fadeFrames,
+            line.endFrame,
+          ],
+          [0, 1, 1, 0],
+          {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'},
+        )
+      : 1;
   const coverScale = interpolate(frame, [0, 240], [1, 1.035], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',

@@ -238,8 +238,37 @@ npm run build
 npm test
 ```
 
+默认后端仍使用 `MockVideoRenderService`，不会在确认出歌时触发真实 Remotion 渲染。
+如需验证 Java 主链路可调用本地 render-worker 进程，先确保 `apps/render-worker` 依赖已安装，再启动 API 或 worker 时显式切换：
+
+```bash
+RENDER_WORKER_MODE=local-process \
+RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker \
+RENDER_WORKER_COMMAND=npm \
+RENDER_WORKER_ARGUMENTS=run,render:job,-- \
+MUSIC_PROVIDER=mock \
+./gradlew :apps:music-api:bootRun
+```
+
+该模式会由 Java `VideoRenderService` 调用 `npm run render:job -- --input ... --output ... --out-dir ...`，
+render-worker 生成 MP4 和 timeline JSON 后，Java 再写入当前 `ObjectStorageClient`，发布包继续引用对象存储 URL。
+
+短 smoke 可直接验证 CLI，不需要启动后端：
+
+```bash
+cd apps/render-worker
+npm run render:job -- \
+  --input /path/to/render-input.json \
+  --output /path/to/render-output.json \
+  --out-dir /path/to/render-assets
+```
+
+`render-input.json` 至少包含 `work_id`、`song_title`、`lyrics_text`、`audio_object_key`、`cover_object_key` 和 `duration_ms`。
+自动化测试不会渲染 2-4 分钟长视频；长视频真实成片只做手动 smoke。
+
 ## Current Boundary
 
 当前自动化测试只验证工程、Mock 业务链路、Outbox/Workflow 启动边界、Temporal worker
 注册和 activity 委托、DreamMaker Provider/Adapter 边界、发布包 JSON 的本地文件和 MinIO/S3
-写入，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实 Provider 联调必须手动开启环境变量。
+写入、render-worker 本地进程调用边界，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
+真实 Provider 和长视频成片联调必须手动开启环境变量。

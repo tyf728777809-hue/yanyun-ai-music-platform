@@ -31,6 +31,14 @@ class IntegrationReadinessServiceTest {
     assertEquals(IntegrationReadinessStatus.MOCK_ONLY, account.status());
     assertTrue(account.blocksCompanyDeployment());
     assertEquals("MockAccountAdapter", account.implementation());
+
+    IntegrationComponentReadiness renderWorker =
+        report.components().stream()
+            .filter(component -> component.component().equals("render_worker"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.MOCK_ONLY, renderWorker.status());
+    assertTrue(renderWorker.blocksCompanyDeployment());
   }
 
   @Test
@@ -64,5 +72,23 @@ class IntegrationReadinessServiceTest {
     assertFalse(report.contains("Bearer "));
     assertFalse(report.contains("sk-"));
     assertFalse(report.contains("real-secret-value"));
+  }
+
+  @Test
+  void localProcessRenderWorkerIsReadyForLocal() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setRenderWorkerMode("local-process");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness renderWorker =
+        report.components().stream()
+            .filter(component -> component.component().equals("render_worker"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, renderWorker.status());
+    assertEquals("LocalProcessVideoRenderService", renderWorker.implementation());
+    assertTrue(renderWorker.blocksCompanyDeployment());
   }
 }

@@ -339,6 +339,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             new VideoRenderRequest(
                 workId.toString(),
                 input.songTitle(),
+                input.songSummary(),
                 input.lyricsText(),
                 audioAsset.objectKey(),
                 audioAsset.mimeType(),

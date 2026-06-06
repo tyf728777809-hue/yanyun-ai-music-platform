@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":modules:work-domain"))
     implementation(project(":modules:workflow"))
     implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("org.springframework.boot:spring-boot")
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-jdbc")
 }

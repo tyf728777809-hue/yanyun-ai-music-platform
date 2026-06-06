@@ -9,6 +9,7 @@ public class CompanyIntegrationProperties {
   private String publishAdapterMode = "mock";
   private String shareAdapterMode = "mock";
   private String musicProvider = "mock";
+  private String renderWorkerMode = "mock";
   private String objectStorageProvider = "local";
   private String workflowDispatchMode = "sync";
   private String workflowDispatchTarget = "local";
@@ -69,6 +70,14 @@ public class CompanyIntegrationProperties {
 
   public void setMusicProvider(String musicProvider) {
     this.musicProvider = musicProvider;
+  }
+
+  public String getRenderWorkerMode() {
+    return renderWorkerMode;
+  }
+
+  public void setRenderWorkerMode(String renderWorkerMode) {
+    this.renderWorkerMode = renderWorkerMode;
   }
 
   public String getObjectStorageProvider() {

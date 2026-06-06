@@ -1,12 +1,20 @@
 import {Composition} from 'remotion';
 import {LyricVideo16x9} from './LyricVideo16x9';
-import {sampleLyricVideoProps} from './render-input';
+import {
+  sampleLyricVideoProps,
+  VIDEO_DURATION_IN_FRAMES,
+  VIDEO_FPS,
+  VIDEO_HEIGHT,
+  VIDEO_WIDTH,
+} from './render-input';
 import {YanyunScaffold} from './YanyunScaffold';
 
-export const VIDEO_WIDTH = 1920;
-export const VIDEO_HEIGHT = 1080;
-export const VIDEO_FPS = 30;
-export const VIDEO_DURATION_IN_FRAMES = 240;
+export {
+  VIDEO_DURATION_IN_FRAMES,
+  VIDEO_FPS,
+  VIDEO_HEIGHT,
+  VIDEO_WIDTH,
+} from './render-input';
 
 export function RemotionRoot() {
   return (
@@ -27,6 +35,9 @@ export function RemotionRoot() {
         width={VIDEO_WIDTH}
         height={VIDEO_HEIGHT}
         defaultProps={sampleLyricVideoProps}
+        calculateMetadata={({props}) => ({
+          durationInFrames: props.durationInFrames,
+        })}
       />
     </>
   );

@@ -14,6 +14,10 @@
 
 本平台不重做公司社区、发布审核流、分享系统、互动和推荐流。
 
+视频成片当前支持两种模式：默认 `MockVideoRenderService`，以及本地 smoke 用的
+`LocalProcessVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
+`render_worker` 组件；本地进程模式可证明 Remotion MP4 链路可跑通，但生产是否采用进程模式、独立服务或队列化 render worker 需要公司部署方案确认。
+
 ## 2. 当前可检查接口
 
 启动 `music-api` 后访问：
@@ -170,6 +174,11 @@ DREAMMAKER_REAL_CALLS_ENABLED=true
 DREAMMAKER_API_BASE_URL=
 DREAMMAKER_ACCESS_KEY=
 DREAMMAKER_SECRET_KEY=
+RENDER_WORKER_MODE=local-process
+RENDER_WORKER_WORKING_DIRECTORY=
+RENDER_WORKER_COMMAND=
+RENDER_WORKER_ARGUMENTS=
+RENDER_WORKER_TIMEOUT=
 COMPANY_ACCOUNT_ADAPTER_MODE=company
 COMPANY_MODERATION_ADAPTER_MODE=company
 COMPANY_QUOTA_ADAPTER_MODE=company

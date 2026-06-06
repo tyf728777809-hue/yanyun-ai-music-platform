@@ -55,6 +55,7 @@ public final class IntegrationReadinessService {
             "分享系统当前没有本平台业务调用点，但 PRD 边界要求由公司既有分享系统承接。"));
 
     components.add(musicProviderComponent());
+    components.add(renderWorkerComponent());
     components.add(objectStorageComponent());
     components.add(workflowComponent());
     components.add(dreamMakerComponent());
@@ -146,6 +147,28 @@ public final class IntegrationReadinessService {
             "S3_ACCESS_KEY",
             "S3_SECRET_KEY"),
         local ? "本地文件存储只适合开发；公司部署需切换到 S3/MinIO 兼容对象存储。" : "已选择 S3/MinIO 兼容对象存储模式。");
+  }
+
+  private IntegrationComponentReadiness renderWorkerComponent() {
+    String mode = normalize(properties.getRenderWorkerMode());
+    boolean localProcess = "local-process".equals(mode);
+    return new IntegrationComponentReadiness(
+        "render_worker",
+        mode,
+        localProcess ? "LocalProcessVideoRenderService" : "MockVideoRenderService",
+        localProcess
+            ? IntegrationReadinessStatus.READY_FOR_LOCAL
+            : IntegrationReadinessStatus.MOCK_ONLY,
+        true,
+        List.of(
+            "RENDER_WORKER_MODE",
+            "RENDER_WORKER_WORKING_DIRECTORY",
+            "RENDER_WORKER_COMMAND",
+            "RENDER_WORKER_ARGUMENTS",
+            "RENDER_WORKER_TIMEOUT"),
+        localProcess
+            ? "已选择本地进程 render-worker，可用于本地真实 MP4 成片 smoke。"
+            : "默认 Mock 视频资产可跑通；真实 MP4 成片 smoke 需显式切换 local-process。");
   }
 
   private IntegrationComponentReadiness workflowComponent() {

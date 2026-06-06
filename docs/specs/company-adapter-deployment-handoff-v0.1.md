@@ -25,7 +25,7 @@
 - FR-3：readiness 报告 MUST 不暴露真实密钥、Token、Cookie、JWT、用户身份凭据或对象存储签名 URL。
 - FR-4：本地默认配置 MUST 继续使用 Mock Adapter，不破坏当前本地 Mock 生成链路。
 - FR-5：当公司 Adapter 配置为非 Mock 但真实实现尚未接入时，readiness 报告 MUST 明确标记为 `BLOCKED`，不得伪装为已接入。
-- FR-6：readiness 报告 MUST 同时展示生成链路关键部署依赖，包括音乐 Provider、对象存储 Provider、Workflow dispatch mode、Temporal target 和 DreamMaker 真实调用开关。
+- FR-6：readiness 报告 MUST 同时展示生成链路关键部署依赖，包括音乐 Provider、render-worker 模式、对象存储 Provider、Workflow dispatch mode、Temporal target 和 DreamMaker 真实调用开关。
 - FR-7：公司交接文档 MUST 给出替换清单、接口契约、字段映射、部署变量、验收 smoke 和禁止事项。
 - FR-8：`.env.example` MUST 只包含本地占位或空值，不得加入真实公司凭据。
 
@@ -52,6 +52,7 @@
 - EC-3：权益 Adapter 当前只做本地 Mock 锁定/扣减/释放；正式接入后必须保证 lock/commit/release 幂等，并与公司权益流水对账。
 - EC-4：审核 Adapter 当前只做简单 Mock 预检；正式接入后必须覆盖输入歌词、歌词草案、发布包交接前审核，且返回可映射的阻断原因。
 - EC-5：发布/分享不由本平台真实执行；本平台只提供发布包和交接状态，社区发布结果由公司系统管理。
+- EC-6：render-worker 的 `local-process` 模式可用于本地真实 MP4 smoke，但公司部署前仍需确认是否改为独立服务或队列化 worker。
 
 ## 7. API Contracts
 

@@ -33,6 +33,7 @@ yanyun:
     publish-adapter-mode: ${COMPANY_PUBLISH_ADAPTER_MODE:mock}
     share-adapter-mode: ${COMPANY_SHARE_ADAPTER_MODE:mock}
     music-provider: ${MUSIC_PROVIDER:mock}
+    render-worker-mode: ${RENDER_WORKER_MODE:mock}
     object-storage-provider: ${OBJECT_STORAGE_PROVIDER:local}
     workflow-dispatch-mode: ${MUSIC_WORKFLOW_DISPATCH_MODE:sync}
     workflow-dispatch-target: ${WORKFLOW_OUTBOX_DISPATCH_TARGET:local}
@@ -40,6 +41,15 @@ yanyun:
     dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
   music:
     provider: ${MUSIC_PROVIDER:mock}
+  render-worker:
+    mode: ${RENDER_WORKER_MODE:mock}
+    working-directory: ${RENDER_WORKER_WORKING_DIRECTORY:apps/render-worker}
+    command: ${RENDER_WORKER_COMMAND:npm}
+    arguments: ${RENDER_WORKER_ARGUMENTS:run,render:job,--}
+    timeout: ${RENDER_WORKER_TIMEOUT:10m}
+    composition-id: ${RENDER_WORKER_COMPOSITION_ID:LyricVideo16x9}
+    video-object-key-prefix: ${RENDER_WORKER_VIDEO_OBJECT_KEY_PREFIX:videos}
+    timeline-object-key-prefix: ${RENDER_WORKER_TIMELINE_OBJECT_KEY_PREFIX:timelines}
   storage:
     provider: ${OBJECT_STORAGE_PROVIDER:local}
     environment: ${YANYUN_ENV:local}
