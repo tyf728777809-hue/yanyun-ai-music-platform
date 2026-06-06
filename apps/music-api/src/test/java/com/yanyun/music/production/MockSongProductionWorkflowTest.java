@@ -12,6 +12,10 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.agentruntime.AgentRunRecord;
+import com.yanyun.music.agentruntime.AgentRunStatus;
+import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.image2.MockCoverGenerationService;
 import com.yanyun.music.media.MockVideoRenderService;
 import com.yanyun.music.media.VideoRenderService;
@@ -45,6 +49,7 @@ import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.ProviderCallRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -97,7 +102,14 @@ class MockSongProductionWorkflowTest {
     when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
         .thenReturn(new QuotaCommit(true, "committed"));
 
-    SongProductionWorkflowResult result = workflowWith(musicProvider).produce(input(workId));
+    List<AgentRunRecord> agentRuns = new ArrayList<>();
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(agentRuns::add))
+            .produce(input(workId));
 
     assertThat(result.jobId()).isEqualTo(jobId.toString());
     assertThat(result.packageReady()).isTrue();
@@ -108,7 +120,16 @@ class MockSongProductionWorkflowTest {
     verify(musicProvider).submit(musicRequest.capture());
     assertThat(musicRequest.getValue().workId()).isEqualTo(workId.toString());
     assertThat(musicRequest.getValue().lyricsText()).isEqualTo("Mock lyrics");
-    assertThat(musicRequest.getValue().musicPrompt()).isEqualTo("Mock prompt");
+    assertThat(musicRequest.getValue().musicPrompt()).contains("Mock prompt");
+    assertThat(musicRequest.getValue().musicPrompt()).contains("provider profile: mock");
+    assertThat(musicRequest.getValue().providerOptions())
+        .containsEntry("agent", "MusicPromptAgent");
+    assertThat(agentRuns).hasSize(1);
+    assertThat(agentRuns.getFirst().agentName()).isEqualTo("MusicPromptAgent");
+    assertThat(agentRuns.getFirst().operation()).isEqualTo("MUSIC_PROMPT");
+    assertThat(agentRuns.getFirst().status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+    assertThat(agentRuns.getFirst().inputHash()).hasSize(64);
+    assertThat(agentRuns.getFirst().outputHash()).hasSize(64);
 
     ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
     verify(workRepository).insertProviderCall(providerCall.capture());
@@ -249,6 +270,54 @@ class MockSongProductionWorkflowTest {
     verify(workRepository, never()).upsertMediaAsset(any());
     verify(workRepository, never()).upsertPublishPackage(any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
+    verifyNoInteractions(
+        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+  }
+
+  @Test
+  void releasesLockedQuotaAndFailsBeforeProviderWhenMusicPromptAgentFails() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+    MusicPromptAgent failingAgent =
+        request -> {
+          throw new IllegalStateException("music prompt unavailable");
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider, MusicProviderType.MOCK, new MockVideoRenderService(), failingAgent)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.MUSIC_GENERATION_FAILED.name());
+    assertThat(result.failureMessage()).isEqualTo("music prompt unavailable");
+    verify(musicProvider, never()).submit(any());
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(workId, FailureCode.MUSIC_GENERATION_FAILED, "music prompt unavailable", true);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.MUSIC_GENERATION_FAILED,
+            "music prompt unavailable");
     verifyNoInteractions(
         publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
   }
@@ -621,6 +690,14 @@ class MockSongProductionWorkflowTest {
       MusicProvider musicProvider,
       MusicProviderType providerType,
       VideoRenderService videoRenderer) {
+    return workflowWith(musicProvider, providerType, videoRenderer, new MockMusicPromptAgent());
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer,
+      MusicPromptAgent musicPromptAgent) {
     stubObjectStorageDownloadUrls();
     return new MockSongProductionWorkflow(
         workRepository,
@@ -631,6 +708,7 @@ class MockSongProductionWorkflowTest {
         new MusicProviderSelection(providerType),
         objectStorageClient,
         remoteObjectImporter,
+        musicPromptAgent,
         new MockCoverGenerationService(),
         videoRenderer,
         objectMapper);

@@ -6,6 +6,8 @@ import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
 import com.yanyun.music.configcenter.CompanyIntegrationProperties;
 import com.yanyun.music.configcenter.IntegrationReadinessService;
+import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
 import com.yanyun.music.dreammaker.DreamMakerClient;
@@ -91,6 +93,11 @@ public class AdapterConfiguration {
   @Bean
   AgentRunRecorder agentRunRecorder(JdbcTemplate jdbcTemplate) {
     return new JdbcAgentRunRecorder(jdbcTemplate);
+  }
+
+  @Bean
+  MusicPromptAgent musicPromptAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockMusicPromptAgent(agentRunRecorder);
   }
 
   @Bean

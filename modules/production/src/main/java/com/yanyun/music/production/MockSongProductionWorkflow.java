@@ -2,6 +2,9 @@ package com.yanyun.music.production;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.creativeagent.MusicPromptRequest;
+import com.yanyun.music.creativeagent.MusicPromptResult;
 import com.yanyun.music.image2.CoverGenerationRequest;
 import com.yanyun.music.image2.CoverGenerationResult;
 import com.yanyun.music.image2.CoverGenerationService;
@@ -67,6 +70,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final MusicProviderSelection musicProviderSelection;
   private final ObjectStorageClient objectStorageClient;
   private final RemoteObjectImporter remoteObjectImporter;
+  private final MusicPromptAgent musicPromptAgent;
   private final CoverGenerationService coverGenerationService;
   private final VideoRenderService videoRenderService;
   private final ObjectMapper objectMapper;
@@ -80,6 +84,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       MusicProviderSelection musicProviderSelection,
       ObjectStorageClient objectStorageClient,
       RemoteObjectImporter remoteObjectImporter,
+      MusicPromptAgent musicPromptAgent,
       CoverGenerationService coverGenerationService,
       VideoRenderService videoRenderService,
       ObjectMapper objectMapper) {
@@ -91,6 +96,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.musicProviderSelection = musicProviderSelection;
     this.objectStorageClient = objectStorageClient;
     this.remoteObjectImporter = remoteObjectImporter;
+    this.musicPromptAgent = musicPromptAgent;
     this.coverGenerationService = coverGenerationService;
     this.videoRenderService = videoRenderService;
     this.objectMapper = objectMapper;
@@ -119,13 +125,35 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     MusicGenerationResult musicResult;
     MusicProviderSelection selectedProvider = selectedProvider(input);
+    MusicPromptResult musicPrompt;
+    try {
+      musicPrompt =
+          musicPromptAgent.generate(
+              new MusicPromptRequest(
+                  input.workId(),
+                  input.songTitle(),
+                  input.songSummary(),
+                  input.lyricsText(),
+                  input.musicPrompt(),
+                  input.vocalPreference(),
+                  selectedProvider.providerType().name()));
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_GENERATION_FAILED,
+          firstNonBlank(exception.getMessage(), "Music prompt generation failed"),
+          input.musicRetryAllowedAfterFailure(),
+          input.userId(),
+          lock.lockId());
+    }
     MusicGenerationRequest musicRequest =
         new MusicGenerationRequest(
             input.workId(),
             input.lyricsText(),
-            input.musicPrompt(),
+            musicPrompt.musicPrompt(),
             input.vocalPreference(),
-            Map.of());
+            musicPrompt.providerOptions());
     long providerStartedAt = System.nanoTime();
     try {
       musicResult =

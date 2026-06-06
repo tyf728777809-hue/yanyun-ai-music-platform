@@ -1,6 +1,9 @@
 package com.yanyun.music.worker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.agentruntime.AgentRunRecorder;
+import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -12,6 +15,7 @@ import com.yanyun.music.musicprovider.MockMusicProvider;
 import com.yanyun.music.musicprovider.MusicProvider;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
+import com.yanyun.music.production.JdbcAgentRunRecorder;
 import com.yanyun.music.publish.MockPublishAdapter;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.MockQuotaAdapter;
@@ -28,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class WorkerProductionConfiguration {
@@ -61,6 +66,16 @@ public class WorkerProductionConfiguration {
   @Bean
   RemoteObjectImporter remoteObjectImporter(ObjectStorageClient objectStorageClient) {
     return new HttpRemoteObjectImporter(objectStorageClient);
+  }
+
+  @Bean
+  AgentRunRecorder agentRunRecorder(JdbcTemplate jdbcTemplate) {
+    return new JdbcAgentRunRecorder(jdbcTemplate);
+  }
+
+  @Bean
+  MusicPromptAgent musicPromptAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockMusicPromptAgent(agentRunRecorder);
   }
 
   @Bean

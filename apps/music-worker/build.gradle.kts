@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(project(":modules:agent-runtime"))
+    implementation(project(":modules:creative-agent"))
     implementation(project(":modules:common"))
     implementation(project(":modules:auth"))
     implementation(project(":modules:dreammaker"))

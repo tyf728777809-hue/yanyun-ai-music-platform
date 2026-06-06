@@ -24,6 +24,7 @@ include(
     "modules:publish",
     "modules:work-domain",
     "modules:agent-runtime",
+    "modules:creative-agent",
     "modules:lyrics",
     "modules:knowledge",
     "modules:prompt",
