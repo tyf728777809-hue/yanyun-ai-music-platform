@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ToastProvider } from '../../components/Toast';
 import { service } from '../../mock/service';
@@ -106,5 +106,46 @@ describe('FinishedView', () => {
 
     expect(await screen.findByText('作品已交接给社区发布流程。')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: '标记已交接' })).not.toBeInTheDocument();
+  });
+
+  it('renders package-blocked actions from available_actions and keeps handoff disabled', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_BLOCKED',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: null,
+      available_actions: ['RERENDER_VIDEO', 'CONTACT_SUPPORT'],
+      blocked_reason: '作品暂不能交给社区发布。',
+    });
+    const rerenderVideo = vi.spyOn(service, 'rerenderVideo').mockResolvedValue({
+      work_id: 'work-1',
+      status: 'GENERATED',
+      generation_stage: 'PACKAGE_READY',
+      job_id: 'job-video',
+      available_actions: ['RERENDER_VIDEO', 'CONTACT_SUPPORT'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView
+          work={work({
+            package_status: 'PACKAGE_BLOCKED',
+            available_actions: ['RERENDER_VIDEO', 'CONTACT_SUPPORT'],
+          })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    expect(await screen.findByText('作品暂不能交给社区发布。')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '标记已交接' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '刷新下载链接' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '重新渲染画面' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '联系平台协助' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '重新渲染画面' }));
+    await waitFor(() => expect(rerenderVideo).toHaveBeenCalledWith('work-1'));
   });
 });

@@ -7,6 +7,7 @@ import { Spinner } from '../../components/Spinner';
 import { PackagePill } from '../../components/StatusPill';
 import { useAction } from '../../hooks/useAction';
 import { ApiError } from '../../api/client';
+import { actionLabel } from '../../api/actions';
 import { requestIdLine } from '../../api/friendlyError';
 import { service } from '../../mock/service';
 
@@ -59,6 +60,12 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
     await run('REFRESH_PACKAGE_URL', () => service.refreshPublishPackageUrl(work.work_id), {
       successMsg: '下载链接已刷新',
       onSuccess: (p) => setPkg(p),
+    });
+  }
+
+  async function rerenderVideo() {
+    await run('RERENDER_VIDEO', () => service.rerenderVideo(work.work_id), {
+      successMsg: '已重新渲染画面',
     });
   }
 
@@ -217,6 +224,22 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
                   onClick={refreshUrl}
                 >
                   刷新下载链接
+                </Button>
+              )}
+              {hasAvailableAction('RERENDER_VIDEO') && (
+                <Button
+                  tone="secondary"
+                  block
+                  loading={busyKey === 'RERENDER_VIDEO'}
+                  disabled={busyKey !== null}
+                  onClick={rerenderVideo}
+                >
+                  {actionLabel('RERENDER_VIDEO')}
+                </Button>
+              )}
+              {hasAvailableAction('CONTACT_SUPPORT') && (
+                <Button tone="ghost" block disabled={busyKey !== null} onClick={() => void 0}>
+                  联系平台协助
                 </Button>
               )}
             </div>
