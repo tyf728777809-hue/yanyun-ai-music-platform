@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 00:10 CST
+更新时间：2026-06-07 03:10 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -59,7 +59,8 @@
 - [ ] DreamMaker AK/SK 只通过当前 shell 或安全配置系统注入，不写入仓库或文档。
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
 - [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
-- [ ] 真实模型 smoke 前已运行 `scripts/smoke/real-model-readiness-preflight.sh` 对目标供应商做只读预检，且未打印真实密钥。
+- [ ] 真实模型 smoke 前已先运行 `scripts/smoke/real-model-controlled-smoke.sh` 查看目标矩阵/计划，再通过 `MODE=preflight` 做只读预检，且未打印真实密钥。
+- [ ] 若使用 `MODE=execute`，已同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的 `ALLOW_*` 开关，并记录目标供应商、执行窗口和回滚方式。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式。
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认当前后端凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式；当前公网联调用 WellAPI，正式生产目标 DreamMaker Image 2 路径必须保留。

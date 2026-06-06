@@ -140,12 +140,24 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 `SUNO_BACKEND=yunwu|dreammaker` 切换公网联调或正式生产目标后端；`minimax` 当前仍通过
 DreamMaker 接入。默认不开真实调用硬开关时，不会发起真实供应商请求。
 
-真实模型联调前可先运行只读预检。它只检查当前 shell 环境变量和可选 API readiness，不调用供应商：
+真实模型联调先从统一总入口查看目标矩阵和执行路线。默认不调用供应商：
 
 ```bash
-TARGET=yunwu-suno STRICT=true scripts/smoke/real-model-readiness-preflight.sh
-TARGET=wellapi-image2 STRICT=true scripts/smoke/real-model-readiness-preflight.sh
+scripts/smoke/real-model-controlled-smoke.sh
+TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 ```
+
+只读预检可以通过总入口委托执行。它只检查当前 shell 环境变量和可选 API readiness，不调用供应商：
+
+```bash
+TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=wellapi-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+```
+
+真实执行必须显式使用 `MODE=execute`，同时提供 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的
+`ALLOW_*` 开关；不要从总入口绕过各 Provider 的 runbook 和安全门。
 
 真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
 
