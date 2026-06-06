@@ -110,6 +110,16 @@ EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
 ```
 
+Claude 前端原型也提供真实后端 UI smoke。先按上面的同步 Mock 方式启动 API，再执行：
+
+```bash
+cd prototypes/Claude-web-v1
+npm run smoke:real-backend
+```
+
+该脚本会临时启动 Vite，使用 Playwright 跑通灵感成歌、AI 润色/续写、第三次改词 409 友好提示、
+确认出歌、发布交接、作品列表，以及 `suno` 受控失败后的前端重试恢复。
+
 ## Web Commands
 
 ```bash

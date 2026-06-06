@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ToastProvider } from '../../components/Toast';
 import { service } from '../../mock/service';
@@ -70,5 +70,41 @@ describe('FinishedView', () => {
     expect(screen.getByText('视频地址')).toBeInTheDocument();
     expect(screen.getByText('封面地址')).toBeInTheDocument();
     expect(screen.getByText((_, element) => element?.textContent === '第一句\n第二句')).toBeInTheDocument();
+  });
+
+  it('hides mark fetched after package handoff is marked fetched locally', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: 'https://cdn.local/package.zip',
+      package_url_expires_at: '2026-06-07T00:00:00Z',
+      package_json: {
+        work_id: 'work-1',
+        video: { url: 'https://cdn.local/package-video.mp4', mime_type: 'video/mp4' },
+        cover: { url: 'https://cdn.local/package-cover.png', mime_type: 'image/png' },
+        lyrics: { text: '第一句', timeline_url: 'https://cdn.local/timeline.json' },
+        metadata: { song_title: '成品测试歌' },
+      },
+      available_actions: ['REFRESH_PACKAGE_URL', 'MARK_PACKAGE_FETCHED'],
+    });
+    vi.spyOn(service, 'markPublishPackageFetched').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_FETCHED',
+      package_url: 'https://cdn.local/package.zip',
+      package_url_expires_at: '2026-06-07T00:00:00Z',
+      package_json: null,
+      available_actions: ['REFRESH_PACKAGE_URL'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(await screen.findByRole('button', { name: '标记已交接' }));
+
+    expect(await screen.findByText('作品已交接给社区发布流程。')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '标记已交接' })).not.toBeInTheDocument();
   });
 });

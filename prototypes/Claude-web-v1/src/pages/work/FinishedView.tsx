@@ -40,7 +40,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
   const media = work.media_assets;
   const handoff = work.publish_handoff_hint;
-  const fetched = work.package_status === 'PACKAGE_FETCHED';
+  const fetched = work.package_status === 'PACKAGE_FETCHED' || pkg?.package_status === 'PACKAGE_FETCHED';
   const blocked = work.package_status === 'PACKAGE_BLOCKED' || pkg?.package_status === 'PACKAGE_BLOCKED';
   const packageJson = pkg?.package_json;
 
@@ -120,7 +120,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
           {blocked
             ? pkg?.blocked_reason || handoff?.message || '作品暂不能交给社区发布。'
             : fetched
-              ? handoff?.message ?? '作品已交接给社区发布流程。'
+              ? '作品已交接给社区发布流程。'
               : handoff?.message ?? '作品已准备好，可交给社区发布。'}
         </Banner>
 

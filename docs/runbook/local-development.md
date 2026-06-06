@@ -236,6 +236,54 @@ local-process 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x108
 `EXPECTED_DURATION_MS`。如不希望脚本检查 PostgreSQL 或本地文件，可分别设置
 `CHECK_DB=false`、`CHECK_LOCAL_FILES=false`。
 
+### Claude Web v1 UI Smoke
+
+`prototypes/Claude-web-v1` 提供真实后端 UI smoke，用于把手动 Playwright 验收固化成可重复脚本。
+脚本要求 API 已在 `http://localhost:8080` 启动，默认会自己启动 Vite 到 `http://127.0.0.1:5274`。
+
+推荐先用同步 Mock 后端启动 API：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+RENDER_WORKER_MODE=mock \
+./gradlew :apps:music-api:bootRun
+```
+
+另开一个终端执行：
+
+```bash
+cd prototypes/Claude-web-v1
+npm run smoke:real-backend
+```
+
+脚本覆盖：
+
+- 390px 移动端首页创建灵感成歌作品。
+- 歌词确认页展示歌词、燕云引用和状态提示。
+- AI 润色必填、AI 续写、第 3 次改词 409 友好提示和 `request_id`。
+- 确认出歌到成品页，展示媒体、交接下载链接、视频地址、封面地址和歌词正文。
+- 刷新下载链接、标记已交接、作品列表展示和 1440px 桌面列表无横向溢出。
+- 通过 API 造 `suno` 受控失败作品，前端失败页点击“重新生成”恢复到 `PACKAGE_READY`。
+
+可选变量：
+
+```bash
+API_ORIGIN=http://localhost:8080 \
+FRONTEND_PORT=5274 \
+HEADLESS=true \
+npm run smoke:real-backend
+```
+
+首次运行若提示缺少 Playwright Chromium，请执行：
+
+```bash
+cd prototypes/Claude-web-v1
+npx playwright install chromium
+```
+
 对象存储默认走本地文件模式：
 
 ```text

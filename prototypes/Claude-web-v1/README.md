@@ -75,3 +75,31 @@ npm test          # vitest
 npm run typecheck # tsc 类型检查
 npm run build     # 构建产物
 ```
+
+### 真实后端 UI Smoke
+
+先启动后端 API，推荐使用同步 Mock 和 1 秒音频时长：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+RENDER_WORKER_MODE=mock \
+./gradlew :apps:music-api:bootRun
+```
+
+然后在本目录执行：
+
+```bash
+npm run smoke:real-backend
+```
+
+脚本会临时启动 Vite 到 `http://127.0.0.1:5274`，用 Playwright 覆盖灵感成歌、润色/续写、
+第三次改词 409 友好提示、确认出歌、发布交接、作品列表，以及失败页重试恢复。
+
+首次运行如提示缺少 Chromium：
+
+```bash
+npx playwright install chromium
+```
