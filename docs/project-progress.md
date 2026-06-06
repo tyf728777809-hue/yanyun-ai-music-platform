@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-06 22:55 CST
+更新时间：2026-06-06 22:58 CST
 
 ## 当前阶段
 
@@ -59,6 +59,8 @@
 2026-06-06 22:50 CST 已根据当前 stepwise 录步模式和后续真实模型联调风险补充 `docs/specs/stepwise-temporal-production-state-advancement-v0.1.md`：明确 `sync + mock` 仍是用户当前实测主路径，`stepwise-recording` 只验证 Temporal 分步顺序和 step audit，不得误判为发布包完成链路；后续若要替代单 activity，应新增独立 `stepwise-production` 模式，分步推进 `works`、`generation_jobs`、`media_assets`、`publish_packages`、`quota_transactions` 等生产状态，并保持真实外部调用硬开关、幂等、脱敏和可恢复边界。并行只读侦察同时确认：`prototypes/Claude-web-v1 + music-api 同步 Mock` 已适合用户本地实测；Suno/MiniMax via DreamMaker 已具备最小真实调用实现和安全开关，但真实音乐 smoke 尚未执行，仍需用户明确进入真实联调时通过环境变量安全注入凭据。
 
 2026-06-06 22:55 CST 已根据前端契约只读侦察结果修复用户实测前的 P1 问题：`prototypes/Claude-web-v1` 的作品列表分页契约从旧的 `total / has_more` 改为 OpenAPI 与后端实际返回的 `total_items / total_pages`，并新增分页回归测试；失败页不再向普通用户展示 `MUSIC_GENERATION_FAILED` 等内部失败码，真实后端 UI smoke 改为断言用户友好失败提示；后端 `publish_handoff_hint`、`blocked_reason` 和交接冲突错误改为中文用户文案；歌词确认页只在交接真正就绪时展示交接提示；成品页按钮优先消费 `publish-package.available_actions`，避免只依赖作品详情动作列表。验证已通过 `npm test`、`npm run typecheck`、`npm run build`、`node --check prototypes/Claude-web-v1/scripts/smoke-real-backend.mjs`、`JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew :apps:music-api:test --tests '*WorkService*' :apps:music-api:compileJava`、`JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew spotlessCheck :apps:music-api:bootJar`、关键旧字段/技术文案搜索和 `git diff --check`。
+
+2026-06-06 22:58 CST 已完成推荐用户实测路径复验：本地基础设施保持运行，使用 `MOCK_MUSIC_DURATION_MS=1000 MUSIC_PROVIDER=mock MUSIC_WORKFLOW_DISPATCH_MODE=sync WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false RENDER_WORKER_MODE=mock` 启动 `music-api` 后，`EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh`、`scripts/smoke/openapi-contract.sh`、`cd prototypes/Claude-web-v1 && npm run smoke:real-backend` 均通过。API 主链路作品 `92703111-50d0-453e-a9b8-f247aa2c6914`，OpenAPI contract 作品 `e1bc6b0b-340a-4899-9923-15b016147881` / 受控失败恢复作品 `e86add7b-0b3b-4d5c-af6b-b05b8b66131a`，前端真实后端 UI smoke 主链路作品 `8b2cdd23-f073-433b-b0cb-1fb8dab76736` / 失败重试作品 `b8cfce76-de20-4a65-8f8e-e712648ab671`。验证结束后 `8080` 和 `5274` 无监听进程。当前结论：用户可以按 `prototypes/Claude-web-v1 + music-api 同步 Mock` 路径进行首轮本地实测；真实 Suno/MiniMax 出歌仍需单独开启 DreamMaker 硬开关并安全注入凭据。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
