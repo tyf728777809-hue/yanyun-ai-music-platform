@@ -7,14 +7,14 @@
 - 标题：Agent Runtime 与 agent_runs 审计边界
 - 作者：Codex
 - 状态：Approved for local Mock implementation
-- 适用范围：CreativeBriefAgent、DeepSeek 写词链路、MusicPromptAgent、后续 CoverPromptAgent、QualityEvaluationAgent、ModerationAgent 的统一审计基础
+- 适用范围：CreativeBriefAgent、DeepSeek 写词链路、MusicPromptAgent、CoverPromptAgent、后续 QualityEvaluationAgent、ModerationAgent 的统一审计基础
 - 评审依据：PRD v0.3、技术方案 v0.2、AI Multi-Agent Creative Pipeline v0.1、DeepSeek / Knowledge Lyrics Pipeline v0.1
 
 ## 2. Context
 
 项目已经明确后续真实模型阶段采用确定性的 Workflow / Service 编排，加专业 Agent Worker 和 Provider Adapter。当前 `provider_calls` 已能记录 Suno / MiniMax / MockMusicProvider 等外部 Provider 调用，但 DeepSeek 写词、提示词规划、质量评估、封面提示词和审核预检这类 LLM Agent 还没有统一审计边界。
 
-真实模型受控联调前，系统需要先具备最小 `AgentRunRecorder`：每次 Agent 调用都能记录 agent 名称、版本、operation、模型名、输入输出 hash、Prompt 模板版本、耗时、状态和脱敏失败信息。首期先接入本地 Mock DeepSeek 写词链路，随后接入 `MusicPromptAgent` Mock 合约；当前已继续接入 `CreativeBriefAgent` Mock 合约。以上能力都不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统，也不改变用户侧 OpenAPI。
+真实模型受控联调前，系统需要先具备最小 `AgentRunRecorder`：每次 Agent 调用都能记录 agent 名称、版本、operation、模型名、输入输出 hash、Prompt 模板版本、耗时、状态和脱敏失败信息。首期先接入本地 Mock DeepSeek 写词链路，随后接入 `MusicPromptAgent` Mock 合约；当前已继续接入 `CreativeBriefAgent` 与 `CoverPromptAgent` Mock 合约。以上能力都不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统，也不改变用户侧 OpenAPI。
 
 ## 3. Functional Requirements
 

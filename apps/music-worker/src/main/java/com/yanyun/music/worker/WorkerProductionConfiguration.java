@@ -2,6 +2,8 @@ package com.yanyun.music.worker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.agentruntime.AgentRunRecorder;
+import com.yanyun.music.creativeagent.CoverPromptAgent;
+import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
@@ -76,6 +78,11 @@ public class WorkerProductionConfiguration {
   @Bean
   MusicPromptAgent musicPromptAgent(AgentRunRecorder agentRunRecorder) {
     return new MockMusicPromptAgent(agentRunRecorder);
+  }
+
+  @Bean
+  CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockCoverPromptAgent(agentRunRecorder);
   }
 
   @Bean

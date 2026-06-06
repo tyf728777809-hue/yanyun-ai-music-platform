@@ -497,6 +497,7 @@ public class WorkService {
         draft.songSummary(),
         draft.lyricsText(),
         draft.musicPrompt(),
+        draft.coverPromptSeed(),
         "AUTO",
         musicProvider,
         musicRetryAllowedAfterFailure,

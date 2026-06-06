@@ -14,8 +14,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunStatus;
+import com.yanyun.music.creativeagent.CoverPromptAgent;
+import com.yanyun.music.creativeagent.CoverPromptRequest;
+import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.image2.CoverGenerationService;
 import com.yanyun.music.image2.MockCoverGenerationService;
 import com.yanyun.music.media.MockVideoRenderService;
 import com.yanyun.music.media.VideoRenderService;
@@ -108,7 +112,8 @@ class MockSongProductionWorkflowTest {
                 musicProvider,
                 MusicProviderType.MOCK,
                 new MockVideoRenderService(),
-                new MockMusicPromptAgent(agentRuns::add))
+                new MockMusicPromptAgent(agentRuns::add),
+                new MockCoverPromptAgent(agentRuns::add))
             .produce(input(workId));
 
     assertThat(result.jobId()).isEqualTo(jobId.toString());
@@ -124,12 +129,17 @@ class MockSongProductionWorkflowTest {
     assertThat(musicRequest.getValue().musicPrompt()).contains("provider profile: mock");
     assertThat(musicRequest.getValue().providerOptions())
         .containsEntry("agent", "MusicPromptAgent");
-    assertThat(agentRuns).hasSize(1);
+    assertThat(agentRuns).hasSize(2);
     assertThat(agentRuns.getFirst().agentName()).isEqualTo("MusicPromptAgent");
     assertThat(agentRuns.getFirst().operation()).isEqualTo("MUSIC_PROMPT");
     assertThat(agentRuns.getFirst().status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.getFirst().inputHash()).hasSize(64);
     assertThat(agentRuns.getFirst().outputHash()).hasSize(64);
+    assertThat(agentRuns.get(1).agentName()).isEqualTo("CoverPromptAgent");
+    assertThat(agentRuns.get(1).operation()).isEqualTo("COVER_PROMPT");
+    assertThat(agentRuns.get(1).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+    assertThat(agentRuns.get(1).inputHash()).hasSize(64);
+    assertThat(agentRuns.get(1).outputHash()).hasSize(64);
 
     ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
     verify(workRepository).insertProviderCall(providerCall.capture());
@@ -164,6 +174,8 @@ class MockSongProductionWorkflowTest {
             .findFirst()
             .orElseThrow();
     assertThat(coverAsset.metadataJson()).contains("mock-image2");
+    assertThat(coverAsset.metadataJson()).contains("CoverPromptAgent");
+    assertThat(coverAsset.metadataJson()).contains("visual_prompt");
     assertThat(videoAsset.metadataJson()).contains("mock-remotion-ffmpeg");
     assertThat(timelineAsset.metadataJson()).contains("mobile-first");
     assertThat(coverAsset.width()).isEqualTo(1920);
@@ -203,6 +215,82 @@ class MockSongProductionWorkflowTest {
     verify(workRepository)
         .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
     verify(quotaAdapter, never()).releaseGenerateQuota(any(), any(), any());
+  }
+
+  @Test
+  void releasesQuotaAndStopsBeforeCoverGenerationWhenCoverPromptAgentFails() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    List<AgentRunRecord> agentRuns = new ArrayList<>();
+    CoverPromptAgent failingCoverPromptAgent =
+        (CoverPromptRequest request) -> {
+          agentRuns.add(
+              new AgentRunRecord(
+                  request.workId(),
+                  null,
+                  "CoverPromptAgent",
+                  "v0.1",
+                  "COVER_PROMPT",
+                  "mock-cover-prompt",
+                  "cover.prompt.v1",
+                  1,
+                  "input-hash",
+                  null,
+                  AgentRunStatus.FAILED,
+                  0,
+                  null,
+                  null,
+                  null,
+                  "COVER_PROMPT_AGENT_FAILED",
+                  "cover prompt failed"));
+          throw new IllegalStateException("cover prompt failed");
+        };
+    CoverGenerationService coverGenerationService = mock(CoverGenerationService.class);
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(agentRuns::add),
+                failingCoverPromptAgent,
+                coverGenerationService)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(agentRuns).hasSize(2);
+    assertThat(agentRuns.get(1).agentName()).isEqualTo("CoverPromptAgent");
+    assertThat(agentRuns.get(1).status()).isEqualTo(AgentRunStatus.FAILED);
+    verify(coverGenerationService, never()).generateCover(any());
+    verify(quotaAdapter)
+        .releaseGenerateQuota("user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name());
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            "cover prompt failed");
   }
 
   @Test
@@ -698,6 +786,32 @@ class MockSongProductionWorkflowTest {
       MusicProviderType providerType,
       VideoRenderService videoRenderer,
       MusicPromptAgent musicPromptAgent) {
+    return workflowWith(
+        musicProvider, providerType, videoRenderer, musicPromptAgent, new MockCoverPromptAgent());
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer,
+      MusicPromptAgent musicPromptAgent,
+      CoverPromptAgent coverPromptAgent) {
+    return workflowWith(
+        musicProvider,
+        providerType,
+        videoRenderer,
+        musicPromptAgent,
+        coverPromptAgent,
+        new MockCoverGenerationService());
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer,
+      MusicPromptAgent musicPromptAgent,
+      CoverPromptAgent coverPromptAgent,
+      CoverGenerationService coverGenerationService) {
     stubObjectStorageDownloadUrls();
     return new MockSongProductionWorkflow(
         workRepository,
@@ -709,7 +823,8 @@ class MockSongProductionWorkflowTest {
         objectStorageClient,
         remoteObjectImporter,
         musicPromptAgent,
-        new MockCoverGenerationService(),
+        coverPromptAgent,
+        coverGenerationService,
         videoRenderer,
         objectMapper);
   }
@@ -754,6 +869,7 @@ class MockSongProductionWorkflowTest {
         "Mock summary",
         "Mock lyrics",
         "Mock prompt",
+        "Mock cover seed",
         "AUTO",
         musicProvider,
         musicRetryAllowedAfterFailure);

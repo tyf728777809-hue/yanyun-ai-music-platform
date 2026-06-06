@@ -6,7 +6,9 @@ import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
 import com.yanyun.music.configcenter.CompanyIntegrationProperties;
 import com.yanyun.music.configcenter.IntegrationReadinessService;
+import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.CreativeBriefAgent;
+import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
@@ -105,6 +107,11 @@ public class AdapterConfiguration {
   @Bean
   CreativeBriefAgent creativeBriefAgent(AgentRunRecorder agentRunRecorder) {
     return new MockCreativeBriefAgent(agentRunRecorder);
+  }
+
+  @Bean
+  CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockCoverPromptAgent(agentRunRecorder);
   }
 
   @Bean

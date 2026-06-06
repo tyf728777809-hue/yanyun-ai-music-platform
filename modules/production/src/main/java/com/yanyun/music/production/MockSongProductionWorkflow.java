@@ -2,6 +2,9 @@ package com.yanyun.music.production;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.creativeagent.CoverPromptAgent;
+import com.yanyun.music.creativeagent.CoverPromptRequest;
+import com.yanyun.music.creativeagent.CoverPromptResult;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptRequest;
 import com.yanyun.music.creativeagent.MusicPromptResult;
@@ -71,6 +74,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final ObjectStorageClient objectStorageClient;
   private final RemoteObjectImporter remoteObjectImporter;
   private final MusicPromptAgent musicPromptAgent;
+  private final CoverPromptAgent coverPromptAgent;
   private final CoverGenerationService coverGenerationService;
   private final VideoRenderService videoRenderService;
   private final ObjectMapper objectMapper;
@@ -85,6 +89,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       ObjectStorageClient objectStorageClient,
       RemoteObjectImporter remoteObjectImporter,
       MusicPromptAgent musicPromptAgent,
+      CoverPromptAgent coverPromptAgent,
       CoverGenerationService coverGenerationService,
       VideoRenderService videoRenderService,
       ObjectMapper objectMapper) {
@@ -97,6 +102,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.objectStorageClient = objectStorageClient;
     this.remoteObjectImporter = remoteObjectImporter;
     this.musicPromptAgent = musicPromptAgent;
+    this.coverPromptAgent = coverPromptAgent;
     this.coverGenerationService = coverGenerationService;
     this.videoRenderService = videoRenderService;
     this.objectMapper = objectMapper;
@@ -351,6 +357,17 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             "{}");
     workRepository.upsertMediaAsset(audioAsset);
 
+    CoverPromptResult coverPrompt =
+        coverPromptAgent.generate(
+            new CoverPromptRequest(
+                workId.toString(),
+                input.songTitle(),
+                input.songSummary(),
+                input.lyricsText(),
+                input.musicPrompt(),
+                input.coverPromptSeed(),
+                1920,
+                1080));
     CoverGenerationResult coverResult =
         coverGenerationService.generateCover(
             new CoverGenerationRequest(
@@ -358,7 +375,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                 input.songTitle(),
                 input.songSummary(),
                 input.lyricsText(),
-                input.musicPrompt()));
+                input.musicPrompt(),
+                coverPrompt.visualPrompt(),
+                coverPrompt.negativePrompt(),
+                coverPrompt.width(),
+                coverPrompt.height(),
+                coverPrompt.providerOptions()));
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverResult.asset());
     workRepository.upsertMediaAsset(coverAsset);
 
