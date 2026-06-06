@@ -85,7 +85,7 @@ flowchart TD
 | `CoverPromptAgent` | Agent | 把歌词、主题、音乐情绪和燕云视觉规则转换成封面 visual prompt | 已有 Mock 合约 |
 | `ImageProviderAdapter` | Adapter | 调用 Image 2 或 Mock 生图，生成封面并导入对象存储 | 后续补真实硬开关和 runbook |
 | `VideoPlanAgent` | Agent | 可选；用于复杂视频分镜、背景和字幕节奏规划 | 暂缓，当前先用确定性 render-worker |
-| `QualityEvaluationAgent` | Agent | 评估歌词、音乐、封面、视频和发布包质量，返回 pass/retry/block 建议 | 下一步补 Mock 合约 |
+| `QualityEvaluationAgent` | Agent | 评估歌词、音乐、封面、视频和发布包质量，返回 pass/retry/block 建议 | 已接入发布包质量门 Mock 合约，歌词/音乐细分质量门后续扩展 |
 | `ModerationAgent` | Agent | AI 辅助识别文本、prompt、封面、发布包风险 | 下一步补 Mock 合约 |
 | `ModerationAdapter` | Adapter | 调用公司审核或 Mock 审核，最终审核口径以公司系统为准 | 已有 Mock 边界，真实接入由公司开发替换 |
 | `PublishPackageAssembler` | Service | 组装发布包、写对象存储、签发 URL、刷新 URL、标记交接 | 已有本地/S3-MinIO 边界 |
@@ -183,10 +183,10 @@ type AgentRunResult<T> = {
 - `LyricsAgent` 审计基础
 - `MusicPromptAgent`
 - `CoverPromptAgent`
+- `QualityEvaluationAgent` 发布包质量门
 
 下一步：
 
-- `QualityEvaluationAgent`
 - `ModerationAgent`
 
 ### Phase 2：DeepSeek 真实受控联调

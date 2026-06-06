@@ -92,8 +92,9 @@ flowchart TD
 2. 已补齐 `MusicPromptAgent`，为 Suno / MiniMax 真实联调做准备。
 3. 已补齐 `CreativeBriefAgent`，把用户需求理解从写词服务中抽出来。
 4. 已补齐 `CoverPromptAgent`，为 Image 2 真实联调做准备。
-5. 下一步补 `QualityEvaluationAgent` 与 `ModerationAgent`。
-6. `VideoPlanAgent` 暂缓，等视频表现要求超过当前 Remotion 确定性模板后再启用。
+5. 已补齐 `QualityEvaluationAgent` 发布包质量门 Mock 合约，为发布包交接前质量评估做准备。
+6. 下一步补 `ModerationAgent`。
+7. `VideoPlanAgent` 暂缓，等视频表现要求超过当前 Remotion 确定性模板后再启用。
 
 ## 6. 编排原则
 
@@ -377,10 +378,11 @@ COMPANY_ADAPTER_REAL_CALLS_ENABLED=false
 - `CreativeBriefAgent` Mock 合约和写词前简报注入
 - `MusicPromptAgent` Mock 合约和确认出歌前音乐提示词规划
 - `CoverPromptAgent` Mock 合约和封面生成前视觉提示词规划
+- `QualityEvaluationAgent` Mock 合约和发布包写入前质量门
 
 下一步：
 
-- 补 `QualityEvaluationAgent`、`ModerationAgent` Mock 合约。
+- 补 `ModerationAgent` Mock 合约。
 
 ### Phase B：DeepSeek 真实写词受控联调
 

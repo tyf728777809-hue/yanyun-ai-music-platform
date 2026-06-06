@@ -419,7 +419,7 @@ Workflow / Service 必须持有：
 
 验收：现有本地 Mock 主链路仍通过；`provider_calls` 或新增 `agent_runs` 可追踪每个 Agent mock run。
 
-当前落地状态：`agent_runs` v0.1 与 `AgentRunRecorder` 已完成，写词链路的 `CreativeBriefAgent` 和 `LyricsAgent` Mock 调用已接入审计；`MusicPromptAgent` v0.1 Mock 合约已接入 `SongProductionWorkflow`，确认出歌前会生成 Provider 侧音乐提示词并写入 `agent_runs`；`CoverPromptAgent` v0.1 Mock 合约已接入封面生成前置步骤，封面 visual prompt 会进入媒体资产 metadata。`QualityEvaluationAgent` 和 `ModerationAgent` 仍待补 Mock 合约。
+当前落地状态：`agent_runs` v0.1 与 `AgentRunRecorder` 已完成，写词链路的 `CreativeBriefAgent` 和 `LyricsAgent` Mock 调用已接入审计；`MusicPromptAgent` v0.1 Mock 合约已接入 `SongProductionWorkflow`，确认出歌前会生成 Provider 侧音乐提示词并写入 `agent_runs`；`CoverPromptAgent` v0.1 Mock 合约已接入封面生成前置步骤，封面 visual prompt 会进入媒体资产 metadata；`QualityEvaluationAgent` v0.1 Mock 合约已接入发布包写入前质量门。`ModerationAgent` 仍待补 Mock 合约。
 
 ### Phase 2：DeepSeek 真实写词受控联调
 
@@ -459,7 +459,7 @@ Workflow / Service 必须持有：
 
 - 在技术方案 v0.2 后续版本中补入本设计的 Agent / Adapter 分层口径。
 - 扩展 Agent Runtime 配置：模型名、硬开关、成本限制、超时、重试、Prompt 模板版本。
-- 继续补齐 `QualityEvaluationAgent` 和 `ModerationAgent` 的 Mock 合约与审计。
+- 继续补齐 `ModerationAgent` 的 Mock 合约与审计；歌词、音乐等更细粒度质量门可在 `QualityEvaluationAgent` v0.2 扩展。
 - 梳理 DeepSeek 真实接入 runbook：输入脱敏、Prompt 版本、失败码、限流、回退 Mock。
 - 梳理 Image 2 真实接入 runbook：尺寸、风格、内容安全、默认封面兜底和对象存储导入。
 - 在真实模型联调前，把 `SongProductionWorkflow` 拆为更细粒度 Temporal activities。

@@ -18,10 +18,14 @@ import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.CoverPromptRequest;
 import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.image2.CoverGenerationService;
 import com.yanyun.music.image2.MockCoverGenerationService;
+import com.yanyun.music.media.MediaAssetDescriptor;
 import com.yanyun.music.media.MockVideoRenderService;
+import com.yanyun.music.media.VideoRenderResult;
 import com.yanyun.music.media.VideoRenderService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
@@ -113,7 +117,8 @@ class MockSongProductionWorkflowTest {
                 MusicProviderType.MOCK,
                 new MockVideoRenderService(),
                 new MockMusicPromptAgent(agentRuns::add),
-                new MockCoverPromptAgent(agentRuns::add))
+                new MockCoverPromptAgent(agentRuns::add),
+                new MockQualityEvaluationAgent(agentRuns::add))
             .produce(input(workId));
 
     assertThat(result.jobId()).isEqualTo(jobId.toString());
@@ -129,7 +134,7 @@ class MockSongProductionWorkflowTest {
     assertThat(musicRequest.getValue().musicPrompt()).contains("provider profile: mock");
     assertThat(musicRequest.getValue().providerOptions())
         .containsEntry("agent", "MusicPromptAgent");
-    assertThat(agentRuns).hasSize(2);
+    assertThat(agentRuns).hasSize(3);
     assertThat(agentRuns.getFirst().agentName()).isEqualTo("MusicPromptAgent");
     assertThat(agentRuns.getFirst().operation()).isEqualTo("MUSIC_PROMPT");
     assertThat(agentRuns.getFirst().status()).isEqualTo(AgentRunStatus.SUCCEEDED);
@@ -140,6 +145,11 @@ class MockSongProductionWorkflowTest {
     assertThat(agentRuns.get(1).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.get(1).inputHash()).hasSize(64);
     assertThat(agentRuns.get(1).outputHash()).hasSize(64);
+    assertThat(agentRuns.get(2).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(2).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
+    assertThat(agentRuns.get(2).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+    assertThat(agentRuns.get(2).inputHash()).hasSize(64);
+    assertThat(agentRuns.get(2).outputHash()).hasSize(64);
 
     ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
     verify(workRepository).insertProviderCall(providerCall.capture());
@@ -651,6 +661,97 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void releasesLockedQuotaAndStopsBeforePublishWhenPackageQualityGateRetries() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+    VideoRenderService squareVideoRenderer =
+        request ->
+            new VideoRenderResult(
+                new MediaAssetDescriptor(
+                    "VIDEO",
+                    "videos/" + request.workId() + ".mp4",
+                    "video/mp4",
+                    12_000_000L,
+                    "mock-video",
+                    1024,
+                    1024,
+                    request.durationMs(),
+                    java.util.Map.of("renderer", "mock-square-video")),
+                new MediaAssetDescriptor(
+                    "TIMELINE",
+                    "timelines/" + request.workId() + ".json",
+                    "application/json",
+                    64_000L,
+                    "mock-timeline",
+                    null,
+                    null,
+                    request.durationMs(),
+                    java.util.Map.of("renderer", "mock-timeline")));
+    List<AgentRunRecord> agentRuns = new ArrayList<>();
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                squareVideoRenderer,
+                new MockMusicPromptAgent(agentRuns::add),
+                new MockCoverPromptAgent(agentRuns::add),
+                new MockQualityEvaluationAgent(agentRuns::add))
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(result.failureMessage())
+        .isEqualTo("Package quality gate failed: video asset is not 16:9");
+    assertThat(agentRuns).hasSize(3);
+    assertThat(agentRuns.get(2).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(2).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
+    assertThat(agentRuns.get(2).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+
+    verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(any());
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(
+            workId,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            "Package quality gate failed: video asset is not 16:9",
+            true);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.PACKAGE_BUILD_FAILED,
+            "Package quality gate failed: video asset is not 16:9");
+    verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
+    verify(publishAdapter, never()).preparePackage(any());
+    verify(moderationAdapter, never()).preCheckPublishPackage(any(), any());
+    verify(objectStorageClient, never()).putObject(any());
+    verify(workRepository, never()).upsertPublishPackage(any());
+    verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
+  }
+
+  @Test
   void releasesLockedQuotaAndFailsJobWhenPackageStorageFails() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -802,6 +903,23 @@ class MockSongProductionWorkflowTest {
         videoRenderer,
         musicPromptAgent,
         coverPromptAgent,
+        new MockQualityEvaluationAgent());
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer,
+      MusicPromptAgent musicPromptAgent,
+      CoverPromptAgent coverPromptAgent,
+      QualityEvaluationAgent qualityEvaluationAgent) {
+    return workflowWith(
+        musicProvider,
+        providerType,
+        videoRenderer,
+        musicPromptAgent,
+        coverPromptAgent,
+        qualityEvaluationAgent,
         new MockCoverGenerationService());
   }
 
@@ -811,6 +929,24 @@ class MockSongProductionWorkflowTest {
       VideoRenderService videoRenderer,
       MusicPromptAgent musicPromptAgent,
       CoverPromptAgent coverPromptAgent,
+      CoverGenerationService coverGenerationService) {
+    return workflowWith(
+        musicProvider,
+        providerType,
+        videoRenderer,
+        musicPromptAgent,
+        coverPromptAgent,
+        new MockQualityEvaluationAgent(),
+        coverGenerationService);
+  }
+
+  private MockSongProductionWorkflow workflowWith(
+      MusicProvider musicProvider,
+      MusicProviderType providerType,
+      VideoRenderService videoRenderer,
+      MusicPromptAgent musicPromptAgent,
+      CoverPromptAgent coverPromptAgent,
+      QualityEvaluationAgent qualityEvaluationAgent,
       CoverGenerationService coverGenerationService) {
     stubObjectStorageDownloadUrls();
     return new MockSongProductionWorkflow(
@@ -824,6 +960,7 @@ class MockSongProductionWorkflowTest {
         remoteObjectImporter,
         musicPromptAgent,
         coverPromptAgent,
+        qualityEvaluationAgent,
         coverGenerationService,
         videoRenderer,
         objectMapper);

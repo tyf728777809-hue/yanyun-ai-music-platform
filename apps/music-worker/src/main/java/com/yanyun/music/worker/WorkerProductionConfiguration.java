@@ -5,7 +5,9 @@ import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -83,6 +85,11 @@ public class WorkerProductionConfiguration {
   @Bean
   CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
     return new MockCoverPromptAgent(agentRunRecorder);
+  }
+
+  @Bean
+  QualityEvaluationAgent qualityEvaluationAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockQualityEvaluationAgent(agentRunRecorder);
   }
 
   @Bean

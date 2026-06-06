@@ -8,6 +8,11 @@ import com.yanyun.music.creativeagent.CoverPromptResult;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptRequest;
 import com.yanyun.music.creativeagent.MusicPromptResult;
+import com.yanyun.music.creativeagent.QualityDecision;
+import com.yanyun.music.creativeagent.QualityEvaluationAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationRequest;
+import com.yanyun.music.creativeagent.QualityEvaluationResult;
+import com.yanyun.music.creativeagent.QualityGate;
 import com.yanyun.music.image2.CoverGenerationRequest;
 import com.yanyun.music.image2.CoverGenerationResult;
 import com.yanyun.music.image2.CoverGenerationService;
@@ -75,6 +80,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final RemoteObjectImporter remoteObjectImporter;
   private final MusicPromptAgent musicPromptAgent;
   private final CoverPromptAgent coverPromptAgent;
+  private final QualityEvaluationAgent qualityEvaluationAgent;
   private final CoverGenerationService coverGenerationService;
   private final VideoRenderService videoRenderService;
   private final ObjectMapper objectMapper;
@@ -90,6 +96,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       RemoteObjectImporter remoteObjectImporter,
       MusicPromptAgent musicPromptAgent,
       CoverPromptAgent coverPromptAgent,
+      QualityEvaluationAgent qualityEvaluationAgent,
       CoverGenerationService coverGenerationService,
       VideoRenderService videoRenderService,
       ObjectMapper objectMapper) {
@@ -103,6 +110,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.remoteObjectImporter = remoteObjectImporter;
     this.musicPromptAgent = musicPromptAgent;
     this.coverPromptAgent = coverPromptAgent;
+    this.qualityEvaluationAgent = qualityEvaluationAgent;
     this.coverGenerationService = coverGenerationService;
     this.videoRenderService = videoRenderService;
     this.objectMapper = objectMapper;
@@ -215,6 +223,30 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           FailureCode.PACKAGE_BUILD_FAILED,
           firstNonBlank(exception.getMessage(), "Media asset generation failed"),
           true,
+          input.userId(),
+          lock.lockId());
+    }
+
+    QualityEvaluationResult packageQuality;
+    try {
+      packageQuality = evaluatePackageQuality(input, selectedProvider, mediaAssets);
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.PACKAGE_BUILD_FAILED,
+          firstNonBlank(exception.getMessage(), "Package quality evaluation failed"),
+          true,
+          input.userId(),
+          lock.lockId());
+    }
+    if (packageQuality.decision() != QualityDecision.PASS) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.PACKAGE_BUILD_FAILED,
+          packageQualityFailureMessage(packageQuality),
+          packageQuality.retryable(),
           input.userId(),
           lock.lockId());
     }
@@ -402,6 +434,37 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
   }
 
+  private QualityEvaluationResult evaluatePackageQuality(
+      SongProductionWorkflowInput input,
+      MusicProviderSelection selectedProvider,
+      GeneratedMediaAssets mediaAssets) {
+    return qualityEvaluationAgent.evaluate(
+        new QualityEvaluationRequest(
+            input.workId(),
+            QualityGate.PUBLISH_PACKAGE,
+            input.songTitle(),
+            input.lyricsText(),
+            selectedProvider.providerType().name(),
+            mediaAssets.audioAsset().objectKey(),
+            toLong(mediaAssets.audioAsset().durationMs()),
+            mediaAssets.coverAsset().objectKey(),
+            mediaAssets.coverAsset().width(),
+            mediaAssets.coverAsset().height(),
+            mediaAssets.videoAsset().objectKey(),
+            mediaAssets.videoAsset().width(),
+            mediaAssets.videoAsset().height(),
+            toLong(mediaAssets.videoAsset().durationMs()),
+            mediaAssets.timelineAsset().objectKey(),
+            Map.of("workflow", "SongProductionWorkflow", "quality_gate", "publish_package")));
+  }
+
+  private String packageQualityFailureMessage(QualityEvaluationResult result) {
+    if (!result.reasons().isEmpty()) {
+      return "Package quality gate failed: " + String.join("; ", result.reasons());
+    }
+    return "Package quality gate failed: " + result.decision().name();
+  }
+
   private MediaAssetRow toMediaAssetRow(UUID workId, MediaAssetDescriptor asset) {
     return new MediaAssetRow(
         workId,
@@ -540,6 +603,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
   private String firstNonBlank(String value, String fallback) {
     return value == null || value.isBlank() ? fallback : value.trim();
+  }
+
+  private Long toLong(Integer value) {
+    return value == null ? null : value.longValue();
   }
 
   private String writeJson(Object value) {

@@ -11,7 +11,9 @@ import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
+import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
 import com.yanyun.music.dreammaker.DreamMakerClient;
@@ -112,6 +114,11 @@ public class AdapterConfiguration {
   @Bean
   CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
     return new MockCoverPromptAgent(agentRunRecorder);
+  }
+
+  @Bean
+  QualityEvaluationAgent qualityEvaluationAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockQualityEvaluationAgent(agentRunRecorder);
   }
 
   @Bean
