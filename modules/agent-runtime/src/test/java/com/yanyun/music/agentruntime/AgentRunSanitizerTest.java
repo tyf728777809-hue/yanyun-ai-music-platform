@@ -11,13 +11,13 @@ class AgentRunSanitizerTest {
   void redactsTokensAndKeys() {
     String sanitized =
         AgentRunSanitizer.sanitizeFailureMessage(
-            "failed Authorization Bearer abc.def.ghi SecretKey: real-secret token=raw-token");
+            "failed Authorization Bearer abc.def.ghi SecretKey=dummy-secret token=raw-token");
 
     assertTrue(sanitized.contains("Bearer [REDACTED]"));
     assertTrue(sanitized.contains("SecretKey=[REDACTED]"));
     assertTrue(sanitized.contains("token=[REDACTED]"));
     assertFalse(sanitized.contains("abc.def.ghi"));
-    assertFalse(sanitized.contains("real-secret"));
+    assertFalse(sanitized.contains("dummy-secret"));
     assertFalse(sanitized.contains("raw-token"));
   }
 

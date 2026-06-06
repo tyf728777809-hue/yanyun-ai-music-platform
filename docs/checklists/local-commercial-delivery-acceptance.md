@@ -17,6 +17,7 @@
 - [ ] `git status --short` 无未解释的改动；临时截图、`.playwright-mcp/`、构建产物和密钥文件未进入 Git。
 - [ ] `README.md`、`docs/project-progress.md`、运行手册和交接文档的当前阶段一致。
 - [ ] `docs/handover/local-commercial-delivery-status-v0.1.md` 已同步当前阶段，且没有把 Mock / 受控 smoke 准备项过度描述为真实生产完成。
+- [ ] `scripts/smoke/local-delivery-evidence-audit.sh` 通过；若用于正式交接前 gate，应设置 `STRICT_GIT_CLEAN=true`。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。

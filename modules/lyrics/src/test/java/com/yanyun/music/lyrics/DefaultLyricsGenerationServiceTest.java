@@ -161,7 +161,7 @@ class DefaultLyricsGenerationServiceTest {
     List<AgentRunRecord> records = new ArrayList<>();
     DeepSeekLyricsClient deepSeek =
         request -> {
-          throw new IllegalStateException("Bearer abc.def SecretKey: dummy-value");
+          throw new IllegalStateException("Bearer abc.def SecretKey=dummy-value");
         };
     DefaultLyricsGenerationService service =
         new DefaultLyricsGenerationService(

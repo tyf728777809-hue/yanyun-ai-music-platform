@@ -96,7 +96,7 @@ class DreamMakerHttpClientTest {
 
   @Test
   void mapsNon2xxResponseAndRedactsProviderMessage() throws Exception {
-    server = startFailureServer(429, "rate limit Bearer fake-token-value token=plain");
+    server = startFailureServer(429, "rate limit Bearer fake token=plain");
     DreamMakerHttpClient client =
         new DreamMakerHttpClient(
             properties(TEST_ACCESS_KEY, TEST_SECRET_KEY),

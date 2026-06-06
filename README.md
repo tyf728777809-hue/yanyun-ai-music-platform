@@ -98,8 +98,9 @@ DeepSeek 写词默认仍使用 Mock；显式设置 `AGENT_REAL_CALLS_ENABLED=tru
 部署 Secret 或公司配置中心注入，不写入仓库。`/internal/integration-readiness`
 已包含 `deepseek_guard`，用于展示 DeepSeek 真实调用开关、模型名和 API Key 配置状态。
 
-Image 2 封面默认仍使用 Mock；显式设置 `IMAGE_PROVIDER=image2`、
-`IMAGE_REAL_CALLS_ENABLED=true` 后，当前默认 `IMAGE2_BACKEND=wellapi`，通过
+Image 2 封面默认仍使用 Mock；WellAPI 是当前非公司内网环境下的公网联调后端。
+显式设置 `IMAGE_PROVIDER=image2`、`IMAGE_REAL_CALLS_ENABLED=true` 后，默认使用
+`IMAGE2_BACKEND=wellapi`，通过
 `WELLAPI_BASE_URL=https://wellapi.ai` 和 `WELLAPI_API_KEY` 调用 `gpt-image-2`。供应商返回
 URL 时会导入平台对象存储；若只返回 `b64_json`，workflow 会直接写入平台对象存储后再进入发布包。
 `IMAGE2_BACKEND=dreammaker` 仍保留为正式生产目标切换路径。真实联调按
@@ -173,6 +174,14 @@ scripts/smoke/company-adapter-readiness-smoke.sh
 ```
 
 该脚本只调用 `/health` 和 `/internal/integration-readiness`，不会访问真实公司系统或真实模型供应商；默认本地模式下会确认账号、审核、权益、发布、分享仍是明确的 Mock/外部承接边界。
+
+交付前可先跑一次不启动服务的证据审计：
+
+```bash
+scripts/smoke/local-delivery-evidence-audit.sh
+```
+
+该脚本只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、状态矩阵、明显密钥形态和大体积 tracked 文件；不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准。
 
 ## Web Commands
 

@@ -428,7 +428,7 @@ class MockSongProductionWorkflowTest {
                 "task-1",
                 "mock",
                 "PROVIDER_FAILED",
-                "provider failed Authorization: Bearer fake-token-value token=plain"));
+                "provider failed Authorization: Bearer fake token=plain"));
     when(quotaAdapter.releaseGenerateQuota(
             "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
