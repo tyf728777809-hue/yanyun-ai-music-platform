@@ -25,6 +25,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 - FR-10: The audit MUST support strict git cleanliness through `STRICT_GIT_CLEAN=true`, while default mode MAY warn instead of failing on local modifications.
 - FR-11: The audit MUST print a concise PASS/FAIL summary and exit non-zero when required checks fail.
 - FR-12: The audit MUST include the production provider defaults audit, proving production profile and fallback defaults still point to DreamMaker.
+- FR-13: The audit MUST include the company deployment readiness audit, proving deployment assets and handoff references remain present.
 
 ## Non-Functional Requirements
 
@@ -34,7 +35,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 
 ## Acceptance Criteria
 
-- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, backend/full acceptance stack evidence, production provider defaults evidence, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9 and FR-12.
+- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, backend/full acceptance stack evidence, production provider defaults evidence, deployment readiness evidence, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9, FR-12, and FR-13.
 - AC-2: Given local uncommitted changes and default mode, when the audit runs, then it warns about git status but can pass remaining checks. Covers FR-10.
 - AC-3: Given local uncommitted changes and `STRICT_GIT_CLEAN=true`, when the audit runs, then it exits non-zero. Covers FR-10 and FR-11.
 - AC-4: Given the real-model controlled smoke index is removed or loses DreamMaker plan output, when the audit runs, then it exits non-zero. Covers FR-7 and FR-11.

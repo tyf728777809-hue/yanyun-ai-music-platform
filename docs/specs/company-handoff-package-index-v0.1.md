@@ -26,6 +26,7 @@ Without a handoff package index, the company side may confuse local mock readine
 - FR-11: The audit script MUST run without starting services or calling external systems.
 - FR-12: The audit script MUST verify required documents, commands, and safety phrases are present.
 - FR-13: The handoff package MUST reference the production provider defaults audit and production env example.
+- FR-14: The handoff package MUST reference the company deployment readiness audit.
 
 ## Non-Functional Requirements
 
@@ -38,7 +39,7 @@ Without a handoff package index, the company side may confuse local mock readine
 - AC-1: Given the repository checkout, when the company handoff audit runs, then it verifies the package document, Adapter handoff, replacement checklist, local delivery status, acceptance checklist, OpenAPI, frontend ADR, local runbook, and key smoke scripts exist. Covers FR-1, FR-2, and FR-12.
 - AC-2: Given the package document, when the audit scans it, then it finds local-ready, smoke-prepared, handoff-prepared, blocked-external, and decision-required status terms. Covers FR-3.
 - AC-3: Given the package document, when the audit scans it, then it finds explicit company-system boundary text, `X-Mock-User-Id` warning, `mark-fetched` semantics, DreamMaker production-target rule, and Yunwu/WellAPI public-network smoke labels. Covers FR-4 through FR-8.
-- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-commercial-full-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, `scripts/smoke/production-provider-defaults-audit.sh`, `deploy/env.production.example`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9, FR-10, and FR-13.
+- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-commercial-full-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, `scripts/smoke/production-provider-defaults-audit.sh`, `scripts/smoke/company-deployment-readiness-audit.sh`, `deploy/env.production.example`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9, FR-10, FR-13, and FR-14.
 - AC-5: Given the audit runs, when required evidence is missing, then it exits non-zero. Covers FR-11 and FR-12.
 
 ## Edge Cases

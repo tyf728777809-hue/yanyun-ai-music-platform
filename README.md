@@ -218,11 +218,12 @@ scripts/smoke/company-adapter-readiness-smoke.sh
 ```bash
 scripts/smoke/local-delivery-evidence-audit.sh
 scripts/smoke/production-provider-defaults-audit.sh
+scripts/smoke/company-deployment-readiness-audit.sh
 scripts/smoke/company-handoff-package-audit.sh
 scripts/smoke/real-model-safety-gates-audit.sh
 ```
 
-`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`production-provider-defaults-audit.sh` 检查 `prod/production` profile、生产环境样例、Java fallback 和 readiness 默认值都指向 DreamMaker；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行；完整本地商用验收栈可用 `scripts/smoke/local-commercial-full-acceptance-stack.sh` 执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
+`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`production-provider-defaults-audit.sh` 检查 `prod/production` profile、生产环境样例、Java fallback 和 readiness 默认值都指向 DreamMaker；`company-deployment-readiness-audit.sh` 检查本地基础设施 compose、应用 Dockerfile、Prometheus、生产 env 样例和部署交接文档；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行；完整本地商用验收栈可用 `scripts/smoke/local-commercial-full-acceptance-stack.sh` 执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
 
 ## Web Commands
 

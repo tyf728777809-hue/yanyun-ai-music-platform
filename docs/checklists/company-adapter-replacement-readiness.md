@@ -31,6 +31,7 @@ scripts/smoke/company-adapter-readiness-smoke.sh
 - [ ] `dreammaker_guard` 仍存在，且保留 `DreamMakerHttpClient` 与 `DREAMMAKER_*` 生产切换变量名；Yunwu / WellAPI 只作为当前公网联调后端，不替代正式生产 DreamMaker 接口。
 - [ ] 生产部署使用 `SPRING_PROFILES_ACTIVE=prod` 或等价生产 profile，并参考 `deploy/env.production.example`；`SUNO_BACKEND` 与 `IMAGE2_BACKEND` 的生产默认值必须是 `dreammaker`。
 - [ ] `scripts/smoke/production-provider-defaults-audit.sh` 通过，证明生产 profile、Java fallback、readiness 默认值和交接文档没有把 Yunwu / WellAPI 当成生产默认。
+- [ ] `scripts/smoke/company-deployment-readiness-audit.sh` 通过，证明本地基础设施 compose、应用 Dockerfile、Prometheus、生产 env 样例和部署交接文档齐全；最终生产拓扑仍由公司确认。
 - [ ] `scripts/smoke/company-adapter-readiness-smoke.sh` 通过，且输出摘要可作为脱敏交接证据。
 
 ## 2. 替换矩阵
@@ -171,6 +172,7 @@ record PublishHandoff(String packageObjectKey, String packageUrl, OffsetDateTime
 
 ```bash
 scripts/smoke/production-provider-defaults-audit.sh
+scripts/smoke/company-deployment-readiness-audit.sh
 scripts/smoke/company-adapter-readiness-smoke.sh
 scripts/smoke/openapi-contract.sh
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh

@@ -19,6 +19,7 @@
 - [ ] `docs/handover/local-commercial-delivery-status-v0.1.md` 已同步当前阶段，且没有把 Mock / 受控 smoke 准备项过度描述为真实生产完成。
 - [ ] `scripts/smoke/local-delivery-evidence-audit.sh` 通过；若用于正式交接前 gate，应设置 `STRICT_GIT_CLEAN=true`。
 - [ ] `scripts/smoke/production-provider-defaults-audit.sh` 通过，证明生产 profile、生产样例、Java fallback 和 readiness 默认值都保留 DreamMaker 为生产目标。
+- [ ] `scripts/smoke/company-deployment-readiness-audit.sh` 通过，证明本地基础设施 compose、应用 Dockerfile、监控 scrape、生产 env 样例和部署交接文档齐全。
 - [ ] `docs/handover/company-delivery-package-v0.1.md` 已作为公司开发第一阅读入口，且 `scripts/smoke/company-handoff-package-audit.sh` 通过。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 通过，证明后端本地 Mock 主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断可组合复验。

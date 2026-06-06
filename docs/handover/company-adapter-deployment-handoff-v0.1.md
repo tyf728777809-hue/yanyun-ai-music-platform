@@ -170,10 +170,13 @@ COMPANY_SHARE_BASE_URL=
 deploy/env.production.example
 ```
 
-交付前可运行以下只读审计，确认生产 profile、Java fallback、readiness 默认值和交接文档没有把公网联调后端当成生产默认：
+部署资产当前分两类：`deploy/docker-compose.yml` 是本地基础设施 compose，用于 PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus 和 Grafana 本地验证；应用容器构建参考分别是 `deploy/docker/music-api.Dockerfile`、`deploy/docker/music-worker.Dockerfile`、`deploy/docker/render-worker.Dockerfile` 和 `deploy/docker/web.Dockerfile`。公司生产部署形态仍为 `DECISION_REQUIRED`，需要公司运维确认最终采用 VM、Kubernetes、公司 PaaS、独立 render service 或队列化 worker。
+
+交付前可运行以下只读审计，确认生产 profile、Java fallback、readiness 默认值和交接文档没有把公网联调后端当成生产默认，并确认部署资产和交接引用完整：
 
 ```bash
 scripts/smoke/production-provider-defaults-audit.sh
+scripts/smoke/company-deployment-readiness-audit.sh
 ```
 
 ### 8.1 基础运行必需项
@@ -237,7 +240,7 @@ RENDER_WORKER_TIMEOUT=
 ## 9. 公司接入 Smoke
 
 1. 调用 `/internal/integration-readiness`，并运行 `scripts/smoke/company-adapter-readiness-smoke.sh`，确认公司 Adapter 状态可解释且 readiness 响应不泄露密钥。
-2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh`，确认生产默认仍指向 DreamMaker，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
+2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh` 和 `scripts/smoke/company-deployment-readiness-audit.sh`，确认生产默认仍指向 DreamMaker，部署资产和交接文档齐全，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
 3. 调用 `/api/v1/me`，确认返回真实公司用户。
 4. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
 5. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
