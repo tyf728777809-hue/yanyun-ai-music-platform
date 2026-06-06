@@ -18,6 +18,7 @@
 
 ```bash
 curl -s http://localhost:8080/internal/integration-readiness | jq .
+scripts/smoke/company-adapter-readiness-smoke.sh
 ```
 
 公司部署前必须确认：
@@ -27,6 +28,8 @@ curl -s http://localhost:8080/internal/integration-readiness | jq .
 - [ ] `company_share` 可以作为“公司系统承接 / 本平台无需实现”的豁免项；豁免说明必须写清分享入口、分享卡片、传播归因和回流统计由公司社区系统负责。
 - [ ] `required_env_vars` 只列变量名，不输出任何真实密钥、token、Cookie 或签名 URL。
 - [ ] `music_provider`、`workflow_dispatch`、`object_storage`、`render_worker` 的部署模式符合公司部署方案。
+- [ ] `dreammaker_guard` 仍存在，且保留 `DreamMakerHttpClient` 与 `DREAMMAKER_*` 生产切换变量名；Yunwu / WellAPI 只作为当前公网联调后端，不替代正式生产 DreamMaker 接口。
+- [ ] `scripts/smoke/company-adapter-readiness-smoke.sh` 通过，且输出摘要可作为脱敏交接证据。
 
 ## 2. 替换矩阵
 
@@ -37,6 +40,7 @@ curl -s http://localhost:8080/internal/integration-readiness | jq .
 | 权益 | `QuotaAdapter.getHint` / `lockGenerateQuota` / `commitGenerateQuota` / `releaseGenerateQuota` | `MockQuotaAdapter` | `lock / commit / release` 幂等，可按 `work_id` 对账 |
 | 发布交接 | `PublishAdapter.preparePackage` / `refreshPackageUrl` | `MockPublishAdapter` + 对象存储 | 公司发布系统能读取发布包 URL；标记已交接不等于社区发布成功 |
 | 分享 | 当前无本平台业务调用点 | `NotImplementedShareBoundary` 口径 | 分享入口、卡片、渠道、传播链路由公司社区系统承接 |
+| DreamMaker | `DreamMakerHttpClient` / `dreammaker_guard` | 默认真实调用关闭 | 保留正式生产目标接口；公司内网/生产环境用 `DREAMMAKER_*` 安全注入并显式启用 |
 
 ## 3. 账号 Adapter 验收
 
@@ -164,6 +168,7 @@ record PublishHandoff(String packageObjectKey, String packageUrl, OffsetDateTime
 在公司 Adapter 替换后，至少执行：
 
 ```bash
+scripts/smoke/company-adapter-readiness-smoke.sh
 scripts/smoke/openapi-contract.sh
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 cd prototypes/Claude-web-v1 && npm run smoke:real-backend
@@ -173,6 +178,12 @@ cd prototypes/Claude-web-v1 && npm run smoke:real-backend
 
 ```bash
 EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
+```
+
+如果临时使用 Yunwu / WellAPI 做公网联调，仍必须保留并复核 DreamMaker 生产切换路径：
+
+```bash
+scripts/smoke/company-adapter-readiness-smoke.sh
 ```
 
 如果启用真实音乐：

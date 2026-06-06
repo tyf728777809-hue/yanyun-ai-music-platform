@@ -155,6 +155,14 @@ npm run smoke:real-backend
 该脚本会临时启动 Vite，使用 Playwright 跑通灵感成歌、AI 润色/续写、第三次改词 409 友好提示、
 确认出歌、发布交接、作品列表，以及 `suno` 受控失败后的前端重试恢复。
 
+公司 Adapter readiness 可在 API 启动后用只读 smoke 复验：
+
+```bash
+scripts/smoke/company-adapter-readiness-smoke.sh
+```
+
+该脚本只调用 `/health` 和 `/internal/integration-readiness`，不会访问真实公司系统或真实模型供应商；默认本地模式下会确认账号、审核、权益、发布、分享仍是明确的 Mock/外部承接边界。
+
 ## Web Commands
 
 当前可验收前端：

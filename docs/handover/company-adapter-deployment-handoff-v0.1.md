@@ -18,12 +18,15 @@
 `LocalProcessVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
 `render_worker` 组件；本地进程模式可证明 Remotion MP4 链路可跑通，但生产是否采用进程模式、独立服务或队列化 render worker 需要公司部署方案确认。
 
+真实音乐和 Image 2 供应商边界中，DreamMaker 是必须保留的正式生产目标。Yunwu / WellAPI 只用于当前非公司内网环境下的公网受控联调，不作为删除 DreamMaker 接口的理由。
+
 ## 2. 当前可检查接口
 
 启动 `music-api` 后访问：
 
 ```bash
 curl http://localhost:8080/internal/integration-readiness
+scripts/smoke/company-adapter-readiness-smoke.sh
 ```
 
 该接口只读取配置和静态边界，不调用真实公司系统、不调用真实模型供应商、不输出密钥值。公司部署前需要重点检查：
@@ -35,6 +38,10 @@ curl http://localhost:8080/internal/integration-readiness
 
 本地开发环境允许 `MOCK_ONLY`；公司部署前，所有公司系统相关 `blocks_company_deployment=true` 项必须替换真实实现或由公司明确豁免。
 
+`scripts/smoke/company-adapter-readiness-smoke.sh` 只读检查 readiness 报告结构、公司 Mock 边界、部署变量名和明显密钥泄漏形态，不调用真实公司系统或真实模型供应商；适合作为公司交接时的脱敏摘要证据。
+
+该脚本还会检查 `dreammaker_guard`、`DreamMakerHttpClient` 和 `DREAMMAKER_*` 变量名仍然存在。公司内网或生产环境切回 DreamMaker 时，应通过安全配置系统注入真实值，而不是改代码或写入仓库。
+
 ## 3. Adapter 替换清单
 
 | 边界 | 当前接口 | 当前实现 | 公司接入要求 |
@@ -44,6 +51,7 @@ curl http://localhost:8080/internal/integration-readiness
 | 权益 | `modules/quota/QuotaAdapter` | `MockQuotaAdapter` | 实现生成权益 lock / commit / release 幂等语义 |
 | 发布交接 | `modules/publish/PublishAdapter` | `MockPublishAdapter` | 接公司发布系统需要的交接元数据；社区发布结果仍由公司系统管理 |
 | 分享 | 当前无业务调用点 | `NotImplementedShareBoundary` | 分享入口、分享卡片、传播链路由公司系统接管 |
+| DreamMaker | `modules/dreammaker/DreamMakerHttpClient` | 默认真实调用关闭 | 保留正式生产目标，生产通过 `DREAMMAKER_*` 安全注入启用 |
 
 ## 4. 账号接入
 
@@ -193,6 +201,8 @@ DREAMMAKER_REAL_CALLS_ENABLED=true
 DREAMMAKER_API_BASE_URL=
 DREAMMAKER_ACCESS_KEY=
 DREAMMAKER_SECRET_KEY=
+SUNO_BACKEND=dreammaker
+IMAGE2_BACKEND=dreammaker
 RENDER_WORKER_MODE=local-process
 RENDER_WORKER_WORKING_DIRECTORY=
 RENDER_WORKER_COMMAND=
@@ -202,11 +212,13 @@ RENDER_WORKER_TIMEOUT=
 
 若公司最终采用独立 render service、队列化 worker 或容器化渲染服务，应保留 `VideoRenderService` 调用边界，但替换具体部署变量和实现方式。
 
+当前本地公网联调可使用 `SUNO_BACKEND=yunwu` 或 `IMAGE2_BACKEND=wellapi`，但这只是联调选项；正式生产切回 DreamMaker 时应使用 `SUNO_BACKEND=dreammaker` 和 `IMAGE2_BACKEND=dreammaker`，并确认 `dreammaker_guard` 通过。
+
 真实值必须由公司安全配置系统或部署平台注入，不得写入仓库、镜像、日志或测试快照。
 
 ## 9. 公司接入 Smoke
 
-1. 调用 `/internal/integration-readiness`，确认公司 Adapter 不再处于未确认的 Mock 状态。
+1. 调用 `/internal/integration-readiness`，并运行 `scripts/smoke/company-adapter-readiness-smoke.sh`，确认公司 Adapter 状态可解释且 readiness 响应不泄露密钥。
 2. 调用 `/api/v1/me`，确认返回真实公司用户。
 3. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
 4. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
@@ -242,3 +254,4 @@ RENDER_WORKER_TIMEOUT=
 - 不把真实供应商或公司系统完整响应直接写入用户可见错误。
 - 不绕过 `available_actions` 自行在前端猜按钮。
 - 不在生产环境使用 `X-Mock-User-Id` 作为可信用户身份。
+- 不删除 DreamMaker 音乐或 Image 2 接口边界；临时公网供应商只能作为联调后端存在。

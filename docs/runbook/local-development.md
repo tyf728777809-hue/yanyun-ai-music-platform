@@ -226,11 +226,14 @@ curl http://localhost:8080/actuator/health
 
 ```bash
 curl http://localhost:8080/internal/integration-readiness
+scripts/smoke/company-adapter-readiness-smoke.sh
 ```
 
 本地环境允许公司账号、审核、权益、发布、分享边界显示为 `MOCK_ONLY`。公司部署前，应检查
 `blocks_company_deployment=true` 的项目，并按 `docs/handover/company-adapter-deployment-handoff-v0.1.md`
 替换真实 Adapter 或由公司明确豁免。
+
+`company-adapter-readiness-smoke.sh` 是只读脚本，只检查 readiness 结构、公司 Mock 边界、部署变量名和明显密钥泄漏形态；不会调用真实公司系统、模型供应商、数据库或对象存储。
 
 ## Automated Smoke
 
