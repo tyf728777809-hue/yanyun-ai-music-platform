@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-06 14:15 CST
+更新时间：2026-06-06 14:31 CST
 
 ## 当前阶段
 
@@ -459,6 +459,13 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `MockMusicProvider` 已支持可配置模拟音频时长；新增单元测试覆盖自定义时长和非法时长拒绝。
 - `./gradlew spotlessCheck :modules:music-provider:test :apps:music-api:compileJava :apps:music-worker:compileJava` 在显式设置 `JAVA_HOME=/opt/homebrew/opt/openjdk@21` 后成功。
 - 首次 Gradle 命令未设置 `JAVA_HOME` 时失败，原因是当前 shell 找不到 Java Runtime；已确认 `/opt/homebrew/opt/openjdk@21` 可用，运行手册已保留该环境设置说明。
+- 同步 Mock 后端主链路 smoke 成功：基础设施已运行且健康，API 使用 `MOCK_MUSIC_DURATION_MS=1000 MUSIC_PROVIDER=mock MUSIC_WORKFLOW_DISPATCH_MODE=sync WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false` 启动。
+- HTTP smoke 成功：`GET /health` 和 `GET /actuator/health` 正常；`POST /api/v1/works/lyrics` 创建作品 `0932c4d4-f1e1-40a7-a3d9-00e45ca623b1`，进入 `LYRICS_READY / WAITING_CONFIRM`。
+- HTTP smoke 成功：`POST /api/v1/works/{work_id}/confirm` 后作品进入 `GENERATED / PACKAGE_READY`，详情中的 `media_assets.video_duration_ms=1000`，证明 `MOCK_MUSIC_DURATION_MS` 生效。
+- HTTP smoke 成功：`GET /publish-package` 返回 `PACKAGE_READY`、发布包 URL、视频 URL、封面 URL、timeline URL 和歌词；`refresh-url` 可刷新过期时间；`mark-fetched` 后详情为 `PACKAGE_FETCHED`。
+- 数据库抽查成功：`works` / `publish_packages` 为 `GENERATED / PACKAGE_READY / PACKAGE_FETCHED`，发布包 object key 已持久化，`provider_calls` 记录 `MOCK / MUSIC_GENERATION / SUCCEEDED`。
+- 媒体资产抽查成功：`AUDIO`、`VIDEO`、`TIMELINE` 的 `duration_ms` 均为 1000；`COVER` 正常写入。
+- 本地发布包 JSON 抽查成功：`bootRun` 下实际文件位于 `apps/music-api/build/local-object-storage/.../publish-package.json`；运行手册已补充相对路径说明。
 
 ## 待确认事项
 
@@ -535,3 +542,4 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 14:15 CST | 新建前端交付后的长期 Goal | Goal 已改为前端原型验收修复、后端短链路联调支撑、前后端本地 smoke、进度文档和阶段快照 |
 | 2026-06-06 14:15 CST | 完成 Claude Web v1 前端初审 | `prototypes/Claude-web-v1` 已通过测试、typecheck、build 和 390px / 1440px smoke；发现 OpenAPI/验收缺口并整理为修复任务包 |
 | 2026-06-06 14:15 CST | 补齐 Mock 音频时长配置 | 新增 `MOCK_MUSIC_DURATION_MS` 和 `MockMusicProvider` 配置测试，后端 targeted Gradle 验证通过 |
+| 2026-06-06 14:31 CST | 完成同步 Mock 后端主链路 smoke | API 以 1 秒 Mock 音频时长跑通创建作品、确认出歌、发布包获取、刷新、标记交接、readiness、数据库和本地发布包 JSON 抽查 |

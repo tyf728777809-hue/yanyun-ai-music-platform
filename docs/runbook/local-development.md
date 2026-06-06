@@ -185,6 +185,15 @@ curl http://localhost:8080/internal/integration-readiness
 build/local-object-storage/yanyun-works-local/yanyun-ai-music/local/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json
 ```
 
+注意：`./gradlew :apps:music-api:bootRun` 的运行工作目录是 `apps/music-api`，因此使用相对
+`OBJECT_STORAGE_LOCAL_ROOT=build/local-object-storage` 时，实际文件会落在：
+
+```text
+apps/music-api/build/local-object-storage/yanyun-works-local/yanyun-ai-music/local/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json
+```
+
+如需固定到仓库根目录，请把 `OBJECT_STORAGE_LOCAL_ROOT` 设置为绝对路径。
+
 确认出歌后可用 `GET /api/v1/works/{work_id}/publish-package` 查看当前可访问链接和
 `package_url_expires_at`，并用本地文件检查 package JSON 内容。刷新链接接口会复用数据库中的
 `package_object_key`，不会重新猜测文件路径。
