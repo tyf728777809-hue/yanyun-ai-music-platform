@@ -127,7 +127,7 @@ public final class WorkStateMachine {
       case COVER_GENERATION_FAILED -> actions.add(AvailableAction.RETRY_COVER);
       case VIDEO_RENDER_FAILED, PACKAGE_BUILD_FAILED -> actions.add(AvailableAction.RERENDER_VIDEO);
       case USER_INPUT_BLOCKED -> actions.add(AvailableAction.RETURN_TO_EDIT);
-      case PACKAGE_BLOCKED, QUOTA_LOCK_FAILED, UNKNOWN_ERROR ->
+      case PACKAGE_BLOCKED, PROVIDER_AUTH_FAILED, QUOTA_LOCK_FAILED, UNKNOWN_ERROR ->
           actions.add(AvailableAction.CONTACT_SUPPORT);
     }
 

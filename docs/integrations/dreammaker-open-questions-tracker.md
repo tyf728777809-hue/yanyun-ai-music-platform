@@ -12,7 +12,7 @@
 | DM-008 | Suno/MiniMax 单次任务计费口径 | 待确认 | 中 | 公司产品/财务 | 影响权益成本归因 |
 | DM-009 | 内容安全/审核失败错误码 | 待确认 | 高 | DreamMaker/公司审核 | 影响 retryable 与用户提示 |
 | DM-010 | 是否强制传 `X-Access-Token` | 待确认 | 中 | 公司后端/DreamMaker | 当前为可选透传 |
-| DM-011 | Suno 创建任务阶段 HTTP 403 | 阻塞中 | 高 | DreamMaker/公司后端 | 2026-06-07 首次真实 Suno stack smoke 触达创建任务阶段后返回 403，`provider_trace_id` 为空；需确认 AK/SK 是否具备 Suno 应用权限、是否必须提供 `X-Access-Token`、以及 `app=suno` / `sub_app=music-gen` / `model=chirp-crow` 是否匹配账号开通项 |
+| DM-011 | Suno 创建任务阶段 HTTP 403 | 阻塞中 | 高 | DreamMaker/公司后端 | 2026-06-07 首次真实 Suno stack smoke 触达创建任务阶段后返回 403，`provider_trace_id` 为空；用户判断当前不在公司内网，DreamMaker 可能只支持内网环境。仍需确认 AK/SK 是否具备 Suno 应用权限、是否必须提供 `X-Access-Token`、以及 `app=suno` / `sub_app=music-gen` / `model=chirp-crow` 是否匹配账号开通项。当前公网联调临时切到 Yunwu，DreamMaker 接口作为正式生产目标保留 |
 
 ## 更新规则
 

@@ -36,6 +36,7 @@ import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaDecision;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
+import com.yanyun.music.suno.YunwuProperties;
 import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
@@ -61,6 +62,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +86,8 @@ public class WorkService {
   private final WorkflowOutboxService workflowOutboxService;
   private final MusicProviderSelection configuredMusicProvider;
   private final DreamMakerProperties dreamMakerProperties;
+  private final YunwuProperties yunwuProperties;
+  private final String sunoBackend;
   private final ObjectMapper objectMapper;
 
   public WorkService(
@@ -97,6 +101,8 @@ public class WorkService {
       WorkflowOutboxService workflowOutboxService,
       MusicProviderSelection configuredMusicProvider,
       DreamMakerProperties dreamMakerProperties,
+      YunwuProperties yunwuProperties,
+      @Value("${yanyun.suno.backend:yunwu}") String sunoBackend,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
@@ -108,6 +114,8 @@ public class WorkService {
     this.workflowOutboxService = workflowOutboxService;
     this.configuredMusicProvider = configuredMusicProvider;
     this.dreamMakerProperties = dreamMakerProperties;
+    this.yunwuProperties = yunwuProperties == null ? new YunwuProperties() : yunwuProperties;
+    this.sunoBackend = sunoBackend == null || sunoBackend.isBlank() ? "yunwu" : sunoBackend.trim();
     this.objectMapper = objectMapper;
   }
 
@@ -295,7 +303,7 @@ public class WorkService {
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
 
     String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
-    requireSafeDreamMakerDispatch(selectedMusicProvider);
+    requireSafeRealMusicDispatch(selectedMusicProvider);
 
     if (workflowDispatchProperties.outboxMode()) {
       return enqueueSongProduction(work, draft, selectedMusicProvider, true);
@@ -322,7 +330,7 @@ public class WorkService {
 
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
     String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
-    requireSafeDreamMakerDispatch(selectedMusicProvider);
+    requireSafeRealMusicDispatch(selectedMusicProvider);
     if (!workRepository.reserveMusicRetry(workId, userId, work.version(), MUSIC_RETRY_LIMIT)) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Music retry is already running or retry limit reached");
@@ -524,9 +532,9 @@ public class WorkService {
     }
   }
 
-  private void requireSafeDreamMakerDispatch(String selectedMusicProvider) {
-    if (!dreamMakerProperties.isRealCallsEnabled()
-        || effectiveMusicProvider(selectedMusicProvider) == MusicProviderType.MOCK) {
+  private void requireSafeRealMusicDispatch(String selectedMusicProvider) {
+    MusicProviderType effectiveProvider = effectiveMusicProvider(selectedMusicProvider);
+    if (effectiveProvider == MusicProviderType.MOCK || !realMusicCallsEnabled(effectiveProvider)) {
       return;
     }
     boolean temporalOutbox =
@@ -539,11 +547,26 @@ public class WorkService {
     }
   }
 
+  private boolean realMusicCallsEnabled(MusicProviderType providerType) {
+    return switch (providerType) {
+      case SUNO ->
+          "dreammaker".equals(normalize(sunoBackend))
+              ? dreamMakerProperties.isRealCallsEnabled()
+              : yunwuProperties.isRealCallsEnabled();
+      case MINIMAX -> dreamMakerProperties.isRealCallsEnabled();
+      case MOCK -> false;
+    };
+  }
+
   private MusicProviderType effectiveMusicProvider(String selectedMusicProvider) {
     if (selectedMusicProvider == null || selectedMusicProvider.isBlank()) {
       return configuredMusicProvider.providerType();
     }
     return MusicProviderSelection.fromConfig(selectedMusicProvider).providerType();
+  }
+
+  private String normalize(String value) {
+    return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
   }
 
   private UUID createWorkWithDraft(

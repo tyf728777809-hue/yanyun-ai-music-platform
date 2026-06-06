@@ -4,11 +4,12 @@
 
 以下内容一律视为敏感信息：
 
-- DreamMaker AccessKey / SecretKey，以及后续公司 Secret 系统中的等价凭据。
-- DreamMaker JWT、Image 2 鉴权 header、Bearer token、签名、临时 token。
+- WellAPI API Key、DreamMaker AccessKey / SecretKey，以及后续公司 Secret 系统中的等价凭据。
+- DreamMaker JWT、WellAPI / Image 2 鉴权 header、Bearer token、签名、临时 token。
 - 私有 API base URL，如果供应商或公司要求不公开。
 - 完整图像生成 Prompt、完整请求、完整响应。
 - 供应商返回的原始图片 URL、带签名下载 URL 或任务详情 payload。
+- 供应商返回的 `b64_json` 原文或其他完整图片二进制编码。
 - 用户输入中可能包含的个人信息、账号信息、联系方式或公司内部资料。
 - Cookie、私钥、生产配置、公司用户 token。
 
@@ -20,6 +21,7 @@
 - 不在自动化测试中调用真实 Image 2。
 - 不把 Image 2 失败原文直接写入作品失败信息或用户可见错误。
 - 不把供应商原始图片 URL 直接写入发布包；必须先导入平台对象存储。
+- 不把 `b64_json` 原文写入 `media_assets.metadata_json`、发布包、日志或文档；只能在内存中解码后写对象存储。
 
 ## 允许记录的字段
 
@@ -34,7 +36,8 @@
 ## 代码侧保护
 
 - `IMAGE_PROVIDER=mock` 或 `IMAGE_REAL_CALLS_ENABLED=false` 时，真实 Image 2 客户端必须在外部 HTTP 请求前失败。
-- 缺失 DreamMaker AK/SK、`DREAMMAKER_REAL_CALLS_ENABLED=true` 或 `IMAGE_REAL_CALLS_ENABLED=true` 时，必须在外部 HTTP 请求前失败。
+- `IMAGE2_BACKEND=wellapi` 时，缺失 `WELLAPI_BASE_URL`、`WELLAPI_API_KEY` 或未设置 `IMAGE_REAL_CALLS_ENABLED=true`，必须在外部 HTTP 请求前失败。
+- `IMAGE2_BACKEND=dreammaker` 时，缺失 DreamMaker AK/SK、未设置 `DREAMMAKER_REAL_CALLS_ENABLED=true` 或未设置 `IMAGE_REAL_CALLS_ENABLED=true`，必须在外部 HTTP 请求前失败。
 - 真实客户端必须设置超时和最大尝试次数；默认不得无限重试。
 - 日志必须禁用请求/响应 body 原文输出。
 - 错误文本入库前必须截断，并脱敏 `Authorization`、`Bearer`、`api_key`、`token`、`secret`、`password` 等字段。
@@ -47,19 +50,18 @@
 
 ```bash
 export IMAGE_PROVIDER=image2
+export IMAGE2_BACKEND=wellapi
 export IMAGE_REAL_CALLS_ENABLED=true
-export DREAMMAKER_REAL_CALLS_ENABLED=true
-export DREAMMAKER_ACCESS_KEY="<from-secure-channel>"
-export DREAMMAKER_SECRET_KEY="<from-secure-channel>"
+export WELLAPI_BASE_URL=https://wellapi.ai
+export WELLAPI_API_KEY="<from-secure-channel>"
 ```
 
 联调结束后：
 
 ```bash
-unset DREAMMAKER_ACCESS_KEY DREAMMAKER_SECRET_KEY DREAMMAKER_USER_ACCESS_TOKEN
+unset WELLAPI_API_KEY
 unset IMAGE2_MODEL_NAME IMAGE2_SIZE IMAGE2_QUALITY IMAGE2_OUTPUT_FORMAT
 unset IMAGE_REAL_CALLS_ENABLED IMAGE_PROVIDER
-export DREAMMAKER_REAL_CALLS_ENABLED=false
 ```
 
 提交前至少执行：

@@ -23,6 +23,7 @@ import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
+import com.yanyun.music.suno.YunwuProperties;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
@@ -169,6 +170,33 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   @Test
+  void confirmWorkRejectsRealYunwuSunoProviderInSyncDispatch() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(
+            Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    assertThatThrownBy(
+            () ->
+                service(
+                        syncProperties(),
+                        MusicProviderSelection.fromConfig("mock"),
+                        new DreamMakerProperties(),
+                        realYunwuProperties(),
+                        "yunwu")
+                    .confirmWork("user-1", workId, new ConfirmWorkRequest(draftId, null, "suno")))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("outbox + Temporal worker");
+
+    verify(songProductionWorkflow, never()).produce(any());
+    verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
+    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+  }
+
+  @Test
   void confirmWorkAllowsRealDreamMakerProviderOnlyWithTemporalOutbox() {
     UUID workId = UUID.randomUUID();
     UUID draftId = UUID.randomUUID();
@@ -260,13 +288,31 @@ class WorkServiceWorkflowDispatchTest {
 
   private WorkService service(WorkflowDispatchProperties properties) {
     return service(
-        properties, MusicProviderSelection.fromConfig("mock"), new DreamMakerProperties());
+        properties,
+        MusicProviderSelection.fromConfig("mock"),
+        new DreamMakerProperties(),
+        new YunwuProperties(),
+        "yunwu");
   }
 
   private WorkService service(
       WorkflowDispatchProperties properties,
       MusicProviderSelection configuredMusicProvider,
       DreamMakerProperties dreamMakerProperties) {
+    return service(
+        properties,
+        configuredMusicProvider,
+        dreamMakerProperties,
+        new YunwuProperties(),
+        "dreammaker");
+  }
+
+  private WorkService service(
+      WorkflowDispatchProperties properties,
+      MusicProviderSelection configuredMusicProvider,
+      DreamMakerProperties dreamMakerProperties,
+      YunwuProperties yunwuProperties,
+      String sunoBackend) {
     return new WorkService(
         workRepository,
         quotaAdapter,
@@ -278,6 +324,8 @@ class WorkServiceWorkflowDispatchTest {
         workflowOutboxService,
         configuredMusicProvider,
         dreamMakerProperties,
+        yunwuProperties,
+        sunoBackend,
         objectMapper);
   }
 
@@ -302,6 +350,13 @@ class WorkServiceWorkflowDispatchTest {
     properties.setRealCallsEnabled(true);
     properties.setAccessKey("configured-access-key");
     properties.setSecretKey("configured-secret-key");
+    return properties;
+  }
+
+  private YunwuProperties realYunwuProperties() {
+    YunwuProperties properties = new YunwuProperties();
+    properties.setRealCallsEnabled(true);
+    properties.setApiKey("configured-yunwu-key");
     return properties;
   }
 

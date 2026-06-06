@@ -16,8 +16,6 @@ import java.util.Optional;
 
 public final class DreamMakerImage2CoverGenerationService implements CoverGenerationService {
 
-  public static final String SOURCE_URL_METADATA_KEY = "source_url";
-
   private final DreamMakerClient dreamMakerClient;
   private final Image2Properties properties;
 

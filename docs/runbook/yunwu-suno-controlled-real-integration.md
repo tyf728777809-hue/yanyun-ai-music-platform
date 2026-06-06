@@ -1,0 +1,60 @@
+# Yunwu Suno 受控真实联调 Runbook
+
+## 目标
+
+本 Runbook 用于当前非公司内网环境下的 Suno 公网联调。Yunwu 是临时可测路径；DreamMaker 接口和文档仍保留为正式生产目标。
+
+## 硬性规则
+
+- 默认禁止真实请求：`MUSIC_PROVIDER=mock`、`YUNWU_REAL_CALLS_ENABLED=false`。
+- 只有手动联调窗口内才允许设置 `MUSIC_PROVIDER=suno`、`SUNO_BACKEND=yunwu`、`YUNWU_REAL_CALLS_ENABLED=true`。
+- 真实音乐调用必须走 `MUSIC_WORKFLOW_DISPATCH_MODE=outbox` 和 `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`，不能在 API sync 线程里执行。
+- DeepSeek、Image 2 和公司 Adapter 可继续 Mock；若要完整成片，可单独打开 Image 2 runbook。
+- 不把 API Key、Bearer header、完整请求/响应、音频 URL 写入仓库、文档、日志或提交信息。
+
+## 环境变量
+
+只在当前 shell 或公司 Secret 系统注入：
+
+```bash
+export MUSIC_PROVIDER=mock
+export SUNO_BACKEND=yunwu
+export YUNWU_BASE_URL=https://yunwu.ai
+export YUNWU_API_KEY="<from-secure-channel>"
+export YUNWU_REAL_CALLS_ENABLED=true
+export YUNWU_SUNO_MODEL=chirp-v5
+export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
+export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
+export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
+```
+
+联调结束：
+
+```bash
+unset YUNWU_API_KEY
+export YUNWU_REAL_CALLS_ENABLED=false
+export MUSIC_PROVIDER=mock
+```
+
+## 最小联调步骤
+
+1. 启动本地基础设施和 Temporal worker，worker 进程必须拿到同一组 `YUNWU_*` 环境变量。
+2. 启动 API，确认 `/internal/integration-readiness` 中 `music_provider=suno/yunwu`、`yunwu_suno_guard=real-calls-enabled`。
+3. 创建作品，确认歌词后用 `music_provider=suno` 发起确认出歌。
+4. 轮询作品状态，成功时应进入 `GENERATED / PACKAGE_READY`；失败时记录脱敏 `failure_code`、`provider_calls.model_name`、`provider_calls.status`。
+5. 确认供应商音频 URL 已被导入平台对象存储，发布包不直接暴露供应商原始 URL。
+
+## 当前接口契约
+
+- Auth：`Authorization: Bearer <YUNWU_API_KEY>`。
+- Submit：`POST /suno/submit/music`。
+- Custom request：`mv`、`make_instrumental=false`、`prompt`、`tags`、`title`。
+- Poll：`GET /suno/fetch/{task_id}`。
+- 响应结构以容错解析为准：提交成功可能是 `data=<task_id>` 或 `data.task_id`；音频 URL 会兼容 `audio_url`、`url`、`data.clips[].audio_url` 等字段。
+
+## 失败处理
+
+- HTTP 401 / 403 或权限错误会映射为 `PROVIDER_AUTH_FAILED`，用户侧不可重试，需检查 key、账号权限、模型开通或供应商侧限制。
+- HTTP 429 会映射为 `RATE_LIMITED`，停止继续触发新样本。
+- 超时会映射为 `PROVIDER_TIMEOUT`，可在剩余重试次数内重试。
+- 任何失败都只记录脱敏摘要，不记录完整 provider payload。

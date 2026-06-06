@@ -251,7 +251,7 @@ public final class DreamMakerHttpClient implements DreamMakerClient {
         || properties.getSecretKey() == null
         || properties.getSecretKey().isBlank()) {
       throw new DreamMakerClientException(
-          DreamMakerFailureMapper.MUSIC_GENERATION_FAILED,
+          DreamMakerFailureMapper.PROVIDER_AUTH_FAILED,
           "DREAMMAKER_ACCESS_KEY and DREAMMAKER_SECRET_KEY are required for DreamMaker calls");
     }
   }

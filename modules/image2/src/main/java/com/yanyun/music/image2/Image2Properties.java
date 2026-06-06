@@ -1,19 +1,39 @@
 package com.yanyun.music.image2;
 
+import java.net.URI;
 import java.time.Duration;
 
 public class Image2Properties {
 
+  private URI baseUrl = URI.create("https://wellapi.ai");
+  private String apiKey = "";
   private boolean realCallsEnabled;
   private String appName = "gpt-image-2";
   private String subAppName = "gpt-image-2";
   private String modelName = "gpt-image-2";
   private String size = "2048x1152";
   private String quality = "medium";
-  private String outputFormat = "png";
+  private String outputFormat = "jpeg";
   private String background = "opaque";
+  private Duration requestTimeout = Duration.ofSeconds(30);
   private int maxPollAttempts = 60;
   private Duration pollInterval = Duration.ofSeconds(2);
+
+  public URI getBaseUrl() {
+    return baseUrl;
+  }
+
+  public void setBaseUrl(URI baseUrl) {
+    this.baseUrl = baseUrl == null ? URI.create("https://wellapi.ai") : baseUrl;
+  }
+
+  public String getApiKey() {
+    return apiKey;
+  }
+
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey == null ? "" : apiKey.trim();
+  }
 
   public boolean isRealCallsEnabled() {
     return realCallsEnabled;
@@ -70,7 +90,7 @@ public class Image2Properties {
 
   public void setOutputFormat(String outputFormat) {
     this.outputFormat =
-        outputFormat == null || outputFormat.isBlank() ? "png" : outputFormat.trim();
+        outputFormat == null || outputFormat.isBlank() ? "jpeg" : outputFormat.trim();
   }
 
   public String getBackground() {
@@ -79,6 +99,17 @@ public class Image2Properties {
 
   public void setBackground(String background) {
     this.background = background == null || background.isBlank() ? "opaque" : background.trim();
+  }
+
+  public Duration getRequestTimeout() {
+    return requestTimeout;
+  }
+
+  public void setRequestTimeout(Duration requestTimeout) {
+    this.requestTimeout =
+        requestTimeout == null || requestTimeout.isNegative()
+            ? Duration.ofSeconds(30)
+            : requestTimeout;
   }
 
   public int getMaxPollAttempts() {

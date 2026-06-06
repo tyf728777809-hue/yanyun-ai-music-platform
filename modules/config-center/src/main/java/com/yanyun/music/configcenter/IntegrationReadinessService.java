@@ -13,6 +13,8 @@ public final class IntegrationReadinessService {
   private final boolean dreamMakerAccessKeyConfigured;
   private final boolean dreamMakerSecretKeyConfigured;
   private final boolean deepSeekApiKeyConfigured;
+  private final boolean yunwuApiKeyConfigured;
+  private final boolean image2ApiKeyConfigured;
 
   public IntegrationReadinessService(CompanyIntegrationProperties properties, Clock clock) {
     this(properties, clock, false, false, false);
@@ -32,11 +34,31 @@ public final class IntegrationReadinessService {
       boolean dreamMakerAccessKeyConfigured,
       boolean dreamMakerSecretKeyConfigured,
       boolean deepSeekApiKeyConfigured) {
+    this(
+        properties,
+        clock,
+        dreamMakerAccessKeyConfigured,
+        dreamMakerSecretKeyConfigured,
+        deepSeekApiKeyConfigured,
+        false,
+        false);
+  }
+
+  public IntegrationReadinessService(
+      CompanyIntegrationProperties properties,
+      Clock clock,
+      boolean dreamMakerAccessKeyConfigured,
+      boolean dreamMakerSecretKeyConfigured,
+      boolean deepSeekApiKeyConfigured,
+      boolean yunwuApiKeyConfigured,
+      boolean image2ApiKeyConfigured) {
     this.properties = properties;
     this.clock = clock;
     this.dreamMakerAccessKeyConfigured = dreamMakerAccessKeyConfigured;
     this.dreamMakerSecretKeyConfigured = dreamMakerSecretKeyConfigured;
     this.deepSeekApiKeyConfigured = deepSeekApiKeyConfigured;
+    this.yunwuApiKeyConfigured = yunwuApiKeyConfigured;
+    this.image2ApiKeyConfigured = image2ApiKeyConfigured;
   }
 
   public IntegrationReadinessReport buildReport() {
@@ -83,6 +105,7 @@ public final class IntegrationReadinessService {
     components.add(workflowComponent());
     components.add(deepSeekComponent());
     components.add(image2Component());
+    components.add(yunwuComponent());
     components.add(dreamMakerComponent());
 
     boolean productionLike = !"local".equals(normalize(properties.getEnvironment()));
@@ -139,20 +162,57 @@ public final class IntegrationReadinessService {
   private IntegrationComponentReadiness musicProviderComponent() {
     String provider = normalize(properties.getMusicProvider());
     boolean mock = "mock".equals(provider);
+    if ("suno".equals(provider)) {
+      String backend = normalizeOr(properties.getSunoBackend(), "yunwu");
+      boolean dreamMaker = "dreammaker".equals(backend);
+      return new IntegrationComponentReadiness(
+          "music_provider",
+          provider + "/" + backend,
+          dreamMaker ? "SunoMusicProvider" : "YunwuSunoMusicProvider",
+          IntegrationReadinessStatus.READY_FOR_LOCAL,
+          false,
+          dreamMaker
+              ? List.of(
+                  "MUSIC_PROVIDER",
+                  "SUNO_BACKEND",
+                  "DREAMMAKER_REAL_CALLS_ENABLED",
+                  "DREAMMAKER_ACCESS_KEY",
+                  "DREAMMAKER_SECRET_KEY",
+                  "DREAMMAKER_SUNO_MODEL")
+              : List.of(
+                  "MUSIC_PROVIDER",
+                  "SUNO_BACKEND",
+                  "YUNWU_REAL_CALLS_ENABLED",
+                  "YUNWU_BASE_URL",
+                  "YUNWU_API_KEY",
+                  "YUNWU_SUNO_MODEL"),
+          dreamMaker
+              ? "已选择 Suno 业务 Provider，后端使用 DreamMaker；这是正式生产目标路径。"
+              : "已选择 Suno 业务 Provider，后端使用 Yunwu；这是当前非内网公网联调路径，生产仍需保留 DreamMaker 切换。");
+    }
+    if ("minimax".equals(provider)) {
+      return new IntegrationComponentReadiness(
+          "music_provider",
+          provider + "/dreammaker",
+          "MiniMaxMusicProvider",
+          IntegrationReadinessStatus.READY_FOR_LOCAL,
+          false,
+          List.of(
+              "MUSIC_PROVIDER",
+              "DREAMMAKER_REAL_CALLS_ENABLED",
+              "DREAMMAKER_ACCESS_KEY",
+              "DREAMMAKER_SECRET_KEY",
+              "MINIMAX_MODEL"),
+          "已选择 MiniMax 业务 Provider，当前仍通过 DreamMaker 任务式客户端接入。");
+    }
     return new IntegrationComponentReadiness(
         "music_provider",
         provider,
-        mock ? "MockMusicProvider" : provider + " DreamMaker provider",
+        mock ? "MockMusicProvider" : provider + " provider",
         mock ? IntegrationReadinessStatus.MOCK_ONLY : IntegrationReadinessStatus.READY_FOR_LOCAL,
         mock,
-        List.of(
-            "MUSIC_PROVIDER",
-            "DREAMMAKER_REAL_CALLS_ENABLED",
-            "DREAMMAKER_ACCESS_KEY",
-            "DREAMMAKER_SECRET_KEY"),
-        mock
-            ? "本地 Mock 可跑通；真实出歌联调需显式选择 suno 或 minimax。"
-            : "已选择真实音乐 Provider 边界；真实调用仍受 DreamMaker 硬开关保护。");
+        List.of("MUSIC_PROVIDER"),
+        mock ? "本地 Mock 可跑通；真实出歌联调需显式选择 suno 或 minimax。" : "已选择真实音乐 Provider 边界。");
   }
 
   private IntegrationComponentReadiness objectStorageComponent() {
@@ -328,21 +388,98 @@ public final class IntegrationReadinessService {
         "DeepSeek OpenAI 兼容真实客户端已可用于受控本地联调；报告不会输出 API Key。");
   }
 
-  private IntegrationComponentReadiness image2Component() {
-    String provider = normalize(properties.getImageProvider());
-    boolean enabled = properties.isImageRealCallsEnabled() || !"mock".equals(provider);
+  private IntegrationComponentReadiness yunwuComponent() {
+    boolean selectedForSuno =
+        "suno".equals(normalize(properties.getMusicProvider()))
+            && "yunwu".equals(normalizeOr(properties.getSunoBackend(), "yunwu"));
+    boolean enabled = selectedForSuno && properties.isYunwuRealCallsEnabled();
     List<String> requiredEnvVars =
         List.of(
-            "IMAGE_PROVIDER",
-            "IMAGE_REAL_CALLS_ENABLED",
-            "DREAMMAKER_REAL_CALLS_ENABLED",
-            "DREAMMAKER_API_BASE_URL",
-            "DREAMMAKER_ACCESS_KEY",
-            "DREAMMAKER_SECRET_KEY",
-            "IMAGE2_MODEL_NAME",
-            "IMAGE2_SIZE",
-            "IMAGE2_QUALITY",
-            "IMAGE2_MAX_POLL_ATTEMPTS");
+            "SUNO_BACKEND",
+            "YUNWU_REAL_CALLS_ENABLED",
+            "YUNWU_BASE_URL",
+            "YUNWU_API_KEY",
+            "YUNWU_SUNO_MODEL",
+            "YUNWU_MAX_POLL_ATTEMPTS",
+            "YUNWU_POLL_INTERVAL");
+    if (!selectedForSuno) {
+      return new IntegrationComponentReadiness(
+          "yunwu_suno_guard",
+          "not-selected",
+          "YunwuSunoMusicProvider",
+          IntegrationReadinessStatus.MOCK_ONLY,
+          false,
+          requiredEnvVars,
+          "Yunwu 当前未作为 Suno 后端启用；DreamMaker Suno 接口仍保留用于生产切换。");
+    }
+    if (!enabled) {
+      return new IntegrationComponentReadiness(
+          "yunwu_suno_guard",
+          "real-calls-disabled",
+          "YunwuSunoMusicProvider",
+          IntegrationReadinessStatus.MOCK_ONLY,
+          true,
+          requiredEnvVars,
+          "已选择 Yunwu 作为当前公网联调后端，但真实调用硬开关未打开，不会发出外部音乐请求。");
+    }
+    if (properties.getYunwuBaseUrl() == null || properties.getYunwuBaseUrl().isBlank()) {
+      return new IntegrationComponentReadiness(
+          "yunwu_suno_guard",
+          "real-calls-missing-base-url",
+          "YunwuSunoMusicProvider",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Yunwu 真实调用开关已打开，但缺少 YUNWU_BASE_URL；不得发出外部请求。");
+    }
+    if (!yunwuApiKeyConfigured) {
+      return new IntegrationComponentReadiness(
+          "yunwu_suno_guard",
+          "real-calls-missing-api-key",
+          "YunwuSunoMusicProvider",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Yunwu 真实调用开关已打开，但缺少 YUNWU_API_KEY；不得发出外部请求。");
+    }
+    return new IntegrationComponentReadiness(
+        "yunwu_suno_guard",
+        "real-calls-enabled",
+        "YunwuSunoMusicProvider",
+        IntegrationReadinessStatus.READY_FOR_LOCAL,
+        false,
+        requiredEnvVars,
+        "Yunwu Suno 可用于当前非公司内网环境的受控公网联调；报告不会输出 API Key。");
+  }
+
+  private IntegrationComponentReadiness image2Component() {
+    String provider = normalize(properties.getImageProvider());
+    String backend = normalizeOr(properties.getImage2Backend(), "wellapi");
+    boolean enabled = properties.isImageRealCallsEnabled() || !"mock".equals(provider);
+    List<String> requiredEnvVars =
+        "dreammaker".equals(backend)
+            ? List.of(
+                "IMAGE_PROVIDER",
+                "IMAGE2_BACKEND",
+                "IMAGE_REAL_CALLS_ENABLED",
+                "DREAMMAKER_REAL_CALLS_ENABLED",
+                "DREAMMAKER_API_BASE_URL",
+                "DREAMMAKER_ACCESS_KEY",
+                "DREAMMAKER_SECRET_KEY",
+                "IMAGE2_MODEL_NAME",
+                "IMAGE2_SIZE",
+                "IMAGE2_QUALITY",
+                "IMAGE2_MAX_POLL_ATTEMPTS")
+            : List.of(
+                "IMAGE_PROVIDER",
+                "IMAGE2_BACKEND",
+                "IMAGE_REAL_CALLS_ENABLED",
+                "WELLAPI_BASE_URL",
+                "WELLAPI_API_KEY",
+                "IMAGE2_MODEL_NAME",
+                "IMAGE2_SIZE",
+                "IMAGE2_QUALITY",
+                "IMAGE2_OUTPUT_FORMAT");
     if (!enabled) {
       return new IntegrationComponentReadiness(
           "image2_guard",
@@ -363,7 +500,7 @@ public final class IntegrationReadinessService {
           requiredEnvVars,
           "已选择非 Mock 图片 Provider，但 IMAGE_REAL_CALLS_ENABLED=false；不得发出真实 Image 2 请求。");
     }
-    if (!properties.isDreammakerRealCallsEnabled()) {
+    if ("dreammaker".equals(backend) && !properties.isDreammakerRealCallsEnabled()) {
       return new IntegrationComponentReadiness(
           "image2_guard",
           "image2-enabled-dreammaker-disabled",
@@ -371,9 +508,10 @@ public final class IntegrationReadinessService {
           IntegrationReadinessStatus.BLOCKED,
           true,
           requiredEnvVars,
-          "Image 2 通过 DreamMaker 接入；IMAGE_REAL_CALLS_ENABLED=true 时也必须打开 DREAMMAKER_REAL_CALLS_ENABLED。");
+          "Image 2 选择 DreamMaker 后端；IMAGE_REAL_CALLS_ENABLED=true 时也必须打开 DREAMMAKER_REAL_CALLS_ENABLED。");
     }
-    if (!dreamMakerAccessKeyConfigured || !dreamMakerSecretKeyConfigured) {
+    if ("dreammaker".equals(backend)
+        && (!dreamMakerAccessKeyConfigured || !dreamMakerSecretKeyConfigured)) {
       return new IntegrationComponentReadiness(
           "image2_guard",
           "real-calls-missing-dreammaker-credentials",
@@ -383,11 +521,34 @@ public final class IntegrationReadinessService {
           requiredEnvVars,
           "Image 2 真实调用开关已打开，但缺少 DreamMaker AccessKey 或 SecretKey；不得发出外部请求。");
     }
+    if ("wellapi".equals(backend)
+        && (properties.getImage2BaseUrl() == null || properties.getImage2BaseUrl().isBlank())) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "real-calls-missing-wellapi-base-url",
+          "WellApiImage2CoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Image 2 真实调用开关已打开，且选择 WellAPI 后端，但缺少 WELLAPI_BASE_URL；不得发出外部请求。");
+    }
+    if ("wellapi".equals(backend) && !image2ApiKeyConfigured) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "real-calls-missing-wellapi-api-key",
+          "WellApiImage2CoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Image 2 真实调用开关已打开，且选择 WellAPI 后端，但缺少 WELLAPI_API_KEY；不得发出外部请求。");
+    }
     if (properties.getImage2ModelName() == null || properties.getImage2ModelName().isBlank()) {
       return new IntegrationComponentReadiness(
           "image2_guard",
           "real-calls-missing-model",
-          "DreamMakerImage2CoverGenerationService",
+          "dreammaker".equals(backend)
+              ? "DreamMakerImage2CoverGenerationService"
+              : "WellApiImage2CoverGenerationService",
           IntegrationReadinessStatus.BLOCKED,
           true,
           requiredEnvVars,
@@ -395,16 +556,24 @@ public final class IntegrationReadinessService {
     }
     return new IntegrationComponentReadiness(
         "image2_guard",
-        "real-calls-enabled",
-        "DreamMakerImage2CoverGenerationService",
+        "real-calls-enabled/" + backend,
+        "dreammaker".equals(backend)
+            ? "DreamMakerImage2CoverGenerationService"
+            : "WellApiImage2CoverGenerationService",
         IntegrationReadinessStatus.READY_FOR_LOCAL,
         false,
         requiredEnvVars,
-        "Image 2 通过 DreamMaker 任务式客户端接入，供应商图片会导入平台对象存储后再进入发布包。");
+        "dreammaker".equals(backend)
+            ? "Image 2 通过 DreamMaker 任务式客户端接入，这是正式生产目标路径。"
+            : "Image 2 通过 WellAPI OpenAI 兼容图片接口接入，这是当前公网联调路径；供应商图片会导入平台对象存储后再进入发布包。");
   }
 
   private static String normalize(String value) {
     return safeValue(value, "mock").trim().toLowerCase(Locale.ROOT);
+  }
+
+  private static String normalizeOr(String value, String fallback) {
+    return safeValue(value, fallback).trim().toLowerCase(Locale.ROOT);
   }
 
   private static String safeValue(String value, String fallback) {

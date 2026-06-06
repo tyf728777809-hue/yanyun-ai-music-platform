@@ -93,6 +93,25 @@ class WorkStateMachineTest {
   }
 
   @Test
+  void providerAuthFailureNeverAllowsMusicRetryEvenIfMarkedRetryable() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.PROVIDER_AUTH_FAILED,
+            true,
+            2);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
+    assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
   void retryMusicRejectsExhaustedMusicFailure() {
     WorkSnapshot work =
         new WorkSnapshot(

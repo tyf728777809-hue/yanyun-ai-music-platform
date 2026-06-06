@@ -20,7 +20,6 @@ import com.yanyun.music.creativeagent.QualityGate;
 import com.yanyun.music.image2.CoverGenerationRequest;
 import com.yanyun.music.image2.CoverGenerationResult;
 import com.yanyun.music.image2.CoverGenerationService;
-import com.yanyun.music.image2.DreamMakerImage2CoverGenerationService;
 import com.yanyun.music.media.MediaAssetDescriptor;
 import com.yanyun.music.media.VideoRenderRequest;
 import com.yanyun.music.media.VideoRenderResult;
@@ -58,6 +57,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -199,7 +199,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             input.lyricsText(),
             musicPrompt.musicPrompt(),
             input.vocalPreference(),
-            musicPrompt.providerOptions());
+            musicProviderOptions(input, musicPrompt));
     long providerStartedAt = System.nanoTime();
     try {
       musicResult =
@@ -235,12 +235,13 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         musicResult.failureCode(),
         musicResult.failureMessage());
     if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
+      FailureCode musicFailureCode = musicFailureCode(musicResult);
       return fail(
           workId,
           jobId,
-          FailureCode.MUSIC_GENERATION_FAILED,
+          musicFailureCode,
           firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
-          input.musicRetryAllowedAfterFailure(),
+          retryableMusicFailure(musicFailureCode, input),
           input.userId(),
           lock.lockId());
     }
@@ -400,6 +401,27 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         null);
   }
 
+  private FailureCode musicFailureCode(MusicGenerationResult musicResult) {
+    if (musicResult.failureCode() == null || musicResult.failureCode().isBlank()) {
+      return FailureCode.MUSIC_GENERATION_FAILED;
+    }
+    try {
+      return FailureCode.valueOf(musicResult.failureCode());
+    } catch (IllegalArgumentException exception) {
+      return FailureCode.MUSIC_GENERATION_FAILED;
+    }
+  }
+
+  private boolean retryableMusicFailure(
+      FailureCode failureCode, SongProductionWorkflowInput input) {
+    return input.musicRetryAllowedAfterFailure()
+        && switch (failureCode) {
+          case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED ->
+              true;
+          default -> false;
+        };
+  }
+
   private GeneratedMediaAssets createMediaAssets(
       UUID workId, SongProductionWorkflowInput input, MusicGenerationResult musicResult) {
     StoredObject importedAudio = importProviderAudio(workId, musicResult);
@@ -545,17 +567,37 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   }
 
   private MediaAssetDescriptor importRemoteCoverIfNeeded(MediaAssetDescriptor asset) {
-    Object sourceUrl =
-        asset.metadata().get(DreamMakerImage2CoverGenerationService.SOURCE_URL_METADATA_KEY);
-    if (!(sourceUrl instanceof String value) || value.isBlank()) {
+    Object sourceUrl = asset.metadata().get(CoverGenerationService.SOURCE_URL_METADATA_KEY);
+    if (sourceUrl instanceof String value && !value.isBlank()) {
+      StoredObject importedCover =
+          remoteObjectImporter.importObject(
+              new RemoteObjectImportRequest(value, asset.objectKey(), asset.mimeType()));
+      Map<String, Object> metadata = new LinkedHashMap<>(asset.metadata());
+      metadata.remove(CoverGenerationService.SOURCE_URL_METADATA_KEY);
+      metadata.put("object_storage_imported", true);
+      return new MediaAssetDescriptor(
+          asset.assetType(),
+          importedCover.objectKey(),
+          importedCover.contentType(),
+          importedCover.sizeBytes(),
+          asset.checksum(),
+          asset.width(),
+          asset.height(),
+          asset.durationMs(),
+          metadata);
+    }
+    Object inlineBase64 = asset.metadata().get(CoverGenerationService.INLINE_BASE64_METADATA_KEY);
+    if (!(inlineBase64 instanceof String value) || value.isBlank()) {
       return asset;
     }
     StoredObject importedCover =
-        remoteObjectImporter.importObject(
-            new RemoteObjectImportRequest(value, asset.objectKey(), asset.mimeType()));
+        objectStorageClient.putObject(
+            new ObjectStoragePutRequest(
+                asset.objectKey(), asset.mimeType(), Base64.getDecoder().decode(value)));
     Map<String, Object> metadata = new LinkedHashMap<>(asset.metadata());
-    metadata.remove(DreamMakerImage2CoverGenerationService.SOURCE_URL_METADATA_KEY);
+    metadata.remove(CoverGenerationService.INLINE_BASE64_METADATA_KEY);
     metadata.put("object_storage_imported", true);
+    metadata.put("object_storage_import_source", "inline_base64");
     return new MediaAssetDescriptor(
         asset.assetType(),
         importedCover.objectKey(),
@@ -572,6 +614,18 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     return input.musicProvider() == null || input.musicProvider().isBlank()
         ? musicProviderSelection
         : MusicProviderSelection.fromConfig(input.musicProvider());
+  }
+
+  private Map<String, Object> musicProviderOptions(
+      SongProductionWorkflowInput input, MusicPromptResult musicPrompt) {
+    Map<String, Object> options = new LinkedHashMap<>(musicPrompt.providerOptions());
+    if (input.songTitle() != null && !input.songTitle().isBlank()) {
+      options.putIfAbsent("title", input.songTitle());
+    }
+    if (input.songSummary() != null && !input.songSummary().isBlank()) {
+      options.putIfAbsent("song_summary", input.songSummary());
+    }
+    return options;
   }
 
   private void recordProviderCall(

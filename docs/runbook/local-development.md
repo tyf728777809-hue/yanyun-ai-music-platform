@@ -136,28 +136,40 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
   "select o.status, o.attempt_count, j.status, j.stage, w.status, w.generation_stage, w.package_status from workflow_outbox o join generation_jobs j on j.work_id = o.aggregate_id join works w on w.id = o.aggregate_id where o.aggregate_id = '{work_id}' order by o.created_at desc limit 1"
 ```
 
-也可以显式选择 `suno` 或 `minimax` 验证 DreamMaker Provider 边界。默认不配置
-`DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY` 时，确认出歌会返回 HTTP 409，并将作品持久化为可重试的
-`MUSIC_GENERATION_FAILED`，不会发起真实供应商请求。
+也可以显式选择 `suno` 或 `minimax` 验证真实 Provider 边界。当前 `suno` 可通过
+`SUNO_BACKEND=yunwu|dreammaker` 切换公网联调或正式生产目标后端；`minimax` 当前仍通过
+DreamMaker 接入。默认不开真实调用硬开关时，不会发起真实供应商请求。
 
 真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
 
 ```bash
 export MUSIC_PROVIDER=suno
+export SUNO_BACKEND=yunwu
+export YUNWU_BASE_URL=https://yunwu.ai
+export YUNWU_API_KEY=...
+export YUNWU_REAL_CALLS_ENABLED=true
+export YUNWU_SUNO_MODEL=chirp-v5
+```
+
+如需验证正式生产目标 DreamMaker Suno 路径，切换为：
+
+```bash
+export MUSIC_PROVIDER=suno
+export SUNO_BACKEND=dreammaker
 export DREAMMAKER_API_BASE_URL=https://api-all.dreammaker.netease.com
 export DREAMMAKER_ACCESS_KEY=...
 export DREAMMAKER_SECRET_KEY=...
 export DREAMMAKER_REAL_CALLS_ENABLED=true
 # Optional: only set when company integration wants DreamMaker to parse a real user identity.
 export DREAMMAKER_USER_ACCESS_TOKEN=...
-export SUNO_MODEL=chirp-crow
+export DREAMMAKER_SUNO_MODEL=chirp-crow
 ./gradlew :apps:music-api:bootRun
 ```
 
-上面命令只用于说明变量名。真实 Suno / MiniMax 联调必须先阅读并执行
-`docs/runbook/dreammaker-controlled-real-integration.md`；默认 `DREAMMAKER_REAL_CALLS_ENABLED=false`
-会在外部 HTTP 请求前拒绝调用，防止误触真实供应商。真实联调推荐走 outbox + Temporal worker，
-不要使用默认 `sync` 模式。
+上面命令只用于说明变量名。真实 Suno 联调优先阅读
+`docs/runbook/yunwu-suno-controlled-real-integration.md`；DreamMaker Suno / MiniMax 联调必须阅读
+`docs/runbook/dreammaker-controlled-real-integration.md`。真实联调必须走 outbox + Temporal worker，
+不要使用默认 `sync` 模式；否则 API 会返回 HTTP 409，防止误在同步请求线程中触发真实供应商。
 
 如果 API 已用 `DREAMMAKER_REAL_CALLS_ENABLED=true` 和默认 `sync` workflow 模式启动，可先运行非真实 guard smoke：
 

@@ -9,6 +9,7 @@ public class CompanyIntegrationProperties {
   private String publishAdapterMode = "mock";
   private String shareAdapterMode = "mock";
   private String musicProvider = "mock";
+  private String sunoBackend = "yunwu";
   private String renderWorkerMode = "mock";
   private String objectStorageProvider = "local";
   private String workflowDispatchMode = "sync";
@@ -19,10 +20,13 @@ public class CompanyIntegrationProperties {
   private String deepseekBaseUrl = "";
   private String deepseekModelName = "";
   private String imageProvider = "mock";
+  private String image2Backend = "wellapi";
   private boolean imageRealCallsEnabled;
   private String image2BaseUrl = "";
   private String image2ModelName = "";
   private boolean dreammakerRealCallsEnabled;
+  private boolean yunwuRealCallsEnabled;
+  private String yunwuBaseUrl = "";
 
   public String getEnvironment() {
     return environment;
@@ -78,6 +82,14 @@ public class CompanyIntegrationProperties {
 
   public void setMusicProvider(String musicProvider) {
     this.musicProvider = musicProvider;
+  }
+
+  public String getSunoBackend() {
+    return sunoBackend;
+  }
+
+  public void setSunoBackend(String sunoBackend) {
+    this.sunoBackend = sunoBackend;
   }
 
   public String getRenderWorkerMode() {
@@ -160,6 +172,14 @@ public class CompanyIntegrationProperties {
     this.imageProvider = imageProvider;
   }
 
+  public String getImage2Backend() {
+    return image2Backend;
+  }
+
+  public void setImage2Backend(String image2Backend) {
+    this.image2Backend = image2Backend;
+  }
+
   public boolean isImageRealCallsEnabled() {
     return imageRealCallsEnabled;
   }
@@ -190,5 +210,21 @@ public class CompanyIntegrationProperties {
 
   public void setDreammakerRealCallsEnabled(boolean dreammakerRealCallsEnabled) {
     this.dreammakerRealCallsEnabled = dreammakerRealCallsEnabled;
+  }
+
+  public boolean isYunwuRealCallsEnabled() {
+    return yunwuRealCallsEnabled;
+  }
+
+  public void setYunwuRealCallsEnabled(boolean yunwuRealCallsEnabled) {
+    this.yunwuRealCallsEnabled = yunwuRealCallsEnabled;
+  }
+
+  public String getYunwuBaseUrl() {
+    return yunwuBaseUrl;
+  }
+
+  public void setYunwuBaseUrl(String yunwuBaseUrl) {
+    this.yunwuBaseUrl = yunwuBaseUrl;
   }
 }

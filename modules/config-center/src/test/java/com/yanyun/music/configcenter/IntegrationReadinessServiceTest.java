@@ -157,10 +157,11 @@ class IntegrationReadinessServiceTest {
   }
 
   @Test
-  void image2RealCallsAreBlockedWhenDreamMakerGuardIsDisabled() {
+  void image2WellApiRealCallsAreBlockedWhenApiKeyIsMissing() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setImageProvider("image2");
     properties.setImageRealCallsEnabled(true);
+    properties.setImage2BaseUrl("https://wellapi.example.test");
     properties.setImage2ModelName("image2-test-model");
 
     IntegrationReadinessReport report =
@@ -172,20 +173,21 @@ class IntegrationReadinessServiceTest {
             .findFirst()
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.BLOCKED, image2.status());
-    assertEquals("image2-enabled-dreammaker-disabled", image2.configuredMode());
+    assertEquals("real-calls-missing-wellapi-api-key", image2.configuredMode());
     assertTrue(image2.blocksCompanyDeployment());
   }
 
   @Test
-  void image2RealCallsAreReadyWhenDreamMakerCredentialsExist() {
+  void image2WellApiRealCallsAreReadyWhenApiKeyExists() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setImageProvider("image2");
     properties.setImageRealCallsEnabled(true);
-    properties.setDreammakerRealCallsEnabled(true);
+    properties.setImage2BaseUrl("https://wellapi.example.test");
     properties.setImage2ModelName("gpt-image-2");
 
     IntegrationReadinessReport report =
-        new IntegrationReadinessService(properties, fixedClock, true, true).buildReport();
+        new IntegrationReadinessService(properties, fixedClock, false, false, false, false, true)
+            .buildReport();
 
     IntegrationComponentReadiness image2 =
         report.components().stream()
@@ -193,9 +195,58 @@ class IntegrationReadinessServiceTest {
             .findFirst()
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, image2.status());
-    assertEquals("real-calls-enabled", image2.configuredMode());
-    assertEquals("DreamMakerImage2CoverGenerationService", image2.implementation());
+    assertEquals("real-calls-enabled/wellapi", image2.configuredMode());
+    assertEquals("WellApiImage2CoverGenerationService", image2.implementation());
     assertFalse(image2.blocksCompanyDeployment());
+  }
+
+  @Test
+  void image2DreamMakerBackendStillRequiresDreamMakerGuard() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setImageProvider("image2");
+    properties.setImage2Backend("dreammaker");
+    properties.setImageRealCallsEnabled(true);
+    properties.setImage2ModelName("gpt-image-2");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness image2 =
+        report.components().stream()
+            .filter(component -> component.component().equals("image2_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.BLOCKED, image2.status());
+    assertEquals("image2-enabled-dreammaker-disabled", image2.configuredMode());
+  }
+
+  @Test
+  void yunwuSunoRealCallsAreReadyWhenApiKeyExists() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setMusicProvider("suno");
+    properties.setSunoBackend("yunwu");
+    properties.setYunwuRealCallsEnabled(true);
+    properties.setYunwuBaseUrl("https://yunwu.example.test");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock, false, false, false, true, false)
+            .buildReport();
+
+    IntegrationComponentReadiness music =
+        report.components().stream()
+            .filter(component -> component.component().equals("music_provider"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals("suno/yunwu", music.configuredMode());
+    assertEquals("YunwuSunoMusicProvider", music.implementation());
+
+    IntegrationComponentReadiness yunwu =
+        report.components().stream()
+            .filter(component -> component.component().equals("yunwu_suno_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, yunwu.status());
+    assertEquals("real-calls-enabled", yunwu.configuredMode());
   }
 
   @Test

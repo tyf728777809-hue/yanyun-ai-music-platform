@@ -49,10 +49,7 @@ class DreamMakerImage2CoverGenerationServiceTest {
     assertEquals(1152, result.asset().height());
     assertEquals(
         "https://cdn.example.test/cover.png",
-        result
-            .asset()
-            .metadata()
-            .get(DreamMakerImage2CoverGenerationService.SOURCE_URL_METADATA_KEY));
+        result.asset().metadata().get(CoverGenerationService.SOURCE_URL_METADATA_KEY));
     assertEquals(1, dreamMakerClient.submitCount.get());
   }
 
@@ -99,6 +96,7 @@ class DreamMakerImage2CoverGenerationServiceTest {
   private Image2Properties realProperties() {
     Image2Properties properties = new Image2Properties();
     properties.setRealCallsEnabled(true);
+    properties.setOutputFormat("png");
     properties.setPollInterval(Duration.ZERO);
     properties.setMaxPollAttempts(1);
     return properties;

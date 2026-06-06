@@ -2,9 +2,10 @@
 
 ## Status
 
-- Current stage: DreamMaker provider skeleton implemented; local default remains mock.
-- Real Suno calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run in
-  automated tests; additionally blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
+- Current stage: DreamMaker provider skeleton remains implemented for production target; local default remains mock.
+- Real Suno calls: two configurable backends now exist. `SUNO_BACKEND=yunwu` is the current public-network integration path; `SUNO_BACKEND=dreammaker` preserves the production-target DreamMaker path. Neither backend is used in automated tests.
+- Real Suno via Yunwu: implemented behind `YUNWU_API_KEY`, not run in automated tests; blocked unless `YUNWU_REAL_CALLS_ENABLED=true`.
+- Real Suno via DreamMaker: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run in automated tests; additionally blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - Real MiniMax calls: implemented behind `DREAMMAKER_ACCESS_KEY` / `DREAMMAKER_SECRET_KEY`, not run
   in automated tests; additionally blocked unless `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - Feishu reference doc: fetched through `lark-cli docs +fetch` after user authorization.
@@ -23,6 +24,8 @@ The backend already has a shared music provider contract:
 - `modules:dreammaker` defines the shared DreamMaker run/status client contract.
 - `SunoMusicProvider` builds DreamMaker params, submits tasks, polls status, maps failure codes,
   and returns provider audio source URLs.
+- `YunwuSunoMusicProvider` calls Yunwu `POST /suno/submit/music` and `GET /suno/fetch/{task_id}`,
+  maps tolerant response shapes, and returns provider audio source URLs.
 - `MiniMaxMusicProvider` builds DreamMaker params, submits tasks, polls status, maps failure codes,
   and returns provider audio source URLs.
 - Workflow imports provider audio source URLs into object storage before writing `AUDIO` media
@@ -47,6 +50,9 @@ Each provider call record captures:
 
 ## DreamMaker API Shape
 
+DreamMaker remains the production target and must not be deleted when using Yunwu for public-network
+local testing.
+
 Both Suno and MiniMax use DreamMaker task-style APIs:
 
 - Submit task: `POST https://api-all.dreammaker.netease.com/api/v1/apps/{app}/run?sub_app_name={sub_app}`.
@@ -63,6 +69,21 @@ Both Suno and MiniMax use DreamMaker task-style APIs:
 - Output files: `data.output.output[]`, with provider-relative `url` values that must be downloaded or copied into our object storage before package build.
 
 ## Suno Integration Details
+
+### Current public-network backend: Yunwu
+
+- Config: `MUSIC_PROVIDER=suno`, `SUNO_BACKEND=yunwu`.
+- Base URL: `YUNWU_BASE_URL=https://yunwu.ai`.
+- Auth header: `Authorization: Bearer <YUNWU_API_KEY>`.
+- Submit endpoint: `POST /suno/submit/music`.
+- Poll endpoint: `GET /suno/fetch/{task_id}`.
+- Default model: `YUNWU_SUNO_MODEL=chirp-v5`.
+- Submit fields used by current adapter: `mv`, `make_instrumental=false`, `prompt`, `tags`, `title`.
+- Submit success may return `data` as the task id directly, or `data.task_id`; adapter parses both.
+- Status and audio URL shape is not fully documented; adapter tolerantly parses `status`, `data.status`,
+  `clips[].status`, `audio_url`, `url`, and `data.clips[].audio_url`.
+
+### Production-target backend: DreamMaker
 
 - App path: `suno`.
 - Submit sub app: `music-gen`.
@@ -133,7 +154,7 @@ Keep mapping conservative until real error-code samples are available:
 | Provider submission fails for unknown transient reason | `MUSIC_GENERATION_FAILED` | Yes, while retry count remains |
 | Submit response `code != 0` | `MUSIC_GENERATION_FAILED` initially; refine after concrete codes | Depends on provider error |
 | Poll response `data.status = failed` | `MUSIC_GENERATION_FAILED` or `MUSIC_QUALITY_FAILED` based on provider failure message | Yes, while retry count remains |
-| Auth, signature, project config, or unsupported model error | `MUSIC_GENERATION_FAILED` initially; refine after concrete codes | Usually no, but keep conservative until samples exist |
+| Auth, signature, project config, unsupported model, 401 / 403 | `PROVIDER_AUTH_FAILED` | No user retry; contact support / fix provider config |
 
 ## Required Real Provider Details
 
@@ -157,7 +178,11 @@ Before running real authenticated calls broadly, confirm these remaining details
    - `DREAMMAKER_SECRET_KEY`.
    - `DREAMMAKER_USER_ACCESS_TOKEN` optional passthrough for `X-Access-Token`.
    - `DREAMMAKER_REAL_CALLS_ENABLED` hard switch, default false.
-   - `SUNO_MODEL`.
+   - `DREAMMAKER_SUNO_MODEL`.
+   - `YUNWU_BASE_URL`.
+   - `YUNWU_API_KEY`.
+   - `YUNWU_REAL_CALLS_ENABLED`.
+   - `YUNWU_SUNO_MODEL`.
    - `MINIMAX_MODEL`.
    - submit timeout, poll interval, poll timeout.
 2. Implemented request builders:

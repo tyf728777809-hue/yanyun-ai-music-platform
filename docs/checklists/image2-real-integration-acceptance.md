@@ -4,12 +4,13 @@
 
 - [ ] `git status --short` 无未记录的无关改动。
 - [ ] `IMAGE_PROVIDER=mock` 和 `IMAGE_REAL_CALLS_ENABLED=false` 是默认状态。
-- [ ] Image 2 通过 DreamMaker 接入，DreamMaker AK/SK 只通过当前 shell、部署 Secret 或公司配置中心注入。
-- [ ] `IMAGE_PROVIDER=image2`、`IMAGE_REAL_CALLS_ENABLED=true`、`DREAMMAKER_REAL_CALLS_ENABLED=true` 必须同时打开才允许真实调用。
+- [ ] 当前公网联调默认 `IMAGE2_BACKEND=wellapi`，`WELLAPI_API_KEY` 只通过当前 shell、部署 Secret 或公司配置中心注入。
+- [ ] `IMAGE_PROVIDER=image2`、`IMAGE_REAL_CALLS_ENABLED=true`、`IMAGE2_BACKEND=wellapi`、`WELLAPI_BASE_URL` 和 `WELLAPI_API_KEY` 必须配置完整才允许真实调用。
+- [ ] 若切 `IMAGE2_BACKEND=dreammaker`，才额外要求 `DREAMMAKER_REAL_CALLS_ENABLED=true` 和 DreamMaker AK/SK。
 - [ ] `./gradlew :modules:image2:test :modules:creative-agent:test :apps:music-api:test --tests '*MockSongProductionWorkflow*'` 通过。
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 可在全 Mock 状态跑通 `scripts/smoke/api-main-flow.sh`。
-- [ ] 真实客户端已有硬开关、DreamMaker submit/status 轮询、对象存储导入和脱敏错误处理；默认封面兜底若未实现，需明确本次联调接受 `PACKAGE_BUILD_FAILED` 收口。
+- [ ] 真实客户端已有硬开关、WellAPI URL / `b64_json` 输出处理、对象存储导入和脱敏错误处理；默认封面兜底若未实现，需明确本次联调接受 `PACKAGE_BUILD_FAILED` 收口。
 
 ## 封面成功路径
 
@@ -32,10 +33,11 @@
 ## 失败与兜底
 
 - [ ] 未设置 `IMAGE_REAL_CALLS_ENABLED=true` 时，真实请求被本地保护层拒绝。
-- [ ] 缺失 DreamMaker AK/SK 或真实调用开关时，请求不会发出外部 HTTP。
+- [ ] 缺失 WellAPI API Key、base URL 或真实调用开关时，请求不会发出外部 HTTP。
 - [ ] 401 / 403 / 429 / timeout 至少能落库为脱敏错误。
 - [ ] 供应商内容安全阻断能映射为可读失败码。
 - [ ] 供应商 URL 下载失败能映射为可读失败码。
+- [ ] 供应商仅返回 `b64_json` 时，图片会直接写入平台对象存储，metadata 和发布包不保留 base64 原文。
 - [ ] 默认封面兜底可进入 `media_assets` 和发布包。
 - [ ] 回退 `IMAGE_PROVIDER=mock` 后本地主链路仍能跑通。
 

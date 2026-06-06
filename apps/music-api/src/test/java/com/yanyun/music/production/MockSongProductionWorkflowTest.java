@@ -61,6 +61,7 @@ import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -236,6 +237,100 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void importsInlineBase64CoverIntoObjectStorageBeforeBuildingPackage() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    CoverGenerationService coverGenerationService =
+        request ->
+            new com.yanyun.music.image2.CoverGenerationResult(
+                new MediaAssetDescriptor(
+                    "COVER",
+                    "covers/" + workId + ".jpeg",
+                    "image/jpeg",
+                    0L,
+                    "wellapi-image2",
+                    1920,
+                    1080,
+                    null,
+                    Map.of(
+                        "provider",
+                        "wellapi-image2",
+                        CoverGenerationService.INLINE_BASE64_METADATA_KEY,
+                        "ZmFrZS1pbWFnZQ==")));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(),
+                new MockCoverPromptAgent(),
+                coverGenerationService)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    ObjectStoragePutRequest coverPut =
+        storagePut.getAllValues().stream()
+            .filter(request -> request.objectKey().startsWith("covers/"))
+            .findFirst()
+            .orElseThrow();
+    assertThat(coverPut.contentType()).isEqualTo("image/jpeg");
+    assertThat(new String(coverPut.content(), java.nio.charset.StandardCharsets.UTF_8))
+        .isEqualTo("fake-image");
+
+    ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
+    verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
+    MediaAssetRow coverAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "COVER".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(coverAsset.fileSizeBytes())
+        .isEqualTo("fake-image".getBytes(java.nio.charset.StandardCharsets.UTF_8).length);
+    assertThat(coverAsset.metadataJson()).doesNotContain("ZmFrZS1pbWFnZQ==");
+    assertThat(coverAsset.metadataJson()).contains("object_storage_import_source");
+    verifyNoInteractions(remoteObjectImporter);
+  }
+
+  @Test
   void releasesQuotaAndStopsBeforeCoverGenerationWhenCoverPromptAgentFails() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -378,6 +473,50 @@ class MockSongProductionWorkflowTest {
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
     verifyNoInteractions(
         publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+  }
+
+  @Test
+  void providerAuthFailureIsNonRetryableAndKeepsFailureCode() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.failed(
+                MusicProviderType.MOCK,
+                "task-1",
+                "mock",
+                FailureCode.PROVIDER_AUTH_FAILED.name(),
+                "provider auth failed"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PROVIDER_AUTH_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result = workflowWith(musicProvider).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PROVIDER_AUTH_FAILED.name());
+    verify(workRepository)
+        .markFailure(workId, FailureCode.PROVIDER_AUTH_FAILED, "provider auth failed", false);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.PROVIDER_AUTH_FAILED,
+            "provider auth failed");
+    verify(quotaAdapter)
+        .releaseGenerateQuota("user-1", "lock-1", FailureCode.PROVIDER_AUTH_FAILED.name());
   }
 
   @Test

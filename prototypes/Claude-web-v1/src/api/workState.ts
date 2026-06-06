@@ -177,6 +177,10 @@ export const FAILURE_COPY: Record<FailureCode, { title: string; hint: string }> 
     title: '作品暂时无法发布',
     hint: '请联系平台协助处理。',
   },
+  PROVIDER_AUTH_FAILED: {
+    title: '创作服务暂时不可用',
+    hint: '这是平台接入配置问题，请联系平台协助处理。',
+  },
   PROVIDER_TIMEOUT: {
     title: '创作服务响应超时',
     hint: '网络繁忙，稍后重试一次。',

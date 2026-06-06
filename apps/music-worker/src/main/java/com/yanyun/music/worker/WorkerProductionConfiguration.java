@@ -34,9 +34,12 @@ import com.yanyun.music.storage.ObjectStorageProperties;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.suno.SunoMusicProvider;
 import com.yanyun.music.suno.SunoMusicProviderOptions;
+import com.yanyun.music.suno.YunwuProperties;
+import com.yanyun.music.suno.YunwuSunoMusicProvider;
 import com.yanyun.music.workflow.SongProductionStepActivities;
 import com.yanyun.music.workpersistence.WorkRepository;
 import java.util.List;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -121,14 +124,29 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
+  @ConfigurationProperties(prefix = "yanyun.yunwu")
+  YunwuProperties yunwuProperties() {
+    return new YunwuProperties();
+  }
+
+  @Bean
   MusicProvider sunoMusicProvider(
-      DreamMakerClient dreamMakerClient, DreamMakerProperties dreamMakerProperties) {
-    return new SunoMusicProvider(
-        dreamMakerClient,
-        new SunoMusicProviderOptions(
-            dreamMakerProperties.getSunoModel(),
-            dreamMakerProperties.getMaxPollAttempts(),
-            dreamMakerProperties.getPollInterval()));
+      @Value("${yanyun.suno.backend:yunwu}") String sunoBackend,
+      DreamMakerClient dreamMakerClient,
+      DreamMakerProperties dreamMakerProperties,
+      YunwuProperties yunwuProperties,
+      ObjectMapper objectMapper) {
+    return switch (normalize(sunoBackend)) {
+      case "dreammaker" ->
+          new SunoMusicProvider(
+              dreamMakerClient,
+              new SunoMusicProviderOptions(
+                  dreamMakerProperties.getSunoModel(),
+                  dreamMakerProperties.getMaxPollAttempts(),
+                  dreamMakerProperties.getPollInterval()));
+      case "yunwu" -> new YunwuSunoMusicProvider(yunwuProperties, objectMapper);
+      default -> throw new IllegalArgumentException("Unsupported Suno backend: " + sunoBackend);
+    };
   }
 
   @Bean
@@ -159,5 +177,9 @@ public class WorkerProductionConfiguration {
   @Bean
   SongProductionStepActivities songProductionStepActivities(WorkRepository workRepository) {
     return new RecordingSongProductionStepActivities(workRepository);
+  }
+
+  private String normalize(String value) {
+    return value == null || value.isBlank() ? "" : value.trim().toLowerCase(Locale.ROOT);
   }
 }

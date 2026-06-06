@@ -75,7 +75,7 @@ class DreamMakerHttpClientTest {
             DreamMakerClientException.class,
             () -> client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of())));
 
-    assertEquals(DreamMakerFailureMapper.MUSIC_GENERATION_FAILED, exception.failureCode());
+    assertEquals(DreamMakerFailureMapper.PROVIDER_AUTH_FAILED, exception.failureCode());
   }
 
   @Test
@@ -96,7 +96,7 @@ class DreamMakerHttpClientTest {
 
   @Test
   void mapsNon2xxResponseAndRedactsProviderMessage() throws Exception {
-    server = startFailureServer();
+    server = startFailureServer(429, "rate limit Bearer fake-token-value token=plain");
     DreamMakerHttpClient client =
         new DreamMakerHttpClient(
             properties(TEST_ACCESS_KEY, TEST_SECRET_KEY),
@@ -112,6 +112,25 @@ class DreamMakerHttpClientTest {
     assertEquals(DreamMakerFailureMapper.RATE_LIMITED, exception.failureCode());
     assertTrue(exception.getMessage().contains("Bearer <redacted>"));
     assertTrue(exception.getMessage().contains("token=<redacted>"));
+  }
+
+  @Test
+  void mapsAuthorizationFailureToProviderAuthFailed() throws Exception {
+    server = startFailureServer(403, "forbidden: app requires company intranet or permission");
+    DreamMakerHttpClient client =
+        new DreamMakerHttpClient(
+            properties(TEST_ACCESS_KEY, TEST_SECRET_KEY),
+            new ObjectMapper(),
+            HttpClient.newHttpClient(),
+            FIXED_CLOCK);
+
+    DreamMakerClientException exception =
+        assertThrows(
+            DreamMakerClientException.class,
+            () -> client.submit(new DreamMakerRunRequest("suno", "music-gen", Map.of())));
+
+    assertEquals(DreamMakerFailureMapper.PROVIDER_AUTH_FAILED, exception.failureCode());
+    assertTrue(exception.getMessage().contains("company intranet"));
   }
 
   private HttpServer startServer() throws IOException {
@@ -166,7 +185,7 @@ class DreamMakerHttpClientTest {
     return httpServer;
   }
 
-  private HttpServer startFailureServer() throws IOException {
+  private HttpServer startFailureServer(int statusCode, String message) throws IOException {
     HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
     httpServer.createContext(
         "/api/v1/apps/suno/run",
@@ -175,13 +194,14 @@ class DreamMakerHttpClientTest {
           byte[] body =
               """
               {
-                "code": 429,
-                "message": "rate limit Bearer fake-token-value token=plain"
+                "code": %d,
+                "message": "%s"
               }
               """
+                  .formatted(statusCode, message)
                   .getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "application/json");
-          exchange.sendResponseHeaders(429, body.length);
+          exchange.sendResponseHeaders(statusCode, body.length);
           exchange.getResponseBody().write(body);
           exchange.close();
         });
