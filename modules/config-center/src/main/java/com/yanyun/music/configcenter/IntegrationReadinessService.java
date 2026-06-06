@@ -58,6 +58,7 @@ public final class IntegrationReadinessService {
     components.add(renderWorkerComponent());
     components.add(objectStorageComponent());
     components.add(workflowComponent());
+    components.add(deepSeekComponent());
     components.add(dreamMakerComponent());
 
     boolean productionLike = !"local".equals(normalize(properties.getEnvironment()));
@@ -208,6 +209,57 @@ public final class IntegrationReadinessService {
             "DREAMMAKER_ACCESS_KEY",
             "DREAMMAKER_SECRET_KEY"),
         enabled ? "真实 DreamMaker 调用硬开关已打开；必须确认密钥通过安全注入。" : "默认保护状态，不会触发真实 Suno/MiniMax 调用。");
+  }
+
+  private IntegrationComponentReadiness deepSeekComponent() {
+    boolean enabled = properties.isDeepseekRealCallsEnabled();
+    List<String> requiredEnvVars =
+        List.of(
+            "AGENT_REAL_CALLS_ENABLED",
+            "DEEPSEEK_REAL_CALLS_ENABLED",
+            "DEEPSEEK_BASE_URL",
+            "DEEPSEEK_API_KEY",
+            "DEEPSEEK_MODEL_NAME",
+            "DEEPSEEK_TIMEOUT_MS",
+            "DEEPSEEK_MAX_ATTEMPTS");
+    if (!enabled) {
+      return new IntegrationComponentReadiness(
+          "deepseek_guard",
+          "real-calls-disabled",
+          "MockDeepSeekLyricsClient",
+          IntegrationReadinessStatus.MOCK_ONLY,
+          true,
+          requiredEnvVars,
+          "默认保护状态，写词、润色和续写仍使用 Mock DeepSeek，不会触发真实 LLM 调用。");
+    }
+    if (!properties.isAgentRealCallsEnabled()) {
+      return new IntegrationComponentReadiness(
+          "deepseek_guard",
+          "deepseek-enabled-agent-disabled",
+          "MockDeepSeekLyricsClient",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "DeepSeek 真实调用开关已打开，但 AGENT_REAL_CALLS_ENABLED=false；必须同时打开总 Agent 开关。");
+    }
+    if (properties.getDeepseekBaseUrl() == null || properties.getDeepseekBaseUrl().isBlank()) {
+      return new IntegrationComponentReadiness(
+          "deepseek_guard",
+          "real-calls-missing-base-url",
+          "MockDeepSeekLyricsClient",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "DeepSeek 真实调用开关已打开，但缺少 DEEPSEEK_BASE_URL；不得发出外部请求。");
+    }
+    return new IntegrationComponentReadiness(
+        "deepseek_guard",
+        "real-calls-client-pending",
+        "RealDeepSeekLyricsClient pending",
+        IntegrationReadinessStatus.BLOCKED,
+        true,
+        requiredEnvVars,
+        "DeepSeek 真实调用配置已进入联调准备状态，但仓库尚未实现真实客户端；需先按 Runbook 补硬开关、超时、失败码映射和脱敏日志。");
   }
 
   private static String normalize(String value) {

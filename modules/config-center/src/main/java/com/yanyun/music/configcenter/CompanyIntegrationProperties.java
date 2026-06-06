@@ -14,6 +14,10 @@ public class CompanyIntegrationProperties {
   private String workflowDispatchMode = "sync";
   private String workflowDispatchTarget = "local";
   private String temporalTarget = "localhost:7233";
+  private boolean agentRealCallsEnabled;
+  private boolean deepseekRealCallsEnabled;
+  private String deepseekBaseUrl = "";
+  private String deepseekModelName = "";
   private boolean dreammakerRealCallsEnabled;
 
   public String getEnvironment() {
@@ -110,6 +114,38 @@ public class CompanyIntegrationProperties {
 
   public void setTemporalTarget(String temporalTarget) {
     this.temporalTarget = temporalTarget;
+  }
+
+  public boolean isAgentRealCallsEnabled() {
+    return agentRealCallsEnabled;
+  }
+
+  public void setAgentRealCallsEnabled(boolean agentRealCallsEnabled) {
+    this.agentRealCallsEnabled = agentRealCallsEnabled;
+  }
+
+  public boolean isDeepseekRealCallsEnabled() {
+    return deepseekRealCallsEnabled;
+  }
+
+  public void setDeepseekRealCallsEnabled(boolean deepseekRealCallsEnabled) {
+    this.deepseekRealCallsEnabled = deepseekRealCallsEnabled;
+  }
+
+  public String getDeepseekBaseUrl() {
+    return deepseekBaseUrl;
+  }
+
+  public void setDeepseekBaseUrl(String deepseekBaseUrl) {
+    this.deepseekBaseUrl = deepseekBaseUrl;
+  }
+
+  public String getDeepseekModelName() {
+    return deepseekModelName;
+  }
+
+  public void setDeepseekModelName(String deepseekModelName) {
+    this.deepseekModelName = deepseekModelName;
   }
 
   public boolean isDreammakerRealCallsEnabled() {

@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 17:57 CST
+更新时间：2026-06-06 20:24 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -9,7 +9,7 @@
 - 每次进入公司交接、真实模型联调或部署准备前，先按本清单走查。
 - 勾选项需要有可追溯证据：命令输出、接口响应、截图、日志摘要或数据库抽查结果。
 - 真实密钥、JWT、Cookie、用户 token、供应商原始 payload 不得写入本清单、日志、截图或提交。
-- 本清单不替代 `docs/runbook/dreammaker-controlled-real-integration.md`，真实 Suno / MiniMax 联调仍按该 Runbook 执行。
+- 本清单不替代 `docs/runbook/dreammaker-controlled-real-integration.md` 和 `docs/runbook/deepseek-controlled-real-integration.md`；真实 Suno / MiniMax / DeepSeek 联调仍按对应 Runbook 执行。
 
 ## A. 仓库与文档基线
 
@@ -56,6 +56,7 @@
 - [ ] DreamMaker AK/SK 只通过当前 shell 或安全配置系统注入，不写入仓库或文档。
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
+- [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认硬开关、真实客户端、密钥注入、日志脱敏和回滚方式。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
 

@@ -38,6 +38,10 @@ yanyun:
     workflow-dispatch-mode: ${MUSIC_WORKFLOW_DISPATCH_MODE:sync}
     workflow-dispatch-target: ${WORKFLOW_OUTBOX_DISPATCH_TARGET:local}
     temporal-target: ${TEMPORAL_TARGET:localhost:7233}
+    agent-real-calls-enabled: ${AGENT_REAL_CALLS_ENABLED:false}
+    deepseek-real-calls-enabled: ${DEEPSEEK_REAL_CALLS_ENABLED:false}
+    deepseek-base-url: ${DEEPSEEK_BASE_URL:}
+    deepseek-model-name: ${DEEPSEEK_MODEL_NAME:}
     dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
   music:
     provider: ${MUSIC_PROVIDER:mock}

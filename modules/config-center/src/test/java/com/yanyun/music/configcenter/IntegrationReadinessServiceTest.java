@@ -39,6 +39,14 @@ class IntegrationReadinessServiceTest {
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.MOCK_ONLY, renderWorker.status());
     assertTrue(renderWorker.blocksCompanyDeployment());
+
+    IntegrationComponentReadiness deepseek =
+        report.components().stream()
+            .filter(component -> component.component().equals("deepseek_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.MOCK_ONLY, deepseek.status());
+    assertEquals("MockDeepSeekLyricsClient", deepseek.implementation());
   }
 
   @Test
@@ -65,6 +73,8 @@ class IntegrationReadinessServiceTest {
   void reportDoesNotContainSecretValues() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setDreammakerRealCallsEnabled(true);
+    properties.setDeepseekRealCallsEnabled(true);
+    properties.setDeepseekBaseUrl("https://deepseek.example.test");
 
     String report =
         new IntegrationReadinessService(properties, fixedClock).buildReport().toString();
@@ -90,5 +100,26 @@ class IntegrationReadinessServiceTest {
     assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, renderWorker.status());
     assertEquals("LocalProcessVideoRenderService", renderWorker.implementation());
     assertTrue(renderWorker.blocksCompanyDeployment());
+  }
+
+  @Test
+  void deepseekRealCallsRemainBlockedUntilRealClientIsImplemented() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setAgentRealCallsEnabled(true);
+    properties.setDeepseekRealCallsEnabled(true);
+    properties.setDeepseekBaseUrl("https://deepseek.example.test");
+    properties.setDeepseekModelName("deepseek-test-model");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness deepseek =
+        report.components().stream()
+            .filter(component -> component.component().equals("deepseek_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.BLOCKED, deepseek.status());
+    assertEquals("real-calls-client-pending", deepseek.configuredMode());
+    assertTrue(deepseek.blocksCompanyDeployment());
   }
 }

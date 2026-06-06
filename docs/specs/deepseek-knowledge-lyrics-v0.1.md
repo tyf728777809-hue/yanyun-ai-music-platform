@@ -67,7 +67,7 @@ flowchart TD
 - `MockKnowledgeService` 固定返回 2 条燕云参考，版本为 `mock-yanyun-kb-v0`。
 - `MockPromptTemplateService` 固定按 operation 渲染 Prompt，并返回模板 key 和版本。
 - `MockDeepSeekLyricsClient` 根据 operation 生成确定性歌词、摘要、音乐提示词、封面 seed 和质量分。
-- 真实 DeepSeek 客户端后续必须复用 `DeepSeekLyricsClient` 合约，并增加独立硬开关、脱敏日志、受控联调文档和失败码映射。
+- 真实 DeepSeek 客户端后续必须复用 `DeepSeekLyricsClient` 合约，并增加独立硬开关、脱敏日志和失败码映射；受控联调步骤见 `docs/runbook/deepseek-controlled-real-integration.md`，安全规则见 `docs/security/deepseek-secret-and-log-handling.md`，验收清单见 `docs/checklists/deepseek-real-integration-acceptance.md`。
 
 ## 验收标准
 
@@ -84,5 +84,5 @@ flowchart TD
 ## 后续事项
 
 1. 第 7 批封面链路应优先读取 `cover_prompt_seed`，再调用 Image 生成或 Mock 封面 Adapter。
-2. 真实 DeepSeek 接入前需新增受控联调 runbook、安全日志规则和验收清单。
+2. 真实 DeepSeek 接入前已补受控联调 runbook、安全日志规则和验收清单；下一步需在用户提供 URL / API Key / 协议后实现真实客户端硬开关。
 3. 若后续 OpenAPI 需要展示 `knowledge_base_version` 或质量分，应先升级接口契约版本，并同步 Gemini 前端任务包。
