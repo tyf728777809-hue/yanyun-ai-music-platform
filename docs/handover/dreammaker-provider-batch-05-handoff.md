@@ -10,6 +10,7 @@
 - Provider 返回音频 URL 后，平台会先导入对象存储，再写入作品媒体资产和发布包。
 - Temporal 模式下真实 Provider 调用发生在 `music-worker`。
 - 当 `DREAMMAKER_REAL_CALLS_ENABLED=true` 且 Provider 为 `suno` / `minimax` 时，API 已强制要求 outbox + Temporal worker；sync 模式会直接返回冲突，避免误在 API 线程中触发真实供应商。
+- 2026-06-07 已执行首次 Suno 单作品 stack smoke：本地链路触达 DreamMaker 创建任务阶段，但供应商返回 HTTP 403，`provider_trace_id` 为空；平台侧失败收口、provider_call 记录和权益释放正常。
 
 ## 环境变量
 
@@ -36,6 +37,7 @@
 
 ## 待公司确认
 
+- 首次 Suno HTTP 403 的原因：AK/SK 应用权限、是否强制 `X-Access-Token`、以及 `app/sub_app/model` 是否与账号开通项一致。
 - 错误码与 retryable 规则。
 - 限流、计费和并发额度。
 - 音频 URL 有效期与下载授权。
@@ -52,6 +54,7 @@ python3 /Users/tongyifeng/.codex/skills/env-secrets-manager/scripts/env_auditor.
 
 首次人工真实音乐 smoke 参考：
 
+- `scripts/smoke/dreammaker-real-music-stack-smoke.sh`
 - `scripts/smoke/dreammaker-real-music-smoke.sh`
 - `docs/checklists/dreammaker-real-music-smoke-10min.md`
 - `docs/runbook/dreammaker-controlled-real-integration.md`
