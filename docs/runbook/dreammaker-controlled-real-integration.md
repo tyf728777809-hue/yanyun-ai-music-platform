@@ -4,7 +4,7 @@
 
 本 Runbook 用于第 5 批手动联调 Suno 与 MiniMax 的真实 DreamMaker 链路。目标是证明真实 Provider 可以在本地完整走到平台对象存储、作品状态和发布包交接；同时避免误触真实请求、泄露密钥或让同步 API 线程长时间阻塞。
 
-如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；本 Runbook 负责解释完整风险、回滚和证据记录口径。
+如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；也可以在完成 worker/API 启动和凭据注入后，用 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行脚本化单作品 smoke。本 Runbook 负责解释完整风险、回滚和证据记录口径。
 
 ## 硬性规则
 
@@ -12,6 +12,7 @@
 - 只有手动联调窗口内才允许设置 `DREAMMAKER_REAL_CALLS_ENABLED=true`。
 - 真实联调优先使用 `MUSIC_WORKFLOW_DISPATCH_MODE=outbox` + `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`。
 - 不使用默认 `sync` 模式联调真实 Provider；Suno/MiniMax 轮询可能持续数分钟，会阻塞 API 请求线程。
+- 运行时已加硬保护：当 `DREAMMAKER_REAL_CALLS_ENABLED=true` 且 Provider 为 `suno` / `minimax` 时，API 只允许 `outbox + temporal`，否则确认出歌或重试会直接返回冲突。
 - 不把 AccessKey、SecretKey、JWT、`X-Access-Token`、供应商原始 payload 写入仓库、文档、测试、截图或提交信息。
 - 自动化测试仍只允许 fake/mock，不调用真实 DreamMaker。
 
@@ -93,6 +94,28 @@ java -jar apps/music-api/build/libs/music-api-0.1.0-SNAPSHOT.jar
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
   "select provider, model_name, provider_trace_id, status, error_code from provider_calls where work_id = '{work_id}' order by created_at"
 ```
+
+## 脚本化单作品 Smoke
+
+在完成凭据注入、worker 启动和 API 启动后，可选择执行脚本：
+
+```bash
+ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+REAL_PROVIDER=suno \
+DREAMMAKER_REAL_CALLS_ENABLED=true \
+scripts/smoke/dreammaker-real-music-smoke.sh
+```
+
+或：
+
+```bash
+ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+REAL_PROVIDER=minimax \
+DREAMMAKER_REAL_CALLS_ENABLED=true \
+scripts/smoke/dreammaker-real-music-smoke.sh
+```
+
+脚本会检查 `/internal/integration-readiness` 中 `dreammaker_guard=READY_FOR_LOCAL` 且 `workflow_dispatch=outbox/temporal`，再创建 1 个作品并确认出歌。不要在普通 CI、自动化测试或无联调窗口时运行。
 
 ## MiniMax 联调步骤
 

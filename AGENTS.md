@@ -26,9 +26,10 @@
 2. `yanyun-ai-music-platform-tech-design-v0.2.md`
 3. `docs/adr/0001-user-web-scope.md`
 4. `docs/adr/0002-commercial-grade-stack.md`
-5. `docs/project-progress.md`
-6. `docs/codex-batch-01-repository-initialization.md`
-7. `docs/tech-design-required-supplements.md`
+5. `docs/adr/0003-frontend-delivery-track.md`
+6. `docs/project-progress.md`
+7. `docs/codex-batch-01-repository-initialization.md`
+8. `docs/tech-design-required-supplements.md`
 
 如果这些文档之间冲突：
 
@@ -38,7 +39,8 @@
 
 ## Fixed Decisions
 
-- 用户侧由本项目提供 `apps/web`。
+- 用户侧正式工程承接目录保留为 `apps/web`。
+- 当前可验收、可本地实测的前端工作台是 `prototypes/Claude-web-v1`；迁移到 `apps/web` 或交给公司前端重建前，必须先更新 ADR 和项目进度。
 - `apps/web` 使用 React + Vite + TypeScript。
 - 用户侧移动端 H5/WebView 优先，同时兼容 PC Web。
 - 后端主栈为 Java 21 + Spring Boot 3 + Gradle Kotlin DSL。
@@ -105,7 +107,7 @@
 
 ## Frontend Rules
 
-- `apps/web` 只调用 `music-api`，不直接访问数据库、对象存储、Provider 或公司真实系统。
+- `apps/web` 或当前验收前端 `prototypes/Claude-web-v1` 只调用 `music-api`，不直接访问数据库、对象存储、Provider 或公司真实系统。
 - 页面优先覆盖：创作首页、歌词确认页、生成中页、失败页、成品页、作品列表。
 - 移动端优先设计，PC Web 作为响应式增强。
 - 状态展示必须使用后端统一状态、生成阶段、失败码、可执行动作和发布包状态。
@@ -114,6 +116,7 @@
 - 除非用户明确要求，本 Agent 不直接承担最终视觉设计和高保真前端实现。
 - 给 Gemini 的前端任务包必须包含：目标页面、用户路径、移动端/PC Web 适配要求、接口字段、状态机、交互状态、错误处理、图片资产需求、验收标准和禁止事项。
 - Gemini 返回前端实现后，本 Agent 负责从产品逻辑、接口一致性、响应式、安全边界和可测试性角度 review。
+- 当前前端 smoke 和用户实测默认以 `prototypes/Claude-web-v1` 为对象；不要把 `apps/web` scaffold 误写成已完成的正式前端交付。
 
 ## Testing And Verification
 

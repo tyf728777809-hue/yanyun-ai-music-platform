@@ -24,6 +24,7 @@ curl -s http://localhost:8080/internal/integration-readiness | jq .
 
 - [ ] `overall_status` 对公司部署口径可解释。
 - [ ] `company_account`、`company_moderation`、`company_quota`、`company_publish`、`company_share` 都不是未解释的本地 Mock 状态，或已有公司明确豁免说明。
+- [ ] `company_share` 可以作为“公司系统承接 / 本平台无需实现”的豁免项；豁免说明必须写清分享入口、分享卡片、传播归因和回流统计由公司社区系统负责。
 - [ ] `required_env_vars` 只列变量名，不输出任何真实密钥、token、Cookie 或签名 URL。
 - [ ] `music_provider`、`workflow_dispatch`、`object_storage`、`render_worker` 的部署模式符合公司部署方案。
 
@@ -152,6 +153,11 @@ record PublishHandoff(String packageObjectKey, String packageUrl, OffsetDateTime
 - [ ] 分享卡片素材使用发布包中的封面、标题、摘要或公司自有素材策略。
 - [ ] 分享链路、传播归因、风控和回流统计由公司系统负责。
 - [ ] 本平台不承接点赞、评论、收藏、推荐流和分享渠道配置。
+
+判定口径：
+
+- 如果公司确认分享完全由既有社区系统承接，`company_share` 可记录为“豁免 / 公司承接”，不需要本平台新增分享 Adapter。
+- 如果公司要求本平台生成分享卡片或回流参数，应先新增接口规格和 PRD/技术方案变更，再进入实现。
 
 ## 8. 联合 Smoke
 

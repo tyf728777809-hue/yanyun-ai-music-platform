@@ -13,6 +13,7 @@
 - [ ] 本次只测 1 个 Provider、1 个作品，避免无意识消耗额度。
 - [ ] 默认 `MUSIC_PROVIDER=mock` 不改；只在 `confirm` 请求体里显式传 `music_provider=suno` 或 `music_provider=minimax`。
 - [ ] 必须走 `outbox + Temporal worker`，不要用 API `sync` 模式跑真实音乐。
+- [ ] 运行时会阻止 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时在 `sync` 模式下使用 `suno` / `minimax`，如遇 409 需先检查 workflow dispatch 配置。
 - [ ] 不把 AK、SK、JWT、`X-Access-Token`、供应商原始 payload 写进文档、截图、日志、测试或 commit。
 - [ ] 联调结束后必须清理 shell 环境变量。
 
@@ -84,6 +85,17 @@ RENDER_WORKER_MODE=mock \
 ```bash
 curl -s http://localhost:8080/health
 ```
+
+可选：如果不想手动执行第 5-8 步，可在完成 worker/API 启动后运行脚本化 smoke。该脚本会真实调用 DreamMaker，必须显式确认：
+
+```bash
+ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+REAL_PROVIDER=suno \
+DREAMMAKER_REAL_CALLS_ENABLED=true \
+scripts/smoke/dreammaker-real-music-smoke.sh
+```
+
+或把 `REAL_PROVIDER` 改为 `minimax`。脚本只创建 1 个作品，不会同时测试两个 Provider。
 
 ## 5. 创建作品
 

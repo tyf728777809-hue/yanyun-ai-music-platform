@@ -10,10 +10,22 @@ public final class IntegrationReadinessService {
 
   private final CompanyIntegrationProperties properties;
   private final Clock clock;
+  private final boolean dreamMakerAccessKeyConfigured;
+  private final boolean dreamMakerSecretKeyConfigured;
 
   public IntegrationReadinessService(CompanyIntegrationProperties properties, Clock clock) {
+    this(properties, clock, false, false);
+  }
+
+  public IntegrationReadinessService(
+      CompanyIntegrationProperties properties,
+      Clock clock,
+      boolean dreamMakerAccessKeyConfigured,
+      boolean dreamMakerSecretKeyConfigured) {
     this.properties = properties;
     this.clock = clock;
+    this.dreamMakerAccessKeyConfigured = dreamMakerAccessKeyConfigured;
+    this.dreamMakerSecretKeyConfigured = dreamMakerSecretKeyConfigured;
   }
 
   public IntegrationReadinessReport buildReport() {
@@ -198,18 +210,40 @@ public final class IntegrationReadinessService {
 
   private IntegrationComponentReadiness dreamMakerComponent() {
     boolean enabled = properties.isDreammakerRealCallsEnabled();
-    return new IntegrationComponentReadiness(
-        "dreammaker_guard",
-        enabled ? "real-calls-enabled" : "real-calls-disabled",
-        "DreamMakerHttpClient",
-        enabled ? IntegrationReadinessStatus.READY_FOR_LOCAL : IntegrationReadinessStatus.MOCK_ONLY,
-        !enabled,
+    List<String> requiredEnvVars =
         List.of(
             "DREAMMAKER_REAL_CALLS_ENABLED",
             "DREAMMAKER_API_BASE_URL",
             "DREAMMAKER_ACCESS_KEY",
-            "DREAMMAKER_SECRET_KEY"),
-        enabled ? "真实 DreamMaker 调用硬开关已打开；必须确认密钥通过安全注入。" : "默认保护状态，不会触发真实 Suno/MiniMax 调用。");
+            "DREAMMAKER_SECRET_KEY");
+    if (!enabled) {
+      return new IntegrationComponentReadiness(
+          "dreammaker_guard",
+          "real-calls-disabled",
+          "DreamMakerHttpClient",
+          IntegrationReadinessStatus.MOCK_ONLY,
+          true,
+          requiredEnvVars,
+          "默认保护状态，不会触发真实 Suno/MiniMax 调用。");
+    }
+    if (!dreamMakerAccessKeyConfigured || !dreamMakerSecretKeyConfigured) {
+      return new IntegrationComponentReadiness(
+          "dreammaker_guard",
+          "real-calls-missing-credentials",
+          "DreamMakerHttpClient",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "DreamMaker 真实调用硬开关已打开，但缺少 AccessKey 或 SecretKey；不得发出真实音乐请求。");
+    }
+    return new IntegrationComponentReadiness(
+        "dreammaker_guard",
+        "real-calls-enabled",
+        "DreamMakerHttpClient",
+        IntegrationReadinessStatus.READY_FOR_LOCAL,
+        false,
+        requiredEnvVars,
+        "真实 DreamMaker 调用硬开关已打开，且 AK/SK 已通过当前运行环境配置；报告不会输出密钥值。");
   }
 
   private IntegrationComponentReadiness deepSeekComponent() {

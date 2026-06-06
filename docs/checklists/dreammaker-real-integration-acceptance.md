@@ -1,6 +1,6 @@
 # DreamMaker 真实联调验收清单
 
-首次手动 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；本清单用于正式验收 Suno 与 MiniMax 两条成功路径、失败止损和交接记录。
+首次手动 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行，也可在 worker/API 已按 runbook 启动后使用 `scripts/smoke/dreammaker-real-music-smoke.sh` 跑单作品脚本化 smoke。本清单用于正式验收 Suno 与 MiniMax 两条成功路径、失败止损和交接记录。
 
 ## 联调前
 
@@ -10,6 +10,8 @@
 - [ ] `./gradlew :modules:dreammaker:test :modules:suno:test :modules:minimax:test` 通过。
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 使用 outbox temporal 模式，真实调用由 worker 执行。
+- [ ] `/internal/integration-readiness` 中 `dreammaker_guard=READY_FOR_LOCAL`，且缺少 AK/SK 时必须显示 `BLOCKED`。
+- [ ] 运行时已阻止 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时在 `sync` 模式确认或重试 `suno` / `minimax`。
 
 ## Suno 成功路径
 
@@ -35,6 +37,7 @@
 
 - [ ] 未设置 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时，真实 Provider 请求被本地保护层拒绝。
 - [ ] 缺失 AK/SK 时，请求不会发出外部 HTTP。
+- [ ] 设置 `DREAMMAKER_REAL_CALLS_ENABLED=true` 但 workflow 不是 `outbox/temporal` 时，API 返回冲突，不启动真实任务。
 - [ ] 限流、超时、失败任务至少能落库为脱敏错误。
 - [ ] 失败作品保留 `RETRY_MUSIC` 或合理的下一步动作。
 - [ ] 回退 `MUSIC_PROVIDER=mock` 后本地主链路仍能跑通。

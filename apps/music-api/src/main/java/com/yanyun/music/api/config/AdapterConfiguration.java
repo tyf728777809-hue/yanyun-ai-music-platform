@@ -221,7 +221,13 @@ public class AdapterConfiguration {
 
   @Bean
   IntegrationReadinessService integrationReadinessService(
-      CompanyIntegrationProperties companyIntegrationProperties, Clock clock) {
-    return new IntegrationReadinessService(companyIntegrationProperties, clock);
+      CompanyIntegrationProperties companyIntegrationProperties,
+      DreamMakerProperties dreamMakerProperties,
+      Clock clock) {
+    return new IntegrationReadinessService(
+        companyIntegrationProperties,
+        clock,
+        !dreamMakerProperties.getAccessKey().isBlank(),
+        !dreamMakerProperties.getSecretKey().isBlank());
   }
 }

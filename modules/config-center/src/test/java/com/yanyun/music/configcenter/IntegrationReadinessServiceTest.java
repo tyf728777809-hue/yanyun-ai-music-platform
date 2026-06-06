@@ -154,4 +154,40 @@ class IntegrationReadinessServiceTest {
     assertEquals("real-calls-client-pending", image2.configuredMode());
     assertTrue(image2.blocksCompanyDeployment());
   }
+
+  @Test
+  void dreamMakerRealCallsAreBlockedWhenCredentialsAreMissing() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setDreammakerRealCallsEnabled(true);
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock, false, true).buildReport();
+
+    IntegrationComponentReadiness dreamMaker =
+        report.components().stream()
+            .filter(component -> component.component().equals("dreammaker_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.BLOCKED, dreamMaker.status());
+    assertEquals("real-calls-missing-credentials", dreamMaker.configuredMode());
+    assertTrue(dreamMaker.blocksCompanyDeployment());
+  }
+
+  @Test
+  void dreamMakerRealCallsAreReadyOnlyWhenCredentialsAreConfigured() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setDreammakerRealCallsEnabled(true);
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock, true, true).buildReport();
+
+    IntegrationComponentReadiness dreamMaker =
+        report.components().stream()
+            .filter(component -> component.component().equals("dreammaker_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, dreamMaker.status());
+    assertEquals("real-calls-enabled", dreamMaker.configuredMode());
+    assertFalse(dreamMaker.blocksCompanyDeployment());
+  }
 }

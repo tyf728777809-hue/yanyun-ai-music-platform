@@ -9,6 +9,7 @@
 - 可选 `DREAMMAKER_USER_ACCESS_TOKEN` 会透传为 `X-Access-Token`。
 - Provider 返回音频 URL 后，平台会先导入对象存储，再写入作品媒体资产和发布包。
 - Temporal 模式下真实 Provider 调用发生在 `music-worker`。
+- 当 `DREAMMAKER_REAL_CALLS_ENABLED=true` 且 Provider 为 `suno` / `minimax` 时，API 已强制要求 outbox + Temporal worker；sync 模式会直接返回冲突，避免误在 API 线程中触发真实供应商。
 
 ## 环境变量
 
@@ -51,6 +52,7 @@ python3 /Users/tongyifeng/.codex/skills/env-secrets-manager/scripts/env_auditor.
 
 首次人工真实音乐 smoke 参考：
 
+- `scripts/smoke/dreammaker-real-music-smoke.sh`
 - `docs/checklists/dreammaker-real-music-smoke-10min.md`
 - `docs/runbook/dreammaker-controlled-real-integration.md`
 - `docs/checklists/dreammaker-real-integration-acceptance.md`

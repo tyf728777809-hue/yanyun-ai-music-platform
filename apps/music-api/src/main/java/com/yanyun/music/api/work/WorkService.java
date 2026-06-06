@@ -23,6 +23,7 @@ import com.yanyun.music.api.work.WorkDtos.WorkListResponse;
 import com.yanyun.music.api.work.WorkDtos.WorkSummary;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
+import com.yanyun.music.dreammaker.DreamMakerProperties;
 import com.yanyun.music.lyrics.LyricsGenerationRequest;
 import com.yanyun.music.lyrics.LyricsGenerationResult;
 import com.yanyun.music.lyrics.LyricsGenerationService;
@@ -30,6 +31,7 @@ import com.yanyun.music.lyrics.LyricsOperation;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
+import com.yanyun.music.musicprovider.MusicProviderType;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaDecision;
 import com.yanyun.music.storage.ObjectStorageClient;
@@ -80,6 +82,8 @@ public class WorkService {
   private final SongProductionWorkflow songProductionWorkflow;
   private final WorkflowDispatchProperties workflowDispatchProperties;
   private final WorkflowOutboxService workflowOutboxService;
+  private final MusicProviderSelection configuredMusicProvider;
+  private final DreamMakerProperties dreamMakerProperties;
   private final ObjectMapper objectMapper;
 
   public WorkService(
@@ -91,6 +95,8 @@ public class WorkService {
       SongProductionWorkflow songProductionWorkflow,
       WorkflowDispatchProperties workflowDispatchProperties,
       WorkflowOutboxService workflowOutboxService,
+      MusicProviderSelection configuredMusicProvider,
+      DreamMakerProperties dreamMakerProperties,
       ObjectMapper objectMapper) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
@@ -100,6 +106,8 @@ public class WorkService {
     this.songProductionWorkflow = songProductionWorkflow;
     this.workflowDispatchProperties = workflowDispatchProperties;
     this.workflowOutboxService = workflowOutboxService;
+    this.configuredMusicProvider = configuredMusicProvider;
+    this.dreamMakerProperties = dreamMakerProperties;
     this.objectMapper = objectMapper;
   }
 
@@ -286,19 +294,16 @@ public class WorkService {
     }
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
 
+    String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
+    requireSafeDreamMakerDispatch(selectedMusicProvider);
+
     if (workflowDispatchProperties.outboxMode()) {
-      return enqueueSongProduction(
-          work, draft, musicProvider(request == null ? null : request.musicProvider()), true);
+      return enqueueSongProduction(work, draft, selectedMusicProvider, true);
     }
 
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
-            workflowInput(
-                workId,
-                userId,
-                draft,
-                musicProvider(request == null ? null : request.musicProvider()),
-                true));
+            workflowInput(workId, userId, draft, selectedMusicProvider, true));
     if (!workflowResult.packageReady()) {
       throw workflowFailure(workflowResult);
     }
@@ -317,6 +322,7 @@ public class WorkService {
 
     LyricsDraftRow draft = getRequiredLyricsDraft(workId);
     String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
+    requireSafeDreamMakerDispatch(selectedMusicProvider);
     if (!workRepository.reserveMusicRetry(workId, userId, work.version(), MUSIC_RETRY_LIMIT)) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Music retry is already running or retry limit reached");
@@ -516,6 +522,28 @@ public class WorkService {
     } catch (IllegalArgumentException exception) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
     }
+  }
+
+  private void requireSafeDreamMakerDispatch(String selectedMusicProvider) {
+    if (!dreamMakerProperties.isRealCallsEnabled()
+        || effectiveMusicProvider(selectedMusicProvider) == MusicProviderType.MOCK) {
+      return;
+    }
+    boolean temporalOutbox =
+        workflowDispatchProperties.outboxMode()
+            && workflowDispatchProperties.getOutbox().getDispatchTarget()
+                == WorkflowDispatchProperties.DispatchTarget.TEMPORAL;
+    if (!temporalOutbox) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "真实音乐联调必须使用 outbox + Temporal worker，不能在同步 API 线程中执行。");
+    }
+  }
+
+  private MusicProviderType effectiveMusicProvider(String selectedMusicProvider) {
+    if (selectedMusicProvider == null || selectedMusicProvider.isBlank()) {
+      return configuredMusicProvider.providerType();
+    }
+    return MusicProviderSelection.fromConfig(selectedMusicProvider).providerType();
   }
 
   private UUID createWorkWithDraft(

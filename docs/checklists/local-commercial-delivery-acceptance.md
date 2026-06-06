@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 23:12 CST
+更新时间：2026-06-06 23:45 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -15,6 +15,7 @@
 
 - [ ] `git status --short` 无未解释的改动；临时截图、`.playwright-mcp/`、构建产物和密钥文件未进入 Git。
 - [ ] `README.md`、`docs/project-progress.md`、运行手册和交接文档的当前阶段一致。
+- [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。
 
@@ -55,11 +56,12 @@
 - [ ] Suno / MiniMax 真实调用前已确认联调窗口、成本上限、回滚方式和负责人。
 - [ ] DreamMaker AK/SK 只通过当前 shell 或安全配置系统注入，不写入仓库或文档。
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
+- [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认硬开关、真实客户端、密钥注入、日志脱敏和回滚方式。
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认硬开关、真实客户端、对象存储导入、默认封面兜底、密钥注入、日志脱敏和回滚方式。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
-- [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行，确认是真的打到 DreamMaker 而不是仍在 Mock。
+- [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 或 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行，确认是真的打到 DreamMaker 而不是仍在 Mock。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
 
 ## F. 公司 Adapter 交接
@@ -72,6 +74,7 @@
 - [ ] 权益实现 `lock / commit / release` 幂等语义，并能按 `work_id` 对账。
 - [ ] 标记已交接只代表本平台产物交给社区发布流程，不代表社区发布成功。
 - [ ] 公司侧发布、分享、互动、推荐流不在本平台重复实现。
+- [ ] 分享若完全由公司社区系统承接，已在 `company_share` readiness 或公司交接记录中标为豁免 / 公司承接，不要求本平台新增分享 Adapter。
 
 ## G. 安全与日志
 
@@ -87,6 +90,7 @@
 - [ ] 本地真实 MP4 成片链路可复验。
 - [ ] 前端真实后端模式可脚本化复验。
 - [ ] Suno / MiniMax 至少各完成 1 次受控真实成功联调，或明确记录为公司接入前阻塞项。
+- [ ] 正式前端承接策略已明确：保留 `prototypes/Claude-web-v1`、迁移到 `apps/web`，或公司前端重建。
 - [ ] 公司 Adapter 替换清单、环境变量、smoke 步骤和禁止事项已交给公司开发。
 - [ ] 本清单中未完成项已归类为阻塞项、风险项或后续项，并记录到 `docs/project-progress.md`。
 

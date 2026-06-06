@@ -1,6 +1,7 @@
 package com.yanyun.music.api.work;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -15,12 +16,15 @@ import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
 import com.yanyun.music.api.work.WorkDtos.JobAcceptedResponse;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
+import com.yanyun.music.dreammaker.DreamMakerProperties;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.moderation.ModerationAdapter;
+import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.workdomain.CreationMode;
+import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
 import com.yanyun.music.workdomain.WorkStatus;
@@ -36,6 +40,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.web.server.ResponseStatusException;
 
 class WorkServiceWorkflowDispatchTest {
 
@@ -114,6 +119,109 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   @Test
+  void confirmWorkRejectsRealDreamMakerProviderInSyncDispatch() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(
+            Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    assertThatThrownBy(
+            () ->
+                service(
+                        syncProperties(),
+                        MusicProviderSelection.fromConfig("mock"),
+                        realDreamMakerProperties())
+                    .confirmWork("user-1", workId, new ConfirmWorkRequest(draftId, null, "suno")))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("outbox + Temporal worker");
+
+    verify(songProductionWorkflow, never()).produce(any());
+    verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
+    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+  }
+
+  @Test
+  void confirmWorkRejectsConfiguredRealDreamMakerProviderInSyncDispatch() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(
+            Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    assertThatThrownBy(
+            () ->
+                service(
+                        syncProperties(),
+                        MusicProviderSelection.fromConfig("minimax"),
+                        realDreamMakerProperties())
+                    .confirmWork("user-1", workId, new ConfirmWorkRequest(draftId, null, null)))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("outbox + Temporal worker");
+
+    verify(songProductionWorkflow, never()).produce(any());
+    verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
+    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+  }
+
+  @Test
+  void confirmWorkAllowsRealDreamMakerProviderOnlyWithTemporalOutbox() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow initial = work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM);
+    WorkRow queued = work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(initial))
+        .thenReturn(Optional.of(queued));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.reserveSongProduction(workId, "user-1", initial.version()))
+        .thenReturn(true);
+
+    JobAcceptedResponse response =
+        service(
+                temporalOutboxProperties(),
+                MusicProviderSelection.fromConfig("mock"),
+                realDreamMakerProperties())
+            .confirmWork("user-1", workId, new ConfirmWorkRequest(draftId, null, "suno"));
+
+    assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
+    ArgumentCaptor<SongProductionWorkflowInput> input =
+        ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
+    verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
+    assertThat(input.getValue().musicProvider()).isEqualTo("suno");
+    verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
+  void retryMusicRejectsRealDreamMakerProviderInSyncDispatch() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(failedMusicWork(workId)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    assertThatThrownBy(
+            () ->
+                service(
+                        syncProperties(),
+                        MusicProviderSelection.fromConfig("mock"),
+                        realDreamMakerProperties())
+                    .retryMusic("user-1", workId, new WorkDtos.RetryMusicRequest("minimax")))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("outbox + Temporal worker");
+
+    verify(workRepository, never()).reserveMusicRetry(any(), any(), anyInt(), anyInt());
+    verify(songProductionWorkflow, never()).produce(any());
+    verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
+  }
+
+  @Test
   void refreshPublishPackageUrlUsesPersistedPackageObjectKey() {
     UUID workId = UUID.randomUUID();
     WorkRow generated = work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY);
@@ -151,6 +259,14 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   private WorkService service(WorkflowDispatchProperties properties) {
+    return service(
+        properties, MusicProviderSelection.fromConfig("mock"), new DreamMakerProperties());
+  }
+
+  private WorkService service(
+      WorkflowDispatchProperties properties,
+      MusicProviderSelection configuredMusicProvider,
+      DreamMakerProperties dreamMakerProperties) {
     return new WorkService(
         workRepository,
         quotaAdapter,
@@ -160,6 +276,8 @@ class WorkServiceWorkflowDispatchTest {
         songProductionWorkflow,
         properties,
         workflowOutboxService,
+        configuredMusicProvider,
+        dreamMakerProperties,
         objectMapper);
   }
 
@@ -170,6 +288,20 @@ class WorkServiceWorkflowDispatchTest {
   private WorkflowDispatchProperties outboxProperties() {
     WorkflowDispatchProperties properties = new WorkflowDispatchProperties();
     properties.setDispatchMode(WorkflowDispatchProperties.DispatchMode.OUTBOX);
+    return properties;
+  }
+
+  private WorkflowDispatchProperties temporalOutboxProperties() {
+    WorkflowDispatchProperties properties = outboxProperties();
+    properties.getOutbox().setDispatchTarget(WorkflowDispatchProperties.DispatchTarget.TEMPORAL);
+    return properties;
+  }
+
+  private DreamMakerProperties realDreamMakerProperties() {
+    DreamMakerProperties properties = new DreamMakerProperties();
+    properties.setRealCallsEnabled(true);
+    properties.setAccessKey("configured-access-key");
+    properties.setSecretKey("configured-secret-key");
     return properties;
   }
 
@@ -198,6 +330,32 @@ class WorkServiceWorkflowDispatchTest {
         OffsetDateTime.now(),
         OffsetDateTime.now(),
         status == WorkStatus.GENERATED ? OffsetDateTime.now() : null,
+        3);
+  }
+
+  private WorkRow failedMusicWork(UUID workId) {
+    return new WorkRow(
+        workId,
+        "YYM-20260605-ABCDEF",
+        "user-1",
+        CreationMode.LYRICS,
+        WorkStatus.FAILED,
+        GenerationStage.FAILED,
+        PackageStatus.PACKAGE_NOT_READY,
+        "Mock title",
+        "Mock summary",
+        0,
+        0,
+        FailureCode.MUSIC_GENERATION_FAILED,
+        "Music provider failed",
+        true,
+        OffsetDateTime.now(),
+        false,
+        false,
+        0,
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
+        null,
         3);
   }
 
