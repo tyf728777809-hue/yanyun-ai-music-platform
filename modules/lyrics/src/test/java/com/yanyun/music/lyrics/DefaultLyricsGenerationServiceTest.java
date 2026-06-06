@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunStatus;
+import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekLyricsResponse;
 import com.yanyun.music.knowledge.KnowledgeReference;
@@ -46,11 +47,12 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
     assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
     assertEquals(7, result.promptTemplateVersions().get("lyrics.inspiration.v1"));
+    assertEquals(1, result.promptTemplateVersions().get("creative.brief.v1"));
     assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
   }
 
   @Test
-  void successfulGenerationRecordsAgentRun() {
+  void successfulGenerationRecordsCreativeBriefBeforeLyricsAgentRun() {
     List<AgentRunRecord> records = new ArrayList<>();
     DeepSeekLyricsClient deepSeek =
         request ->
@@ -68,19 +70,55 @@ class DefaultLyricsGenerationServiceTest {
 
     service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
-    assertEquals(1, records.size());
-    AgentRunRecord record = records.getFirst();
-    assertEquals("work-1", record.workId());
-    assertEquals("LyricsAgent", record.agentName());
-    assertEquals("v0.1", record.agentVersion());
-    assertEquals("INSPIRATION", record.operation());
-    assertEquals("mock-deepseek-lyrics", record.modelName());
-    assertEquals("lyrics.inspiration.v1", record.promptTemplateKey());
-    assertEquals(7, record.promptTemplateVersion());
-    assertEquals(AgentRunStatus.SUCCEEDED, record.status());
-    assertNotNull(record.inputHash());
-    assertNotNull(record.outputHash());
-    assertTrue(record.latencyMs() >= 0);
+    assertEquals(2, records.size());
+    AgentRunRecord briefRecord = records.get(0);
+    assertEquals("work-1", briefRecord.workId());
+    assertEquals("CreativeBriefAgent", briefRecord.agentName());
+    assertEquals("v0.1", briefRecord.agentVersion());
+    assertEquals("INSPIRATION", briefRecord.operation());
+    assertEquals("mock-creative-brief", briefRecord.modelName());
+    assertEquals("creative.brief.v1", briefRecord.promptTemplateKey());
+    assertEquals(1, briefRecord.promptTemplateVersion());
+    assertEquals(AgentRunStatus.SUCCEEDED, briefRecord.status());
+    assertNotNull(briefRecord.inputHash());
+    assertNotNull(briefRecord.outputHash());
+    assertTrue(briefRecord.latencyMs() >= 0);
+
+    AgentRunRecord lyricsRecord = records.get(1);
+    assertEquals("LyricsAgent", lyricsRecord.agentName());
+    assertEquals("lyrics.inspiration.v1", lyricsRecord.promptTemplateKey());
+    assertEquals(AgentRunStatus.SUCCEEDED, lyricsRecord.status());
+  }
+
+  @Test
+  void creativeBriefIsPassedIntoPromptContext() {
+    List<String> renderedInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    PromptTemplateService promptService =
+        request -> {
+          renderedInstructions.add(request.instruction());
+          return new PromptRenderResult(request.templateKey(), 7, "rendered prompt");
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(), promptService, deepSeek, new ArrayList<AgentRunRecord>()::add);
+
+    service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertEquals(1, renderedInstructions.size());
+    assertTrue(renderedInstructions.getFirst().contains("Creative brief:"));
+    assertTrue(renderedInstructions.getFirst().contains("intent=Shape a song"));
+    assertTrue(
+        renderedInstructions.getFirst().contains("yanyun_references=[Mock Yanyun Reference]"));
   }
 
   @Test
@@ -107,9 +145,13 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.POLISH));
 
     assertEquals(2, calls.get());
-    assertEquals(2, records.size());
+    assertEquals(3, records.size());
+    assertEquals("CreativeBriefAgent", records.get(0).agentName());
+    assertEquals("LyricsAgent", records.get(1).agentName());
+    assertEquals("LyricsAgent", records.get(2).agentName());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(0).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(1).status());
+    assertEquals(AgentRunStatus.SUCCEEDED, records.get(2).status());
     assertEquals(BigDecimal.valueOf(0.91), result.qualityScore());
     assertTrue(result.lyricsText().contains("Improve structure"));
   }
@@ -128,13 +170,69 @@ class DefaultLyricsGenerationServiceTest {
     assertThrows(
         IllegalStateException.class, () -> service.generate(baseRequest(LyricsOperation.LYRICS)));
 
-    assertEquals(1, records.size());
-    AgentRunRecord record = records.getFirst();
+    assertEquals(2, records.size());
+    assertEquals("CreativeBriefAgent", records.get(0).agentName());
+    AgentRunRecord record = records.get(1);
     assertEquals(AgentRunStatus.FAILED, record.status());
     assertEquals("DEEPSEEK_LYRICS_FAILED", record.failureCode());
     assertTrue(record.failureMessage().contains("Bearer [REDACTED]"));
     assertTrue(record.failureMessage().contains("SecretKey=[REDACTED]"));
     assertFalse(record.failureMessage().contains("dummy-value"));
+  }
+
+  @Test
+  void failedCreativeBriefRecordsFailureAndStopsBeforeDeepSeek() {
+    List<AgentRunRecord> records = new ArrayList<>();
+    AtomicInteger deepSeekCalls = new AtomicInteger();
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            (CreativeBriefRequest request) -> {
+              records.add(
+                  new AgentRunRecord(
+                      request.workId(),
+                      null,
+                      "CreativeBriefAgent",
+                      "v0.1",
+                      request.operation(),
+                      "mock-creative-brief",
+                      "creative.brief.v1",
+                      1,
+                      "input-hash",
+                      null,
+                      AgentRunStatus.FAILED,
+                      0,
+                      null,
+                      null,
+                      null,
+                      "CREATIVE_BRIEF_AGENT_FAILED",
+                      "brief failed"));
+              throw new IllegalArgumentException("brief failed");
+            },
+            request -> {
+              deepSeekCalls.incrementAndGet();
+              return new DeepSeekLyricsResponse(
+                  "Song",
+                  "Summary",
+                  "[Verse]\nLyrics",
+                  "cinematic folk",
+                  "cover seed",
+                  List.of(),
+                  BigDecimal.valueOf(0.86));
+            },
+            records::add);
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> service.generate(baseRequest(LyricsOperation.INSPIRATION)));
+
+    assertEquals(0, deepSeekCalls.get());
+    assertEquals(1, records.size());
+    AgentRunRecord record = records.getFirst();
+    assertEquals("CreativeBriefAgent", record.agentName());
+    assertEquals(AgentRunStatus.FAILED, record.status());
+    assertEquals("CREATIVE_BRIEF_AGENT_FAILED", record.failureCode());
   }
 
   private LyricsGenerationRequest baseRequest(LyricsOperation operation) {

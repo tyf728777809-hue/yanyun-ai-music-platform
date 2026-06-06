@@ -268,8 +268,8 @@ scripts/smoke/openapi-contract.sh
 
 ### Agent Run Audit Smoke
 
-真实模型联调前，Agent 调用审计通过 `agent_runs` 表记录。当前写词链路的 Mock DeepSeek 调用会写入
-`LyricsAgent` run；确认出歌后，音乐提示词规划会写入 `MusicPromptAgent` run。记录只包含模型名、operation、
+真实模型联调前，Agent 调用审计通过 `agent_runs` 表记录。当前写词链路会先写入 `CreativeBriefAgent` run，
+再写入 Mock DeepSeek 的 `LyricsAgent` run；确认出歌后，音乐提示词规划会写入 `MusicPromptAgent` run。记录只包含模型名、operation、
 Prompt 模板版本、输入/输出 hash、状态、耗时和脱敏失败信息，不保存完整 Prompt 或用户原文。
 
 API 启动后创建任意灵感成歌或填词成歌作品，再用 PostgreSQL 抽查：
@@ -282,6 +282,7 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 如果只创建作品，正常应能看到类似：
 
 ```text
+CreativeBriefAgent|v0.1|INSPIRATION|mock-creative-brief|SUCCEEDED|t|t
 LyricsAgent|v0.1|INSPIRATION|mock-deepseek-lyrics|SUCCEEDED|t|t
 ```
 

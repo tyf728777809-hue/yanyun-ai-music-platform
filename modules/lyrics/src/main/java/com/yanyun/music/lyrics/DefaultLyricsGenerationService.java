@@ -5,6 +5,10 @@ import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
+import com.yanyun.music.creativeagent.CreativeBriefAgent;
+import com.yanyun.music.creativeagent.CreativeBriefRequest;
+import com.yanyun.music.creativeagent.CreativeBriefResult;
+import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekLyricsRequest;
 import com.yanyun.music.deepseek.DeepSeekLyricsResponse;
@@ -22,9 +26,12 @@ import java.util.Map;
 public final class DefaultLyricsGenerationService implements LyricsGenerationService {
 
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.70);
+  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v1";
+  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 1;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
+  private final CreativeBriefAgent creativeBriefAgent;
   private final DeepSeekLyricsClient deepSeekLyricsClient;
   private final AgentRunRecorder agentRunRecorder;
 
@@ -35,6 +42,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     this(
         knowledgeService,
         promptTemplateService,
+        new MockCreativeBriefAgent(NoopAgentRunRecorder.INSTANCE),
         deepSeekLyricsClient,
         NoopAgentRunRecorder.INSTANCE);
   }
@@ -44,8 +52,26 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       PromptTemplateService promptTemplateService,
       DeepSeekLyricsClient deepSeekLyricsClient,
       AgentRunRecorder agentRunRecorder) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        new MockCreativeBriefAgent(agentRunRecorder),
+        deepSeekLyricsClient,
+        agentRunRecorder);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      AgentRunRecorder agentRunRecorder) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
+    this.creativeBriefAgent =
+        creativeBriefAgent == null
+            ? new MockCreativeBriefAgent(agentRunRecorder)
+            : creativeBriefAgent;
     this.deepSeekLyricsClient = deepSeekLyricsClient;
     this.agentRunRecorder =
         agentRunRecorder == null ? NoopAgentRunRecorder.INSTANCE : agentRunRecorder;
@@ -56,10 +82,12 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     KnowledgeRetrievalResult knowledge =
         knowledgeService.retrieve(
             new KnowledgeRetrievalRequest(query(request), List.of("yanyun", "lyrics"), 3));
-    PromptRenderResult prompt = renderPrompt(request, knowledge);
-    DeepSeekLyricsResponse response = generateWithDeepSeek(request, prompt, knowledge);
+    CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
+    LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief);
+    PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
+    DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
     if (isLowQuality(response)) {
-      LyricsGenerationRequest rewriteRequest = rewriteRequest(request);
+      LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
     }
@@ -78,6 +106,58 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.musicStyle(),
             request.vocalPreference(),
             knowledge.references().stream().map(KnowledgeReference::content).toList()));
+  }
+
+  private CreativeBriefResult generateCreativeBrief(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    return creativeBriefAgent.generate(
+        new CreativeBriefRequest(
+            request.userId(),
+            request.workId(),
+            request.operation().name(),
+            request.userInput(),
+            request.currentLyrics(),
+            request.instruction(),
+            request.requestedTitle(),
+            request.musicStyle(),
+            request.vocalPreference(),
+            knowledge.references().stream().map(KnowledgeReference::displayName).toList()));
+  }
+
+  private LyricsGenerationRequest withCreativeBrief(
+      LyricsGenerationRequest request, CreativeBriefResult creativeBrief) {
+    return new LyricsGenerationRequest(
+        request.userId(),
+        request.workId(),
+        request.operation(),
+        request.userInput(),
+        request.currentLyrics(),
+        appendInstruction(request.instruction(), creativeBriefInstruction(creativeBrief)),
+        request.requestedTitle(),
+        firstNonBlank(request.musicStyle(), creativeBrief.musicDirection()),
+        request.vocalPreference());
+  }
+
+  private String creativeBriefInstruction(CreativeBriefResult creativeBrief) {
+    return """
+        Creative brief:
+        intent=%s
+        theme=%s
+        mood_tags=%s
+        narrative_viewpoint=%s
+        music_direction=%s
+        yanyun_references=%s
+        constraints=%s
+        """
+        .formatted(
+            creativeBrief.userIntentSummary(),
+            creativeBrief.theme(),
+            creativeBrief.moodTags(),
+            creativeBrief.narrativeViewpoint(),
+            creativeBrief.musicDirection(),
+            creativeBrief.yanyunReferences(),
+            creativeBrief.constraints())
+        .trim();
   }
 
   private DeepSeekLyricsResponse generateWithDeepSeek(
@@ -191,7 +271,11 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         response.riskNotes(),
         knowledge.references().stream().map(KnowledgeReference::displayName).toList(),
         knowledge.kbVersion(),
-        Map.of(prompt.templateKey(), prompt.version()),
+        Map.of(
+            prompt.templateKey(),
+            prompt.version(),
+            CREATIVE_BRIEF_TEMPLATE_KEY,
+            CREATIVE_BRIEF_TEMPLATE_VERSION),
         response.qualityScore());
   }
 

@@ -6,6 +6,8 @@ import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
 import com.yanyun.music.configcenter.CompanyIntegrationProperties;
 import com.yanyun.music.configcenter.IntegrationReadinessService;
+import com.yanyun.music.creativeagent.CreativeBriefAgent;
+import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
@@ -101,13 +103,23 @@ public class AdapterConfiguration {
   }
 
   @Bean
+  CreativeBriefAgent creativeBriefAgent(AgentRunRecorder agentRunRecorder) {
+    return new MockCreativeBriefAgent(agentRunRecorder);
+  }
+
+  @Bean
   LyricsGenerationService lyricsGenerationService(
       KnowledgeService knowledgeService,
       PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
       DeepSeekLyricsClient deepSeekLyricsClient,
       AgentRunRecorder agentRunRecorder) {
     return new DefaultLyricsGenerationService(
-        knowledgeService, promptTemplateService, deepSeekLyricsClient, agentRunRecorder);
+        knowledgeService,
+        promptTemplateService,
+        creativeBriefAgent,
+        deepSeekLyricsClient,
+        agentRunRecorder);
   }
 
   @Bean
