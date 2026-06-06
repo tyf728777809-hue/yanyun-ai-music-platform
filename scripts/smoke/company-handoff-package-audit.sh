@@ -60,6 +60,7 @@ required_files=(
   "docs/runbook/local-development.md"
   "docs/adr/0003-frontend-delivery-track.md"
   "docs/adr/0004-production-provider-targets.md"
+  "docs/specs/local-commercial-backend-acceptance-stack-smoke-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
 )
 
@@ -73,6 +74,7 @@ required_executables=(
   "scripts/smoke/openapi-contract.sh"
   "scripts/smoke/api-main-flow.sh"
   "scripts/smoke/api-package-blocked-flow.sh"
+  "scripts/smoke/local-commercial-backend-acceptance-stack.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
   "scripts/smoke/real-model-safety-gates-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
@@ -95,6 +97,7 @@ require_package_pattern 'Yunwu.*公网|Yunwu.*public-network' 'package labels Yu
 require_package_pattern 'WellAPI.*公网|WellAPI.*public-network' 'package labels WellAPI as public-network smoke path'
 require_package_pattern 'company-adapter-readiness-smoke\.sh' 'package references company readiness smoke'
 require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references local delivery evidence audit'
+require_package_pattern 'local-commercial-backend-acceptance-stack\.sh' 'package references backend acceptance stack smoke'
 require_package_pattern 'api-package-blocked-flow\.sh' 'package references package block smoke'
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
 require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references real-model safety gates audit'

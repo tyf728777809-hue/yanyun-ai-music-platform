@@ -15,7 +15,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 
 - FR-1: The audit MUST run without starting services, Docker, browsers, workers, API processes, databases, object storage, or external providers.
 - FR-2: The audit MUST verify key delivery documents exist.
-- FR-3: The audit MUST verify key smoke scripts exist and are executable.
+- FR-3: The audit MUST verify key smoke scripts exist and are executable, including the backend acceptance stack smoke.
 - FR-4: The audit MUST verify the project still states DreamMaker music and DreamMaker Image 2 are retained production-target paths.
 - FR-5: The audit MUST verify Yunwu and WellAPI are described as public-network controlled smoke paths, not replacements for DreamMaker.
 - FR-6: The audit MUST verify the current status handoff document still distinguishes local-ready, smoke-prepared, handoff-prepared, external-blocked, and decision-required states.
@@ -33,7 +33,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 
 ## Acceptance Criteria
 
-- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9.
+- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, backend acceptance stack evidence, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9.
 - AC-2: Given local uncommitted changes and default mode, when the audit runs, then it warns about git status but can pass remaining checks. Covers FR-10.
 - AC-3: Given local uncommitted changes and `STRICT_GIT_CLEAN=true`, when the audit runs, then it exits non-zero. Covers FR-10 and FR-11.
 - AC-4: Given the real-model controlled smoke index is removed or loses DreamMaker plan output, when the audit runs, then it exits non-zero. Covers FR-7 and FR-11.

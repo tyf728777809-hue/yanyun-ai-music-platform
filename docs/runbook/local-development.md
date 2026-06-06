@@ -278,6 +278,28 @@ scripts/smoke/company-adapter-readiness-smoke.sh
 
 ## Automated Smoke
 
+### Local Commercial Backend Acceptance Stack
+
+如果 Docker Compose 基础设施已启动，且本地 `8080` 空闲，可以用一个后端组合入口复验当前本地商用 Mock 基线：
+
+```bash
+scripts/smoke/local-commercial-backend-acceptance-stack.sh
+```
+
+该脚本会自动完成两轮 `music-api` 启动和清理：
+
+- 普通 Mock API：执行 `api-main-flow.sh`、`openapi-contract.sh` 和 `company-adapter-readiness-smoke.sh`。
+- 发布包审核阻断 API：显式设置 `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke`，执行 `api-package-blocked-flow.sh`。
+
+脚本会把 API 日志写到 `build/smoke/local-commercial-backend-acceptance-*`，结束后停止它启动的 API 进程。它只使用 Mock / 受控失败路径，不调用真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Suno、MiniMax、Image 2 或公司系统；同时会通过 readiness smoke 保留并检查 DreamMaker guard 生产目标口径。
+
+该组合入口不替代以下人工或专项验收：
+
+- Claude 前端真实后端 UI smoke。
+- `RENDER_WORKER_MODE=local-process` MP4 + `ffprobe` smoke。
+- 真实模型受控 smoke。
+- 公司 Adapter 真实替换联合验收。
+
 仓库提供 `scripts/smoke/api-main-flow.sh`，用于在 API 已启动后复验主链路。脚本会覆盖：
 
 - `GET /health`
