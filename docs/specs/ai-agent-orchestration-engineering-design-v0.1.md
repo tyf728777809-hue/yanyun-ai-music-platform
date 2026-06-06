@@ -93,7 +93,7 @@ flowchart TD
 3. 已补齐 `CreativeBriefAgent`，把用户需求理解从写词服务中抽出来。
 4. 已补齐 `CoverPromptAgent`，为 Image 2 真实联调做准备。
 5. 已补齐 `QualityEvaluationAgent` 发布包质量门 Mock 合约，为发布包交接前质量评估做准备。
-6. 下一步补 `ModerationAgent`。
+6. 已补齐 `ModerationAgent` 音乐 Prompt 预检 Mock 合约，为外部音乐 Provider 调用前风险识别做准备。
 7. `VideoPlanAgent` 暂缓，等视频表现要求超过当前 Remotion 确定性模板后再启用。
 
 ## 6. 编排原则
@@ -377,12 +377,13 @@ COMPANY_ADAPTER_REAL_CALLS_ENABLED=false
 - 写词链路 `LyricsAgent` Mock 审计
 - `CreativeBriefAgent` Mock 合约和写词前简报注入
 - `MusicPromptAgent` Mock 合约和确认出歌前音乐提示词规划
+- `ModerationAgent` Mock 合约和音乐 Provider 提交前 Prompt 预检
 - `CoverPromptAgent` Mock 合约和封面生成前视觉提示词规划
 - `QualityEvaluationAgent` Mock 合约和发布包写入前质量门
 
 下一步：
 
-- 补 `ModerationAgent` Mock 合约。
+- Phase A 关键 Mock 合约已收口；后续按真实模型联调需要扩展歌词/封面/发布包更细预检点。
 
 ### Phase B：DeepSeek 真实写词受控联调
 

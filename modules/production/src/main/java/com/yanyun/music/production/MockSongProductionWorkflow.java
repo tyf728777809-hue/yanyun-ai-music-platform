@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.CoverPromptRequest;
 import com.yanyun.music.creativeagent.CoverPromptResult;
+import com.yanyun.music.creativeagent.ModerationAgent;
+import com.yanyun.music.creativeagent.ModerationAgentRequest;
+import com.yanyun.music.creativeagent.ModerationAgentResult;
+import com.yanyun.music.creativeagent.ModerationTarget;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptRequest;
 import com.yanyun.music.creativeagent.MusicPromptResult;
@@ -79,6 +83,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final ObjectStorageClient objectStorageClient;
   private final RemoteObjectImporter remoteObjectImporter;
   private final MusicPromptAgent musicPromptAgent;
+  private final ModerationAgent moderationAgent;
   private final CoverPromptAgent coverPromptAgent;
   private final QualityEvaluationAgent qualityEvaluationAgent;
   private final CoverGenerationService coverGenerationService;
@@ -95,6 +100,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       ObjectStorageClient objectStorageClient,
       RemoteObjectImporter remoteObjectImporter,
       MusicPromptAgent musicPromptAgent,
+      ModerationAgent moderationAgent,
       CoverPromptAgent coverPromptAgent,
       QualityEvaluationAgent qualityEvaluationAgent,
       CoverGenerationService coverGenerationService,
@@ -109,6 +115,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.objectStorageClient = objectStorageClient;
     this.remoteObjectImporter = remoteObjectImporter;
     this.musicPromptAgent = musicPromptAgent;
+    this.moderationAgent = moderationAgent;
     this.coverPromptAgent = coverPromptAgent;
     this.qualityEvaluationAgent = qualityEvaluationAgent;
     this.coverGenerationService = coverGenerationService;
@@ -158,6 +165,29 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           FailureCode.MUSIC_GENERATION_FAILED,
           firstNonBlank(exception.getMessage(), "Music prompt generation failed"),
           input.musicRetryAllowedAfterFailure(),
+          input.userId(),
+          lock.lockId());
+    }
+    ModerationAgentResult musicPromptModeration;
+    try {
+      musicPromptModeration = preCheckMusicPrompt(input, selectedProvider, musicPrompt);
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_GENERATION_FAILED,
+          firstNonBlank(exception.getMessage(), "Music prompt moderation failed"),
+          input.musicRetryAllowedAfterFailure(),
+          input.userId(),
+          lock.lockId());
+    }
+    if (!musicPromptModeration.allowed()) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_GENERATION_FAILED,
+          firstNonBlank(musicPromptModeration.message(), "Music prompt moderation blocked"),
+          false,
           input.userId(),
           lock.lockId());
     }
@@ -456,6 +486,24 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             toLong(mediaAssets.videoAsset().durationMs()),
             mediaAssets.timelineAsset().objectKey(),
             Map.of("workflow", "SongProductionWorkflow", "quality_gate", "publish_package")));
+  }
+
+  private ModerationAgentResult preCheckMusicPrompt(
+      SongProductionWorkflowInput input,
+      MusicProviderSelection selectedProvider,
+      MusicPromptResult musicPrompt) {
+    return moderationAgent.preCheck(
+        new ModerationAgentRequest(
+            input.workId(),
+            ModerationTarget.MUSIC_PROMPT,
+            musicPrompt.musicPrompt(),
+            Map.of(
+                "workflow",
+                "SongProductionWorkflow",
+                "music_provider",
+                selectedProvider.providerType().name(),
+                "stage",
+                "before_music_provider")));
   }
 
   private String packageQualityFailureMessage(QualityEvaluationResult result) {
