@@ -149,7 +149,9 @@ COMPANY_SHARE_BASE_URL=
 
 ## 8. 部署变量检查
 
-公司部署至少需要确认：
+公司部署变量分为三类：基础运行必需项、公司 Adapter 替换必需项、以及真实模型和 render-worker 的部署选型项。当前仓库默认仍可使用 Mock Provider 和 Mock render-worker 做本地验证；生产是否启用真实 Suno / MiniMax、是否采用 `local-process` render-worker，需要公司部署方案和联调窗口确认。
+
+### 8.1 基础运行必需项
 
 ```text
 YANYUN_ENV=
@@ -169,6 +171,23 @@ S3_ACCESS_KEY=
 S3_SECRET_KEY=
 MUSIC_WORKFLOW_DISPATCH_MODE=outbox
 WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
+```
+
+### 8.2 公司 Adapter 替换必需项
+
+```text
+COMPANY_ACCOUNT_ADAPTER_MODE=company
+COMPANY_MODERATION_ADAPTER_MODE=company
+COMPANY_QUOTA_ADAPTER_MODE=company
+COMPANY_PUBLISH_ADAPTER_MODE=company
+COMPANY_SHARE_ADAPTER_MODE=company
+```
+
+### 8.3 真实模型与 render-worker 选型项
+
+以下变量不是当前本地 Mock 阶段的默认要求。只有在公司确认真实模型联调和成片部署方案后才启用：
+
+```text
 MUSIC_PROVIDER=suno|minimax
 DREAMMAKER_REAL_CALLS_ENABLED=true
 DREAMMAKER_API_BASE_URL=
@@ -179,12 +198,9 @@ RENDER_WORKER_WORKING_DIRECTORY=
 RENDER_WORKER_COMMAND=
 RENDER_WORKER_ARGUMENTS=
 RENDER_WORKER_TIMEOUT=
-COMPANY_ACCOUNT_ADAPTER_MODE=company
-COMPANY_MODERATION_ADAPTER_MODE=company
-COMPANY_QUOTA_ADAPTER_MODE=company
-COMPANY_PUBLISH_ADAPTER_MODE=company
-COMPANY_SHARE_ADAPTER_MODE=company
 ```
+
+若公司最终采用独立 render service、队列化 worker 或容器化渲染服务，应保留 `VideoRenderService` 调用边界，但替换具体部署变量和实现方式。
 
 真实值必须由公司安全配置系统或部署平台注入，不得写入仓库、镜像、日志或测试快照。
 
@@ -192,14 +208,31 @@ COMPANY_SHARE_ADAPTER_MODE=company
 
 1. 调用 `/internal/integration-readiness`，确认公司 Adapter 不再处于未确认的 Mock 状态。
 2. 调用 `/api/v1/me`，确认返回真实公司用户。
-3. 灵感成歌创建作品，确认作品归属到真实 `user_id`。
-4. 输入一条公司审核应阻断的内容，确认返回可读失败提示。
-5. 正常作品确认出歌，确认权益先锁定，发布包可用后扣减。
-6. 触发一次音乐失败或模拟失败，确认权益释放或重试口径正确。
-7. 作品生成到 `PACKAGE_READY` 后，确认公司发布系统能读取发布包 URL。
-8. 调用标记已交接接口，确认公司侧不把它误解为“已发布成功”。
+3. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
+4. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
+5. 运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`，确认真实后端模式下前端创作、改词、409 友好提示、成品交接、作品列表和失败重试恢复。
+6. 灵感成歌创建作品，确认作品归属到真实 `user_id`。
+7. 输入一条公司审核应阻断的内容，确认返回可读失败提示。
+8. 正常作品确认出歌，确认权益先锁定，发布包可用后扣减。
+9. 触发一次音乐失败或模拟失败，确认权益释放或重试口径正确。
+10. 作品生成到 `PACKAGE_READY` 后，确认公司发布系统能读取发布包 URL。
+11. 调用标记已交接接口，确认公司侧不把它误解为“已发布成功”。
 
-## 10. 禁止事项
+## 10. 总体验收清单
+
+本交接文档只覆盖公司 Adapter 替换与部署接入。完整本地商用闭环交付前，还需要按
+`docs/checklists/local-commercial-delivery-acceptance.md` 统一走查仓库状态、基础设施、后端主链路、
+前端真实后端模式、真实模型联调准备、安全日志和公司 Adapter 接入状态。
+
+其中公司 Adapter 部分至少应留下以下证据：
+
+- `/internal/integration-readiness` 的脱敏响应摘要。
+- 账号、审核、权益、发布、分享五类 Adapter 的真实实现或公司豁免说明。
+- 权益 `lock / commit / release` 幂等验证结果。
+- 公司发布系统读取发布包 URL 与标记交接的 smoke 结果。
+- 生产环境不信任 `X-Mock-User-Id` 的验证说明。
+
+## 11. 禁止事项
 
 - 不在本平台内重做公司社区系统。
 - 不把真实 AccessKey、SecretKey、Cookie、JWT、公司接口 Token 写入仓库。
