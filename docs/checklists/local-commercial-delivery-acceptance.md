@@ -10,11 +10,13 @@
 - 勾选项需要有可追溯证据：命令输出、接口响应、截图、日志摘要或数据库抽查结果。
 - 真实密钥、JWT、Cookie、用户 token、供应商原始 payload 不得写入本清单、日志、截图或提交。
 - 本清单不替代 `docs/runbook/dreammaker-controlled-real-integration.md`、`docs/runbook/deepseek-controlled-real-integration.md` 和 `docs/runbook/image2-controlled-real-integration.md`；真实 Suno / MiniMax / DeepSeek / Image 2 联调仍按对应 Runbook 执行。
+- 当前状态汇总见 `docs/handover/local-commercial-delivery-status-v0.1.md`。本清单是最终 gate；状态说明用于区分 `READY_LOCAL`、`PREPARED_SMOKE`、`PREPARED_HANDOFF`、`BLOCKED_EXTERNAL` 和 `DECISION_REQUIRED`，避免把本地 Mock 通过误写成真实生产完成。
 
 ## A. 仓库与文档基线
 
 - [ ] `git status --short` 无未解释的改动；临时截图、`.playwright-mcp/`、构建产物和密钥文件未进入 Git。
 - [ ] `README.md`、`docs/project-progress.md`、运行手册和交接文档的当前阶段一致。
+- [ ] `docs/handover/local-commercial-delivery-status-v0.1.md` 已同步当前阶段，且没有把 Mock / 受控 smoke 准备项过度描述为真实生产完成。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。

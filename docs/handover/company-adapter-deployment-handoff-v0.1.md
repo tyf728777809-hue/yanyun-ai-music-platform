@@ -14,6 +14,8 @@
 
 本平台不重做公司社区、发布审核流、分享系统、互动和推荐流。
 
+进入具体 Adapter 替换前，先阅读 `docs/handover/local-commercial-delivery-status-v0.1.md`，确认哪些能力已经本地验证、哪些只准备好受控 smoke、哪些必须由公司系统或部署方案补齐。
+
 视频成片当前支持两种模式：默认 `MockVideoRenderService`，以及本地 smoke 用的
 `LocalProcessVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
 `render_worker` 组件；本地进程模式可证明 Remotion MP4 链路可跑通，但生产是否采用进程模式、独立服务或队列化 render worker 需要公司部署方案确认。
