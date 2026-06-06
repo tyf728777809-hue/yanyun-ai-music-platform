@@ -295,6 +295,9 @@ MUSIC_PROVIDER=mock \
 
 该模式会由 Java `VideoRenderService` 调用 `npm run render:job -- --input ... --output ... --out-dir ...`，
 render-worker 生成 MP4 和 timeline JSON 后，Java 再写入当前 `ObjectStorageClient`，发布包继续引用对象存储 URL。
+本地进程服务会优先按当前进程目录解析 `RENDER_WORKER_WORKING_DIRECTORY`；如果相对路径不存在，会向上查找父目录，
+因此 Gradle `bootRun` 下的默认 `apps/render-worker` 可解析到仓库根目录下的 render-worker。若将 JAR 放到仓库外运行，
+建议把 `RENDER_WORKER_WORKING_DIRECTORY` 设置为绝对路径。
 
 短 smoke 可直接验证 CLI，不需要启动后端：
 

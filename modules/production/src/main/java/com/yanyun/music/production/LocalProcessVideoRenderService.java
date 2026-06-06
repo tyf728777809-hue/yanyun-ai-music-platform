@@ -57,8 +57,9 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
 
       ProcessBuilder processBuilder =
           new ProcessBuilder(command(inputPath, outputPath, outputDirectory));
-      if (properties.getWorkingDirectory() != null && !properties.getWorkingDirectory().isBlank()) {
-        processBuilder.directory(Path.of(properties.getWorkingDirectory()).toFile());
+      Path workingDirectory = resolveWorkingDirectory();
+      if (workingDirectory != null) {
+        processBuilder.directory(workingDirectory.toFile());
       }
       processBuilder.redirectErrorStream(true);
       processBuilder.redirectOutput(logPath.toFile());
@@ -153,6 +154,36 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
     command.add("--out-dir");
     command.add(outputDirectory.toAbsolutePath().toString());
     return command;
+  }
+
+  private Path resolveWorkingDirectory() {
+    if (properties.getWorkingDirectory() == null || properties.getWorkingDirectory().isBlank()) {
+      return null;
+    }
+    Path configured = Path.of(properties.getWorkingDirectory());
+    if (configured.isAbsolute()) {
+      return requireExistingDirectory(configured.normalize());
+    }
+    Path currentDirectory = Path.of("").toAbsolutePath().normalize();
+    Path currentRelative = currentDirectory.resolve(configured).normalize();
+    if (Files.isDirectory(currentRelative)) {
+      return currentRelative;
+    }
+    for (Path cursor = currentDirectory.getParent(); cursor != null; cursor = cursor.getParent()) {
+      Path candidate = cursor.resolve(configured).normalize();
+      if (Files.isDirectory(candidate)) {
+        return candidate;
+      }
+    }
+    return requireExistingDirectory(currentRelative);
+  }
+
+  private Path requireExistingDirectory(Path directory) {
+    if (!Files.isDirectory(directory)) {
+      throw new IllegalStateException(
+          "Render worker working directory does not exist: " + directory);
+    }
+    return directory;
   }
 
   private Path createTempDirectory(String workId) {

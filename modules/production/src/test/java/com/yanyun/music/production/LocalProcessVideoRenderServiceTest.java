@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class LocalProcessVideoRenderServiceTest {
 
@@ -60,6 +61,31 @@ class LocalProcessVideoRenderServiceTest {
     assertEquals(180000, result.timelineAsset().durationMs());
     assertTrue(storageClient.objects.containsKey("videos/work-123.mp4"));
     assertTrue(storageClient.objects.containsKey("timelines/work-123.json"));
+  }
+
+  @Test
+  void resolvesRelativeWorkingDirectoryFromAncestor(@TempDir Path repoRoot) throws IOException {
+    Path apiDirectory = repoRoot.resolve("apps/music-api");
+    Path renderWorkerDirectory = repoRoot.resolve("apps/render-worker");
+    Files.createDirectories(apiDirectory);
+    Files.createDirectories(renderWorkerDirectory);
+    String originalUserDirectory = System.getProperty("user.dir");
+    CapturingStorageClient storageClient = new CapturingStorageClient();
+    RenderWorkerProperties properties = successfulProperties();
+    properties.setWorkingDirectory("apps/render-worker");
+    LocalProcessVideoRenderService service =
+        new LocalProcessVideoRenderService(properties, storageClient, new ObjectMapper());
+
+    try {
+      System.setProperty("user.dir", apiDirectory.toString());
+
+      VideoRenderResult result = service.renderVideo(videoRenderRequest());
+
+      assertEquals("VIDEO", result.videoAsset().assetType());
+      assertTrue(storageClient.objects.containsKey("videos/work-123.mp4"));
+    } finally {
+      System.setProperty("user.dir", originalUserDirectory);
+    }
   }
 
   @Test

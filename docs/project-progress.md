@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-06 14:31 CST
+更新时间：2026-06-06 14:45 CST
 
 ## 当前阶段
 
@@ -41,6 +41,8 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 第 10 批公司 Adapter 接入与部署交接准备已并行完成：新增 `CompanyIntegrationProperties`、`IntegrationReadinessService` 和内部接口 `GET /internal/integration-readiness`，可结构化展示账号、审核、权益、发布、分享、音乐 Provider、对象存储、Workflow dispatch 和 DreamMaker 硬开关的当前模式、实现、阻塞状态和所需环境变量；新增公司交接文档，明确真实公司系统仍由公司开发替换 Adapter 实现。
 
 第 11 批 render-worker 本地进程调用边界已完成：`apps/render-worker` 新增 `render:job` CLI，支持按输入 `duration_ms` 动态生成 Remotion composition 时长和句级 timeline；`modules:production` 新增 `LocalProcessVideoRenderService`，可在 `RENDER_WORKER_MODE=local-process` 时调用 Node render-worker，把 MP4 与 timeline JSON 写入当前对象存储并返回真实媒体资产描述。默认仍为 `mock`，自动化测试不会触发真实长视频渲染。
+
+render-worker 本地进程模式已完成首次 API 端到端 smoke，并修复工作目录解析问题：Gradle `bootRun` 下 Java 进程工作目录是 `apps/music-api`，原先默认 `apps/render-worker` 会解析失败；现在本地进程服务会在相对路径不存在时向上查找父目录，因此默认 `apps/render-worker` 可在仓库内启动时正确解析。若 JAR 放到仓库外运行，仍建议显式设置绝对 `RENDER_WORKER_WORKING_DIRECTORY`。
 
 - `yanyun-ai-music-platform-prd-v0.3.md`：商用级产品范围基线。
 - `yanyun-ai-music-platform-tech-design-v0.2.md`：商用级技术方案基线。
@@ -466,6 +468,11 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 数据库抽查成功：`works` / `publish_packages` 为 `GENERATED / PACKAGE_READY / PACKAGE_FETCHED`，发布包 object key 已持久化，`provider_calls` 记录 `MOCK / MUSIC_GENERATION / SUCCEEDED`。
 - 媒体资产抽查成功：`AUDIO`、`VIDEO`、`TIMELINE` 的 `duration_ms` 均为 1000；`COVER` 正常写入。
 - 本地发布包 JSON 抽查成功：`bootRun` 下实际文件位于 `apps/music-api/build/local-object-storage/.../publish-package.json`；运行手册已补充相对路径说明。
+- render-worker local-process smoke 初次使用相对 `RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker` 时失败，原因是 `bootRun` 工作目录为 `apps/music-api`；已修复 `LocalProcessVideoRenderService` 的相对工作目录解析，并补回归测试。
+- `cd apps/render-worker && npm run build && npm test` 成功，4 个 render-worker Node smoke 测试通过。
+- `./gradlew :modules:production:test spotlessCheck :apps:music-api:compileJava :apps:music-worker:compileJava` 成功，覆盖相对工作目录向上查找回归测试。
+- render-worker local-process API smoke 成功：使用默认相对 `RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker`、`MOCK_MUSIC_DURATION_MS=1000` 确认出歌后，作品 `4ef3dad4-6a3e-4614-b01b-b6106a5827f1` 进入 `GENERATED / PACKAGE_READY`。
+- MP4 文件抽查成功：`ffprobe` 显示生成视频为 H.264、1920x1080、30fps、1.000000 秒，文件大小 137159 bytes；数据库 `VIDEO` 和 `TIMELINE` 资产 metadata 标记 `source_mode=local-process`。
 
 ## 待确认事项
 
@@ -543,3 +550,4 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 14:15 CST | 完成 Claude Web v1 前端初审 | `prototypes/Claude-web-v1` 已通过测试、typecheck、build 和 390px / 1440px smoke；发现 OpenAPI/验收缺口并整理为修复任务包 |
 | 2026-06-06 14:15 CST | 补齐 Mock 音频时长配置 | 新增 `MOCK_MUSIC_DURATION_MS` 和 `MockMusicProvider` 配置测试，后端 targeted Gradle 验证通过 |
 | 2026-06-06 14:31 CST | 完成同步 Mock 后端主链路 smoke | API 以 1 秒 Mock 音频时长跑通创建作品、确认出歌、发布包获取、刷新、标记交接、readiness、数据库和本地发布包 JSON 抽查 |
+| 2026-06-06 14:45 CST | 完成 render-worker local-process API smoke | 修复相对工作目录解析后，默认 `apps/render-worker` 可在 `bootRun` 下生成真实 1 秒 MP4；ffprobe 验证 H.264、1920x1080、30fps |
