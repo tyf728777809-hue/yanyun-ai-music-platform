@@ -92,7 +92,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           )}
         </span>
         {work.quota_hint?.message && <span className="banner-line">{work.quota_hint.message}</span>}
-        {work.publish_handoff_hint?.message && (
+        {work.publish_handoff_hint?.ready_for_handoff && work.publish_handoff_hint.message && (
           <span className="banner-line">{work.publish_handoff_hint.message}</span>
         )}
       </Banner>

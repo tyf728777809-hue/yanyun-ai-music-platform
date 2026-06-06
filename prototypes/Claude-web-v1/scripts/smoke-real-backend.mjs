@@ -183,8 +183,6 @@ async function createFailedWork() {
     body: {
       song_title: '失败重试 UI Smoke',
       lyrics_input: '雁门风起，试一次失败再重试',
-      style_tags: ['smoke'],
-      yanyun_reference: '雁门关',
     },
     idempotencyKey: idempotencyKey('failure-lyrics'),
   });
@@ -210,7 +208,7 @@ async function runFailureRetryFlow(page) {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${frontendUrl}/#/work/${workId}`, { waitUntil: 'networkidle' });
   await waitForVisibleText(page, '旋律生成遇到了问题', 'failure page title');
-  await waitForVisibleText(page, '失败码：MUSIC_GENERATION_FAILED', 'failure code');
+  await waitForVisibleText(page, '重试生成通常可以恢复，歌词会保留。', 'friendly failure hint');
   await waitForVisibleText(page, '剩余重试次数：2', 'remaining retry count');
 
   await page.getByRole('button', { name: '重新生成' }).click();

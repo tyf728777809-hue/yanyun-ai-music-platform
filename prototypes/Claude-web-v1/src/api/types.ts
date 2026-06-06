@@ -136,8 +136,8 @@ export interface WorkDetail {
 export interface Pagination {
   page: number;
   page_size: number;
-  total: number;
-  has_more: boolean;
+  total_items: number;
+  total_pages: number;
 }
 
 export interface WorkSummary {

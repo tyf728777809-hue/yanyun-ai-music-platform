@@ -401,8 +401,8 @@ export const mockBackend = {
       pagination: {
         page,
         page_size: pageSize,
-        total: all.length,
-        has_more: start + pageSize < all.length,
+        total_items: all.length,
+        total_pages: Math.max(1, Math.ceil(all.length / pageSize)),
       },
     };
   },

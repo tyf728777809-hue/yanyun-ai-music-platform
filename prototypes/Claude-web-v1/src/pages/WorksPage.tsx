@@ -43,6 +43,8 @@ export function WorksPage({ onOpenWork }: WorksPageProps) {
     void loadPage(1);
   }, [loadPage]);
 
+  const hasMore = data ? data.pagination.page < data.pagination.total_pages : false;
+
   if (loading && !data) {
     return (
       <div className="page-center">
@@ -81,7 +83,7 @@ export function WorksPage({ onOpenWork }: WorksPageProps) {
               <WorkListItem key={item.work_id} item={item} onOpen={() => onOpenWork(item.work_id)} />
             ))}
           </div>
-          {data.pagination.has_more && (
+          {hasMore && (
             <Button
               tone="secondary"
               block

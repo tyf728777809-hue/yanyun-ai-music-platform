@@ -445,7 +445,7 @@ public class WorkService {
   public PublishPackage markPublishPackageFetched(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
     if (work.packageStatus() != PackageStatus.PACKAGE_READY) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Package is not ready for handoff");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "作品尚未准备好，暂不能交给社区发布。");
     }
     workRepository.markPackageFetched(workId);
     return getPublishPackage(userId, workId);
@@ -704,7 +704,7 @@ public class WorkService {
         row.packageUrlExpiresAt(),
         readJsonObject(row.packageJson()),
         availableActions(work),
-        row.packageStatus() == PackageStatus.PACKAGE_BLOCKED ? "Package moderation blocked" : null);
+        row.packageStatus() == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
   }
 
   private PublishPackage emptyPackage(WorkRow work) {
@@ -739,11 +739,7 @@ public class WorkService {
 
   private PublishHandoffHint publishHandoffHint(WorkRow work) {
     boolean ready = work.packageStatus() == PackageStatus.PACKAGE_READY;
-    return new PublishHandoffHint(
-        ready,
-        ready
-            ? "Package is ready for company-side publish handoff."
-            : "Package is not ready for handoff.");
+    return new PublishHandoffHint(ready, ready ? "作品已准备好，可交给社区发布。" : "作品尚未准备好，暂不能交给社区发布。");
   }
 
   private List<AvailableAction> availableActions(WorkRow work) {

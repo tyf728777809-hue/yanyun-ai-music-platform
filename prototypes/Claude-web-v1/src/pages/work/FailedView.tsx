@@ -58,8 +58,7 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
       {failure && (
         <Banner tone="danger" title="发生了什么">
-          <span>{failure.failure_message}</span>
-          <span className="banner-line">失败码：{failure.failure_code}</span>
+          <span>{copy?.hint ?? failure.failure_message}</span>
           {failure.remaining_retry_count != null && (
             <span className="banner-line">剩余重试次数：{failure.remaining_retry_count}</span>
           )}

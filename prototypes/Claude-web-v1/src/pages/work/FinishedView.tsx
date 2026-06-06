@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { WorkViewProps } from './types';
-import type { PublishPackage } from '../../api/types';
+import type { AvailableAction, PublishPackage } from '../../api/types';
 import { Button } from '../../components/Button';
 import { Banner } from '../../components/Banner';
 import { Spinner } from '../../components/Spinner';
 import { PackagePill } from '../../components/StatusPill';
 import { useAction } from '../../hooks/useAction';
-import { hasAction } from '../../api/workState';
 import { ApiError } from '../../api/client';
 import { requestIdLine } from '../../api/friendlyError';
 import { service } from '../../mock/service';
@@ -39,10 +38,11 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   }, [loadPackage]);
 
   const media = work.media_assets;
-  const handoff = work.publish_handoff_hint;
   const fetched = work.package_status === 'PACKAGE_FETCHED' || pkg?.package_status === 'PACKAGE_FETCHED';
   const blocked = work.package_status === 'PACKAGE_BLOCKED' || pkg?.package_status === 'PACKAGE_BLOCKED';
   const packageJson = pkg?.package_json;
+  const availableActions = pkg?.available_actions ?? work.available_actions;
+  const hasAvailableAction = (action: AvailableAction) => availableActions.includes(action);
 
   async function markFetched() {
     await run(
@@ -118,10 +118,10 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
         <Banner tone={blocked ? 'danger' : fetched ? 'gold' : 'success'}>
           {blocked
-            ? pkg?.blocked_reason || handoff?.message || '作品暂不能交给社区发布。'
+            ? '作品暂不能交给社区发布。'
             : fetched
               ? '作品已交接给社区发布流程。'
-              : handoff?.message ?? '作品已准备好，可交给社区发布。'}
+              : '作品已准备好，可交给社区发布。'}
         </Banner>
 
         {pkgLoading && !pkg ? (
@@ -196,7 +196,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
             )}
 
             <div className="action-bar action-bar--stack">
-              {hasAction(work, 'MARK_PACKAGE_FETCHED') && !fetched && !blocked && (
+              {hasAvailableAction('MARK_PACKAGE_FETCHED') && !fetched && !blocked && (
                 <Button
                   tone="primary"
                   size="lg"
@@ -208,7 +208,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
                   标记已交接
                 </Button>
               )}
-              {hasAction(work, 'REFRESH_PACKAGE_URL') && (
+              {hasAvailableAction('REFRESH_PACKAGE_URL') && (
                 <Button
                   tone="secondary"
                   block
