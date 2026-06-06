@@ -168,12 +168,14 @@ required_files=(
   "docs/checklists/local-commercial-delivery-audit-2026-06-06.md"
   "docs/handover/local-commercial-delivery-status-v0.1.md"
   "docs/handover/company-adapter-deployment-handoff-v0.1.md"
+  "docs/handover/company-delivery-package-v0.1.md"
   "docs/checklists/company-adapter-replacement-readiness.md"
   "docs/adr/0003-frontend-delivery-track.md"
   "docs/api/openapi-v0.1.yaml"
   "docs/specs/real-model-controlled-smoke-index-v0.1.md"
   "docs/specs/real-model-readiness-preflight-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
+  "docs/specs/company-handoff-package-index-v0.1.md"
 )
 
 for file in "${required_files[@]}"; do
@@ -187,6 +189,7 @@ required_executables=(
   "scripts/smoke/real-model-readiness-preflight.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
   "scripts/smoke/local-delivery-evidence-audit.sh"
+  "scripts/smoke/company-handoff-package-audit.sh"
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
   "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh"
   "scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh"
@@ -200,6 +203,7 @@ require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps Dream
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
 require_pattern "README.md" "Yunwu.*公网联调" "README labels Yunwu as public-network integration"
 require_pattern "README.md" "WellAPI.*公网联调" "README labels WellAPI as public-network integration"
+require_pattern "README.md" "company-delivery-package-v0\\.1\\.md" "README references company handoff package"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "READY_LOCAL" "status handoff includes READY_LOCAL"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "PREPARED_SMOKE" "status handoff includes PREPARED_SMOKE"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "PREPARED_HANDOFF" "status handoff includes PREPARED_HANDOFF"

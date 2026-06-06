@@ -179,9 +179,10 @@ scripts/smoke/company-adapter-readiness-smoke.sh
 
 ```bash
 scripts/smoke/local-delivery-evidence-audit.sh
+scripts/smoke/company-handoff-package-audit.sh
 ```
 
-该脚本只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、状态矩阵、明显密钥形态和大体积 tracked 文件；不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准。
+`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、状态矩阵、明显密钥形态和大体积 tracked 文件；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。两者都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
 
 ## Web Commands
 

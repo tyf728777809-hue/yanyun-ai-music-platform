@@ -14,7 +14,7 @@
 
 本平台不重做公司社区、发布审核流、分享系统、互动和推荐流。
 
-进入具体 Adapter 替换前，先阅读 `docs/handover/local-commercial-delivery-status-v0.1.md`，确认哪些能力已经本地验证、哪些只准备好受控 smoke、哪些必须由公司系统或部署方案补齐。
+进入具体 Adapter 替换前，先阅读 `docs/handover/company-delivery-package-v0.1.md` 和 `docs/handover/local-commercial-delivery-status-v0.1.md`，确认哪些能力已经本地验证、哪些只准备好受控 smoke、哪些必须由公司系统或部署方案补齐。
 
 视频成片当前支持两种模式：默认 `MockVideoRenderService`，以及本地 smoke 用的
 `LocalProcessVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
