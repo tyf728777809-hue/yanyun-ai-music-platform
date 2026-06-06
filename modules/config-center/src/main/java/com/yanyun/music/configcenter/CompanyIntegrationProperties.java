@@ -18,6 +18,10 @@ public class CompanyIntegrationProperties {
   private boolean deepseekRealCallsEnabled;
   private String deepseekBaseUrl = "";
   private String deepseekModelName = "";
+  private String imageProvider = "mock";
+  private boolean imageRealCallsEnabled;
+  private String image2BaseUrl = "";
+  private String image2ModelName = "";
   private boolean dreammakerRealCallsEnabled;
 
   public String getEnvironment() {
@@ -146,6 +150,38 @@ public class CompanyIntegrationProperties {
 
   public void setDeepseekModelName(String deepseekModelName) {
     this.deepseekModelName = deepseekModelName;
+  }
+
+  public String getImageProvider() {
+    return imageProvider;
+  }
+
+  public void setImageProvider(String imageProvider) {
+    this.imageProvider = imageProvider;
+  }
+
+  public boolean isImageRealCallsEnabled() {
+    return imageRealCallsEnabled;
+  }
+
+  public void setImageRealCallsEnabled(boolean imageRealCallsEnabled) {
+    this.imageRealCallsEnabled = imageRealCallsEnabled;
+  }
+
+  public String getImage2BaseUrl() {
+    return image2BaseUrl;
+  }
+
+  public void setImage2BaseUrl(String image2BaseUrl) {
+    this.image2BaseUrl = image2BaseUrl;
+  }
+
+  public String getImage2ModelName() {
+    return image2ModelName;
+  }
+
+  public void setImage2ModelName(String image2ModelName) {
+    this.image2ModelName = image2ModelName;
   }
 
   public boolean isDreammakerRealCallsEnabled() {

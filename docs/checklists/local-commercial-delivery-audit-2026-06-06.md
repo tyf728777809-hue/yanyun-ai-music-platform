@@ -24,7 +24,7 @@
 |---|---|---|
 | Suno / MiniMax 真实成功路径 | 阻塞 | 需要真实联调窗口、成本止损、真实调用授权和脱敏记录 |
 | DeepSeek 真实写词 | 准备中 / 阻塞 | 受控联调 Runbook、安全规则、验收清单已补齐；真实客户端、API 协议、失败码、限流和计费口径仍待确认 |
-| Image 2 真实封面 | 阻塞 | 真实 API、素材规范和对象存储规范未确认 |
+| Image 2 真实封面 | 准备中 / 阻塞 | 受控联调 Runbook、安全规则、验收清单已补齐；真实客户端、API 协议、素材规范和对象存储规范仍待确认 |
 | 公司账号 Adapter | 外部接入项 | 需要公司开发替换 `MockAccountAdapter`，生产不得信任 `X-Mock-User-Id` |
 | 公司审核 Adapter | 外部接入项 | 需要公司审核协议覆盖输入、歌词、发布包交接前审核 |
 | 公司权益 Adapter | 外部接入项 | 需要公司权益系统实现 `lock / commit / release` 幂等语义 |
@@ -33,6 +33,6 @@
 
 ## 下一步建议
 
-1. 准备真实模型联调窗口：Suno / MiniMax 各 1 次成功路径，DeepSeek / Image 2 分别建立硬开关、runbook 和验收清单。
+1. 准备真实模型联调窗口：Suno / MiniMax 各 1 次成功路径，DeepSeek / Image 2 分别按已建立的硬开关、runbook 和验收清单执行。
 2. 把 `prototypes/Claude-web-v1` 的去向定下来：保留为原型、迁移到 `apps/web`，或交给公司前端按它重做。
 3. 公司开发进入前，按 `docs/handover/company-adapter-deployment-handoff-v0.1.md` 确认账号、审核、权益、发布、分享五类 Adapter 替换方案。

@@ -26,6 +26,6 @@ class IntegrationReadinessControllerTest {
     assertThat(report.overallStatus()).isEqualTo(IntegrationOverallStatus.READY_FOR_LOCAL);
     assertThat(report.components())
         .extracting("component")
-        .contains("company_account", "company_quota", "deepseek_guard");
+        .contains("company_account", "company_quota", "deepseek_guard", "image2_guard");
   }
 }

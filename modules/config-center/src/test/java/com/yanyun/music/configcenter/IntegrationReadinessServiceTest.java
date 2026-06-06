@@ -47,6 +47,14 @@ class IntegrationReadinessServiceTest {
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.MOCK_ONLY, deepseek.status());
     assertEquals("MockDeepSeekLyricsClient", deepseek.implementation());
+
+    IntegrationComponentReadiness image2 =
+        report.components().stream()
+            .filter(component -> component.component().equals("image2_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.MOCK_ONLY, image2.status());
+    assertEquals("MockCoverGenerationService", image2.implementation());
   }
 
   @Test
@@ -75,6 +83,9 @@ class IntegrationReadinessServiceTest {
     properties.setDreammakerRealCallsEnabled(true);
     properties.setDeepseekRealCallsEnabled(true);
     properties.setDeepseekBaseUrl("https://deepseek.example.test");
+    properties.setImageProvider("image2");
+    properties.setImageRealCallsEnabled(true);
+    properties.setImage2BaseUrl("https://image2.example.test");
 
     String report =
         new IntegrationReadinessService(properties, fixedClock).buildReport().toString();
@@ -121,5 +132,26 @@ class IntegrationReadinessServiceTest {
     assertEquals(IntegrationReadinessStatus.BLOCKED, deepseek.status());
     assertEquals("real-calls-client-pending", deepseek.configuredMode());
     assertTrue(deepseek.blocksCompanyDeployment());
+  }
+
+  @Test
+  void image2RealCallsRemainBlockedUntilRealClientIsImplemented() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setImageProvider("image2");
+    properties.setImageRealCallsEnabled(true);
+    properties.setImage2BaseUrl("https://image2.example.test");
+    properties.setImage2ModelName("image2-test-model");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness image2 =
+        report.components().stream()
+            .filter(component -> component.component().equals("image2_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.BLOCKED, image2.status());
+    assertEquals("real-calls-client-pending", image2.configuredMode());
+    assertTrue(image2.blocksCompanyDeployment());
   }
 }

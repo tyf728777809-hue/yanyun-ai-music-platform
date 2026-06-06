@@ -42,6 +42,10 @@ yanyun:
     deepseek-real-calls-enabled: ${DEEPSEEK_REAL_CALLS_ENABLED:false}
     deepseek-base-url: ${DEEPSEEK_BASE_URL:}
     deepseek-model-name: ${DEEPSEEK_MODEL_NAME:}
+    image-provider: ${IMAGE_PROVIDER:mock}
+    image-real-calls-enabled: ${IMAGE_REAL_CALLS_ENABLED:false}
+    image2-base-url: ${IMAGE2_BASE_URL:}
+    image2-model-name: ${IMAGE2_MODEL_NAME:}
     dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
   music:
     provider: ${MUSIC_PROVIDER:mock}

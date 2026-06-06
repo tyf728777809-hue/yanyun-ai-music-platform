@@ -94,7 +94,7 @@ type CoverPromptResult = {
 
 ## 9. Out of Scope
 
-- OS-1：不调用真实 Image 2 或其他生图服务。
+- OS-1：不调用真实 Image 2 或其他生图服务；真实 Image 2 接入前按 `docs/runbook/image2-controlled-real-integration.md`、`docs/security/image2-secret-and-log-handling.md` 和 `docs/checklists/image2-real-integration-acceptance.md` 执行。
 - OS-2：不新增用户侧模型选择或封面 prompt 编辑 UI。
 - OS-3：不新增完整 prompt 存档后台。
 - OS-4：不改变发布包 JSON 结构。

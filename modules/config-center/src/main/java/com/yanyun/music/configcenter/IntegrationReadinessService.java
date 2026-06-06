@@ -59,6 +59,7 @@ public final class IntegrationReadinessService {
     components.add(objectStorageComponent());
     components.add(workflowComponent());
     components.add(deepSeekComponent());
+    components.add(image2Component());
     components.add(dreamMakerComponent());
 
     boolean productionLike = !"local".equals(normalize(properties.getEnvironment()));
@@ -260,6 +261,60 @@ public final class IntegrationReadinessService {
         true,
         requiredEnvVars,
         "DeepSeek 真实调用配置已进入联调准备状态，但仓库尚未实现真实客户端；需先按 Runbook 补硬开关、超时、失败码映射和脱敏日志。");
+  }
+
+  private IntegrationComponentReadiness image2Component() {
+    String provider = normalize(properties.getImageProvider());
+    boolean enabled = properties.isImageRealCallsEnabled() || !"mock".equals(provider);
+    List<String> requiredEnvVars =
+        List.of(
+            "IMAGE_PROVIDER",
+            "IMAGE_REAL_CALLS_ENABLED",
+            "IMAGE2_BASE_URL",
+            "IMAGE2_API_KEY",
+            "IMAGE2_MODEL_NAME",
+            "IMAGE2_TIMEOUT_MS",
+            "IMAGE2_MAX_ATTEMPTS",
+            "IMAGE2_WIDTH",
+            "IMAGE2_HEIGHT");
+    if (!enabled) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "mock",
+          "MockCoverGenerationService",
+          IntegrationReadinessStatus.MOCK_ONLY,
+          true,
+          requiredEnvVars,
+          "默认保护状态，封面生成仍使用 MockCoverGenerationService，不会触发真实 Image 2 调用。");
+    }
+    if (!properties.isImageRealCallsEnabled()) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          provider + "-provider-real-calls-disabled",
+          "MockCoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "已选择非 Mock 图片 Provider，但 IMAGE_REAL_CALLS_ENABLED=false；不得发出真实 Image 2 请求。");
+    }
+    if (properties.getImage2BaseUrl() == null || properties.getImage2BaseUrl().isBlank()) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "real-calls-missing-base-url",
+          "MockCoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Image 2 真实调用开关已打开，但缺少 IMAGE2_BASE_URL；不得发出外部请求。");
+    }
+    return new IntegrationComponentReadiness(
+        "image2_guard",
+        "real-calls-client-pending",
+        "RealImage2CoverGenerationService pending",
+        IntegrationReadinessStatus.BLOCKED,
+        true,
+        requiredEnvVars,
+        "Image 2 真实调用配置已进入联调准备状态，但仓库尚未实现真实客户端；需先按 Runbook 补硬开关、超时、默认封面兜底、失败码映射和脱敏日志。");
   }
 
   private static String normalize(String value) {

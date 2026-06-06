@@ -49,7 +49,7 @@
 ## 6. 边界情况
 
 - EC-1：音乐 Provider 返回远程音频 URL 时，workflow 必须先导入本地对象存储，再把导入后的 audio object key 传给视频渲染边界。
-- EC-2：封面 Mock 失败时，本批允许收口为 `PACKAGE_BUILD_FAILED`；真实 Image 2 阶段必须补默认封面兜底。
+- EC-2：封面 Mock 失败时，本批允许收口为 `PACKAGE_BUILD_FAILED`；真实 Image 2 阶段必须按 `docs/runbook/image2-controlled-real-integration.md` 补默认封面兜底。
 - EC-3：视频 Mock 失败时，不得调用发布包准备、发布包审核、对象存储写包或权益提交。
 - EC-4：timeline 生成失败视为视频渲染失败，按 `PACKAGE_BUILD_FAILED` 收口。
 - EC-5：render-worker 本地样例渲染失败时，不影响后端 Mock 测试通过，但必须记录为第 7 批剩余风险。
@@ -130,7 +130,7 @@ type VideoRenderRequest = {
 
 ## 9. 非目标
 
-- OS-1：不接入真实 Image 2 API；真实协议仍待公司确认。
+- OS-1：不接入真实 Image 2 API；受控联调步骤见 `docs/runbook/image2-controlled-real-integration.md`，安全规则见 `docs/security/image2-secret-and-log-handling.md`，验收清单见 `docs/checklists/image2-real-integration-acceptance.md`，真实协议仍待用户或公司提供。
 - OS-2：不实现封面重生完整真实链路；保留既有 API，后续批次强化。
 - OS-3：不实现多视频比例导出；首期只做 16:9。
 - OS-4：不实现逐字 K 歌字幕；首期只做句级或 Mock timeline。
