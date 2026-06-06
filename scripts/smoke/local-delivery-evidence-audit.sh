@@ -224,6 +224,7 @@ required_files=(
   "docs/project-progress.md"
   "docs/checklists/local-commercial-delivery-acceptance.md"
   "docs/checklists/local-commercial-delivery-audit-2026-06-06.md"
+  "docs/checklists/local-commercial-goal-completion-audit-2026-06-07.md"
   "docs/handover/local-commercial-delivery-status-v0.1.md"
   "docs/handover/company-adapter-deployment-handoff-v0.1.md"
   "docs/handover/company-delivery-package-v0.1.md"
@@ -284,6 +285,8 @@ done
 
 require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps DreamMaker production-target rule"
 require_pattern "docs/adr/0004-production-provider-targets.md" "DreamMaker.*正式生产供应商目标" "production provider ADR keeps DreamMaker target"
+require_pattern "docs/checklists/local-commercial-goal-completion-audit-2026-06-07.md" "DreamMaker.*正式生产" "goal completion audit keeps DreamMaker production target"
+require_pattern "docs/checklists/local-commercial-goal-completion-audit-2026-06-07.md" "Yunwu.*公网.*smoke|WellAPI.*公网.*smoke" "goal completion audit keeps public-network smoke boundary"
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "0004-production-provider-targets" "company package references production provider ADR"
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "api-package-blocked-flow\\.sh" "company package references package block smoke"
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
