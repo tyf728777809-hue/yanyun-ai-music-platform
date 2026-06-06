@@ -174,6 +174,7 @@ required_files=(
   "docs/api/openapi-v0.1.yaml"
   "docs/specs/real-model-controlled-smoke-index-v0.1.md"
   "docs/specs/real-model-readiness-preflight-v0.1.md"
+  "docs/specs/deepseek-real-lyrics-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
 )
@@ -188,6 +189,7 @@ required_executables=(
   "scripts/smoke/company-adapter-readiness-smoke.sh"
   "scripts/smoke/real-model-readiness-preflight.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
+  "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/local-delivery-evidence-audit.sh"
   "scripts/smoke/company-handoff-package-audit.sh"
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
@@ -201,6 +203,7 @@ done
 
 require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps DreamMaker production-target rule"
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
+require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "Yunwu.*公网联调" "README labels Yunwu as public-network integration"
 require_pattern "README.md" "WellAPI.*公网联调" "README labels WellAPI as public-network integration"
 require_pattern "README.md" "company-delivery-package-v0\\.1\\.md" "README references company handoff package"

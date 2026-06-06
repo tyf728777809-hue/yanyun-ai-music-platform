@@ -146,6 +146,7 @@ DreamMaker 接入。默认不开真实调用硬开关时，不会发起真实供
 scripts/smoke/real-model-controlled-smoke.sh
 TARGET=dreammaker-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 ```
 
@@ -153,11 +154,21 @@ TARGET=wellapi-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 
 ```bash
 TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
+TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 TARGET=wellapi-image2 MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 真实执行必须显式使用 `MODE=execute`，同时提供 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的
 `ALLOW_*` 开关；不要从总入口绕过各 Provider 的 runbook 和安全门。
+
+DeepSeek 单样本真实写词 smoke 的统一入口是：
+
+```bash
+ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 \
+TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh
+```
+
+该命令只验证真实写词，音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 必须保持 Mock 或关闭。DreamMaker 音乐与 DreamMaker Image 2 仍是正式生产目标接口。
 
 真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
 

@@ -21,7 +21,7 @@ Targets:
   yunwu-suno          Public-network Suno smoke path; not the production replacement for DreamMaker.
   dreammaker-suno     Production-target Suno path through DreamMaker.
   dreammaker-minimax  Production-target MiniMax path through DreamMaker.
-  deepseek            Real lyrics model path; preflight/manual runbook only for now.
+  deepseek            Real lyrics model path; script: deepseek-real-lyrics-smoke.sh
   wellapi-image2      Public-network Image 2 smoke path; not the production replacement for DreamMaker.
   dreammaker-image2   Production-target Image 2 path through DreamMaker; preflight/manual for now.
 
@@ -49,7 +49,7 @@ TARGET              TYPE                         EXECUTION
 yunwu-suno         public-network smoke          script: yunwu-suno-real-music-stack-smoke.sh
 dreammaker-suno    production-target music       script: dreammaker-real-music-stack-smoke.sh REAL_PROVIDER=suno
 dreammaker-minimax production-target music       script: dreammaker-real-music-stack-smoke.sh REAL_PROVIDER=minimax
-deepseek           real lyrics model             preflight + runbook/manual
+deepseek           real lyrics model             script: deepseek-real-lyrics-smoke.sh
 wellapi-image2     public-network smoke          script: wellapi-image2-real-cover-stack-smoke.sh
 dreammaker-image2  production-target image2      preflight + runbook/manual
 
@@ -115,10 +115,13 @@ print_plan() {
     dreammaker-minimax)
       printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_REAL_SMOKE=1 TARGET=dreammaker-minimax MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
       ;;
+    deepseek)
+      printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
+      ;;
     wellapi-image2)
       printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 TARGET=wellapi-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
       ;;
-    deepseek|dreammaker-image2)
+    dreammaker-image2)
       printf 'Execute: not available through this index yet; use the runbook after preflight.\n'
       ;;
     *)
@@ -157,7 +160,7 @@ execute_target() {
       ALLOW_WELLAPI_IMAGE2_REAL_SMOKE="${ALLOW_WELLAPI_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/wellapi-image2-real-cover-stack-smoke.sh"
       ;;
     deepseek)
-      fail "No dedicated DeepSeek full-stack real smoke script yet. Run preflight, then follow docs/runbook/deepseek-controlled-real-integration.md."
+      ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-smoke.sh"
       ;;
     dreammaker-image2)
       fail "No dedicated DreamMaker Image 2 stack smoke script yet. Run preflight, then follow docs/runbook/image2-controlled-real-integration.md."

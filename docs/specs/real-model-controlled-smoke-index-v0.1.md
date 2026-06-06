@@ -37,9 +37,10 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - AC-2: Given `TARGET=dreammaker-suno MODE=plan`, when the command runs, then it labels DreamMaker as production-target and prints the DreamMaker runbook/script path. Covers FR-3 and FR-4.
 - AC-3: Given `TARGET=yunwu-suno MODE=preflight`, when the command runs, then it delegates to the readiness preflight for `yunwu-suno` with strict checks and does not call Yunwu directly. Covers FR-5 and FR-6.
 - AC-4: Given `TARGET=yunwu-suno MODE=execute` without `ALLOW_REAL_MODEL_SMOKE=1`, when the command runs, then it exits non-zero before invoking preflight or the provider smoke script. Covers FR-7.
-- AC-5: Given `TARGET=deepseek MODE=execute`, when the command runs, then it refuses execution and prints the DeepSeek runbook because no dedicated full-stack real smoke script exists yet. Covers FR-9.
+- AC-5: Given `TARGET=deepseek MODE=execute` without `ALLOW_REAL_MODEL_SMOKE=1`, when the command runs, then it exits non-zero before invoking preflight or the DeepSeek smoke script. Covers FR-7.
 - AC-6: Given any mode, when output is scanned for likely `sk-...` or long Bearer token patterns, then no such value is emitted by the index itself. Covers FR-10.
 - AC-7: Given `TARGET=wellapi-image2 MODE=execute` with global allow gate but missing Image 2 readiness variables, when the command runs, then strict preflight fails before the WellAPI smoke script is invoked. Covers FR-11.
+- AC-8: Given `TARGET=deepseek MODE=execute` with global allow gate but missing `ALLOW_DEEPSEEK_REAL_SMOKE=1`, when strict preflight passes, then the delegated DeepSeek script still refuses before creating a work. Covers FR-8 and FR-11.
 
 ## Edge Cases
 
@@ -60,6 +61,7 @@ N/A - this feature is a local shell orchestration entry point and does not add H
 | `TARGET` | string | Optional; one supported target | Smoke target to plan, preflight, or execute. |
 | `MODE` | string | Optional; `list`, `plan`, `preflight`, `execute` | Operation mode. Defaults to `list` when target is omitted, otherwise `plan`. |
 | `ALLOW_REAL_MODEL_SMOKE` | string | Required as `1` only for `MODE=execute` | Global explicit real-call gate. |
+| `ALLOW_DEEPSEEK_REAL_SMOKE` | string | Required as `1` only for DeepSeek delegated execution | Target-specific explicit real-call gate for `scripts/smoke/deepseek-real-lyrics-smoke.sh`. |
 
 ## Out of Scope
 

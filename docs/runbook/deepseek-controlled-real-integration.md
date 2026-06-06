@@ -56,11 +56,11 @@ unset DEEPSEEK_TIMEOUT_MS DEEPSEEK_MAX_ATTEMPTS DEEPSEEK_RESPONSE_MAX_TOKENS DEE
 
 DeepSeek 写词当前发生在 API 进程的创建、润色和续写请求中，因此 API 进程必须拿到 DeepSeek 环境变量。音乐、封面、视频和公司系统继续保持 Mock：
 
-真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 DeepSeek、DreamMaker、Yunwu、WellAPI 或公司系统：
+真实调用前先从统一总入口查看计划，再做只读预检。以下命令只检查当前 shell 变量，不调用 DeepSeek、DreamMaker、Yunwu、WellAPI 或公司系统：
 
 ```bash
-TARGET=deepseek STRICT=true \
-scripts/smoke/real-model-readiness-preflight.sh
+TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh
+TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
 ```bash
@@ -78,6 +78,26 @@ COMPANY_SHARE_ADAPTER_MODE=mock \
 ```
 
 如果后续把 DeepSeek Agent 拆到独立 worker 或 Temporal activity，真实环境变量必须注入到实际发起模型请求的进程，而不是只注入 API。
+
+## 脚本化单样本 smoke
+
+API 已按上面方式启动并通过只读预检后，可执行 1 条真实写词样本。该脚本只调用 DeepSeek 写词链路，不确认出歌，不生成音乐、封面、视频或发布包，也不调用 DreamMaker、Yunwu、WellAPI 或公司系统：
+
+```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
+ALLOW_DEEPSEEK_REAL_SMOKE=1 \
+TARGET=deepseek \
+MODE=execute \
+scripts/smoke/real-model-controlled-smoke.sh
+```
+
+低层入口为：
+
+```bash
+ALLOW_DEEPSEEK_REAL_SMOKE=1 scripts/smoke/deepseek-real-lyrics-smoke.sh
+```
+
+优先使用统一总入口，因为它会先跑严格只读预检。两个入口都要求音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 保持 Mock 或关闭。DreamMaker 音乐与 DreamMaker Image 2 仍是正式生产目标接口，本 smoke 不替代它们。
 
 ## 联调步骤
 
