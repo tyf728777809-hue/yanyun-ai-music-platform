@@ -56,6 +56,13 @@ unset DEEPSEEK_TIMEOUT_MS DEEPSEEK_MAX_ATTEMPTS DEEPSEEK_RESPONSE_MAX_TOKENS DEE
 
 DeepSeek 写词当前发生在 API 进程的创建、润色和续写请求中，因此 API 进程必须拿到 DeepSeek 环境变量。音乐、封面、视频和公司系统继续保持 Mock：
 
+真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 DeepSeek、DreamMaker、Yunwu、WellAPI 或公司系统：
+
+```bash
+TARGET=deepseek STRICT=true \
+scripts/smoke/real-model-readiness-preflight.sh
+```
+
 ```bash
 AGENT_REAL_CALLS_ENABLED=true \
 DEEPSEEK_REAL_CALLS_ENABLED=true \

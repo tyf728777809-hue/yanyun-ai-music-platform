@@ -51,6 +51,15 @@ export DREAMMAKER_REAL_CALLS_ENABLED=false
 
 ## 推荐启动方式
 
+真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 DreamMaker、Yunwu、WellAPI、DeepSeek 或公司系统：
+
+```bash
+TARGET=dreammaker-suno STRICT=true \
+scripts/smoke/real-model-readiness-preflight.sh
+```
+
+如需测试 MiniMax，把 `TARGET` 改成 `dreammaker-minimax`。预检通过不代表真实供应商成功，只代表当前环境变量和真实音乐 dispatch 口径适合进入受控 smoke。
+
 ### 一键 Stack Smoke
 
 首次只跑 1 个 Suno 作品时，优先使用 stack smoke。脚本会静默读取 AK/SK、拒绝占用的 8080/8081 端口、启动 worker/API、执行单作品真实 Provider smoke，并在成功、失败或中断时停止它自己启动的进程。

@@ -59,6 +59,7 @@
 - [ ] DreamMaker AK/SK 只通过当前 shell 或安全配置系统注入，不写入仓库或文档。
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
 - [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
+- [ ] 真实模型 smoke 前已运行 `scripts/smoke/real-model-readiness-preflight.sh` 对目标供应商做只读预检，且未打印真实密钥。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式。
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认当前后端凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式；当前公网联调用 WellAPI，正式生产目标 DreamMaker Image 2 路径必须保留。

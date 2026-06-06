@@ -140,6 +140,13 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 `SUNO_BACKEND=yunwu|dreammaker` 切换公网联调或正式生产目标后端；`minimax` 当前仍通过
 DreamMaker 接入。默认不开真实调用硬开关时，不会发起真实供应商请求。
 
+真实模型联调前可先运行只读预检。它只检查当前 shell 环境变量和可选 API readiness，不调用供应商：
+
+```bash
+TARGET=yunwu-suno STRICT=true scripts/smoke/real-model-readiness-preflight.sh
+TARGET=wellapi-image2 STRICT=true scripts/smoke/real-model-readiness-preflight.sh
+```
+
 真实联调必须使用本地环境变量或生产密钥注入，不要把真实凭据写进仓库、文档、测试或命令日志：
 
 ```bash

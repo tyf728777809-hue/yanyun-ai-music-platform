@@ -38,6 +38,13 @@ export MUSIC_PROVIDER=mock
 
 ## 最小联调步骤
 
+真实调用前先做只读预检。该命令只检查当前 shell 变量，不调用 Yunwu、DreamMaker、DeepSeek、Image 2 或公司系统：
+
+```bash
+TARGET=yunwu-suno STRICT=true \
+scripts/smoke/real-model-readiness-preflight.sh
+```
+
 如果本地 8080/8081 没有已启动服务，优先使用一键 stack smoke。脚本会静默读取缺失的 `YUNWU_API_KEY`、启动 worker/API、执行 1 个 Suno 作品、结束后自动停止它启动的进程：
 
 ```bash
