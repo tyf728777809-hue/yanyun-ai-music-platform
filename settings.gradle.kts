@@ -23,6 +23,7 @@ include(
     "modules:moderation",
     "modules:publish",
     "modules:work-domain",
+    "modules:agent-runtime",
     "modules:lyrics",
     "modules:knowledge",
     "modules:prompt",

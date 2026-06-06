@@ -1,6 +1,7 @@
 package com.yanyun.music.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
 import com.yanyun.music.configcenter.CompanyIntegrationProperties;
@@ -22,6 +23,7 @@ import com.yanyun.music.musicprovider.MockMusicProvider;
 import com.yanyun.music.musicprovider.MusicProvider;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
+import com.yanyun.music.production.JdbcAgentRunRecorder;
 import com.yanyun.music.prompt.MockPromptTemplateService;
 import com.yanyun.music.prompt.PromptTemplateService;
 import com.yanyun.music.publish.MockPublishAdapter;
@@ -41,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class AdapterConfiguration {
@@ -86,12 +89,18 @@ public class AdapterConfiguration {
   }
 
   @Bean
+  AgentRunRecorder agentRunRecorder(JdbcTemplate jdbcTemplate) {
+    return new JdbcAgentRunRecorder(jdbcTemplate);
+  }
+
+  @Bean
   LyricsGenerationService lyricsGenerationService(
       KnowledgeService knowledgeService,
       PromptTemplateService promptTemplateService,
-      DeepSeekLyricsClient deepSeekLyricsClient) {
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      AgentRunRecorder agentRunRecorder) {
     return new DefaultLyricsGenerationService(
-        knowledgeService, promptTemplateService, deepSeekLyricsClient);
+        knowledgeService, promptTemplateService, deepSeekLyricsClient, agentRunRecorder);
   }
 
   @Bean

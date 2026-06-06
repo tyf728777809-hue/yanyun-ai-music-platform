@@ -10,6 +10,7 @@ dependencyManagement {
 }
 
 dependencies {
+    api(project(":modules:agent-runtime"))
     api(project(":modules:image2"))
     api(project(":modules:media"))
     implementation(project(":modules:moderation"))

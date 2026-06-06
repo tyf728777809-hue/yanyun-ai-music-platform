@@ -418,6 +418,8 @@ Workflow / Service 必须持有：
 
 验收：现有本地 Mock 主链路仍通过；`provider_calls` 或新增 `agent_runs` 可追踪每个 Agent mock run。
 
+当前落地状态：`agent_runs` v0.1 与 `AgentRunRecorder` 已完成，写词链路的 `LyricsAgent` Mock 调用已接入审计。`CreativeBriefAgent`、`MusicPromptAgent`、`QualityEvaluationAgent`、`CoverPromptAgent` 和 `ModerationAgent` 仍待补 Mock 合约。
+
 ### Phase 2：DeepSeek 真实写词受控联调
 
 先接真实 `CreativeBriefAgent` 和 `LyricsAgent`，继续保持音乐、封面、视频 Mock。
@@ -455,8 +457,8 @@ Workflow / Service 必须持有：
 ## 15. 后续待办
 
 - 在技术方案 v0.2 后续版本中补入本设计的 Agent / Adapter 分层口径。
-- 新增 `agent_runs` 或扩展现有 `provider_calls` 的设计，确认是否需要独立表。
-- 设计 Agent Runtime 配置：模型名、硬开关、成本限制、超时、重试、Prompt 模板版本。
+- 扩展 Agent Runtime 配置：模型名、硬开关、成本限制、超时、重试、Prompt 模板版本。
+- 继续补齐 `CreativeBriefAgent`、`MusicPromptAgent`、`QualityEvaluationAgent`、`CoverPromptAgent` 和 `ModerationAgent` 的 Mock 合约与审计。
 - 梳理 DeepSeek 真实接入 runbook：输入脱敏、Prompt 版本、失败码、限流、回退 Mock。
 - 梳理 Image 2 真实接入 runbook：尺寸、风格、内容安全、默认封面兜底和对象存储导入。
 - 在真实模型联调前，把 `SongProductionWorkflow` 拆为更细粒度 Temporal activities。

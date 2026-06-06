@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":modules:moderation"))
     implementation(project(":modules:publish"))
     implementation(project(":modules:work-domain"))
+    implementation(project(":modules:agent-runtime"))
     implementation(project(":modules:music-provider"))
     implementation(project(":modules:production"))
     implementation(project(":modules:dreammaker"))

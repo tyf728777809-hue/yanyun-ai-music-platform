@@ -1,5 +1,10 @@
 package com.yanyun.music.lyrics;
 
+import com.yanyun.music.agentruntime.AgentRunHashing;
+import com.yanyun.music.agentruntime.AgentRunRecord;
+import com.yanyun.music.agentruntime.AgentRunRecorder;
+import com.yanyun.music.agentruntime.AgentRunStatus;
+import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekLyricsRequest;
 import com.yanyun.music.deepseek.DeepSeekLyricsResponse;
@@ -21,14 +26,29 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
   private final DeepSeekLyricsClient deepSeekLyricsClient;
+  private final AgentRunRecorder agentRunRecorder;
 
   public DefaultLyricsGenerationService(
       KnowledgeService knowledgeService,
       PromptTemplateService promptTemplateService,
       DeepSeekLyricsClient deepSeekLyricsClient) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        deepSeekLyricsClient,
+        NoopAgentRunRecorder.INSTANCE);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      AgentRunRecorder agentRunRecorder) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
     this.deepSeekLyricsClient = deepSeekLyricsClient;
+    this.agentRunRecorder =
+        agentRunRecorder == null ? NoopAgentRunRecorder.INSTANCE : agentRunRecorder;
   }
 
   @Override
@@ -64,7 +84,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       LyricsGenerationRequest request,
       PromptRenderResult prompt,
       KnowledgeRetrievalResult knowledge) {
-    return deepSeekLyricsClient.generate(
+    DeepSeekLyricsRequest deepSeekRequest =
         new DeepSeekLyricsRequest(
             request.operation().name(),
             prompt.prompt(),
@@ -74,7 +94,75 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.requestedTitle(),
             request.musicStyle(),
             request.vocalPreference(),
-            knowledge.references().stream().map(KnowledgeReference::displayName).toList()));
+            knowledge.references().stream().map(KnowledgeReference::displayName).toList());
+    long startedAt = System.nanoTime();
+    try {
+      DeepSeekLyricsResponse response = deepSeekLyricsClient.generate(deepSeekRequest);
+      recordAgentRun(request, prompt, deepSeekRequest, response, startedAt, null);
+      return response;
+    } catch (RuntimeException exception) {
+      recordAgentRun(request, prompt, deepSeekRequest, null, startedAt, exception);
+      throw exception;
+    }
+  }
+
+  private void recordAgentRun(
+      LyricsGenerationRequest request,
+      PromptRenderResult prompt,
+      DeepSeekLyricsRequest deepSeekRequest,
+      DeepSeekLyricsResponse response,
+      long startedAt,
+      RuntimeException exception) {
+    agentRunRecorder.record(
+        new AgentRunRecord(
+            request.workId(),
+            null,
+            "LyricsAgent",
+            "v0.1",
+            request.operation().name(),
+            deepSeekLyricsClient.modelName(),
+            prompt.templateKey(),
+            prompt.version(),
+            AgentRunHashing.sha256(inputFingerprint(deepSeekRequest)),
+            response == null ? null : AgentRunHashing.sha256(outputFingerprint(response)),
+            exception == null ? AgentRunStatus.SUCCEEDED : AgentRunStatus.FAILED,
+            elapsedMs(startedAt),
+            null,
+            null,
+            null,
+            exception == null ? null : "DEEPSEEK_LYRICS_FAILED",
+            exception == null ? null : exception.getMessage()));
+  }
+
+  private int elapsedMs(long startedAt) {
+    long elapsed = (System.nanoTime() - startedAt) / 1_000_000L;
+    return elapsed > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.max(0L, elapsed);
+  }
+
+  private String inputFingerprint(DeepSeekLyricsRequest request) {
+    return String.join(
+        "\n",
+        nullToEmpty(request.operation()),
+        nullToEmpty(request.prompt()),
+        nullToEmpty(request.userInput()),
+        nullToEmpty(request.currentLyrics()),
+        nullToEmpty(request.instruction()),
+        nullToEmpty(request.requestedTitle()),
+        nullToEmpty(request.musicStyle()),
+        nullToEmpty(request.vocalPreference()),
+        String.join(",", request.yanyunReferences()));
+  }
+
+  private String outputFingerprint(DeepSeekLyricsResponse response) {
+    return String.join(
+        "\n",
+        nullToEmpty(response.songTitle()),
+        nullToEmpty(response.songSummary()),
+        nullToEmpty(response.lyricsText()),
+        nullToEmpty(response.musicPrompt()),
+        nullToEmpty(response.coverPromptSeed()),
+        response.riskNotes().toString(),
+        response.qualityScore() == null ? "" : response.qualityScore().toPlainString());
   }
 
   private LyricsGenerationRequest rewriteRequest(LyricsGenerationRequest request) {
@@ -133,5 +221,9 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private String firstNonBlank(String value, String fallback) {
     return value == null || value.isBlank() ? fallback : value.trim();
+  }
+
+  private String nullToEmpty(String value) {
+    return value == null ? "" : value;
   }
 }

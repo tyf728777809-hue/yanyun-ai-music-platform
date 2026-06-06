@@ -266,6 +266,25 @@ scripts/smoke/openapi-contract.sh
 
 该脚本只使用本地 Mock / 受控失败路径，不触发真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
 
+### Agent Run Audit Smoke
+
+真实模型联调前，Agent 调用审计通过 `agent_runs` 表记录。当前写词链路的 Mock DeepSeek 调用会写入
+`LyricsAgent` run；记录只包含模型名、operation、Prompt 模板版本、输入/输出 hash、状态、耗时和脱敏失败信息，
+不保存完整 Prompt 或用户原文。
+
+API 启动后创建任意灵感成歌或填词成歌作品，再用 PostgreSQL 抽查：
+
+```bash
+docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
+  "SELECT agent_name, agent_version, operation, model_name, status, input_hash IS NOT NULL, output_hash IS NOT NULL FROM agent_runs ORDER BY created_at DESC LIMIT 5;"
+```
+
+正常应能看到类似：
+
+```text
+LyricsAgent|v0.1|INSPIRATION|mock-deepseek-lyrics|SUCCEEDED|t|t
+```
+
 ### Claude Web v1 UI Smoke
 
 `prototypes/Claude-web-v1` 提供真实后端 UI smoke，用于把手动 Playwright 验收固化成可重复脚本。
