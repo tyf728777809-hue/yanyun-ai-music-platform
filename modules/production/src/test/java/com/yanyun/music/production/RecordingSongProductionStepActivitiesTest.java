@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.yanyun.music.workflow.SongProductionActivityContext;
 import com.yanyun.music.workflow.SongProductionStepName;
 import com.yanyun.music.workflow.SongProductionStepResult;
+import com.yanyun.music.workflow.SongProductionWorkflowInput;
+import com.yanyun.music.workflow.SongProductionWorkflowResult;
+import com.yanyun.music.workflow.StepwiseSongProductionWorkflow;
 import com.yanyun.music.workpersistence.WorkRepository.GenerationJobStepRow;
 import java.time.Clock;
 import java.time.Instant;
@@ -85,5 +88,42 @@ class RecordingSongProductionStepActivitiesTest {
     assertEquals("render-task-1", row.externalTraceId());
     assertEquals("VIDEO_RENDER_FAILED", row.failureCode());
     assertEquals(result.failureMessage(), row.failureMessage());
+  }
+
+  @Test
+  void recordsAllSuccessfulStepsWhenUsedByStepwiseWorkflow() {
+    List<GenerationJobStepRow> rows = new ArrayList<>();
+    RecordingSongProductionStepActivities activities =
+        new RecordingSongProductionStepActivities(rows::add, fixedClock);
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    SongProductionWorkflowInput input =
+        new SongProductionWorkflowInput(
+            workId.toString(),
+            "user-1",
+            UUID.randomUUID().toString(),
+            "title",
+            "summary",
+            "lyrics",
+            "music prompt",
+            "AUTO",
+            "mock",
+            true,
+            jobId.toString());
+
+    SongProductionWorkflowResult result =
+        new StepwiseSongProductionWorkflow(activities).produce(input);
+
+    assertTrue(result.packageReady());
+    assertEquals("PACKAGE_READY", result.packageStatus());
+    assertEquals(13, rows.size());
+    assertEquals("LOCK_QUOTA", rows.getFirst().stepName());
+    assertEquals("COMMIT_QUOTA", rows.getLast().stepName());
+    assertTrue(rows.stream().allMatch(row -> workId.equals(row.workId())));
+    assertTrue(rows.stream().allMatch(row -> jobId.equals(row.jobId())));
+    assertTrue(rows.stream().allMatch(row -> "SUCCEEDED".equals(row.status())));
+    assertTrue(
+        rows.stream()
+            .noneMatch(row -> SongProductionStepName.RELEASE_QUOTA.name().equals(row.stepName())));
   }
 }
