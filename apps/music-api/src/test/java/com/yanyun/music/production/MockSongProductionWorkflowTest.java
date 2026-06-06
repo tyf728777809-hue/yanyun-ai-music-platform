@@ -700,6 +700,56 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void packageModerationBlockFailsWorkAndDoesNotWriteReadyPackage() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.blocked("MOCK_PACKAGE_BLOCKED", "作品暂不能交给社区发布。"));
+    when(quotaAdapter.releaseGenerateQuota("user-1", "lock-1", FailureCode.PACKAGE_BLOCKED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.MOCK).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.packageStatus()).isEqualTo(PackageStatus.PACKAGE_BLOCKED.name());
+    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BLOCKED.name());
+    assertThat(result.failureMessage()).isEqualTo("作品暂不能交给社区发布。");
+    verify(workRepository).markFailure(workId, FailureCode.PACKAGE_BLOCKED, "作品暂不能交给社区发布。", false);
+    verify(workRepository, never()).upsertPublishPackage(any());
+    verify(objectStorageClient, never()).putObject(any(ObjectStoragePutRequest.class));
+    verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
+    verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId, "FAILED", GenerationStage.FAILED, FailureCode.PACKAGE_BLOCKED, "作品暂不能交给社区发布。");
+  }
+
+  @Test
   void marksMusicFailureNonRetryableWhenRetryLimitWillBeExhausted() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();

@@ -383,9 +383,15 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         jobId, "FAILED", GenerationStage.FAILED, failureCode, safeFailureMessage);
     return SongProductionWorkflowResult.failed(
         jobId.toString(),
-        PackageStatus.PACKAGE_NOT_READY.name(),
+        failurePackageStatus(failureCode).name(),
         failureCode.name(),
         safeFailureMessage);
+  }
+
+  private PackageStatus failurePackageStatus(FailureCode failureCode) {
+    return failureCode == FailureCode.PACKAGE_BLOCKED
+        ? PackageStatus.PACKAGE_BLOCKED
+        : PackageStatus.PACKAGE_NOT_READY;
   }
 
   private UUID resolveJobId(UUID workId, SongProductionWorkflowInput input) {

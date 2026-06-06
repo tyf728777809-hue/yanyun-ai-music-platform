@@ -759,8 +759,18 @@ public class WorkService {
   }
 
   private PublishPackage emptyPackage(WorkRow work) {
+    PackageStatus packageStatus =
+        work.packageStatus() == PackageStatus.PACKAGE_BLOCKED
+            ? PackageStatus.PACKAGE_BLOCKED
+            : PackageStatus.PACKAGE_NOT_READY;
     return new PublishPackage(
-        work.id(), PackageStatus.PACKAGE_NOT_READY, null, null, null, availableActions(work), null);
+        work.id(),
+        packageStatus,
+        null,
+        null,
+        null,
+        availableActions(work),
+        packageStatus == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
   }
 
   private QuotaHint quotaHint(WorkRow work) {

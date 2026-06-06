@@ -192,6 +192,7 @@ required_files=(
   "docs/specs/real-model-safety-gates-audit-v0.1.md"
   "docs/specs/deepseek-real-lyrics-smoke-v0.1.md"
   "docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md"
+  "docs/specs/mock-publish-package-block-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
 )
@@ -202,6 +203,7 @@ done
 
 required_executables=(
   "scripts/smoke/api-main-flow.sh"
+  "scripts/smoke/api-package-blocked-flow.sh"
   "scripts/smoke/openapi-contract.sh"
   "scripts/smoke/company-adapter-readiness-smoke.sh"
   "scripts/smoke/real-model-readiness-preflight.sh"
@@ -224,7 +226,9 @@ done
 require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps DreamMaker production-target rule"
 require_pattern "docs/adr/0004-production-provider-targets.md" "DreamMaker.*正式生产供应商目标" "production provider ADR keeps DreamMaker target"
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "0004-production-provider-targets" "company package references production provider ADR"
+require_pattern "docs/handover/company-delivery-package-v0.1.md" "api-package-blocked-flow\\.sh" "company package references package block smoke"
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
+require_pattern "README.md" "api-package-blocked-flow\\.sh" "README references package block smoke"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"

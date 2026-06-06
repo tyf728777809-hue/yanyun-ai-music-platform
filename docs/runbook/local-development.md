@@ -333,6 +333,33 @@ local-process 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x108
 `EXPECTED_DURATION_MS`。如不希望脚本检查 PostgreSQL 或本地文件，可分别设置
 `CHECK_DB=false`、`CHECK_LOCAL_FILES=false`。
 
+### Mock Publish Package Block Smoke
+
+发布包交接前审核阻断可以用 Mock-only 配置复验。该路径只验证本地 `ModerationAdapter.preCheckPublishPackage`
+阻断、`PACKAGE_BLOCKED` 状态、权益释放和前端可用动作，不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
+
+启动 API：
+
+```bash
+MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke \
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+RENDER_WORKER_MODE=mock \
+./gradlew :apps:music-api:bootRun
+```
+
+另开一个终端执行：
+
+```bash
+MOCK_USER_ID=mock_package_block_smoke scripts/smoke/api-package-blocked-flow.sh
+```
+
+预期确认出歌返回 HTTP 403；随后作品详情为 `FAILED / FAILED / PACKAGE_BLOCKED`，失败码为
+`PACKAGE_BLOCKED`，`available_actions` 包含 `CONTACT_SUPPORT` 和 `RETURN_TO_EDIT`，发布包响应不包含
+`package_url` 或 `package_json`。
+
 ### OpenAPI Contract Smoke
 
 仓库提供 `scripts/smoke/openapi-contract.sh`，用于在 API 已启动后对拍 `docs/api/openapi-v0.1.yaml`

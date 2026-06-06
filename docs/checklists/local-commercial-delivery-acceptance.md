@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 04:32 CST
+更新时间：2026-06-07 04:44 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -39,6 +39,7 @@
 - [ ] `scripts/smoke/api-main-flow.sh` 在同步 Mock 模式通过。
 - [ ] `scripts/smoke/api-main-flow.sh` 在 `RENDER_WORKER_MODE=local-process` 模式通过，并用 `ffprobe` 验证 MP4。
 - [ ] `scripts/smoke/openapi-contract.sh` 在同步 Mock 模式通过。
+- [ ] `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke` 启动 API 后，`scripts/smoke/api-package-blocked-flow.sh` 通过，证明发布包交接前审核阻断会收口到 `PACKAGE_BLOCKED`、`CONTACT_SUPPORT` 和 `RETURN_TO_EDIT`。
 - [ ] 创建作品、确认出歌、获取发布包、刷新 URL、标记交接、作品列表、失败重试均可复验。
 - [ ] `Idempotency-Key` 成功重放和冲突 409 语义通过复验。
 

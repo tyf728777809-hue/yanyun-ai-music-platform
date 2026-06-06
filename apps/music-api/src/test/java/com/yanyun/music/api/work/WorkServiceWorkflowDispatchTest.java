@@ -286,6 +286,31 @@ class WorkServiceWorkflowDispatchTest {
             OffsetDateTime.parse("2026-06-07T00:00:00Z"));
   }
 
+  @Test
+  void getPublishPackageReflectsBlockedWorkWithoutPackageRow() {
+    UUID workId = UUID.randomUUID();
+    WorkRow blocked = packageBlockedWork(workId);
+    when(workRepository.findWorkForUser(workId, "user-1")).thenReturn(Optional.of(blocked));
+    when(workRepository.findPublishPackage(workId)).thenReturn(Optional.empty());
+
+    var response = service(syncProperties()).getPublishPackage("user-1", workId);
+
+    assertThat(response.packageStatus()).isEqualTo(PackageStatus.PACKAGE_BLOCKED);
+    assertThat(response.blockedReason()).isEqualTo("作品暂不能交给社区发布。");
+    assertThat(response.packageUrl()).isNull();
+    assertThat(response.packageJson()).isNull();
+    assertThat(response.availableActions())
+        .containsExactlyInAnyOrderElementsOf(
+            com.yanyun.music.workdomain.WorkStateMachine.availableActions(
+                new com.yanyun.music.workdomain.WorkSnapshot(
+                    WorkStatus.FAILED,
+                    GenerationStage.FAILED,
+                    PackageStatus.PACKAGE_BLOCKED,
+                    FailureCode.PACKAGE_BLOCKED,
+                    false,
+                    0)));
+  }
+
   private WorkService service(WorkflowDispatchProperties properties) {
     return service(
         properties,
@@ -404,6 +429,32 @@ class WorkServiceWorkflowDispatchTest {
         FailureCode.MUSIC_GENERATION_FAILED,
         "Music provider failed",
         true,
+        OffsetDateTime.now(),
+        false,
+        false,
+        0,
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
+        null,
+        3);
+  }
+
+  private WorkRow packageBlockedWork(UUID workId) {
+    return new WorkRow(
+        workId,
+        "YYM-20260605-ABCDEF",
+        "user-1",
+        CreationMode.LYRICS,
+        WorkStatus.FAILED,
+        GenerationStage.FAILED,
+        PackageStatus.PACKAGE_BLOCKED,
+        "Mock title",
+        "Mock summary",
+        0,
+        0,
+        FailureCode.PACKAGE_BLOCKED,
+        "作品暂不能交给社区发布。",
+        false,
         OffsetDateTime.now(),
         false,
         false,

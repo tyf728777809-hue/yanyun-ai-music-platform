@@ -1,6 +1,6 @@
 # 公司开发交接包 v0.1
 
-更新时间：2026-06-07 04:28 CST
+更新时间：2026-06-07 04:44 CST
 状态：本地 Mock 闭环可实测；真实模型和公司系统仍按受控联调 / 公司接入推进。
 
 ## 1. 先读结论
@@ -71,6 +71,18 @@ npm run smoke:real-backend
 
 `apps/web` 仍是正式工程 scaffold。是否迁移 `prototypes/Claude-web-v1`、公司前端重建，或保留原型，需要交付前单独决策。
 
+发布包交接前审核阻断可用 Mock-only smoke 复验：
+
+```bash
+MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke \
+MOCK_MUSIC_DURATION_MS=1000 MUSIC_PROVIDER=mock RENDER_WORKER_MODE=mock \
+./gradlew :apps:music-api:bootRun
+
+MOCK_USER_ID=mock_package_block_smoke scripts/smoke/api-package-blocked-flow.sh
+```
+
+该脚本只证明本平台会在交接前调用 Mock 审核边界并收口到 `PACKAGE_BLOCKED`；公司真实审核仍需公司开发替换 `ModerationAdapter`。
+
 ## 5. 公司系统必须替换或承接
 
 | 系统 | 当前本地边界 | 公司接入要求 |
@@ -134,6 +146,7 @@ TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 | 公司 Adapter readiness | `scripts/smoke/company-adapter-readiness-smoke.sh` |
 | OpenAPI 运行时契约 | `scripts/smoke/openapi-contract.sh` |
 | 本地主链路 | `EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh` |
+| Mock 发布包审核阻断 | `MOCK_USER_ID=mock_package_block_smoke scripts/smoke/api-package-blocked-flow.sh` |
 | 本地 MP4 成片 | `RENDER_WORKER_MODE=local-process EXPECT_RENDER_WORKER=local-process EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh` |
 | 前端真实后端模式 | `cd prototypes/Claude-web-v1 && npm run smoke:real-backend` |
 | 真实模型计划 / 预检 | `TARGET=<target> MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh` |

@@ -38,8 +38,11 @@ import com.yanyun.music.suno.YunwuProperties;
 import com.yanyun.music.suno.YunwuSunoMusicProvider;
 import com.yanyun.music.workflow.SongProductionStepActivities;
 import com.yanyun.music.workpersistence.WorkRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -55,13 +58,28 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
-  ModerationAdapter moderationAdapter() {
-    return new MockModerationAdapter();
+  ModerationAdapter moderationAdapter(
+      @Value("${yanyun.moderation.mock-publish-package-blocked-user-ids:}")
+          String publishPackageBlockedUserIds,
+      @Value("${yanyun.moderation.mock-publish-package-blocked-work-ids:}")
+          String publishPackageBlockedWorkIds) {
+    return new MockModerationAdapter(
+        splitCsv(publishPackageBlockedUserIds), splitCsv(publishPackageBlockedWorkIds));
   }
 
   @Bean
   PublishAdapter publishAdapter(@Value("${yanyun.storage.environment:local}") String environment) {
     return new MockPublishAdapter(environment);
+  }
+
+  private Set<String> splitCsv(String value) {
+    if (value == null || value.isBlank()) {
+      return Set.of();
+    }
+    return Arrays.stream(value.split(","))
+        .filter(item -> item != null && !item.isBlank())
+        .map(String::trim)
+        .collect(Collectors.toUnmodifiableSet());
   }
 
   @Bean

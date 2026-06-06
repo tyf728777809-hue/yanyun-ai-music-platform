@@ -82,7 +82,7 @@ record ModerationDecision(boolean allowed, String code, String message) {}
 
 - [ ] 用户输入阻断映射到 `USER_INPUT_BLOCKED`。
 - [ ] 歌词审核阻断映射到 `LYRICS_PRECHECK_FAILED`。
-- [ ] 发布包交接前阻断映射到 `PACKAGE_BLOCKED`。
+- [ ] 发布包交接前阻断映射到 `PACKAGE_BLOCKED`；本地 Mock 证据可先用 `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke` 启动 API 后运行 `scripts/smoke/api-package-blocked-flow.sh`。
 - [ ] 用户侧只看到可读提示，不看到公司审核原始响应。
 - [ ] 审核失败时，不继续调用下游真实模型或发布交接。
 

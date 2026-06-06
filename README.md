@@ -238,6 +238,8 @@ npm test
 OpenAPI v0.1 位于 `docs/api/openapi-v0.1.yaml`，覆盖作品状态、生成阶段、剩余改词次数、权益提示、失败可执行动作和发布包交接状态。
 运行时契约 smoke 位于 `scripts/smoke/openapi-contract.sh`，要求 API 已在 `http://localhost:8080` 启动，会覆盖静态 OpenAPI path/schema/enum 检查、作品创建、作品详情、作品列表、统一错误、幂等冲突、润色次数、发布包交接、受控音乐失败和 mock 重试恢复。
 
+发布包交接前审核阻断 smoke 位于 `scripts/smoke/api-package-blocked-flow.sh`。启动 API 时显式设置 `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke` 后执行该脚本，可验证 `PACKAGE_BLOCKED`、`CONTACT_SUPPORT`、`RETURN_TO_EDIT` 和“不可交接”状态；该路径只使用 Mock 审核，不调用真实供应商或公司系统。
+
 ## Delivery Checklist
 
 本地完整跑通并交给公司开发接入前，按

@@ -1,6 +1,6 @@
 # 项目进度记录
 
-更新时间：2026-06-07 04:33 CST
+更新时间：2026-06-07 04:44 CST
 
 ## 当前阶段
 
@@ -13,6 +13,8 @@
 2026-06-07 04:32 CST 已补齐 Claude 前端动作矩阵组件级证据：新增规格 `docs/specs/frontend-action-matrix-smoke-v0.1.md`，明确该批只验证 `prototypes/Claude-web-v1` 的 `available_actions` 驱动，不新增后端测试后门、不调用真实模型或公司系统。`FinishedView` 已补上成品页对 `RERENDER_VIDEO` 和 `CONTACT_SUPPORT` 的渲染与 `service.rerenderVideo` 调用；新增 `FailedView.test.tsx`，并扩展 `FinishedView.test.tsx`，覆盖 `RETRY_COVER`、`RERENDER_VIDEO`、`RETURN_TO_EDIT`、`CONTACT_SUPPORT`、`PACKAGE_BLOCKED`、隐藏 `MARK_PACKAGE_FETCHED` / `REFRESH_PACKAGE_URL` 等边界。targeted 前端测试和 typecheck 已通过；该证据不把 `PACKAGE_BLOCKED` 描述成后端端到端自然触发样本。
 
 2026-06-07 04:33 CST 已把“DreamMaker 接口必须保留，正式生产切回 DreamMaker”升级为独立 ADR：新增 `docs/adr/0004-production-provider-targets.md`，明确 DreamMaker 音乐和 DreamMaker Image 2 是正式生产供应商目标，Yunwu Suno 与 WellAPI Image 2 只是当前非公司内网环境下的公网受控 smoke 后端。`AGENTS.md` 已把该 ADR 加入 Source Of Truth，公司交接包第一阅读顺序和交接包审计脚本已同步，后续实现、重构、子 Agent 或公司交接不得删除、弱化或绕开 DreamMaker 路径。
+
+2026-06-07 04:44 CST 已补齐发布包交接前审核阻断的后端自然触发样本：新增规格 `docs/specs/mock-publish-package-block-smoke-v0.1.md` 和脚本 `scripts/smoke/api-package-blocked-flow.sh`。`MockModerationAdapter` 默认仍放行，只有显式配置 `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS` 或 `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS` 时才阻断发布包预检；阻断后 Workflow 收口为 `FAILED / FAILED / PACKAGE_BLOCKED`、失败码 `PACKAGE_BLOCKED`、动作 `CONTACT_SUPPORT` + `RETURN_TO_EDIT`，不写 ready 发布包、不提交权益。已用本地 API 执行 `MOCK_USER_ID=mock_package_block_smoke scripts/smoke/api-package-blocked-flow.sh`，作品 `7932434f-6544-409c-9a99-5e0e209c8e3a` 通过；未调用真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Suno、MiniMax 或公司系统。
 
 2026-06-07 03:53 CST 已补齐 DreamMaker Image2 生产目标单作品真实封面受控 smoke 入口：新增规格 `docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md`、一键脚本 `scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh` 和低层脚本 `scripts/smoke/dreammaker-image2-real-cover-smoke.sh`，并接入 `TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh`。该入口必须同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和 `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1`，只打开真实 DreamMaker Image2 封面，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock 或关闭；低层脚本会验证 `image2_guard=real-calls-enabled/dreammaker`、`dreammaker_guard=READY_FOR_LOCAL`、封面 `provider=dreammaker-image2`、对象存储导入和 metadata 不保留供应商原始 URL/base64。README、Image2 runbook、验收清单、状态说明、公司交接包和只读审计脚本已同步。本轮尚未执行真实 DreamMaker Image2 调用。
 

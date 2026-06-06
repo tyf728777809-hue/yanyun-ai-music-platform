@@ -50,7 +50,7 @@ class WorkStateMachineTest {
             new WorkSnapshot(
                 WorkStatus.FAILED,
                 GenerationStage.FAILED,
-                PackageStatus.PACKAGE_NOT_READY,
+                PackageStatus.PACKAGE_BLOCKED,
                 FailureCode.PACKAGE_BLOCKED,
                 false,
                 0));

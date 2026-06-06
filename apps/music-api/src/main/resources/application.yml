@@ -91,6 +91,9 @@ yanyun:
   music:
     provider: ${MUSIC_PROVIDER:mock}
     mock-duration-ms: ${MOCK_MUSIC_DURATION_MS:180000}
+  moderation:
+    mock-publish-package-blocked-user-ids: ${MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS:}
+    mock-publish-package-blocked-work-ids: ${MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS:}
   render-worker:
     mode: ${RENDER_WORKER_MODE:mock}
     working-directory: ${RENDER_WORKER_WORKING_DIRECTORY:apps/render-worker}

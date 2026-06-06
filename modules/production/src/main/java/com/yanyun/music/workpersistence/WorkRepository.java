@@ -411,6 +411,7 @@ public class WorkRepository {
         UPDATE works
         SET status = ?,
             generation_stage = ?,
+            package_status = ?,
             failure_code = ?,
             failure_message = ?,
             retryable = ?,
@@ -421,6 +422,9 @@ public class WorkRepository {
         """,
         WorkStatus.FAILED.name(),
         GenerationStage.FAILED.name(),
+        failureCode == FailureCode.PACKAGE_BLOCKED
+            ? PackageStatus.PACKAGE_BLOCKED.name()
+            : PackageStatus.PACKAGE_NOT_READY.name(),
         failureCode.name(),
         failureMessage,
         retryable,
