@@ -21,6 +21,7 @@
 - [ ] `docs/handover/company-delivery-package-v0.1.md` 已作为公司开发第一阅读入口，且 `scripts/smoke/company-handoff-package-audit.sh` 通过。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 通过，证明后端本地 Mock 主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断可组合复验。
+- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 通过，证明后端基线、local-process MP4 和 Claude 前端真实后端模式可组合复验。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。
 
@@ -42,6 +43,7 @@
 - [ ] `scripts/smoke/openapi-contract.sh` 在同步 Mock 模式通过。
 - [ ] `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke` 启动 API 后，`scripts/smoke/api-package-blocked-flow.sh` 通过，证明发布包交接前审核阻断会收口到 `PACKAGE_BLOCKED`、`CONTACT_SUPPORT` 和 `RETURN_TO_EDIT`。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 在 `8080` 空闲、Docker 基础设施已启动时通过；该脚本必须保持真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Image 2 和公司系统调用关闭。
+- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 在 `8080` 和前端 smoke 端口空闲时通过；该脚本必须覆盖后端组合验收、local-process MP4 和前端真实后端 UI smoke。
 - [ ] 创建作品、确认出歌、获取发布包、刷新 URL、标记交接、作品列表、失败重试均可复验。
 - [ ] `Idempotency-Key` 成功重放和冲突 409 语义通过复验。
 
@@ -100,6 +102,7 @@
 
 - [ ] 本地 Mock 成功链路可一键复验。
 - [ ] 后端组合验收入口可一键复验，且没有真实供应商或公司系统调用。
+- [ ] 本地完整验收栈可一键复验，且没有真实供应商或公司系统调用。
 - [ ] 本地真实 MP4 成片链路可复验。
 - [ ] 前端真实后端模式可脚本化复验。
 - [ ] Suno / MiniMax 至少各完成 1 次受控真实成功联调，或明确记录为公司接入前阻塞项。

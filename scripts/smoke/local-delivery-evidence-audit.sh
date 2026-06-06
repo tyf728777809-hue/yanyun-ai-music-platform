@@ -194,6 +194,7 @@ required_files=(
   "docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md"
   "docs/specs/mock-publish-package-block-smoke-v0.1.md"
   "docs/specs/local-commercial-backend-acceptance-stack-smoke-v0.1.md"
+  "docs/specs/local-commercial-full-acceptance-stack-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
 )
@@ -206,6 +207,7 @@ required_executables=(
   "scripts/smoke/api-main-flow.sh"
   "scripts/smoke/api-package-blocked-flow.sh"
   "scripts/smoke/local-commercial-backend-acceptance-stack.sh"
+  "scripts/smoke/local-commercial-full-acceptance-stack.sh"
   "scripts/smoke/openapi-contract.sh"
   "scripts/smoke/company-adapter-readiness-smoke.sh"
   "scripts/smoke/real-model-readiness-preflight.sh"
@@ -232,6 +234,7 @@ require_pattern "docs/handover/company-delivery-package-v0.1.md" "api-package-bl
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
 require_pattern "README.md" "api-package-blocked-flow\\.sh" "README references package block smoke"
 require_pattern "README.md" "local-commercial-backend-acceptance-stack\\.sh" "README references backend acceptance stack smoke"
+require_pattern "README.md" "local-commercial-full-acceptance-stack\\.sh" "README references full acceptance stack smoke"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
@@ -246,6 +249,7 @@ require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "DECISI
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "MODE=preflight" "acceptance checklist requires real-model preflight"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_REAL_MODEL_SMOKE=1" "acceptance checklist requires global real-smoke allow gate"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-backend-acceptance-stack\\.sh" "acceptance checklist references backend acceptance stack"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-full-acceptance-stack\\.sh" "acceptance checklist references full acceptance stack"
 
 check_smoke_index
 check_real_model_gate_audit

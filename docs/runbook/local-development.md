@@ -300,6 +300,30 @@ scripts/smoke/local-commercial-backend-acceptance-stack.sh
 - 真实模型受控 smoke。
 - 公司 Adapter 真实替换联合验收。
 
+### Local Commercial Full Acceptance Stack
+
+如果要在交付前一次性复验“后端 Mock 基线 + local-process MP4 + Claude Web v1 真实后端 UI”，并且
+`apps/render-worker`、`prototypes/Claude-web-v1` 依赖已经安装，可运行：
+
+```bash
+scripts/smoke/local-commercial-full-acceptance-stack.sh
+```
+
+该脚本按顺序执行：
+
+1. `scripts/smoke/local-commercial-backend-acceptance-stack.sh`。
+2. 启动 `RENDER_WORKER_MODE=local-process` 的 API，并运行 `EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，用 `ffprobe` 验证 MP4。
+3. 启动 Mock render API，并运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`。
+
+依赖缺失时先安装：
+
+```bash
+cd apps/render-worker && npm install
+cd ../../prototypes/Claude-web-v1 && npm install
+```
+
+该脚本仍然只验证本地 Mock / 本地进程能力，不调用真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Suno、MiniMax、Image 2 或公司系统。真实模型仍必须走 `scripts/smoke/real-model-controlled-smoke.sh` 的 `plan/preflight/execute` 路线。
+
 仓库提供 `scripts/smoke/api-main-flow.sh`，用于在 API 已启动后复验主链路。脚本会覆盖：
 
 - `GET /health`

@@ -14,7 +14,7 @@ Without a handoff package index, the company side may confuse local mock readine
 ## Functional Requirements
 
 - FR-1: The handoff package MUST provide one company-facing starting document under `docs/handover`.
-- FR-2: The handoff package MUST list the first-read documents and local verification commands, including the backend acceptance stack smoke.
+- FR-2: The handoff package MUST list the first-read documents and local verification commands, including the backend acceptance stack smoke and full acceptance stack smoke.
 - FR-3: The handoff package MUST distinguish local-ready, smoke-prepared, handoff-prepared, blocked-external, and decision-required items.
 - FR-4: The handoff package MUST state that the platform does not implement real company account, moderation, quota, publish, share, interaction, or recommendation systems.
 - FR-5: The handoff package MUST state that company production must not trust `X-Mock-User-Id`.
@@ -37,7 +37,7 @@ Without a handoff package index, the company side may confuse local mock readine
 - AC-1: Given the repository checkout, when the company handoff audit runs, then it verifies the package document, Adapter handoff, replacement checklist, local delivery status, acceptance checklist, OpenAPI, frontend ADR, local runbook, and key smoke scripts exist. Covers FR-1, FR-2, and FR-12.
 - AC-2: Given the package document, when the audit scans it, then it finds local-ready, smoke-prepared, handoff-prepared, blocked-external, and decision-required status terms. Covers FR-3.
 - AC-3: Given the package document, when the audit scans it, then it finds explicit company-system boundary text, `X-Mock-User-Id` warning, `mark-fetched` semantics, DreamMaker production-target rule, and Yunwu/WellAPI public-network smoke labels. Covers FR-4 through FR-8.
-- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9 and FR-10.
+- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-commercial-full-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9 and FR-10.
 - AC-5: Given the audit runs, when required evidence is missing, then it exits non-zero. Covers FR-11 and FR-12.
 
 ## Edge Cases

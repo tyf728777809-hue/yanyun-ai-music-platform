@@ -168,6 +168,14 @@ scripts/smoke/local-commercial-backend-acceptance-stack.sh
 
 该脚本会自动启动并清理 `music-api`，串行运行主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断 smoke。它只使用 Mock / 受控失败路径，显式关闭 DreamMaker、Yunwu、WellAPI、DeepSeek、Image 2 和公司系统真实调用；DreamMaker guard 仍会作为正式生产目标保留项被 readiness smoke 检查。
 
+如需复验“后端基线 + 本地 MP4 + Claude 前端真实后端模式”的完整本地商用验收栈：
+
+```bash
+scripts/smoke/local-commercial-full-acceptance-stack.sh
+```
+
+该脚本会先跑后端组合验收，再用 `RENDER_WORKER_MODE=local-process` 跑 1 秒 MP4 + `ffprobe` 验证，最后启动 Mock API 给 `prototypes/Claude-web-v1` 执行 `npm run smoke:real-backend`。它要求 `apps/render-worker` 和 `prototypes/Claude-web-v1` 已安装依赖，仍不调用真实模型供应商或公司系统。
+
 如需对拍 OpenAPI v0.1 与当前后端运行时响应：
 
 ```bash
@@ -207,7 +215,7 @@ scripts/smoke/company-handoff-package-audit.sh
 scripts/smoke/real-model-safety-gates-audit.sh
 ```
 
-`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
+`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行；完整本地商用验收栈可用 `scripts/smoke/local-commercial-full-acceptance-stack.sh` 执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
 
 ## Web Commands
 

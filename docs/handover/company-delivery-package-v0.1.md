@@ -49,6 +49,14 @@ scripts/smoke/local-commercial-backend-acceptance-stack.sh
 
 该组合脚本会自动启动并清理 API，覆盖主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断；它显式关闭 DreamMaker、Yunwu、WellAPI、DeepSeek、Image 2 和公司系统真实调用，但会继续检查 DreamMaker guard 作为正式生产目标保留项。
 
+如果要复验“后端基线 + 本地 MP4 + Claude 前端真实后端模式”的完整本地商用验收栈：
+
+```bash
+scripts/smoke/local-commercial-full-acceptance-stack.sh
+```
+
+该脚本要求 `apps/render-worker` 和 `prototypes/Claude-web-v1` 依赖已安装，会继续保持真实供应商和公司系统关闭。
+
 公司交接前建议用严格模式先证明工作区干净：
 
 ```bash
@@ -151,6 +159,7 @@ TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 |---|---|
 | 本地交付证据审计 | `STRICT_GIT_CLEAN=true scripts/smoke/local-delivery-evidence-audit.sh` |
 | 后端本地商用 Mock 组合验收 | `scripts/smoke/local-commercial-backend-acceptance-stack.sh` |
+| 本地商用完整验收栈 | `scripts/smoke/local-commercial-full-acceptance-stack.sh` |
 | 真实模型安全门矩阵审计 | `scripts/smoke/real-model-safety-gates-audit.sh` |
 | 公司 Adapter readiness | `scripts/smoke/company-adapter-readiness-smoke.sh` |
 | OpenAPI 运行时契约 | `scripts/smoke/openapi-contract.sh` |
