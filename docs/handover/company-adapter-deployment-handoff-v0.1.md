@@ -224,6 +224,9 @@ RENDER_WORKER_TIMEOUT=
 `docs/checklists/local-commercial-delivery-acceptance.md` 统一走查仓库状态、基础设施、后端主链路、
 前端真实后端模式、真实模型联调准备、安全日志和公司 Adapter 接入状态。
 
+公司开发实际替换账号、审核、权益、发布、分享边界时，按
+`docs/checklists/company-adapter-replacement-readiness.md` 逐项留下接口、幂等、隔离和 smoke 证据。
+
 其中公司 Adapter 部分至少应留下以下证据：
 
 - `/internal/integration-readiness` 的脱敏响应摘要。

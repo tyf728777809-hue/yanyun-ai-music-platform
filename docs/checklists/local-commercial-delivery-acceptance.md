@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 23:05 CST
+更新时间：2026-06-06 23:12 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -65,6 +65,7 @@
 ## F. 公司 Adapter 交接
 
 - [ ] `/internal/integration-readiness` 可访问，且每个组件的 `status`、`blocks_company_deployment`、`required_env_vars` 可解释。
+- [ ] 公司 Adapter 替换按 `docs/checklists/company-adapter-replacement-readiness.md` 留下账号、审核、权益、发布、分享五类证据。
 - [ ] 公司部署前，账号、审核、权益、发布、分享相关 Mock 阻塞项已替换真实实现或由公司明确豁免。
 - [ ] 公司账号接入不再信任 `X-Mock-User-Id`，作品读写按真实 `user_id` 隔离。
 - [ ] 审核覆盖用户输入、歌词草案和发布包交接前预检，并能映射到用户可读错误。
