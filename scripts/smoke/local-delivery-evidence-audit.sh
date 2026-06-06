@@ -132,6 +132,17 @@ check_production_provider_defaults_audit() {
   printf '%s\n' "$output" | tail -40
 }
 
+check_real_model_evidence_log_audit() {
+  local output
+  if output="$(scripts/smoke/real-model-evidence-log-audit.sh 2>&1)"; then
+    pass "real-model evidence log audit passes"
+    return
+  fi
+
+  fail_check "real-model evidence log audit failed"
+  printf '%s\n' "$output" | tail -40
+}
+
 check_company_deployment_readiness_audit() {
   local output
   if output="$(scripts/smoke/company-deployment-readiness-audit.sh 2>&1)"; then
@@ -212,6 +223,8 @@ required_files=(
   "docs/specs/real-model-controlled-smoke-index-v0.1.md"
   "docs/specs/real-model-readiness-preflight-v0.1.md"
   "docs/specs/real-model-safety-gates-audit-v0.1.md"
+  "docs/specs/real-model-smoke-evidence-log-v0.1.md"
+  "docs/integrations/real-model-smoke-evidence-log.md"
   "docs/specs/deepseek-real-lyrics-smoke-v0.1.md"
   "docs/specs/dreammaker-image2-real-cover-stack-smoke-v0.1.md"
   "docs/specs/mock-publish-package-block-smoke-v0.1.md"
@@ -238,6 +251,7 @@ required_executables=(
   "scripts/smoke/real-model-readiness-preflight.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
   "scripts/smoke/real-model-safety-gates-audit.sh"
+  "scripts/smoke/real-model-evidence-log-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
@@ -263,6 +277,7 @@ require_pattern "README.md" "api-package-blocked-flow\\.sh" "README references p
 require_pattern "README.md" "local-commercial-backend-acceptance-stack\\.sh" "README references backend acceptance stack smoke"
 require_pattern "README.md" "local-commercial-full-acceptance-stack\\.sh" "README references full acceptance stack smoke"
 require_pattern "README.md" "production-provider-defaults-audit\\.sh" "README references production provider defaults audit"
+require_pattern "README.md" "real-model-evidence-log-audit\\.sh" "README references real-model evidence log audit"
 require_pattern "README.md" "company-deployment-readiness-audit\\.sh" "README references company deployment readiness audit"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
@@ -280,11 +295,14 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-backend-acceptance-stack\\.sh" "acceptance checklist references backend acceptance stack"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-full-acceptance-stack\\.sh" "acceptance checklist references full acceptance stack"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "production-provider-defaults-audit\\.sh" "acceptance checklist references production provider defaults audit"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-model-smoke-evidence-log\\.md" "acceptance checklist references real-model evidence log"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-model-evidence-log-audit\\.sh" "acceptance checklist references real-model evidence log audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "company-deployment-readiness-audit\\.sh" "acceptance checklist references company deployment readiness audit"
 
 check_smoke_index
 check_real_model_gate_audit
 check_production_provider_defaults_audit
+check_real_model_evidence_log_audit
 check_company_deployment_readiness_audit
 check_secret_patterns
 check_large_tracked_files

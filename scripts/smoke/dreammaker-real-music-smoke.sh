@@ -154,7 +154,7 @@ PACKAGE_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.package_status')"
 if command -v docker >/dev/null 2>&1; then
   echo "Provider call summary:"
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
-    "select provider, model_name, provider_trace_id, status, error_code from provider_calls where work_id = '$WORK_ID' order by created_at;" || true
+    "select provider, model_name, case when provider_trace_id is null or provider_trace_id = '' then '<empty>' else '<present>' end, status, error_code from provider_calls where work_id = '$WORK_ID' order by created_at;" || true
 fi
 
 if [ "$FINAL_STATUS" = "GENERATED" ] && [ "$PACKAGE_STATUS" = "PACKAGE_READY" ]; then

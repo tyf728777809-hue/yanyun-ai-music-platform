@@ -83,3 +83,7 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 - HTTP 429 会映射为 `RATE_LIMITED`，停止继续触发新样本。
 - 超时会映射为 `PROVIDER_TIMEOUT`，可在剩余重试次数内重试。
 - 任何失败都只记录脱敏摘要，不记录完整 provider payload。
+
+## 证据记录
+
+每次 Yunwu 公网 smoke 后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。只记录 `work_id`、最终状态、失败码、trace 是否 `<present>`、对象存储导入结果和下一步判断；不要记录完整 task id、音频 URL、请求/响应或 API Key。Yunwu 成功只代表公网路径通过，不代表 DreamMaker 生产目标完成。

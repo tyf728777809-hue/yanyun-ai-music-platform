@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 05:48 CST
+更新时间：2026-06-07 06:06 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -19,6 +19,7 @@
 - [ ] `docs/handover/local-commercial-delivery-status-v0.1.md` 已同步当前阶段，且没有把 Mock / 受控 smoke 准备项过度描述为真实生产完成。
 - [ ] `scripts/smoke/local-delivery-evidence-audit.sh` 通过；若用于正式交接前 gate，应设置 `STRICT_GIT_CLEAN=true`。
 - [ ] `scripts/smoke/production-provider-defaults-audit.sh` 通过，证明生产 profile、生产样例、Java fallback 和 readiness 默认值都保留 DreamMaker 为生产目标。
+- [ ] `scripts/smoke/real-model-evidence-log-audit.sh` 通过，证明真实模型 smoke 证据日志、DreamMaker 生产保留口径和脱敏规则齐全。
 - [ ] `scripts/smoke/company-deployment-readiness-audit.sh` 通过，证明本地基础设施 compose、应用 Dockerfile、监控 scrape、生产 env 样例和部署交接文档齐全。
 - [ ] `docs/handover/company-delivery-package-v0.1.md` 已作为公司开发第一阅读入口，且 `scripts/smoke/company-handoff-package-audit.sh` 通过。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
@@ -79,7 +80,7 @@
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
 - [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
-- [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
+- [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到 `docs/integrations/real-model-smoke-evidence-log.md`；Yunwu / WellAPI 公网样本不得写成 DreamMaker 生产目标已完成。
 
 ## F. 公司 Adapter 交接
 

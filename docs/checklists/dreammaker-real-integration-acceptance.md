@@ -53,6 +53,7 @@
 ## 交接
 
 - [ ] 更新 `docs/project-progress.md`。
+- [ ] 更新统一脱敏证据日志 `docs/integrations/real-model-smoke-evidence-log.md`，trace 只记录为 `<present>` / `<empty>`。
 - [ ] 更新 `docs/integrations/dreammaker-open-questions-tracker.md` 的确认项状态。
 - [ ] 若发现新错误码，补充失败码样本、retryable 判断和处理建议。
 - [ ] 将可交接信息同步到 `docs/handover/dreammaker-provider-batch-05-handoff.md`。

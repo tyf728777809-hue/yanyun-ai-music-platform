@@ -64,6 +64,8 @@ required_files=(
   "docs/specs/local-commercial-full-acceptance-stack-smoke-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
   "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
+  "docs/specs/real-model-smoke-evidence-log-v0.1.md"
+  "docs/integrations/real-model-smoke-evidence-log.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
   "deploy/env.production.example"
 )
@@ -84,6 +86,7 @@ required_executables=(
   "scripts/smoke/local-commercial-full-acceptance-stack.sh"
   "scripts/smoke/real-model-controlled-smoke.sh"
   "scripts/smoke/real-model-safety-gates-audit.sh"
+  "scripts/smoke/real-model-evidence-log-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
 )
@@ -107,6 +110,8 @@ require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references 
 require_package_pattern 'local-commercial-backend-acceptance-stack\.sh' 'package references backend acceptance stack smoke'
 require_package_pattern 'local-commercial-full-acceptance-stack\.sh' 'package references full acceptance stack smoke'
 require_package_pattern 'production-provider-defaults-audit\.sh' 'package references production provider defaults audit'
+require_package_pattern 'real-model-evidence-log-audit\.sh' 'package references real-model evidence log audit'
+require_package_pattern 'real-model-smoke-evidence-log\.md' 'package references real-model evidence log'
 require_package_pattern 'company-deployment-readiness-audit\.sh' 'package references company deployment readiness audit'
 require_package_pattern 'deploy/env\.production\.example' 'package references production env example'
 require_package_pattern 'SPRING_PROFILES_ACTIVE=prod' 'package references production Spring profile'

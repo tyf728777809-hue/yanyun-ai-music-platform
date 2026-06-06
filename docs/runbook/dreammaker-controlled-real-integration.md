@@ -217,9 +217,11 @@ export MUSIC_PROVIDER=mock
 | 模型 |  |
 | `work_id` |  |
 | `job_id` |  |
-| DreamMaker task id |  |
+| DreamMaker task id | `<present>` / `<empty>`，不要记录完整值 |
 | 最终作品状态 |  |
 | 发布包状态 |  |
 | 对象存储导入 | 成功 / 失败 |
 | 失败码 |  |
 | 结论 | 通过 / 待修复 |
+
+完成后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。如果是 Yunwu / WellAPI 公网样本，不得把结果写成 DreamMaker 生产目标已完成。

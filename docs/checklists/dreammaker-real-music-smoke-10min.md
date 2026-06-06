@@ -209,13 +209,13 @@ curl -sS "$API_BASE/works/$WORK_ID/publish-package" \
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
-  "select provider, model_name, provider_trace_id, status, error_code from provider_calls where work_id = '$WORK_ID' order by created_at;"
+  "select provider, model_name, case when provider_trace_id is null or provider_trace_id = '' then '<empty>' else '<present>' end, status, error_code from provider_calls where work_id = '$WORK_ID' order by created_at;"
 ```
 
 成功证据：
 
 - [ ] `provider` 为 `SUNO` 或 `MINIMAX`，不是 `MOCK`。
-- [ ] `provider_trace_id` 有真实 task id。
+- [ ] `provider_trace_id` 只以 `<present>` / `<empty>` 形式记录，完整 task id 不进入文档、截图或提交。
 - [ ] `works.status=GENERATED`。
 - [ ] `works.package_status=PACKAGE_READY`。
 - [ ] 作品详情里的 `media_assets.audio_url` 是平台 URL，不是供应商原始 URL。
@@ -223,7 +223,7 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 
 失败但仍算有效联调样本：
 
-- [ ] `provider_calls` 有真实 Provider 和 task id。
+- [ ] `provider_calls` 有真实 Provider，trace 只记录为 `<present>` / `<empty>`。
 - [ ] 失败码已脱敏，例如 `PROVIDER_TIMEOUT`、`RATE_LIMITED`、`MUSIC_GENERATION_FAILED`。
 - [ ] 作品失败页保留 `RETRY_MUSIC` 或合理下一步动作。
 - [ ] 没有重复确认同一个作品导致第二个真实任务。
@@ -265,10 +265,12 @@ EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 | Provider | `suno` / `minimax` |
 | `work_id` |  |
 | `job_id` |  |
-| DreamMaker task id |  |
+| DreamMaker task id | `<present>` / `<empty>`，不要记录完整值 |
 | 最终状态 |  |
 | 发布包状态 |  |
 | 是否导入平台对象存储 |  |
 | 失败码 |  |
 | 是否需要更新错误码映射 |  |
 | 结论 | 通过 / 待修复 |
+
+记录后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。

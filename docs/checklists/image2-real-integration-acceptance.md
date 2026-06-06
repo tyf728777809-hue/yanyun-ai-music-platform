@@ -54,6 +54,7 @@
 ## 交接
 
 - [ ] 更新 `docs/project-progress.md`。
+- [ ] 更新统一脱敏证据日志 `docs/integrations/real-model-smoke-evidence-log.md`，并区分 WellAPI 公网 smoke 与 DreamMaker Image 2 生产目标。
 - [ ] 更新 `docs/integrations/image2-open-questions-tracker.md` 的确认项状态。
 - [ ] 若发现新错误码，补充失败码样本、retryable 判断和处理建议。
 - [ ] 若发布包媒体字段需要变化，先升级接口契约，再交给前端。

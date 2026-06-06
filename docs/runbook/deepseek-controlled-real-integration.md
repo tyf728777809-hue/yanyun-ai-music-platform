@@ -195,6 +195,8 @@ EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 | 是否回退 Mock | 是 / 否 |
 | 结论 | 通过 / 待修复 |
 
+完成后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。只记录 hash、状态、耗时和失败码，不粘贴完整 Prompt、用户原文或模型输出。
+
 ## 进入真实联调前仍需确认
 
 - DeepSeek API Key 或公司 Secret 注入方式。

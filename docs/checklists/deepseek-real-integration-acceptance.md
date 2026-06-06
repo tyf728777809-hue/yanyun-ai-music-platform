@@ -60,6 +60,7 @@
 ## 交接
 
 - [ ] 更新 `docs/project-progress.md`。
+- [ ] 更新统一脱敏证据日志 `docs/integrations/real-model-smoke-evidence-log.md`，只保留 hash、状态、耗时、失败码和结论。
 - [ ] 更新 `docs/integrations/deepseek-open-questions-tracker.md` 的确认项状态。
 - [ ] 若发现新错误码，补充失败码样本、retryable 判断和处理建议。
 - [ ] 若 OpenAPI 用户可见字段需要变化，先升级接口契约，再交给前端。

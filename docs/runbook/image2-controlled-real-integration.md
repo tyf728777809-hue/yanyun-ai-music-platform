@@ -247,6 +247,8 @@ EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 | 是否使用默认封面兜底 | 是 / 否 |
 | 结论 | 通过 / 待修复 |
 
+完成后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。WellAPI 是公网 smoke，DreamMaker Image 2 是生产目标；两者证据必须分开记录。
+
 ## 进入真实联调前仍需确认
 
 - WellAPI API Key 或公司 Secret 注入方式；若切回生产目标 DreamMaker，还需 DreamMaker AK/SK 注入方式。
