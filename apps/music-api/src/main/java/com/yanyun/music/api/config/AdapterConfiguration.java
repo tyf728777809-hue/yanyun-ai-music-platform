@@ -3,6 +3,8 @@ package com.yanyun.music.api.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.MockAccountAdapter;
+import com.yanyun.music.configcenter.CompanyIntegrationProperties;
+import com.yanyun.music.configcenter.IntegrationReadinessService;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
 import com.yanyun.music.dreammaker.DreamMakerClient;
@@ -33,6 +35,7 @@ import com.yanyun.music.storage.ObjectStorageProperties;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.suno.SunoMusicProvider;
 import com.yanyun.music.suno.SunoMusicProviderOptions;
+import java.time.Clock;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -41,6 +44,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AdapterConfiguration {
+
+  @Bean
+  Clock clock() {
+    return Clock.systemUTC();
+  }
 
   @Bean
   AccountAdapter accountAdapter() {
@@ -153,5 +161,17 @@ public class AdapterConfiguration {
   MusicProviderSelection musicProviderSelection(
       @Value("${yanyun.music.provider:mock}") String provider) {
     return MusicProviderSelection.fromConfig(provider);
+  }
+
+  @Bean
+  @ConfigurationProperties(prefix = "yanyun.integration")
+  CompanyIntegrationProperties companyIntegrationProperties() {
+    return new CompanyIntegrationProperties();
+  }
+
+  @Bean
+  IntegrationReadinessService integrationReadinessService(
+      CompanyIntegrationProperties companyIntegrationProperties, Clock clock) {
+    return new IntegrationReadinessService(companyIntegrationProperties, clock);
   }
 }

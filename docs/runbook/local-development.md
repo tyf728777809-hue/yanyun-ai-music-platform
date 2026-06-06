@@ -160,6 +160,16 @@ curl http://localhost:8080/health
 curl http://localhost:8080/actuator/health
 ```
 
+公司 Adapter 与部署交接 readiness 检查：
+
+```bash
+curl http://localhost:8080/internal/integration-readiness
+```
+
+本地环境允许公司账号、审核、权益、发布、分享边界显示为 `MOCK_ONLY`。公司部署前，应检查
+`blocks_company_deployment=true` 的项目，并按 `docs/handover/company-adapter-deployment-handoff-v0.1.md`
+替换真实 Adapter 或由公司明确豁免。
+
 对象存储默认走本地文件模式：
 
 ```text

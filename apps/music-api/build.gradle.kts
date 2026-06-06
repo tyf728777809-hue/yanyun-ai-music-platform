@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":modules:common"))
     implementation(project(":modules:auth"))
+    implementation(project(":modules:config-center"))
     implementation(project(":modules:quota"))
     implementation(project(":modules:moderation"))
     implementation(project(":modules:publish"))

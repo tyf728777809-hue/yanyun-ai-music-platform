@@ -25,6 +25,19 @@ management:
         enabled: true
 
 yanyun:
+  integration:
+    environment: ${YANYUN_ENV:local}
+    account-adapter-mode: ${COMPANY_ACCOUNT_ADAPTER_MODE:mock}
+    moderation-adapter-mode: ${COMPANY_MODERATION_ADAPTER_MODE:mock}
+    quota-adapter-mode: ${COMPANY_QUOTA_ADAPTER_MODE:mock}
+    publish-adapter-mode: ${COMPANY_PUBLISH_ADAPTER_MODE:mock}
+    share-adapter-mode: ${COMPANY_SHARE_ADAPTER_MODE:mock}
+    music-provider: ${MUSIC_PROVIDER:mock}
+    object-storage-provider: ${OBJECT_STORAGE_PROVIDER:local}
+    workflow-dispatch-mode: ${MUSIC_WORKFLOW_DISPATCH_MODE:sync}
+    workflow-dispatch-target: ${WORKFLOW_OUTBOX_DISPATCH_TARGET:local}
+    temporal-target: ${TEMPORAL_TARGET:localhost:7233}
+    dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
   music:
     provider: ${MUSIC_PROVIDER:mock}
   storage:
