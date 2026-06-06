@@ -4,7 +4,7 @@
 
 本 Runbook 用于第 5 批手动联调 Suno 与 MiniMax 的真实 DreamMaker 链路。目标是证明真实 Provider 可以在本地完整走到平台对象存储、作品状态和发布包交接；同时避免误触真实请求、泄露密钥或让同步 API 线程长时间阻塞。
 
-如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；也可以在完成 worker/API 启动和凭据注入后，用 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行脚本化单作品 smoke。真实调用前，可先用 `scripts/smoke/dreammaker-real-guard-smoke.sh` 验证默认 `sync` 模式会被运行时 guard 拒绝，且不会触发 DreamMaker。本 Runbook 负责解释完整风险、回滚和证据记录口径。
+如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；也可以用 `scripts/smoke/dreammaker-real-music-stack-smoke.sh` 一次性启动 worker/API、执行单作品 smoke 并自动清理进程。若 worker/API 已手动启动，则用 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行脚本化单作品 smoke。真实调用前，可先用 `scripts/smoke/dreammaker-real-guard-smoke.sh` 验证默认 `sync` 模式会被运行时 guard 拒绝，且不会触发 DreamMaker。本 Runbook 负责解释完整风险、回滚和证据记录口径。
 
 ## 硬性规则
 
@@ -50,6 +50,20 @@ export DREAMMAKER_REAL_CALLS_ENABLED=false
 ```
 
 ## 推荐启动方式
+
+### 一键 Stack Smoke
+
+首次只跑 1 个 Suno 作品时，优先使用 stack smoke。脚本会静默读取 AK/SK、拒绝占用的 8080/8081 端口、启动 worker/API、执行单作品真实 Provider smoke，并在成功、失败或中断时停止它自己启动的进程。
+
+```bash
+ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+REAL_PROVIDER=suno \
+scripts/smoke/dreammaker-real-music-stack-smoke.sh
+```
+
+如需测试 MiniMax，把 `REAL_PROVIDER` 改为 `minimax`。该脚本会真实调用 DreamMaker，只能在手动联调窗口内运行；如果本地已经手动启动了 API 或 worker，则改用下方手动启动方式和单作品 smoke。
+
+### 手动启动
 
 先启动 worker。真实 Provider 调用发生在 worker 进程里，因此 worker 必须拿到 DreamMaker 环境变量：
 

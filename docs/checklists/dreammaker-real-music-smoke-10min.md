@@ -1,6 +1,6 @@
 # DreamMaker 真实音乐 10 分钟 Smoke 清单
 
-更新时间：2026-06-06
+更新时间：2026-06-07
 
 ## 适用场景
 
@@ -53,6 +53,16 @@ export DREAMMAKER_SECRET_KEY
 # read -r -s -p "DREAMMAKER_USER_ACCESS_TOKEN: " DREAMMAKER_USER_ACCESS_TOKEN; echo
 # export DREAMMAKER_USER_ACCESS_TOKEN
 ```
+
+如果只想先测 1 个 Suno 作品，可跳过第 3-8 步，使用一键 stack smoke。脚本会静默读取缺失的 AK/SK、启动 worker/API、执行单作品真实 Provider smoke，并自动停止它自己启动的进程：
+
+```bash
+ALLOW_DREAMMAKER_REAL_SMOKE=1 \
+REAL_PROVIDER=suno \
+scripts/smoke/dreammaker-real-music-stack-smoke.sh
+```
+
+该命令会真实调用 DreamMaker；如果本地 8080 或 8081 已有服务监听，脚本会拒绝运行。要测 MiniMax 时把 `REAL_PROVIDER` 改为 `minimax`。
 
 ## 3. 启动 worker
 

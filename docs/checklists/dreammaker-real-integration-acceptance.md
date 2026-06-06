@@ -1,6 +1,6 @@
 # DreamMaker 真实联调验收清单
 
-首次手动 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行，也可在 worker/API 已按 runbook 启动后使用 `scripts/smoke/dreammaker-real-music-smoke.sh` 跑单作品脚本化 smoke。本清单用于正式验收 Suno 与 MiniMax 两条成功路径、失败止损和交接记录。
+首次手动 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；若本地未启动 API/worker，优先使用 `scripts/smoke/dreammaker-real-music-stack-smoke.sh` 跑单作品 stack smoke；若 worker/API 已按 runbook 手动启动，则使用 `scripts/smoke/dreammaker-real-music-smoke.sh` 跑单作品脚本化 smoke。本清单用于正式验收 Suno 与 MiniMax 两条成功路径、失败止损和交接记录。
 
 ## 联调前
 
@@ -12,6 +12,7 @@
 - [ ] API 使用 outbox temporal 模式，真实调用由 worker 执行。
 - [ ] `/internal/integration-readiness` 中 `dreammaker_guard=READY_FOR_LOCAL`，且缺少 AK/SK 时必须显示 `BLOCKED`。
 - [ ] `scripts/smoke/dreammaker-real-guard-smoke.sh` 已验证运行时阻止 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时在 `sync` 模式确认或重试 `suno` / `minimax`。
+- [ ] 首次 Suno smoke 优先用 `scripts/smoke/dreammaker-real-music-stack-smoke.sh`，或确认手动 worker/API 启动方式与 runbook 一致。
 
 ## Suno 成功路径
 
