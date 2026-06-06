@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 16:53 CST
+更新时间：2026-06-06 17:37 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -15,7 +15,7 @@
 
 - [ ] `git status --short` 无未解释的改动；临时截图、`.playwright-mcp/`、构建产物和密钥文件未进入 Git。
 - [ ] `README.md`、`docs/project-progress.md`、运行手册和交接文档的当前阶段一致。
-- [ ] `docs/api/openapi-v0.1.yaml` 与前端、后端接口实现的字段和状态一致。
+- [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。
 
 ## B. 本地基础设施
@@ -33,6 +33,7 @@
 - [ ] API `/health` 与 `/actuator/health` 返回健康。
 - [ ] `scripts/smoke/api-main-flow.sh` 在同步 Mock 模式通过。
 - [ ] `scripts/smoke/api-main-flow.sh` 在 `RENDER_WORKER_MODE=local-process` 模式通过，并用 `ffprobe` 验证 MP4。
+- [ ] `scripts/smoke/openapi-contract.sh` 在同步 Mock 模式通过。
 - [ ] 创建作品、确认出歌、获取发布包、刷新 URL、标记交接、作品列表、失败重试均可复验。
 - [ ] `Idempotency-Key` 成功重放和冲突 409 语义通过复验。
 

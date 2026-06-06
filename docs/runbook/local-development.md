@@ -236,6 +236,36 @@ local-process 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x108
 `EXPECTED_DURATION_MS`。如不希望脚本检查 PostgreSQL 或本地文件，可分别设置
 `CHECK_DB=false`、`CHECK_LOCAL_FILES=false`。
 
+### OpenAPI Contract Smoke
+
+仓库提供 `scripts/smoke/openapi-contract.sh`，用于在 API 已启动后对拍 `docs/api/openapi-v0.1.yaml`
+和当前后端运行时响应。推荐仍使用同步 Mock API 启动方式：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+RENDER_WORKER_MODE=mock \
+./gradlew :apps:music-api:bootRun
+```
+
+另开一个终端执行：
+
+```bash
+scripts/smoke/openapi-contract.sh
+```
+
+脚本覆盖：
+
+- 静态 OpenAPI path、operationId、schema required 字段和枚举值。
+- `GET /api/v1/me`、灵感成歌、填词成歌、作品详情和作品列表。
+- AI 润色、AI 续写、第 3 次编辑 409 统一错误响应。
+- 确认出歌、封面重生、视频重渲、发布包获取、刷新 URL 和标记已交接。
+- 缺失 `Idempotency-Key`、幂等冲突、作品不存在、`suno` 受控音乐失败和 mock 重试恢复。
+
+该脚本只使用本地 Mock / 受控失败路径，不触发真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统。
+
 ### Claude Web v1 UI Smoke
 
 `prototypes/Claude-web-v1` 提供真实后端 UI smoke，用于把手动 Playwright 验收固化成可重复脚本。

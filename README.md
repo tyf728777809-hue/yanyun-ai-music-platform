@@ -104,6 +104,12 @@ API 启动后可运行本地主链路 smoke：
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 ```
 
+如需对拍 OpenAPI v0.1 与当前后端运行时响应：
+
+```bash
+scripts/smoke/openapi-contract.sh
+```
+
 如果 API 以 `RENDER_WORKER_MODE=local-process` 启动，可额外验证真实 MP4：
 
 ```bash
@@ -143,6 +149,7 @@ npm test
 ## API Contract
 
 OpenAPI v0.1 位于 `docs/api/openapi-v0.1.yaml`，覆盖作品状态、生成阶段、剩余改词次数、权益提示、失败可执行动作和发布包交接状态。
+运行时契约 smoke 位于 `scripts/smoke/openapi-contract.sh`，要求 API 已在 `http://localhost:8080` 启动，会覆盖静态 OpenAPI path/schema/enum 检查、作品创建、作品详情、作品列表、统一错误、幂等冲突、润色次数、发布包交接、受控音乐失败和 mock 重试恢复。
 
 ## Delivery Checklist
 
