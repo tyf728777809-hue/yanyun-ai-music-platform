@@ -12,7 +12,12 @@ export function useAction(onSettled?: () => void) {
   async function run<T>(
     key: string,
     fn: () => Promise<T>,
-    opts?: { successMsg?: string; conflictMsg?: string; onSuccess?: (r: T) => void },
+    opts?: {
+      successMsg?: string;
+      conflictMsg?: string;
+      onSuccess?: (r: T) => void;
+      onError?: (message: string) => void;
+    },
   ): Promise<void> {
     if (busyKey) return;
     setBusyKey(key);
@@ -21,16 +26,17 @@ export function useAction(onSettled?: () => void) {
       if (opts?.successMsg) toast.success(opts.successMsg);
       opts?.onSuccess?.(result);
     } catch (err) {
+      let message = '操作失败，请稍后重试';
       if (err instanceof ApiError) {
         const suffix = requestIdLine(err);
         if (err.isQuotaConflict && opts?.conflictMsg) {
-          toast.error(suffix ? `${opts.conflictMsg} ${suffix}` : opts.conflictMsg);
+          message = suffix ? `${opts.conflictMsg} ${suffix}` : opts.conflictMsg;
         } else {
-          toast.error(suffix ? `${err.message} ${suffix}` : err.message);
+          message = suffix ? `${err.message} ${suffix}` : err.message;
         }
-      } else {
-        toast.error('操作失败，请稍后重试');
       }
+      toast.error(message);
+      opts?.onError?.(message);
     } finally {
       setBusyKey(null);
       onSettled?.();

@@ -16,6 +16,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
   const { run, busyKey } = useAction(refresh);
   const [editKind, setEditKind] = useState<EditKind | null>(null);
   const [instruction, setInstruction] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
 
   const draft = work.lyrics_draft;
   const remaining = work.polish_remaining_count;
@@ -27,6 +28,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
   function openEditor(kind: EditKind) {
     setEditKind(kind);
     setInstruction('');
+    setEditError(null);
   }
 
   async function submitEdit() {
@@ -34,6 +36,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
     const kind = editKind;
     const trimmed = instruction.trim();
     if (kind === 'polish' && !trimmed) return;
+    setEditError(null);
     await run(
       kind,
       () =>
@@ -44,6 +47,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         successMsg: kind === 'polish' ? '已为你润色歌词' : '已为你续写歌词',
         conflictMsg: '改词次数已用完，本次未生效',
         onSuccess: () => setEditKind(null),
+        onError: setEditError,
       },
     );
   }
@@ -178,6 +182,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         busy={busyKey === 'polish' || busyKey === 'continue'}
         onCancel={() => setEditKind(null)}
         onSubmit={submitEdit}
+        error={editError}
       />
     </div>
   );
@@ -189,6 +194,7 @@ function EditModal({
   instruction,
   onInstruction,
   busy,
+  error,
   onCancel,
   onSubmit,
 }: {
@@ -197,6 +203,7 @@ function EditModal({
   instruction: string;
   onInstruction: (v: string) => void;
   busy: boolean;
+  error: string | null;
   onCancel: () => void;
   onSubmit: () => void;
 }) {
@@ -230,6 +237,11 @@ function EditModal({
         onChange={(e) => onInstruction(e.target.value)}
       />
       {needsInstruction && <p className="field-error">请先写下润色方向。</p>}
+      {error && (
+        <p className="modal-error" role="alert">
+          {error}
+        </p>
+      )}
     </Modal>
   );
 }

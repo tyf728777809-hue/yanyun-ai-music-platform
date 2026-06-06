@@ -596,6 +596,16 @@
   font-size: 12.5px;
   margin-top: var(--sp-2);
 }
+.modal-error {
+  margin-top: var(--sp-3);
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(210, 105, 79, 0.36);
+  background: var(--cinnabar-soft);
+  color: var(--cinnabar-400);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
 
 /* 分段选择（声线） */
 .choice {
@@ -1060,6 +1070,7 @@
   display: flex;
   gap: var(--sp-3);
   flex-wrap: wrap;
+  margin-top: var(--sp-2);
 }
 .action-bar .btn {
   flex: 1;
@@ -1071,14 +1082,6 @@
 .action-bar--stack .btn {
   flex: none;
   min-width: 0;
-}
-
-/* 粘性操作栏（确认页移动端） */
-.confirm-view .action-bar {
-  position: sticky;
-  bottom: 0;
-  padding: var(--sp-3) 0;
-  background: linear-gradient(to top, var(--bg) 70%, transparent);
 }
 
 /* ---- 生成中 ---- */
@@ -1336,11 +1339,6 @@
   .media-body {
     flex: 1;
     min-width: 0;
-  }
-  .confirm-view .action-bar {
-    position: static;
-    background: none;
-    padding: 0;
   }
   .failed-view .action-bar--stack {
     flex-direction: column;

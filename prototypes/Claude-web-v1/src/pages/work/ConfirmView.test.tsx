@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ApiError } from '../../api/client';
 import { ToastProvider } from '../../components/Toast';
+import { service } from '../../mock/service';
 import type { WorkDetail } from '../../api/types';
 import { ConfirmView } from './ConfirmView';
 
@@ -39,6 +41,10 @@ function work(overrides: Partial<WorkDetail> = {}): WorkDetail {
 }
 
 describe('ConfirmView', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('keeps backend-provided edit actions visible when edit quota is exhausted but shows exhausted copy', () => {
     render(
       <ToastProvider>
@@ -66,5 +72,26 @@ describe('ConfirmView', () => {
 
     expect(screen.getByText('请先写下润色方向。')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '开始润色' })).toBeDisabled();
+  });
+
+  it('keeps quota conflict visible inside the edit modal', async () => {
+    vi.spyOn(service, 'polishLyrics').mockRejectedValue(
+      new ApiError(409, 'LYRICS_POLISH_QUOTA_EXHAUSTED', 'quota exhausted', 'req-1'),
+    );
+
+    render(
+      <ToastProvider>
+        <ConfirmView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '更热血一点' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '开始润色' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('改词次数已用完，本次未生效');
+    expect(screen.getByRole('alert')).toHaveTextContent('请求编号：req-1');
   });
 });
