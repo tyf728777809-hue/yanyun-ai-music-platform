@@ -80,7 +80,9 @@ public final class WorkStateMachine {
     return new WorkSnapshot(
         WorkStatus.FAILED,
         GenerationStage.FAILED,
-        PackageStatus.PACKAGE_NOT_READY,
+        failureCode == FailureCode.PACKAGE_BLOCKED
+            ? PackageStatus.PACKAGE_BLOCKED
+            : PackageStatus.PACKAGE_NOT_READY,
         failureCode,
         retryable,
         retryable ? 1 : 0);

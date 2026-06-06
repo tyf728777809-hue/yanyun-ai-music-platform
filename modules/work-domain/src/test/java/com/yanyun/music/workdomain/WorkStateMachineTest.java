@@ -1,5 +1,6 @@
 package com.yanyun.music.workdomain;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,6 +59,17 @@ class WorkStateMachineTest {
     assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
     assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
     assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+  }
+
+  @Test
+  void packageBlockedFailureSnapshotKeepsPackageBlockedStatus() {
+    WorkSnapshot snapshot = WorkStateMachine.failed(FailureCode.PACKAGE_BLOCKED, false);
+
+    assertEquals(WorkStatus.FAILED, snapshot.status());
+    assertEquals(GenerationStage.FAILED, snapshot.generationStage());
+    assertEquals(PackageStatus.PACKAGE_BLOCKED, snapshot.packageStatus());
+    assertEquals(FailureCode.PACKAGE_BLOCKED, snapshot.failureCode());
+    assertFalse(snapshot.retryable());
   }
 
   @Test
