@@ -1,7 +1,7 @@
 # 本地商用闭环交付走查记录
 
 日期：2026-06-06 17:37 CST
-最新更新：2026-06-07 02:20 CST
+最新更新：2026-06-07 06:54 CST
 状态：本地 Mock / 前端 / MP4 成片链路已复验通过；用户已可用 `prototypes/Claude-web-v1 + music-api` 做本地完整链路实测。真实 AI 出歌尚未完成供应商真实调用 smoke，真实公司系统仍为外部接入项。
 
 ## 当前可测范围
@@ -50,6 +50,19 @@
 | Yunwu Suno 脚本化 smoke | 待人工执行 | 新增 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 和低层脚本；脚本需要 `ALLOW_YUNWU_REAL_SMOKE=1`，当前未执行真实 Yunwu 调用 |
 | WellAPI Image2 脚本化 smoke | 待人工执行 | 新增 `scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 和低层脚本；脚本需要 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1`，当前未执行真实 WellAPI 调用 |
 | 进程清理 | 通过 | 验证结束后 `8080`、`5274` 无监听进程 |
+
+## 2026-06-07 完整验收栈复跑记录
+
+| 检查项 | 结果 | 证据摘要 |
+|---|---|---|
+| 本地商用完整验收栈 | 通过 | `scripts/smoke/local-commercial-full-acceptance-stack.sh` 于 2026-06-07 06:51 CST 运行通过；日志目录：`build/smoke/local-commercial-full-acceptance-20260607065154`。 |
+| 后端 Mock 主链路 | 通过 | 后端组合验收中的主链路作品 `d7a0e49a-c80e-493e-8c17-9300626152fd` 通过创建、确认出歌、获取发布素材、刷新 URL、标记交接、数据库和本地对象文件检查。 |
+| OpenAPI 契约与失败重试 | 通过 | OpenAPI 契约作品 `b509a81d-bb3c-4f81-8117-a6565afd509c` 通过；受控失败/重试作品 `d8a7b382-c8fb-48c8-abfe-f0295bb1b9e4` 通过。 |
+| 发布包审核阻断 | 通过 | Mock 发布包预检阻断作品 `157af1f2-6465-4469-a19c-80ca2af3ae61` 通过，证明交接前审核边界可收口。 |
+| local-process MP4 | 通过 | local-process MP4 作品 `bff03666-fb91-47bf-b378-21fb750bfc19` 通过；脚本已执行对象文件和 `ffprobe` 检查。 |
+| Claude Web v1 真实后端 UI | 通过 | 主流程作品 `410d4b7d-44d8-4cdf-9419-354e7a6878d1` 通过；失败重试作品 `f7765f09-0fd9-4ae1-8389-affba95a1b45` 通过。 |
+| 公司 Adapter / 真实供应商边界 | 通过 | 本次完整验收栈保持 `MUSIC_PROVIDER=mock`，显式关闭 DreamMaker、Yunwu、DeepSeek、Image 2、Agent real calls 和公司系统真实调用；`company-adapter-readiness-smoke.sh` 返回五类公司系统仍为 Mock/外部承接边界。 |
+| 进程清理 | 通过 | 运行结束后 `8080` 和 `5274` 均无监听进程。 |
 
 ## 仍不能判定完成的项
 
