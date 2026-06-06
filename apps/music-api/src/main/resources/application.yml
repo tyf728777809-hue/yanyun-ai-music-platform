@@ -41,6 +41,7 @@ yanyun:
     dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
   music:
     provider: ${MUSIC_PROVIDER:mock}
+    mock-duration-ms: ${MOCK_MUSIC_DURATION_MS:180000}
   render-worker:
     mode: ${RENDER_WORKER_MODE:mock}
     working-directory: ${RENDER_WORKER_WORKING_DIRECTORY:apps/render-worker}

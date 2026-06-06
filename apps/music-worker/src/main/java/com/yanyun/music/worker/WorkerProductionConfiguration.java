@@ -64,8 +64,9 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
-  MusicProvider mockMusicProvider() {
-    return new MockMusicProvider();
+  MusicProvider mockMusicProvider(
+      @Value("${yanyun.music.mock-duration-ms:180000}") int mockDurationMs) {
+    return new MockMusicProvider(mockDurationMs);
   }
 
   @Bean

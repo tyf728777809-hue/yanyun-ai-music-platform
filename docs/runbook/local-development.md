@@ -36,6 +36,15 @@ docker compose -f deploy/docker-compose.yml ps
 MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 ```
 
+默认 Mock 音频时长为 180000ms，对齐 3 分钟成片口径。做本地快速 smoke 时可以临时压短：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
+```
+
+该变量只影响 `MockMusicProvider` 返回的模拟音频时长，方便 `RENDER_WORKER_MODE=local-process`
+快速验证 Java 到 render-worker 的 MP4 成片链路；真实 Suno / MiniMax 返回时长不受它影响。
+
 Workflow dispatch 默认走同步本地模式，方便保持当前 Mock 主链路 smoke：
 
 ```bash
@@ -221,6 +230,8 @@ Worker 单独健康检查：
 
 ## Web
 
+`apps/web` 当前只保留官方仓库内的 React + Vite 工程 scaffold，用于后续正式前端接入时承接代码：
+
 ```bash
 cd apps/web
 npm install
@@ -228,6 +239,29 @@ npm run build
 npm test
 npm run dev
 ```
+
+当前可验收的高保真前端原型位于 `prototypes/Claude-web-v1`，默认通过 Vite proxy 把浏览器侧
+`/api/v1` 请求转发到 `http://localhost:8080/api/v1`：
+
+```bash
+cd prototypes/Claude-web-v1
+npm install
+npm test
+npm run typecheck
+npm run build
+npm run dev
+```
+
+离线演示可使用纯前端 Mock：
+
+```text
+http://localhost:{vite_port}/?mock=1
+```
+
+真实本地后端模式不加 `?mock=1`，需要先启动 `music-api`，并确保所有 POST 请求带
+`X-Mock-User-Id` 和 `Idempotency-Key`。前端原型验收问题统一记录到
+`docs/frontend/claude-web-v1-acceptance-fix-task-package.md`；本 Agent 默认只做任务包、接口、
+状态和验收 review，不直接修改该原型实现。
 
 ## Render Worker
 

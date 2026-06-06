@@ -1,10 +1,14 @@
 # 项目进度记录
 
-更新时间：2026-06-06 13:32 CST
+更新时间：2026-06-06 14:15 CST
 
 ## 当前阶段
 
-项目已完成第 8 批 MinIO/S3 发布包强化，并已按用户要求在前端并行开发期间推进第 10 批公司 Adapter 接入与部署交接准备和第 11 批 render-worker 本地进程调用边界：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、CoverGenerationService / VideoRenderService 媒体生成边界、render-worker 本地 16:9 MP4 样例渲染、Java 可配置调用 render-worker CLI 的本地进程模式、发布包 JSON 的 local / S3-MinIO 可切换对象存储，以及内部公司接入 readiness 报告均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用；第 9 批前端实现仍由用户并行推进，等待完成后审查。
+项目已完成第 8 批 MinIO/S3 发布包强化，并已按用户要求在前端并行开发期间推进第 10 批公司 Adapter 接入与部署交接准备和第 11 批 render-worker 本地进程调用边界：数据库 migration、Work 领域状态机、Mock Adapter 边界、OpenAPI v0.1 主路径 API、本地 Mock 作曲与发布包、DreamMaker Provider 骨架、Outbox v0.1、API outbox 到独立 Temporal worker 的编排边界、DreamMaker 真实 Provider 硬开关、DeepSeek / Knowledge / Prompt / Lyrics 写词边界、CoverGenerationService / VideoRenderService 媒体生成边界、render-worker 本地 16:9 MP4 样例渲染、Java 可配置调用 render-worker CLI 的本地进程模式、发布包 JSON 的 local / S3-MinIO 可切换对象存储，以及内部公司接入 readiness 报告均已落地。当前仍未执行真实 Suno/MiniMax、真实 DeepSeek、真实 Image 2 或公司系统调用。
+
+第 9 批前端原型已由用户侧交付到 `prototypes/Claude-web-v1`，并完成本地测试、构建和 390px / 1440px smoke 初审；该原型可作为当前前端验收对象，但尚未严格通过 OpenAPI v0.1 和原前端任务包验收。已新增 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md`，要求前端实现者补齐“我的作品”列表、发布交接信息、`PACKAGE_BLOCKED`、润色必填、`RETRY_COVER` / `RERENDER_VIDEO`、错误 `request_id` 和关键状态展示。
+
+为后续前后端联调提速，Mock 音乐 Provider 已新增可配置模拟音频时长：默认仍为 180000ms，保持 3 分钟商用口径；本地 smoke 可通过 `MOCK_MUSIC_DURATION_MS=1000` 临时压短，用于快速验证 Java 到 render-worker 的 MP4 成片链路。
 
 第 2 批后续小阶段已补齐 `Idempotency-Key` 的基础重放语义：同用户、同 operation、同 key、同请求内容会重放第一次成功响应；同 key 不同请求内容返回 `IDEMPOTENCY_CONFLICT`。
 
@@ -51,6 +55,7 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `docs/specs/company-adapter-deployment-handoff-v0.1.md`：第 10 批公司 Adapter 接入与部署交接准备规格。
 - `docs/specs/render-worker-local-process-integration-v0.1.md`：第 11 批 Java 到 render-worker 本地进程调用边界规格。
 - `docs/handover/company-adapter-deployment-handoff-v0.1.md`：公司开发替换 Mock Adapter 与部署交接说明。
+- `docs/frontend/claude-web-v1-acceptance-fix-task-package.md`：Claude Web v1 前端原型验收修复任务包。
 
 ## 进度记录规则
 
@@ -109,6 +114,9 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 新增公司接入 readiness 边界：`modules:config-center` 提供 `IntegrationReadinessService`，`music-api` 暴露内部 `GET /internal/integration-readiness`，用于交接和部署前检查 Mock/真实接入状态。
 - 新增公司 Adapter 交接说明，覆盖账号、审核、权益、发布、分享的替换接口、部署变量、smoke 步骤和禁止事项。
 - 新增 render-worker 本地进程调用边界：`RENDER_WORKER_MODE=local-process` 时 Java `VideoRenderService` 可调用 `apps/render-worker` 的 `render:job` CLI，把生成的 MP4 和 timeline JSON 写入对象存储；默认 `mock` 不触发真实渲染。
+- 新增 `MOCK_MUSIC_DURATION_MS`，允许本地 smoke 临时压短 Mock 音频时长；默认仍为 180000ms。
+- 完成 `prototypes/Claude-web-v1` 前端原型初审：测试、typecheck、build 和 390px / 1440px Playwright smoke 已通过，但仍有契约和验收缺口。
+- 新增 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md`，把前端缺口收敛成可交给前端实现者的修复任务包。
 - 新增 `MusicProviderSelection`，解析 `MUSIC_PROVIDER=mock|suno|minimax`；`music-api` 已注册 Mock、Suno、MiniMax 三类 Provider bean。
 - `MockSongProductionWorkflow` 已按配置选择音乐 Provider；Provider 未实现或抛异常时会进入 `MUSIC_GENERATION_FAILED`，释放权益并关闭 job。
 - 修正 `IdempotencyService` 外层事务边界：`ResponseStatusException` 不再回滚业务失败状态，避免配置到未实现 Provider 时作品仍停留在 `LYRICS_READY`。
@@ -121,6 +129,8 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - 用户侧由本项目提供 `apps/web`，移动端优先，同时兼容 PC Web。
 - 前端视觉和页面实现优先整理成可转交 Gemini 的任务包，本 Agent 不默认承担最终高保真前端实现。
 - 后续如需要图片资产，优先使用 Image 生成，并在提交前确认用途、尺寸、来源和是否纳入仓库。
+- 当前前端验收对象为 `prototypes/Claude-web-v1`；`apps/web` 仍是正式工程 scaffold。前端视觉实现继续由外部前端实现者负责，本 Agent 默认产出任务包、接口状态 review 和联调验收，不直接重写高保真前端。
+- `MOCK_MUSIC_DURATION_MS` 只用于本地 Mock 和联调提速，不代表真实音乐模型时长策略。
 - Temporal v0.1 先证明 API outbox 到独立 worker 的可靠启动边界；activity 自动重试固定为 1 次，等权益、Provider、媒体和发布包写入幂等性审计完成后再放开。
 - Suno/MiniMax 真实调用必须同时满足 AK/SK 安全注入和 `DREAMMAKER_REAL_CALLS_ENABLED=true`；默认关闭，自动化测试不得真实调用。
 - `/internal/integration-readiness` 只用于内部交接/部署前检查，不是用户侧 API；它只读取配置和静态边界，不调用真实公司系统或真实供应商。
@@ -439,8 +449,20 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 - `./gradlew :modules:production:test :modules:config-center:test :apps:music-api:test --tests com.yanyun.music.api.IntegrationReadinessControllerTest :apps:music-api:compileJava :apps:music-worker:compileJava` 成功。
 - 当前本批仍不做 2-4 分钟长视频自动化渲染，不做音频 mux 完整校验，不改变默认 Mock 主链路；长视频和生产级 render service 需要后续手动 smoke 与部署方案确认。
 
+## 第 9 批前端初审与联调支撑验证结果
+
+- 新建长期 Goal：前端已交付后，优先推进前端原型验收修复任务包、后端短链路联调支撑、前后端本地 smoke、项目进度和阶段快照。
+- `prototypes/Claude-web-v1` 初审已执行：`npm test`、`npm run typecheck`、`npm run build` 均通过。
+- `prototypes/Claude-web-v1` Playwright smoke 已执行：390px 宽度可在 `?mock=1` 演示模式下完成灵感成歌到成品页，1440px 首页无横向溢出；控制台未发现业务错误。
+- 前端仍未严格通过验收：缺少“我的作品”列表和 `GET /works`、成品页发布交接信息不足、`PACKAGE_BLOCKED` 映射错误、润色请求体不符合 OpenAPI、`RETRY_COVER` / `RERENDER_VIDEO` 未实现、错误态未展示 `request_id`、详情页缺少关键状态信息。
+- 已新增 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md`，要求前端实现者只修改 `prototypes/Claude-web-v1` 并补齐上述问题。
+- `MockMusicProvider` 已支持可配置模拟音频时长；新增单元测试覆盖自定义时长和非法时长拒绝。
+- `./gradlew spotlessCheck :modules:music-provider:test :apps:music-api:compileJava :apps:music-worker:compileJava` 在显式设置 `JAVA_HOME=/opt/homebrew/opt/openjdk@21` 后成功。
+- 首次 Gradle 命令未设置 `JAVA_HOME` 时失败，原因是当前 shell 找不到 Java Runtime；已确认 `/opt/homebrew/opt/openjdk@21` 可用，运行手册已保留该环境设置说明。
+
 ## 待确认事项
 
+- `prototypes/Claude-web-v1` 需由前端实现者按 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md` 修复后，再进入真实后端模式 UI 联调。
 - 公司账号、审核、权益、发布、分享系统真实协议仍待公司开发确认；当前已提供 readiness 报告和交接说明，但真实 Adapter 仍需公司开发替换 Mock。
 - Suno 和 MiniMax 的 DreamMaker run/status 接入骨架、JWT 鉴权、真实调用硬开关和受控联调文档已实现；非零错误码样本、失败任务响应样本、限流/轮询策略、音频 URL 过期规则和计费口径仍待真实联调确认。
 - DeepSeek 真实 API 协议、模型参数、失败码、限流策略、计费口径、日志脱敏和受控联调窗口仍待确认。
@@ -452,11 +474,13 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 
 ## 下一步建议
 
-1. 等用户完成前端实现后，执行第 9 批前端审查：重点检查移动端 390px、桌面 1440px、OpenAPI 字段、`available_actions` 按钮驱动、错误态、loading/disabled 状态和用户侧文案。
-2. 针对 `RENDER_WORKER_MODE=local-process` 做一次端到端手动 smoke：确认出歌后由 Java 调用 render-worker，检查 MP4、timeline、发布包 URL 和对象存储文件；再评估是否需要独立 HTTP/队列化 render service。
-3. 公司开发确认真实账号、审核、权益、发布、分享协议后，按 `docs/handover/company-adapter-deployment-handoff-v0.1.md` 替换 Mock Adapter，并用 `/internal/integration-readiness` 做部署前检查。
-4. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
-5. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
+1. 将 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md` 交给前端实现者修复，修复后重跑 `npm test`、`npm run typecheck`、`npm run build` 和 390px / 1440px Playwright smoke。
+2. 执行后端同步 Mock 主链路 smoke：`MOCK_MUSIC_DURATION_MS=1000 MUSIC_WORKFLOW_DISPATCH_MODE=sync WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false MUSIC_PROVIDER=mock`，覆盖创建作品、确认出歌、发布包获取、刷新、标记交接和 readiness。
+3. 针对 `RENDER_WORKER_MODE=local-process` 做一次端到端手动 smoke：确认出歌后由 Java 调用 render-worker，检查 MP4、timeline、发布包 URL 和对象存储文件；再评估是否需要独立 HTTP/队列化 render service。
+4. 前端修复后执行真实后端模式 UI 联调，不加 `?mock=1`，验证灵感成歌、填词成歌、润色/续写限制、失败重试、成品页和发布交接。
+5. 公司开发确认真实账号、审核、权益、发布、分享协议后，按 `docs/handover/company-adapter-deployment-handoff-v0.1.md` 替换 Mock Adapter，并用 `/internal/integration-readiness` 做部署前检查。
+6. 在明确联调窗口和止损规则后，按 `docs/runbook/dreammaker-controlled-real-integration.md` 手动执行 Suno / MiniMax 各 1 次真实成功路径；不得把密钥、JWT 或用户 token 写入仓库、日志或测试。
+7. 根据真实联调样本更新 `docs/integrations/dreammaker-open-questions-tracker.md` 和失败码 retryable 规则。
 
 ## 工作日志
 
@@ -508,3 +532,6 @@ DreamMaker 鉴权口径已根据用户补充资料从待确认项改为已决策
 | 2026-06-06 04:40 CST | Gemini 前端原型废弃 | 子 Agent 调用 Gemini 生成的 `prototypes/gemini-web-v1` 因视觉质量不达标已删除；后续第 9 批需重新整理更强约束的高保真前端任务包 |
 | 2026-06-06 12:49 CST | 完成公司 Adapter 接入与部署交接准备 | 新增公司 Adapter readiness 服务、内部 `/internal/integration-readiness`、第 10 批规格和公司交接说明；全量 Gradle、JAR HTTP smoke、敏感信息 smoke 和 8080 清理检查均通过 |
 | 2026-06-06 13:32 CST | 完成 render-worker 本地进程调用边界 | 新增 `render:job` CLI、动态时长 Remotion composition、Java `LocalProcessVideoRenderService`、render-worker readiness 组件和运行手册；Node build/test、1 秒真实 render smoke、targeted Gradle 测试均通过 |
+| 2026-06-06 14:15 CST | 新建前端交付后的长期 Goal | Goal 已改为前端原型验收修复、后端短链路联调支撑、前后端本地 smoke、进度文档和阶段快照 |
+| 2026-06-06 14:15 CST | 完成 Claude Web v1 前端初审 | `prototypes/Claude-web-v1` 已通过测试、typecheck、build 和 390px / 1440px smoke；发现 OpenAPI/验收缺口并整理为修复任务包 |
+| 2026-06-06 14:15 CST | 补齐 Mock 音频时长配置 | 新增 `MOCK_MUSIC_DURATION_MS` 和 `MockMusicProvider` 配置测试，后端 targeted Gradle 验证通过 |
