@@ -1,7 +1,7 @@
 package com.yanyun.music.worker;
 
 import com.yanyun.music.workflow.SongProductionActivities;
-import com.yanyun.music.workflow.TemporalSongProductionWorkflowImpl;
+import com.yanyun.music.workflow.SongProductionStepActivities;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
 import io.temporal.serviceclient.WorkflowServiceStubs;
@@ -9,6 +9,7 @@ import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import java.time.Duration;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,10 +45,15 @@ public class TemporalWorkerConfig {
   public Worker songProductionWorker(
       WorkerFactory workerFactory,
       TemporalWorkerProperties properties,
-      SongProductionActivities activities) {
+      SongProductionActivities activities,
+      ObjectProvider<SongProductionStepActivities> stepActivities) {
     Worker worker = workerFactory.newWorker(properties.taskQueue());
-    worker.registerWorkflowImplementationTypes(TemporalSongProductionWorkflowImpl.class);
-    worker.registerActivitiesImplementations(activities);
+    worker.registerWorkflowImplementationTypes(properties.workflowImplementationType());
+    if (properties.stepwiseRecordingWorkflowMode()) {
+      worker.registerActivitiesImplementations(stepActivities.getObject());
+    } else {
+      worker.registerActivitiesImplementations(activities);
+    }
     return worker;
   }
 

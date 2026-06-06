@@ -96,6 +96,32 @@ outbox 标记为 `SUCCEEDED`；`music-worker` 的 activity 复用当前 `SongPro
 业务委托，把作品推进到 `GENERATED / PACKAGE_READY`。本阶段 activity 最大尝试次数固定为 1，
 等权益、Provider、媒体和发布包写入幂等性审计完成后，再放开 Temporal activity 自动重试。
 
+worker workflow mode 默认仍是 `legacy`，保持当前 Temporal v0.1 路径不变。只有要受控验证
+`generation_job_steps` 写入时，才在启动 `music-worker` 时显式设置：
+
+```bash
+TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=stepwise-recording \
+MUSIC_PROVIDER=mock ./gradlew :apps:music-worker:bootRun
+```
+
+`stepwise-recording` 当前只用于本地 Mock / recording step activity 验证，检查步骤记录边界；
+不调用真实 DeepSeek、Suno、MiniMax、Image 2 或公司系统，也不是默认生产路径。该模式当前不会推进
+`works`、`generation_jobs` 或发布包到 `GENERATED / PACKAGE_READY`，因此不要用
+`scripts/smoke/api-main-flow.sh` 验证它。
+
+`stepwise-recording` 的最小验收口径是：outbox 已启动 Temporal workflow，且 step audit 已写入。
+创建作品并确认出歌后，抽查：
+
+```bash
+docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
+  "select status, event_type, processed_at is not null from workflow_outbox where aggregate_id = '{work_id}' order by created_at desc limit 1"
+docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
+  "select step_name, status, attempt_count, failure_code from generation_job_steps where job_id = '{job_id}' order by started_at, step_name"
+```
+
+预期 `workflow_outbox.status=SUCCEEDED`，`generation_job_steps` 有 13 条 `SUCCEEDED` 记录；作品和 job
+仍可能保持 `GENERATING / QUOTA_LOCKING`，这是当前受控验证路径的预期边界。
+
 Temporal 模式完成后可抽查 outbox、job 和 work 状态：
 
 ```bash

@@ -22,6 +22,7 @@ import com.yanyun.music.musicprovider.MusicProvider;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.production.JdbcAgentRunRecorder;
+import com.yanyun.music.production.RecordingSongProductionStepActivities;
 import com.yanyun.music.publish.MockPublishAdapter;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.quota.MockQuotaAdapter;
@@ -33,6 +34,8 @@ import com.yanyun.music.storage.ObjectStorageProperties;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.suno.SunoMusicProvider;
 import com.yanyun.music.suno.SunoMusicProviderOptions;
+import com.yanyun.music.workflow.SongProductionStepActivities;
+import com.yanyun.music.workpersistence.WorkRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -151,5 +154,10 @@ public class WorkerProductionConfiguration {
   MusicProviderSelection musicProviderSelection(
       @Value("${yanyun.music.provider:mock}") String provider) {
     return MusicProviderSelection.fromConfig(provider);
+  }
+
+  @Bean
+  SongProductionStepActivities songProductionStepActivities(WorkRepository workRepository) {
+    return new RecordingSongProductionStepActivities(workRepository);
   }
 }

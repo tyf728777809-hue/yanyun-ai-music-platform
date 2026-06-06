@@ -63,3 +63,4 @@ yanyun:
     target: ${TEMPORAL_TARGET:localhost:7233}
     namespace: ${TEMPORAL_NAMESPACE:default}
     task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}
+    song-production-workflow-mode: ${TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE:legacy}

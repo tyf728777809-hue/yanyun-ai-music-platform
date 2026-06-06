@@ -6,7 +6,8 @@ import io.temporal.workflow.Workflow;
 import java.time.Duration;
 import java.util.Objects;
 
-public class StepwiseSongProductionWorkflow implements SongProductionWorkflow {
+public class StepwiseSongProductionWorkflow
+    implements SongProductionWorkflow, TemporalSongProductionWorkflow {
 
   private static final Duration ACTIVITY_START_TO_CLOSE_TIMEOUT = Duration.ofMinutes(30);
 
