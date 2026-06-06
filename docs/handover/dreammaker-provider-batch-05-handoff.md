@@ -48,3 +48,9 @@
 ./gradlew spotlessCheck test :apps:music-api:bootJar :apps:music-worker:bootJar
 python3 /Users/tongyifeng/.codex/skills/env-secrets-manager/scripts/env_auditor.py /Users/tongyifeng/Desktop/ai项目/燕云乐坊
 ```
+
+首次人工真实音乐 smoke 参考：
+
+- `docs/checklists/dreammaker-real-music-smoke-10min.md`
+- `docs/runbook/dreammaker-controlled-real-integration.md`
+- `docs/checklists/dreammaker-real-integration-acceptance.md`

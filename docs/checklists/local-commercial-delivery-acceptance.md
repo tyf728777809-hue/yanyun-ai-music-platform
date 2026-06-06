@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 20:48 CST
+更新时间：2026-06-06 23:05 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -47,7 +47,7 @@
 - [ ] 所有按钮由 `available_actions` 驱动，不由前端猜状态。
 - [ ] 第三次 AI 润色/续写 409 显示友好文案，并保留请求编号。
 - [ ] 成品页展示媒体、交接下载链接、刷新 URL、标记已交接和已交接状态。
-- [ ] 失败页展示失败码、失败信息、推荐动作、重试次数，并能执行可用重试动作。
+- [ ] 失败页展示用户友好的失败原因、推荐动作、重试次数，并能执行可用重试动作；内部失败码不直接暴露给普通用户。
 
 ## E. 真实模型联调准备
 
@@ -59,6 +59,7 @@
 - [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认硬开关、真实客户端、密钥注入、日志脱敏和回滚方式。
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认硬开关、真实客户端、对象存储导入、默认封面兜底、密钥注入、日志脱敏和回滚方式。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
+- [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行，确认是真的打到 DreamMaker 而不是仍在 Mock。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。
 
 ## F. 公司 Adapter 交接

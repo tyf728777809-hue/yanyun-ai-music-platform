@@ -4,6 +4,8 @@
 
 本 Runbook 用于第 5 批手动联调 Suno 与 MiniMax 的真实 DreamMaker 链路。目标是证明真实 Provider 可以在本地完整走到平台对象存储、作品状态和发布包交接；同时避免误触真实请求、泄露密钥或让同步 API 线程长时间阻塞。
 
+如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；本 Runbook 负责解释完整风险、回滚和证据记录口径。
+
 ## 硬性规则
 
 - 默认禁止真实外部请求：`DREAMMAKER_REAL_CALLS_ENABLED=false`。

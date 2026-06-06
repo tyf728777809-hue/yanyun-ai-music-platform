@@ -1,5 +1,7 @@
 # DreamMaker 真实联调验收清单
 
+首次手动 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；本清单用于正式验收 Suno 与 MiniMax 两条成功路径、失败止损和交接记录。
+
 ## 联调前
 
 - [ ] `git status --short` 无未记录的无关改动。
