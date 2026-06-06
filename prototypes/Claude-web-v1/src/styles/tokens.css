@@ -1,0 +1,87 @@
+/* =========================================================================
+   燕云乐坊 · 设计令牌
+   水墨气质 + 操作型产品的清晰度。深墨为底，宣纸为字，青玉为主色，鎏金为点缀。
+   ========================================================================= */
+
+:root {
+  /* ---- 墨色：背景与面板层 ---- */
+  --ink-950: #0c110d;
+  --ink-900: #101610;
+  --ink-850: #141c15;
+  --ink-800: #18211a;
+  --ink-750: #1e2a20;
+  --ink-700: #243227;
+  --hairline: rgba(180, 200, 178, 0.12);
+  --hairline-strong: rgba(180, 200, 178, 0.2);
+
+  /* ---- 宣纸：文字层 ---- */
+  --paper: #ecf1e6;
+  --paper-dim: #b7c3b0;
+  --paper-faint: #7f8d7a;
+  --paper-ghost: #829078;
+
+  /* ---- 青玉：主色 ---- */
+  --jade-300: #9fdcbf;
+  --jade-400: #79c9a4;
+  --jade-500: #54b486;
+  --jade-600: #3c9a6e;
+  --jade-700: #2c7a56;
+  --jade-glow: rgba(84, 180, 134, 0.28);
+
+  /* ---- 鎏金：强调 / 高光 ---- */
+  --gold-300: #e6cf95;
+  --gold-400: #d6ba78;
+  --gold-500: #c3a25c;
+
+  /* ---- 朱砂：危险 / 失败 ---- */
+  --cinnabar-400: #e08a6f;
+  --cinnabar-500: #d2694f;
+  --cinnabar-600: #b24e36;
+  --cinnabar-soft: rgba(210, 105, 79, 0.16);
+
+  /* ---- 琥珀：警示 / 进行中 ---- */
+  --amber-400: #e6b95e;
+  --amber-soft: rgba(230, 185, 94, 0.16);
+
+  /* ---- 语义 ---- */
+  --bg: var(--ink-900);
+  --surface: var(--ink-800);
+  --surface-raised: var(--ink-750);
+  --text: var(--paper);
+  --text-dim: var(--paper-dim);
+  --text-faint: var(--paper-faint);
+  --accent: var(--jade-500);
+  --accent-hover: var(--jade-400);
+
+  /* ---- 圆角 ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --r-pill: 999px;
+
+  /* ---- 间距 ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+
+  /* ---- 阴影 / 辉光 ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.36);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.46);
+  --ring-focus: 0 0 0 3px var(--jade-glow);
+
+  /* ---- 字体 ---- */
+  --font-display: 'Noto Serif SC', 'Songti SC', 'STSong', 'Source Han Serif SC', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei',
+    system-ui, sans-serif;
+
+  /* ---- 布局 ---- */
+  --shell-max: 1180px;
+  --content-max: 720px;
+  --header-h: 60px;
+}

@@ -1,0 +1,74 @@
+import { render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ToastProvider } from '../../components/Toast';
+import { service } from '../../mock/service';
+import type { WorkDetail } from '../../api/types';
+import { FinishedView } from './FinishedView';
+
+function work(overrides: Partial<WorkDetail> = {}): WorkDetail {
+  return {
+    work_id: 'work-1',
+    work_code: 'YY-0001',
+    creation_mode: 'LYRICS',
+    status: 'GENERATED',
+    generation_stage: 'PACKAGE_READY',
+    package_status: 'PACKAGE_READY',
+    song_title: '成品测试歌',
+    song_summary: '一首用于测试交接信息的歌',
+    lyrics_draft: null,
+    media_assets: {
+      audio_url: 'https://cdn.local/audio.mp3',
+      cover_url: 'https://cdn.local/cover.png',
+      video_url: 'https://cdn.local/video.mp4',
+      video_duration_ms: 1000,
+      video_file_size_bytes: 1000,
+    },
+    polish_used_count: 0,
+    polish_remaining_count: 2,
+    quota_hint: null,
+    failure: null,
+    available_actions: ['REFRESH_PACKAGE_URL', 'MARK_PACKAGE_FETCHED'],
+    publish_handoff_hint: {
+      ready_for_handoff: true,
+      message: '作品已准备好，可交给社区发布。',
+    },
+    created_at: '2026-06-06T00:00:00Z',
+    updated_at: '2026-06-06T00:00:00Z',
+    generated_at: '2026-06-06T00:00:00Z',
+    ...overrides,
+  };
+}
+
+describe('FinishedView', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('renders user-facing handoff links and lyrics from publish package', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: 'https://cdn.local/package.zip',
+      package_url_expires_at: '2026-06-07T00:00:00Z',
+      package_json: {
+        work_id: 'work-1',
+        video: { url: 'https://cdn.local/package-video.mp4', mime_type: 'video/mp4' },
+        cover: { url: 'https://cdn.local/package-cover.png', mime_type: 'image/png' },
+        lyrics: { text: '第一句\n第二句', timeline_url: 'https://cdn.local/timeline.json' },
+        metadata: { song_title: '成品测试歌' },
+      },
+      available_actions: ['REFRESH_PACKAGE_URL', 'MARK_PACKAGE_FETCHED'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    expect(await screen.findByText('交接下载链接')).toBeInTheDocument();
+    expect(screen.getByText('视频地址')).toBeInTheDocument();
+    expect(screen.getByText('封面地址')).toBeInTheDocument();
+    expect(screen.getByText((_, element) => element?.textContent === '第一句\n第二句')).toBeInTheDocument();
+  });
+});
