@@ -179,6 +179,63 @@ curl http://localhost:8080/internal/integration-readiness
 `blocks_company_deployment=true` 的项目，并按 `docs/handover/company-adapter-deployment-handoff-v0.1.md`
 替换真实 Adapter 或由公司明确豁免。
 
+## Automated Smoke
+
+仓库提供 `scripts/smoke/api-main-flow.sh`，用于在 API 已启动后复验主链路。脚本会覆盖：
+
+- `GET /health`
+- `POST /api/v1/works/lyrics`
+- `GET /api/v1/works/{work_id}`
+- `POST /api/v1/works/{work_id}/confirm`
+- `GET /api/v1/works/{work_id}/publish-package`
+- `POST /api/v1/works/{work_id}/publish-package/refresh-url`
+- `POST /api/v1/works/{work_id}/publish-package/mark-fetched`
+- `GET /internal/integration-readiness`
+- PostgreSQL 状态抽查和本地对象文件抽查
+
+同步 Mock 主链路：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+./gradlew :apps:music-api:bootRun
+```
+
+另开一个终端执行：
+
+```bash
+EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
+```
+
+render-worker local-process 主链路：
+
+```bash
+MOCK_MUSIC_DURATION_MS=1000 \
+MUSIC_PROVIDER=mock \
+MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+RENDER_WORKER_MODE=local-process \
+RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker \
+RENDER_WORKER_COMMAND=npm \
+RENDER_WORKER_ARGUMENTS=run,render:job,-- \
+RENDER_WORKER_TIMEOUT=120s \
+./gradlew :apps:music-api:bootRun
+```
+
+另开一个终端执行：
+
+```bash
+EXPECTED_DURATION_MS=1000 \
+EXPECT_RENDER_WORKER=local-process \
+scripts/smoke/api-main-flow.sh
+```
+
+local-process 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x1080，并检查时长接近
+`EXPECTED_DURATION_MS`。如不希望脚本检查 PostgreSQL 或本地文件，可分别设置
+`CHECK_DB=false`、`CHECK_LOCAL_FILES=false`。
+
 对象存储默认走本地文件模式：
 
 ```text

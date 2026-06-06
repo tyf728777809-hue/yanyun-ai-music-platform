@@ -4,7 +4,7 @@
 
 ## Current Stage
 
-第 5 批 DreamMaker 受控真实联调准备已完成：本地默认 `mock` 可跑通作品到发布包，Outbox local 和 Temporal worker 分进程编排边界均已验证；Suno/MiniMax 已通过 DreamMaker 接入骨架预置，并增加真实调用硬开关 `DREAMMAKER_REAL_CALLS_ENABLED=false`。
+当前已完成本地商用级主链路基础：Mock 写词、Mock 音乐 Provider、发布包对象存储、Outbox/Temporal 编排边界、公司 Adapter readiness、render-worker local-process MP4 成片边界均已落地。前端原型位于 `prototypes/Claude-web-v1`，已完成初审但仍需按 `docs/frontend/claude-web-v1-acceptance-fix-task-package.md` 修复契约缺口。真实 DeepSeek、Suno/MiniMax、Image 2 和公司系统仍默认关闭或 Mock。
 
 ## Stack
 
@@ -96,6 +96,18 @@ WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
 ```bash
 curl http://localhost:8080/health
 curl http://localhost:8080/actuator/health
+```
+
+API 启动后可运行本地主链路 smoke：
+
+```bash
+EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
+```
+
+如果 API 以 `RENDER_WORKER_MODE=local-process` 启动，可额外验证真实 MP4：
+
+```bash
+EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
 ```
 
 ## Web Commands
