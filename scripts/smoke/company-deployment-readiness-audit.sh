@@ -78,9 +78,11 @@ DEPLOYMENT_AUDIT_FILES=(
   "deploy/env.production.example"
   "docs/handover/company-adapter-deployment-handoff-v0.1.md"
   "docs/handover/company-delivery-package-v0.1.md"
+  "docs/handover/stepwise-production-implementation-task-package-v0.1.md"
   "docs/checklists/company-adapter-replacement-readiness.md"
   "docs/checklists/local-commercial-delivery-acceptance.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
+  "scripts/smoke/stepwise-production-boundary-audit.sh"
 )
 
 for file in "${DEPLOYMENT_AUDIT_FILES[@]}"; do
@@ -124,6 +126,7 @@ require_pattern "deploy/prometheus.yml" "/actuator/prometheus" "Prometheus confi
 require_pattern "deploy/env.production.example" "^SPRING_PROFILES_ACTIVE=prod$" "production env example activates prod profile"
 require_pattern "deploy/env.production.example" "^SUNO_BACKEND=dreammaker$" "production env example uses DreamMaker Suno backend"
 require_pattern "deploy/env.production.example" "^IMAGE2_BACKEND=dreammaker$" "production env example uses DreamMaker Image2 backend"
+require_pattern "deploy/env.production.example" "^TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy$" "production env example pins Temporal workflow mode to legacy"
 require_pattern "deploy/env.production.example" "^DREAMMAKER_ACCESS_KEY=$" "production env example keeps DreamMaker AccessKey empty"
 require_pattern "deploy/env.production.example" "^DREAMMAKER_SECRET_KEY=$" "production env example keeps DreamMaker SecretKey empty"
 
@@ -134,7 +137,12 @@ require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "depl
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "deploy/docker/web\\.Dockerfile" "Adapter deployment handoff references web Dockerfile"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "deploy/docker-compose.yml.*本地基础设施|本地基础设施.*deploy/docker-compose.yml" "Adapter deployment handoff labels docker compose as local infrastructure"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "DECISION_REQUIRED|生产部署形态.*确认" "Adapter deployment handoff keeps production topology decision explicit"
+require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy" "Adapter deployment handoff pins production Temporal workflow mode to legacy"
+require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "stepwise-recording.*不得用于用户实测|stepwise-recording.*不得用于.*生产发布包链路" "Adapter deployment handoff forbids stepwise-recording for production handoff"
+require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "DreamMaker.*正式生产|正式生产.*DreamMaker" "Adapter deployment handoff keeps DreamMaker as production target"
+require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "Yunwu.*/.*WellAPI.*公网|Yunwu.*公网.*WellAPI" "Adapter deployment handoff labels Yunwu/WellAPI as public-network smoke"
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "company-deployment-readiness-audit\\.sh" "company package references deployment audit"
+require_pattern "docs/handover/company-delivery-package-v0.1.md" "stepwise-production-boundary-audit\\.sh" "company package references stepwise boundary audit"
 require_pattern "docs/checklists/company-adapter-replacement-readiness.md" "company-deployment-readiness-audit\\.sh" "company readiness checklist references deployment audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "company-deployment-readiness-audit\\.sh" "local acceptance checklist references deployment audit"
 

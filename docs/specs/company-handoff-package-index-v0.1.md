@@ -28,6 +28,8 @@ Without a handoff package index, the company side may confuse local mock readine
 - FR-13: The handoff package MUST reference the production provider defaults audit and production env example.
 - FR-14: The handoff package MUST reference the company deployment readiness audit.
 - FR-15: The handoff package MUST reference the real-model smoke sanitized evidence log and audit.
+- FR-16: The handoff package MUST reference the stepwise production implementation task package and boundary audit so company developers do not treat `stepwise-recording` as production-ready.
+- FR-17: The handoff package MUST state that company delivery, user testing, and production smoke remain on `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy` until `stepwise-production` has dedicated production activities and smoke evidence.
 
 ## Non-Functional Requirements
 
@@ -40,8 +42,9 @@ Without a handoff package index, the company side may confuse local mock readine
 - AC-1: Given the repository checkout, when the company handoff audit runs, then it verifies the package document, Adapter handoff, replacement checklist, local delivery status, acceptance checklist, OpenAPI, frontend ADR, local runbook, and key smoke scripts exist. Covers FR-1, FR-2, and FR-12.
 - AC-2: Given the package document, when the audit scans it, then it finds local-ready, smoke-prepared, handoff-prepared, blocked-external, and decision-required status terms. Covers FR-3.
 - AC-3: Given the package document, when the audit scans it, then it finds explicit company-system boundary text, `X-Mock-User-Id` warning, `mark-fetched` semantics, DreamMaker production-target rule, and Yunwu/WellAPI public-network smoke labels. Covers FR-4 through FR-8.
-- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-commercial-full-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, `scripts/smoke/production-provider-defaults-audit.sh`, `scripts/smoke/real-model-evidence-log-audit.sh`, `scripts/smoke/company-deployment-readiness-audit.sh`, `deploy/env.production.example`, `docs/integrations/real-model-smoke-evidence-log.md`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9, FR-10, and FR-13 through FR-15.
-- AC-5: Given the audit runs, when required evidence is missing, then it exits non-zero. Covers FR-11 and FR-12.
+- AC-4: Given the package document, when the audit scans it, then it references `scripts/smoke/company-adapter-readiness-smoke.sh`, `scripts/smoke/local-commercial-backend-acceptance-stack.sh`, `scripts/smoke/local-commercial-full-acceptance-stack.sh`, `scripts/smoke/local-delivery-evidence-audit.sh`, `scripts/smoke/production-provider-defaults-audit.sh`, `scripts/smoke/real-model-evidence-log-audit.sh`, `scripts/smoke/company-deployment-readiness-audit.sh`, `scripts/smoke/stepwise-production-boundary-audit.sh`, `deploy/env.production.example`, `docs/integrations/real-model-smoke-evidence-log.md`, `docs/handover/stepwise-production-implementation-task-package-v0.1.md`, and `scripts/smoke/real-model-controlled-smoke.sh`. Covers FR-9, FR-10, and FR-13 through FR-16.
+- AC-5: Given the package document, when the audit scans it, then it finds `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy` and explicit `stepwise-recording` non-production language. Covers FR-16 and FR-17.
+- AC-6: Given the audit runs, when required evidence is missing, then it exits non-zero. Covers FR-11 and FR-12.
 
 ## Edge Cases
 
@@ -49,6 +52,7 @@ Without a handoff package index, the company side may confuse local mock readine
 - EC-2: If company shares are fully owned by the existing community system, the package document MAY keep sharing as company-owned and not require a platform Share Adapter implementation.
 - EC-3: If company deployment chooses an independent render worker service, the package document MUST still preserve the `VideoRenderService` boundary.
 - EC-4: If production temporarily uses Yunwu or WellAPI, the package document MUST still require DreamMaker retention.
+- EC-5: If `stepwise-production` is implemented later, the package document MUST distinguish its dedicated smoke evidence from `stepwise-recording` step audit evidence.
 
 ## API Contracts
 
@@ -66,3 +70,4 @@ N/A - this is a documentation and shell audit feature, not an HTTP API.
 - OS-2: This package does not implement company Adapter code.
 - OS-3: This package does not run real model providers.
 - OS-4: This package does not decide the final frontend migration strategy.
+- OS-5: This package does not declare `stepwise-production` complete; it only points to the implementation task package and boundary audit.

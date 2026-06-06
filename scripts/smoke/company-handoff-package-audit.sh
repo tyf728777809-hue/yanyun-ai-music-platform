@@ -67,6 +67,8 @@ required_files=(
   "docs/specs/real-model-smoke-evidence-log-v0.1.md"
   "docs/integrations/real-model-smoke-evidence-log.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
+  "docs/handover/stepwise-production-implementation-task-package-v0.1.md"
+  "docs/specs/stepwise-temporal-production-state-advancement-v0.1.md"
   "deploy/env.production.example"
 )
 
@@ -89,6 +91,7 @@ required_executables=(
   "scripts/smoke/real-model-evidence-log-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
+  "scripts/smoke/stepwise-production-boundary-audit.sh"
 )
 
 for file in "${required_executables[@]}"; do
@@ -113,6 +116,8 @@ require_package_pattern 'production-provider-defaults-audit\.sh' 'package refere
 require_package_pattern 'real-model-evidence-log-audit\.sh' 'package references real-model evidence log audit'
 require_package_pattern 'real-model-smoke-evidence-log\.md' 'package references real-model evidence log'
 require_package_pattern 'company-deployment-readiness-audit\.sh' 'package references company deployment readiness audit'
+require_package_pattern 'stepwise-production-boundary-audit\.sh' 'package references stepwise production boundary audit'
+require_package_pattern 'stepwise-production-implementation-task-package-v0\.1\.md' 'package references stepwise production task package'
 require_package_pattern 'deploy/env\.production\.example' 'package references production env example'
 require_package_pattern 'SPRING_PROFILES_ACTIVE=prod' 'package references production Spring profile'
 require_package_pattern 'api-package-blocked-flow\.sh' 'package references package block smoke'
@@ -127,6 +132,9 @@ require_package_pattern '不调用真实模型|不访问真实公司系统|不�
 require_package_pattern 'prototypes/Claude-web-v1' 'package references current frontend acceptance target'
 require_package_pattern 'apps/web.*scaffold' 'package states apps/web remains scaffold'
 require_package_pattern 'ALLOW_REAL_MODEL_SMOKE=1' 'package requires global real-model smoke gate'
+require_package_pattern 'stepwise-recording' 'package explains stepwise-recording boundary'
+require_package_pattern 'stepwise-production' 'package explains stepwise-production boundary'
+require_package_pattern 'TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy' 'package pins production Temporal workflow mode to legacy'
 
 if rg -n 'sk-[A-Za-z0-9_-]{12,}|Bearer [A-Za-z0-9._~+/=-]{16,}|AccessKey[[:space:]]*[:：]|SecretKey[[:space:]]*[:：]|BEGIN ((RSA|EC|OPENSSH|DSA) )?PRIVATE KEY|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}' "$PACKAGE"; then
   fail_check "package contains secret-like patterns"

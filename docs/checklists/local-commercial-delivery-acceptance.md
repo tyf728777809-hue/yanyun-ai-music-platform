@@ -21,6 +21,7 @@
 - [ ] `scripts/smoke/production-provider-defaults-audit.sh` 通过，证明生产 profile、生产样例、Java fallback 和 readiness 默认值都保留 DreamMaker 为生产目标。
 - [ ] `scripts/smoke/real-model-evidence-log-audit.sh` 通过，证明真实模型 smoke 证据日志、DreamMaker 生产保留口径和脱敏规则齐全。
 - [ ] `scripts/smoke/company-deployment-readiness-audit.sh` 通过，证明本地基础设施 compose、应用 Dockerfile、监控 scrape、生产 env 样例和部署交接文档齐全。
+- [ ] `scripts/smoke/stepwise-production-boundary-audit.sh` 通过，证明 `stepwise-recording` 仍只是录步审计，`stepwise-production` 未实现前没有被当成本地用户实测或生产发布包链路。
 - [ ] `docs/handover/company-delivery-package-v0.1.md` 已作为公司开发第一阅读入口，且 `scripts/smoke/company-handoff-package-audit.sh` 通过。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 通过，证明后端本地 Mock 主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断可组合复验。

@@ -140,18 +140,24 @@ DreamMaker Image 2 生产目标 smoke 使用
 
 ```bash
 MUSIC_WORKFLOW_DISPATCH_MODE=outbox WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
-WORKFLOW_OUTBOX_DISPATCH_TARGET=local \
+WORKFLOW_OUTBOX_DISPATCH_TARGET=local TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
   ./gradlew :apps:music-api:bootRun
 ```
 
 要验证 API 与 worker 分进程的 Temporal 编排边界，先启动 worker，再启动 API：
 
 ```bash
-MUSIC_PROVIDER=mock ./gradlew :apps:music-worker:bootRun
+MUSIC_PROVIDER=mock TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
+  ./gradlew :apps:music-worker:bootRun
 MUSIC_PROVIDER=mock MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
 WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \
+TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
   ./gradlew :apps:music-api:bootRun
 ```
+
+公司交付、用户实测和生产 smoke 必须显式保持 `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`，直到
+`stepwise-production` 有专用 production activity 和独立 smoke 证据。`stepwise-recording` 只能用于
+step audit 受控验证，不能作为用户实测、交付验收或生产发布包链路。
 
 健康检查：
 
@@ -220,11 +226,12 @@ scripts/smoke/local-delivery-evidence-audit.sh
 scripts/smoke/production-provider-defaults-audit.sh
 scripts/smoke/real-model-evidence-log-audit.sh
 scripts/smoke/company-deployment-readiness-audit.sh
+scripts/smoke/stepwise-production-boundary-audit.sh
 scripts/smoke/company-handoff-package-audit.sh
 scripts/smoke/real-model-safety-gates-audit.sh
 ```
 
-`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`production-provider-defaults-audit.sh` 检查 `prod/production` profile、生产环境样例、Java fallback 和 readiness 默认值都指向 DreamMaker；`real-model-evidence-log-audit.sh` 检查真实模型 smoke 统一脱敏证据日志，确保 DreamMaker 仍是生产目标，Yunwu / WellAPI 只作为公网 smoke；`company-deployment-readiness-audit.sh` 检查本地基础设施 compose、应用 Dockerfile、Prometheus、生产 env 样例和部署交接文档；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行；完整本地商用验收栈可用 `scripts/smoke/local-commercial-full-acceptance-stack.sh` 执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
+`local-delivery-evidence-audit.sh` 只检查文档入口、脚本权限、DreamMaker 生产目标保留口径、真实模型受控 smoke 总入口、安全门矩阵、状态矩阵、明显密钥形态和大体积 tracked 文件；`production-provider-defaults-audit.sh` 检查 `prod/production` profile、生产环境样例、Java fallback 和 readiness 默认值都指向 DreamMaker；`real-model-evidence-log-audit.sh` 检查真实模型 smoke 统一脱敏证据日志，确保 DreamMaker 仍是生产目标，Yunwu / WellAPI 只作为公网 smoke；`company-deployment-readiness-audit.sh` 检查本地基础设施 compose、应用 Dockerfile、Prometheus、生产 env 样例和部署交接文档；`stepwise-production-boundary-audit.sh` 检查 `stepwise-recording` 不能被当成用户实测或生产发布包链路，且 `stepwise-production` 未实现前不能被标成 `READY_LOCAL`；`company-handoff-package-audit.sh` 检查公司交接包是否覆盖 Adapter 替换、真实模型切换、前端承接、stepwise 边界和禁止事项。以上审计都不启动 API、Docker、浏览器、worker，也不调用真实供应商或公司系统。运行时后端组合验收可用 `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 单独执行；完整本地商用验收栈可用 `scripts/smoke/local-commercial-full-acceptance-stack.sh` 执行。最终交付 gate 仍以 `docs/checklists/local-commercial-delivery-acceptance.md` 为准；公司开发的第一阅读入口是 `docs/handover/company-delivery-package-v0.1.md`。
 
 ## Web Commands
 

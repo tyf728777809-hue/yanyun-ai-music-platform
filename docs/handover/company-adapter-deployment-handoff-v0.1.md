@@ -200,7 +200,13 @@ S3_ACCESS_KEY=
 S3_SECRET_KEY=
 MUSIC_WORKFLOW_DISPATCH_MODE=outbox
 WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
+TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
 ```
+
+公司交付验收、用户实测和生产部署 smoke 必须显式保持
+`TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`，直到 `stepwise-production` 有专用 production
+activity 和独立 smoke 证据。`stepwise-recording` 只能用于 step audit 受控验证，不得用于用户实测、
+公司交付验收或生产发布包链路。
 
 ### 8.2 公司 Adapter 替换必需项
 
@@ -240,7 +246,7 @@ RENDER_WORKER_TIMEOUT=
 ## 9. 公司接入 Smoke
 
 1. 调用 `/internal/integration-readiness`，并运行 `scripts/smoke/company-adapter-readiness-smoke.sh`，确认公司 Adapter 状态可解释且 readiness 响应不泄露密钥。
-2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh` 和 `scripts/smoke/company-deployment-readiness-audit.sh`，确认生产默认仍指向 DreamMaker，部署资产和交接文档齐全，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
+2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh`、`scripts/smoke/company-deployment-readiness-audit.sh` 和 `scripts/smoke/stepwise-production-boundary-audit.sh`，确认生产默认仍指向 DreamMaker，部署资产和交接文档齐全，`stepwise-recording` 没有被当成交付生产链路，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
 3. 调用 `/api/v1/me`，确认返回真实公司用户。
 4. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
 5. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。

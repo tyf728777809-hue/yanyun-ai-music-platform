@@ -45,6 +45,7 @@ Temporal 分进程路径已经证明 API 可以通过 outbox 启动 worker。最
 - FR-11：所有失败 MUST 映射到现有 OpenAPI v0.1 可读状态、失败码、`recommended_action` 和 `available_actions`。
 - FR-12：Workflow MUST 负责状态推进顺序；Agent、Provider 和 Adapter activity MUST NOT 自行决定跳过状态机、提交权益或交接发布包。
 - FR-13：真实外部调用 MUST 受硬开关、环境变量和 runbook 控制；自动化测试 MUST NOT 调用真实 DeepSeek、DreamMaker、Image 2 或公司系统。
+- FR-14：DreamMaker 音乐与 DreamMaker Image 2 MUST 保留为正式生产目标；Yunwu / WellAPI 只能作为当前公网受控 smoke 路径，不得替代 `stepwise-production` 的生产目标设计。
 
 ## 5. 非功能需求
 
@@ -96,6 +97,7 @@ Temporal 分进程路径已经证明 API 可以通过 outbox 启动 worker。最
 - AC-5：Given 供应商音频返回远程 URL，When `IMPORT_AUDIO` 成功，Then 发布包使用平台对象存储 URL，而不是供应商临时 URL，覆盖 FR-8。
 - AC-6：Given 发布包预检阻断，When Workflow 收口，Then 作品进入可读失败或 `PACKAGE_BLOCKED` 状态，权益释放，发布包不可交接，覆盖 FR-10、FR-11。
 - AC-7：Given 自动化测试运行，When Gradle、API smoke、前端 smoke 执行，Then 不发起真实 DeepSeek、DreamMaker、Image 2 或公司系统请求，覆盖 FR-13。
+- AC-8：Given 当前公网 smoke 使用 Yunwu 或 WellAPI，When 公司交接或后续实现 `stepwise-production`，Then 文档、配置和审计仍保留 DreamMaker 生产目标路径，覆盖 FR-14。
 
 ## 9. 边界情况
 
@@ -162,4 +164,5 @@ type StepFailure = {
 3. 新增 `stepwise-production` 配置值和测试，先用 fake activity 证明状态推进、失败释放和包 ready 收口。
 4. 把 `MockSongProductionWorkflow` 中的副作用能力逐步抽到可复用 production step service，避免复制业务规则。
 5. 先实现 `mock` provider 的 stepwise production smoke，再进入 Suno / MiniMax 受控真实联调。
-6. 每接入一个真实模型，只打开一个环节，其余仍走 Mock/Fake，并更新 runbook、验收清单和 `docs/project-progress.md`。
+6. 音乐真实联调可以在当前公网先使用 Yunwu Suno，但生产目标仍要回到 DreamMaker Suno / DreamMaker MiniMax；封面公网联调可以先使用 WellAPI Image 2，但生产目标仍要回到 DreamMaker Image 2。
+7. 每接入一个真实模型，只打开一个环节，其余仍走 Mock/Fake，并更新 runbook、验收清单和 `docs/project-progress.md`。

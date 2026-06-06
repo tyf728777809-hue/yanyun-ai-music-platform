@@ -116,8 +116,17 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-worker:bootRun
 scripts/smoke/temporal-stepwise-recording.sh
 ```
 
-脚本会创建作品、确认出歌、等待 outbox 成功，并检查 `generation_job_steps` 是否写入 13 条
-`SUCCEEDED` 记录。也可手工抽查：
+`temporal-stepwise-recording.sh` 会创建作品、确认出歌、等待 outbox 成功，并检查
+`generation_job_steps` 是否写入 13 条 `SUCCEEDED` 记录。
+
+交付前还应运行只读边界审计，确认没有把 `stepwise-recording` 误写成用户实测或生产发布包链路，并确认
+`stepwise-production` 未实现前没有被标成 `READY_LOCAL`：
+
+```bash
+scripts/smoke/stepwise-production-boundary-audit.sh
+```
+
+也可手工抽查：
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \

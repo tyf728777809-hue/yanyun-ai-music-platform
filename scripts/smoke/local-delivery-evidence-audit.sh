@@ -154,6 +154,17 @@ check_company_deployment_readiness_audit() {
   printf '%s\n' "$output" | tail -40
 }
 
+check_stepwise_production_boundary_audit() {
+  local output
+  if output="$(scripts/smoke/stepwise-production-boundary-audit.sh 2>&1)"; then
+    pass "stepwise production boundary audit passes"
+    return
+  fi
+
+  fail_check "stepwise production boundary audit failed"
+  printf '%s\n' "$output" | tail -40
+}
+
 check_secret_patterns() {
   local matches
   matches="$(
@@ -234,6 +245,8 @@ required_files=(
   "docs/specs/company-handoff-package-index-v0.1.md"
   "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
+  "docs/specs/stepwise-temporal-production-state-advancement-v0.1.md"
+  "docs/handover/stepwise-production-implementation-task-package-v0.1.md"
   "deploy/env.production.example"
 )
 
@@ -258,6 +271,7 @@ required_executables=(
   "scripts/smoke/local-delivery-evidence-audit.sh"
   "scripts/smoke/production-provider-defaults-audit.sh"
   "scripts/smoke/company-deployment-readiness-audit.sh"
+  "scripts/smoke/stepwise-production-boundary-audit.sh"
   "scripts/smoke/company-handoff-package-audit.sh"
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
   "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh"
@@ -279,6 +293,7 @@ require_pattern "README.md" "local-commercial-full-acceptance-stack\\.sh" "READM
 require_pattern "README.md" "production-provider-defaults-audit\\.sh" "README references production provider defaults audit"
 require_pattern "README.md" "real-model-evidence-log-audit\\.sh" "README references real-model evidence log audit"
 require_pattern "README.md" "company-deployment-readiness-audit\\.sh" "README references company deployment readiness audit"
+require_pattern "README.md" "stepwise-production-boundary-audit\\.sh" "README references stepwise production boundary audit"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
@@ -290,6 +305,7 @@ require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "PREPAR
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "PREPARED_HANDOFF" "status handoff includes PREPARED_HANDOFF"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "BLOCKED_EXTERNAL" "status handoff includes BLOCKED_EXTERNAL"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "DECISION_REQUIRED" "status handoff includes DECISION_REQUIRED"
+require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "stepwise-production" "status handoff includes stepwise-production boundary"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "MODE=preflight" "acceptance checklist requires real-model preflight"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_REAL_MODEL_SMOKE=1" "acceptance checklist requires global real-smoke allow gate"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-backend-acceptance-stack\\.sh" "acceptance checklist references backend acceptance stack"
@@ -298,12 +314,14 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "produ
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-model-smoke-evidence-log\\.md" "acceptance checklist references real-model evidence log"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-model-evidence-log-audit\\.sh" "acceptance checklist references real-model evidence log audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "company-deployment-readiness-audit\\.sh" "acceptance checklist references company deployment readiness audit"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "stepwise-production-boundary-audit\\.sh" "acceptance checklist references stepwise production boundary audit"
 
 check_smoke_index
 check_real_model_gate_audit
 check_production_provider_defaults_audit
 check_real_model_evidence_log_audit
 check_company_deployment_readiness_audit
+check_stepwise_production_boundary_audit
 check_secret_patterns
 check_large_tracked_files
 

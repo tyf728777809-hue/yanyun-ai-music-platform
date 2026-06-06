@@ -192,7 +192,7 @@ paths:
     post:
       tags: [Generation]
       summary: 确认歌词并开始出歌
-      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。默认 `MUSIC_WORKFLOW_DISPATCH_MODE=sync` 时本地 Mock 会在请求内完成并返回 `GENERATED / PACKAGE_READY`；显式切到 `outbox` 时先返回 `GENERATING / QUOTA_LOCKING`，由 dispatcher 异步推进。可选 `music_provider` 用于本地/联调阶段指定音乐 Provider，默认使用服务端配置。默认 `mock` 不调用外部服务；`suno` 可通过 `SUNO_BACKEND=yunwu|dreammaker` 切换当前公网联调或正式生产目标后端，`minimax` 仍通过 DreamMaker 接入骨架提交和轮询。若有效 Provider 对应真实调用开关已打开，运行时要求 `MUSIC_WORKFLOW_DISPATCH_MODE=outbox` 且 `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`，否则返回 HTTP 409，不启动真实供应商任务。
+      description: 确认时锁定权益；MP4 发布包可用后扣减主权益。默认 `MUSIC_WORKFLOW_DISPATCH_MODE=sync` 时本地 Mock 会在请求内完成并返回 `GENERATED / PACKAGE_READY`；显式切到 `outbox` 时先返回 `GENERATING / QUOTA_LOCKING`。只有 `legacy` worker 或未来完成独立 smoke 的 `stepwise-production` 模式会异步推进到发布包可用；当前 `stepwise-recording` 只写 step audit，不会生成发布包。可选 `music_provider` 用于本地/联调阶段指定音乐 Provider，默认使用服务端配置。默认 `mock` 不调用外部服务；`suno` 可通过 `SUNO_BACKEND=yunwu|dreammaker` 切换当前公网联调或正式生产目标后端，`minimax` 仍通过 DreamMaker 接入骨架提交和轮询。若有效 Provider 对应真实调用开关已打开，运行时要求 `MUSIC_WORKFLOW_DISPATCH_MODE=outbox` 且 `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`，否则返回 HTTP 409，不启动真实供应商任务。
       operationId: confirmWork
       parameters:
         - $ref: "#/components/parameters/MockUserId"
@@ -217,7 +217,7 @@ paths:
     post:
       tags: [Generation]
       summary: 重试音乐生成
-      description: 仅当作品处于可重试的音乐失败状态且仍有剩余重试次数时可用。可用 `music_provider` 切换 Provider 后重试，例如从 `suno` / `minimax` 联调失败切回 `mock`。默认 sync 模式会请求内执行；outbox 模式会先返回 `GENERATING / QUOTA_LOCKING`，由 dispatcher 异步推进。若有效 Provider 对应真实调用开关已打开，运行时要求 `outbox + temporal`，否则返回 HTTP 409，不启动真实供应商任务。当前本地阶段音乐重试上限为 2 次；并发重复重试或次数耗尽返回 HTTP 409。`PROVIDER_AUTH_FAILED` 属于不可用户重试失败，只返回联系支持/返回编辑动作。
+      description: 仅当作品处于可重试的音乐失败状态且仍有剩余重试次数时可用。可用 `music_provider` 切换 Provider 后重试，例如从 `suno` / `minimax` 联调失败切回 `mock`。默认 sync 模式会请求内执行；outbox 模式会先返回 `GENERATING / QUOTA_LOCKING`。只有 `legacy` worker 或未来完成独立 smoke 的 `stepwise-production` 模式会异步推进到发布包可用；当前 `stepwise-recording` 只写 step audit，不会生成发布包。若有效 Provider 对应真实调用开关已打开，运行时要求 `outbox + temporal`，否则返回 HTTP 409，不启动真实供应商任务。当前本地阶段音乐重试上限为 2 次；并发重复重试或次数耗尽返回 HTTP 409。`PROVIDER_AUTH_FAILED` 属于不可用户重试失败，只返回联系支持/返回编辑动作。
       operationId: retryMusic
       parameters:
         - $ref: "#/components/parameters/MockUserId"

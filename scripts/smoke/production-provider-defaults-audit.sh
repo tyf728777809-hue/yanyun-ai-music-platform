@@ -123,6 +123,7 @@ require_pattern \
 require_pattern "deploy/env.production.example" '^SPRING_PROFILES_ACTIVE=prod$' "production env example activates prod profile"
 require_pattern "deploy/env.production.example" '^SUNO_BACKEND=dreammaker$' "production env example uses DreamMaker Suno"
 require_pattern "deploy/env.production.example" '^IMAGE2_BACKEND=dreammaker$' "production env example uses DreamMaker Image2"
+require_pattern "deploy/env.production.example" '^TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy$' "production env example pins Temporal workflow mode to legacy"
 require_pattern "deploy/env.production.example" '^DREAMMAKER_ACCESS_KEY=$' "production env example keeps DreamMaker AccessKey empty"
 require_pattern "deploy/env.production.example" '^DREAMMAKER_SECRET_KEY=$' "production env example keeps DreamMaker SecretKey empty"
 require_pattern "deploy/env.production.example" 'Local `\.env\.example` keeps public-network smoke defaults' "production env example explains local smoke distinction"
@@ -130,6 +131,7 @@ require_pattern "deploy/env.production.example" 'Local `\.env\.example` keeps pu
 require_pattern "docs/adr/0004-production-provider-targets.md" "DreamMaker.*正式生产供应商目标" "ADR keeps DreamMaker production target"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "SPRING_PROFILES_ACTIVE=prod" "company handoff references prod profile"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "deploy/env.production.example" "company handoff references production env example"
+require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy" "company handoff pins production Temporal workflow mode to legacy"
 require_pattern "docs/checklists/company-adapter-replacement-readiness.md" "SPRING_PROFILES_ACTIVE=prod" "company readiness checklist references prod profile"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "production-provider-defaults-audit\\.sh" "local acceptance checklist references production defaults audit"
 

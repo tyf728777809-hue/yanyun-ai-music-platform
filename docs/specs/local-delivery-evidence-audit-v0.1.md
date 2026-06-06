@@ -27,6 +27,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 - FR-12: The audit MUST include the production provider defaults audit, proving production profile and fallback defaults still point to DreamMaker.
 - FR-13: The audit MUST include the company deployment readiness audit, proving deployment assets and handoff references remain present.
 - FR-14: The audit MUST include the real-model evidence log audit, proving sanitized evidence logging exists and keeps DreamMaker as the production target while Yunwu and WellAPI remain public-network smoke paths.
+- FR-15: The audit MUST include the stepwise production boundary audit, proving `stepwise-recording` is not treated as a production/user-test path and `stepwise-production` is not overstated before implementation.
 
 ## Non-Functional Requirements
 
@@ -36,7 +37,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 
 ## Acceptance Criteria
 
-- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, backend/full acceptance stack evidence, production provider defaults evidence, real-model evidence log evidence, deployment readiness evidence, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9 and FR-12 through FR-14.
+- AC-1: Given a normal checkout, when `scripts/smoke/local-delivery-evidence-audit.sh` runs, then it checks documents, executable scripts, backend/full acceptance stack evidence, production provider defaults evidence, real-model evidence log evidence, deployment readiness evidence, stepwise production boundary evidence, DreamMaker retention text, status labels, smoke index output, secret patterns, and large tracked files without starting services. Covers FR-1 through FR-9 and FR-12 through FR-15.
 - AC-2: Given local uncommitted changes and default mode, when the audit runs, then it warns about git status but can pass remaining checks. Covers FR-10.
 - AC-3: Given local uncommitted changes and `STRICT_GIT_CLEAN=true`, when the audit runs, then it exits non-zero. Covers FR-10 and FR-11.
 - AC-4: Given the real-model controlled smoke index is removed or loses DreamMaker plan output, when the audit runs, then it exits non-zero. Covers FR-7 and FR-11.
@@ -67,3 +68,4 @@ N/A - this feature is a local shell audit and does not add HTTP APIs.
 - OS-3: This audit does not prove company Adapter replacement.
 - OS-4: This audit does not replace the manual local commercial delivery checklist.
 - OS-5: This audit does not validate real provider task ids or raw provider payloads; those are intentionally excluded from repository evidence.
+- OS-6: This audit does not implement `stepwise-production`; it only prevents overclaiming before the dedicated production step activities and smoke exist.
