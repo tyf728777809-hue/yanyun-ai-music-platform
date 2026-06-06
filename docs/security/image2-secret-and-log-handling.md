@@ -4,8 +4,8 @@
 
 以下内容一律视为敏感信息：
 
-- Image 2 API Key。
-- Image 2 鉴权 header、Bearer token、签名、临时 token。
+- DreamMaker AccessKey / SecretKey，以及后续公司 Secret 系统中的等价凭据。
+- DreamMaker JWT、Image 2 鉴权 header、Bearer token、签名、临时 token。
 - 私有 API base URL，如果供应商或公司要求不公开。
 - 完整图像生成 Prompt、完整请求、完整响应。
 - 供应商返回的原始图片 URL、带签名下载 URL 或任务详情 payload。
@@ -34,7 +34,7 @@
 ## 代码侧保护
 
 - `IMAGE_PROVIDER=mock` 或 `IMAGE_REAL_CALLS_ENABLED=false` 时，真实 Image 2 客户端必须在外部 HTTP 请求前失败。
-- 缺失 `IMAGE2_BASE_URL` 或 `IMAGE2_API_KEY` 时，必须在外部 HTTP 请求前失败。
+- 缺失 DreamMaker AK/SK、`DREAMMAKER_REAL_CALLS_ENABLED=true` 或 `IMAGE_REAL_CALLS_ENABLED=true` 时，必须在外部 HTTP 请求前失败。
 - 真实客户端必须设置超时和最大尝试次数；默认不得无限重试。
 - 日志必须禁用请求/响应 body 原文输出。
 - 错误文本入库前必须截断，并脱敏 `Authorization`、`Bearer`、`api_key`、`token`、`secret`、`password` 等字段。
@@ -48,15 +48,18 @@
 ```bash
 export IMAGE_PROVIDER=image2
 export IMAGE_REAL_CALLS_ENABLED=true
-export IMAGE2_BASE_URL="<from-secure-channel>"
-export IMAGE2_API_KEY="<from-secure-channel>"
+export DREAMMAKER_REAL_CALLS_ENABLED=true
+export DREAMMAKER_ACCESS_KEY="<from-secure-channel>"
+export DREAMMAKER_SECRET_KEY="<from-secure-channel>"
 ```
 
 联调结束后：
 
 ```bash
-unset IMAGE2_BASE_URL IMAGE2_API_KEY IMAGE2_MODEL_NAME
+unset DREAMMAKER_ACCESS_KEY DREAMMAKER_SECRET_KEY DREAMMAKER_USER_ACCESS_TOKEN
+unset IMAGE2_MODEL_NAME IMAGE2_SIZE IMAGE2_QUALITY IMAGE2_OUTPUT_FORMAT
 unset IMAGE_REAL_CALLS_ENABLED IMAGE_PROVIDER
+export DREAMMAKER_REAL_CALLS_ENABLED=false
 ```
 
 提交前至少执行：

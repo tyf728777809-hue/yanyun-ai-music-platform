@@ -20,6 +20,7 @@ import com.yanyun.music.creativeagent.QualityGate;
 import com.yanyun.music.image2.CoverGenerationRequest;
 import com.yanyun.music.image2.CoverGenerationResult;
 import com.yanyun.music.image2.CoverGenerationService;
+import com.yanyun.music.image2.DreamMakerImage2CoverGenerationService;
 import com.yanyun.music.media.MediaAssetDescriptor;
 import com.yanyun.music.media.VideoRenderRequest;
 import com.yanyun.music.media.VideoRenderResult;
@@ -58,6 +59,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.HexFormat;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -443,7 +445,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                 coverPrompt.width(),
                 coverPrompt.height(),
                 coverPrompt.providerOptions()));
-    MediaAssetRow coverAsset = toMediaAssetRow(workId, coverResult.asset());
+    MediaAssetDescriptor coverDescriptor = importRemoteCoverIfNeeded(coverResult.asset());
+    MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
     workRepository.upsertMediaAsset(coverAsset);
 
     VideoRenderResult videoResult =
@@ -539,6 +542,30 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             musicResult.audioSourceUrl(),
             "audio/" + workId + ".mp3",
             firstNonBlank(musicResult.audioContentType(), "audio/mpeg")));
+  }
+
+  private MediaAssetDescriptor importRemoteCoverIfNeeded(MediaAssetDescriptor asset) {
+    Object sourceUrl =
+        asset.metadata().get(DreamMakerImage2CoverGenerationService.SOURCE_URL_METADATA_KEY);
+    if (!(sourceUrl instanceof String value) || value.isBlank()) {
+      return asset;
+    }
+    StoredObject importedCover =
+        remoteObjectImporter.importObject(
+            new RemoteObjectImportRequest(value, asset.objectKey(), asset.mimeType()));
+    Map<String, Object> metadata = new LinkedHashMap<>(asset.metadata());
+    metadata.remove(DreamMakerImage2CoverGenerationService.SOURCE_URL_METADATA_KEY);
+    metadata.put("object_storage_imported", true);
+    return new MediaAssetDescriptor(
+        asset.assetType(),
+        importedCover.objectKey(),
+        importedCover.contentType(),
+        importedCover.sizeBytes(),
+        asset.checksum(),
+        asset.width(),
+        asset.height(),
+        asset.durationMs(),
+        metadata);
   }
 
   private MusicProviderSelection selectedProvider(SongProductionWorkflowInput input) {

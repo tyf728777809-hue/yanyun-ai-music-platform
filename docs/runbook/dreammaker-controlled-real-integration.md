@@ -4,7 +4,7 @@
 
 本 Runbook 用于第 5 批手动联调 Suno 与 MiniMax 的真实 DreamMaker 链路。目标是证明真实 Provider 可以在本地完整走到平台对象存储、作品状态和发布包交接；同时避免误触真实请求、泄露密钥或让同步 API 线程长时间阻塞。
 
-如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；也可以在完成 worker/API 启动和凭据注入后，用 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行脚本化单作品 smoke。本 Runbook 负责解释完整风险、回滚和证据记录口径。
+如果只需要一次最短路径 smoke，先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 执行；也可以在完成 worker/API 启动和凭据注入后，用 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行脚本化单作品 smoke。真实调用前，可先用 `scripts/smoke/dreammaker-real-guard-smoke.sh` 验证默认 `sync` 模式会被运行时 guard 拒绝，且不会触发 DreamMaker。本 Runbook 负责解释完整风险、回滚和证据记录口径。
 
 ## 硬性规则
 
@@ -96,6 +96,18 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 ```
 
 ## 脚本化单作品 Smoke
+
+### 非真实 Guard Smoke
+
+在 API 已用 `DREAMMAKER_REAL_CALLS_ENABLED=true` 且默认 `sync` workflow 模式启动时，先执行：
+
+```bash
+scripts/smoke/dreammaker-real-guard-smoke.sh
+```
+
+该脚本期望确认出歌返回 HTTP 409，并验证作品仍停留在 `LYRICS_READY / WAITING_CONFIRM`；它不会设置 AK/SK，也不调用 DreamMaker。
+
+### 真实 Provider Smoke
 
 在完成凭据注入、worker 启动和 API 启动后，可选择执行脚本：
 

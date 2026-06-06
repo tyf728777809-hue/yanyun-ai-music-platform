@@ -17,7 +17,9 @@ import com.yanyun.music.creativeagent.ModerationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
+import com.yanyun.music.deepseek.DeepSeekProperties;
 import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
+import com.yanyun.music.deepseek.RealDeepSeekLyricsClient;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -94,7 +96,17 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  DeepSeekLyricsClient deepSeekLyricsClient() {
+  @ConfigurationProperties(prefix = "yanyun.deepseek")
+  DeepSeekProperties deepSeekProperties() {
+    return new DeepSeekProperties();
+  }
+
+  @Bean
+  DeepSeekLyricsClient deepSeekLyricsClient(
+      DeepSeekProperties deepSeekProperties, ObjectMapper objectMapper) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekLyricsClient(deepSeekProperties, objectMapper);
+    }
     return new MockDeepSeekLyricsClient();
   }
 
@@ -223,11 +235,13 @@ public class AdapterConfiguration {
   IntegrationReadinessService integrationReadinessService(
       CompanyIntegrationProperties companyIntegrationProperties,
       DreamMakerProperties dreamMakerProperties,
+      DeepSeekProperties deepSeekProperties,
       Clock clock) {
     return new IntegrationReadinessService(
         companyIntegrationProperties,
         clock,
         !dreamMakerProperties.getAccessKey().isBlank(),
-        !dreamMakerProperties.getSecretKey().isBlank());
+        !dreamMakerProperties.getSecretKey().isBlank(),
+        !deepSeekProperties.getApiKey().isBlank());
   }
 }

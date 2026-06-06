@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-06 23:45 CST
+更新时间：2026-06-07 00:10 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -58,8 +58,8 @@
 - [ ] 真实调用必须使用 outbox + Temporal worker，不在默认同步 API 线程中执行。
 - [ ] runtime guard 已验证：`DREAMMAKER_REAL_CALLS_ENABLED=true` 时，`suno` / `minimax` 不允许在 `sync` 模式确认或重试。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
-- [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认硬开关、真实客户端、密钥注入、日志脱敏和回滚方式。
-- [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认硬开关、真实客户端、对象存储导入、默认封面兜底、密钥注入、日志脱敏和回滚方式。
+- [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式。
+- [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认 DreamMaker 凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 或 `scripts/smoke/dreammaker-real-music-smoke.sh` 执行，确认是真的打到 DreamMaker 而不是仍在 Mock。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到集成跟踪文档。

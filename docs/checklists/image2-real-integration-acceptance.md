@@ -4,19 +4,20 @@
 
 - [ ] `git status --short` 无未记录的无关改动。
 - [ ] `IMAGE_PROVIDER=mock` 和 `IMAGE_REAL_CALLS_ENABLED=false` 是默认状态。
-- [ ] 真实凭据只通过当前 shell、部署 Secret 或公司配置中心注入。
+- [ ] Image 2 通过 DreamMaker 接入，DreamMaker AK/SK 只通过当前 shell、部署 Secret 或公司配置中心注入。
+- [ ] `IMAGE_PROVIDER=image2`、`IMAGE_REAL_CALLS_ENABLED=true`、`DREAMMAKER_REAL_CALLS_ENABLED=true` 必须同时打开才允许真实调用。
 - [ ] `./gradlew :modules:image2:test :modules:creative-agent:test :apps:music-api:test --tests '*MockSongProductionWorkflow*'` 通过。
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 可在全 Mock 状态跑通 `scripts/smoke/api-main-flow.sh`。
-- [ ] 真实客户端已有硬开关、timeout、max attempts、失败码映射、默认封面兜底和脱敏日志。
+- [ ] 真实客户端已有硬开关、DreamMaker submit/status 轮询、对象存储导入和脱敏错误处理；默认封面兜底若未实现，需明确本次联调接受 `PACKAGE_BUILD_FAILED` 收口。
 
 ## 封面成功路径
 
-- [ ] `CoverPromptAgent` 输出 1920x1080 visual prompt、negative prompt 和 provider options。
+- [ ] `CoverPromptAgent` 输出 visual prompt、negative prompt 和 provider options。
 - [ ] `CoverGenerationService` 受控调用真实 Image 2。
 - [ ] 供应商封面图被导入平台对象存储。
 - [ ] `media_assets` 写入 `COVER` 资产。
-- [ ] `COVER.width=1920` 且 `COVER.height=1080`。
+- [ ] `COVER.width` / `COVER.height` 符合 `IMAGE2_SIZE`；默认是 `2048x1152`。
 - [ ] `COVER.mime_type` 与真实文件一致。
 - [ ] `media_assets.metadata_json` 不包含 API Key、鉴权 header 或供应商完整 payload。
 
@@ -31,7 +32,7 @@
 ## 失败与兜底
 
 - [ ] 未设置 `IMAGE_REAL_CALLS_ENABLED=true` 时，真实请求被本地保护层拒绝。
-- [ ] 缺失 API Key 或 base URL 时，请求不会发出外部 HTTP。
+- [ ] 缺失 DreamMaker AK/SK 或真实调用开关时，请求不会发出外部 HTTP。
 - [ ] 401 / 403 / 429 / timeout 至少能落库为脱敏错误。
 - [ ] 供应商内容安全阻断能映射为可读失败码。
 - [ ] 供应商 URL 下载失败能映射为可读失败码。

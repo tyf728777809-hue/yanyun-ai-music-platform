@@ -4,7 +4,7 @@
 
 本 Runbook 用于后续手动联调真实 DeepSeek 链路。目标是在只打开 DeepSeek 的前提下，验证用户需求理解、写词、润色和续写可以受控调用真实模型，并且不影响音乐、封面、视频和公司系统的 Mock 边界。
 
-当前代码状态：截至 2026-06-06，`DeepSeekLyricsClient` 仍只注册 `MockDeepSeekLyricsClient`。本 Runbook 是真实客户端实现前的操作基线；执行真实联调前，必须先补 `RealDeepSeekLyricsClient` / 必要的真实 Agent 实现、硬开关、超时、失败码映射和脱敏日志。
+当前代码状态：截至 2026-06-06，`DeepSeekLyricsClient` 默认注册 `MockDeepSeekLyricsClient`；当 `DEEPSEEK_REAL_CALLS_ENABLED=true` 时注册 `RealDeepSeekLyricsClient`。真实客户端使用 OpenAI 兼容 `POST /chat/completions`，默认 `DEEPSEEK_BASE_URL=https://api.deepseek.com`、`DEEPSEEK_MODEL_NAME=deepseek-v4-pro`，并要求 JSON object 输出。
 
 ## 硬性规则
 
@@ -35,12 +35,13 @@ docker compose -f deploy/docker-compose.yml ps
 ```bash
 export AGENT_REAL_CALLS_ENABLED=true
 export DEEPSEEK_REAL_CALLS_ENABLED=true
-export DEEPSEEK_BASE_URL="<from-secure-channel>"
+export DEEPSEEK_BASE_URL="https://api.deepseek.com"
 export DEEPSEEK_API_KEY="<from-secure-channel>"
-export DEEPSEEK_MODEL_NAME="<approved-model>"
+export DEEPSEEK_MODEL_NAME="deepseek-v4-pro"
 export DEEPSEEK_TIMEOUT_MS=30000
 export DEEPSEEK_MAX_ATTEMPTS=1
-export DEEPSEEK_MAX_INPUT_CHARS=8000
+export DEEPSEEK_RESPONSE_MAX_TOKENS=1800
+export DEEPSEEK_TEMPERATURE=0.7
 ```
 
 联调结束后执行：
@@ -48,7 +49,7 @@ export DEEPSEEK_MAX_INPUT_CHARS=8000
 ```bash
 unset DEEPSEEK_BASE_URL DEEPSEEK_API_KEY DEEPSEEK_MODEL_NAME
 unset AGENT_REAL_CALLS_ENABLED DEEPSEEK_REAL_CALLS_ENABLED
-unset DEEPSEEK_TIMEOUT_MS DEEPSEEK_MAX_ATTEMPTS DEEPSEEK_MAX_INPUT_CHARS
+unset DEEPSEEK_TIMEOUT_MS DEEPSEEK_MAX_ATTEMPTS DEEPSEEK_RESPONSE_MAX_TOKENS DEEPSEEK_TEMPERATURE
 ```
 
 ## 推荐启动方式
@@ -126,7 +127,7 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 ## 失败处理
 
 - `DEEPSEEK_REAL_CALLS_ENABLED=false` 导致失败：这是保护机制，确认是否真的进入手动联调窗口。
-- 缺失 `DEEPSEEK_BASE_URL` 或 `DEEPSEEK_API_KEY`：必须在外部 HTTP 请求前失败，不得发出真实请求。
+- 缺失 `DEEPSEEK_API_KEY`、模型名或总开关未打开：必须在外部 HTTP 请求前失败，不得发出真实请求。
 - HTTP 401 / 403：停止继续联调，确认密钥权限，不要重复试错。
 - HTTP 429 或限流：停止触发新样本，记录脱敏错误码和时间窗口。
 - 超时：记录 operation、模型名、timeout 配置和 `work_id`，回退 Mock。
@@ -167,12 +168,9 @@ EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 | 是否回退 Mock | 是 / 否 |
 | 结论 | 通过 / 待修复 |
 
-## 进入真实联调前仍需用户提供
+## 进入真实联调前仍需确认
 
-- DeepSeek API base URL。
-- API Key 或公司 Secret 注入方式。
-- 认证 header 格式。
-- 模型名和可用参数。
-- 请求/响应 schema 或供应商文档。
+- DeepSeek API Key 或公司 Secret 注入方式。
+- 本轮联调样本数量、成本止损和回滚窗口。
 - 限流、超时、重试、计费和内容安全要求。
 - 失败码样本和 retryable / non-retryable 口径。

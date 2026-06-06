@@ -14,6 +14,7 @@ dependencies {
     api(project(":modules:creative-agent"))
     api(project(":modules:image2"))
     api(project(":modules:media"))
+    implementation(project(":modules:dreammaker"))
     implementation(project(":modules:moderation"))
     implementation(project(":modules:music-provider"))
     implementation(project(":modules:publish"))

@@ -40,13 +40,36 @@ yanyun:
     temporal-target: ${TEMPORAL_TARGET:localhost:7233}
     agent-real-calls-enabled: ${AGENT_REAL_CALLS_ENABLED:false}
     deepseek-real-calls-enabled: ${DEEPSEEK_REAL_CALLS_ENABLED:false}
-    deepseek-base-url: ${DEEPSEEK_BASE_URL:}
-    deepseek-model-name: ${DEEPSEEK_MODEL_NAME:}
+    deepseek-base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    deepseek-model-name: ${DEEPSEEK_MODEL_NAME:deepseek-v4-pro}
     image-provider: ${IMAGE_PROVIDER:mock}
     image-real-calls-enabled: ${IMAGE_REAL_CALLS_ENABLED:false}
-    image2-base-url: ${IMAGE2_BASE_URL:}
-    image2-model-name: ${IMAGE2_MODEL_NAME:}
+    image2-base-url: ${DREAMMAKER_API_BASE_URL:https://api-all.dreammaker.netease.com}
+    image2-model-name: ${IMAGE2_MODEL_NAME:gpt-image-2}
     dreammaker-real-calls-enabled: ${DREAMMAKER_REAL_CALLS_ENABLED:false}
+  deepseek:
+    agent-real-calls-enabled: ${AGENT_REAL_CALLS_ENABLED:false}
+    real-calls-enabled: ${DEEPSEEK_REAL_CALLS_ENABLED:false}
+    base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    api-key: ${DEEPSEEK_API_KEY:}
+    model-name: ${DEEPSEEK_MODEL_NAME:deepseek-v4-pro}
+    request-timeout: ${DEEPSEEK_TIMEOUT_MS:30000ms}
+    max-attempts: ${DEEPSEEK_MAX_ATTEMPTS:1}
+    response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:1800}
+    temperature: ${DEEPSEEK_TEMPERATURE:0.7}
+  image:
+    provider: ${IMAGE_PROVIDER:mock}
+  image2:
+    real-calls-enabled: ${IMAGE_REAL_CALLS_ENABLED:false}
+    app-name: ${IMAGE2_APP_NAME:gpt-image-2}
+    sub-app-name: ${IMAGE2_SUB_APP_NAME:gpt-image-2}
+    model-name: ${IMAGE2_MODEL_NAME:gpt-image-2}
+    size: ${IMAGE2_SIZE:2048x1152}
+    quality: ${IMAGE2_QUALITY:medium}
+    output-format: ${IMAGE2_OUTPUT_FORMAT:png}
+    background: ${IMAGE2_BACKGROUND:opaque}
+    max-poll-attempts: ${IMAGE2_MAX_POLL_ATTEMPTS:60}
+    poll-interval: ${IMAGE2_POLL_INTERVAL:2s}
   music:
     provider: ${MUSIC_PROVIDER:mock}
     mock-duration-ms: ${MOCK_MUSIC_DURATION_MS:180000}

@@ -12,9 +12,10 @@ public final class IntegrationReadinessService {
   private final Clock clock;
   private final boolean dreamMakerAccessKeyConfigured;
   private final boolean dreamMakerSecretKeyConfigured;
+  private final boolean deepSeekApiKeyConfigured;
 
   public IntegrationReadinessService(CompanyIntegrationProperties properties, Clock clock) {
-    this(properties, clock, false, false);
+    this(properties, clock, false, false, false);
   }
 
   public IntegrationReadinessService(
@@ -22,10 +23,20 @@ public final class IntegrationReadinessService {
       Clock clock,
       boolean dreamMakerAccessKeyConfigured,
       boolean dreamMakerSecretKeyConfigured) {
+    this(properties, clock, dreamMakerAccessKeyConfigured, dreamMakerSecretKeyConfigured, false);
+  }
+
+  public IntegrationReadinessService(
+      CompanyIntegrationProperties properties,
+      Clock clock,
+      boolean dreamMakerAccessKeyConfigured,
+      boolean dreamMakerSecretKeyConfigured,
+      boolean deepSeekApiKeyConfigured) {
     this.properties = properties;
     this.clock = clock;
     this.dreamMakerAccessKeyConfigured = dreamMakerAccessKeyConfigured;
     this.dreamMakerSecretKeyConfigured = dreamMakerSecretKeyConfigured;
+    this.deepSeekApiKeyConfigured = deepSeekApiKeyConfigured;
   }
 
   public IntegrationReadinessReport buildReport() {
@@ -287,14 +298,34 @@ public final class IntegrationReadinessService {
           requiredEnvVars,
           "DeepSeek 真实调用开关已打开，但缺少 DEEPSEEK_BASE_URL；不得发出外部请求。");
     }
+    if (properties.getDeepseekModelName() == null || properties.getDeepseekModelName().isBlank()) {
+      return new IntegrationComponentReadiness(
+          "deepseek_guard",
+          "real-calls-missing-model",
+          "RealDeepSeekLyricsClient",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "DeepSeek 真实调用开关已打开，但缺少 DEEPSEEK_MODEL_NAME；不得发出外部请求。");
+    }
+    if (!deepSeekApiKeyConfigured) {
+      return new IntegrationComponentReadiness(
+          "deepseek_guard",
+          "real-calls-missing-api-key",
+          "RealDeepSeekLyricsClient",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "DeepSeek 真实调用开关已打开，但缺少 DEEPSEEK_API_KEY；不得发出外部请求。");
+    }
     return new IntegrationComponentReadiness(
         "deepseek_guard",
-        "real-calls-client-pending",
-        "RealDeepSeekLyricsClient pending",
-        IntegrationReadinessStatus.BLOCKED,
-        true,
+        "real-calls-enabled",
+        "RealDeepSeekLyricsClient",
+        IntegrationReadinessStatus.READY_FOR_LOCAL,
+        false,
         requiredEnvVars,
-        "DeepSeek 真实调用配置已进入联调准备状态，但仓库尚未实现真实客户端；需先按 Runbook 补硬开关、超时、失败码映射和脱敏日志。");
+        "DeepSeek OpenAI 兼容真实客户端已可用于受控本地联调；报告不会输出 API Key。");
   }
 
   private IntegrationComponentReadiness image2Component() {
@@ -304,13 +335,14 @@ public final class IntegrationReadinessService {
         List.of(
             "IMAGE_PROVIDER",
             "IMAGE_REAL_CALLS_ENABLED",
-            "IMAGE2_BASE_URL",
-            "IMAGE2_API_KEY",
+            "DREAMMAKER_REAL_CALLS_ENABLED",
+            "DREAMMAKER_API_BASE_URL",
+            "DREAMMAKER_ACCESS_KEY",
+            "DREAMMAKER_SECRET_KEY",
             "IMAGE2_MODEL_NAME",
-            "IMAGE2_TIMEOUT_MS",
-            "IMAGE2_MAX_ATTEMPTS",
-            "IMAGE2_WIDTH",
-            "IMAGE2_HEIGHT");
+            "IMAGE2_SIZE",
+            "IMAGE2_QUALITY",
+            "IMAGE2_MAX_POLL_ATTEMPTS");
     if (!enabled) {
       return new IntegrationComponentReadiness(
           "image2_guard",
@@ -331,24 +363,44 @@ public final class IntegrationReadinessService {
           requiredEnvVars,
           "已选择非 Mock 图片 Provider，但 IMAGE_REAL_CALLS_ENABLED=false；不得发出真实 Image 2 请求。");
     }
-    if (properties.getImage2BaseUrl() == null || properties.getImage2BaseUrl().isBlank()) {
+    if (!properties.isDreammakerRealCallsEnabled()) {
       return new IntegrationComponentReadiness(
           "image2_guard",
-          "real-calls-missing-base-url",
-          "MockCoverGenerationService",
+          "image2-enabled-dreammaker-disabled",
+          "DreamMakerImage2CoverGenerationService",
           IntegrationReadinessStatus.BLOCKED,
           true,
           requiredEnvVars,
-          "Image 2 真实调用开关已打开，但缺少 IMAGE2_BASE_URL；不得发出外部请求。");
+          "Image 2 通过 DreamMaker 接入；IMAGE_REAL_CALLS_ENABLED=true 时也必须打开 DREAMMAKER_REAL_CALLS_ENABLED。");
+    }
+    if (!dreamMakerAccessKeyConfigured || !dreamMakerSecretKeyConfigured) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "real-calls-missing-dreammaker-credentials",
+          "DreamMakerImage2CoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Image 2 真实调用开关已打开，但缺少 DreamMaker AccessKey 或 SecretKey；不得发出外部请求。");
+    }
+    if (properties.getImage2ModelName() == null || properties.getImage2ModelName().isBlank()) {
+      return new IntegrationComponentReadiness(
+          "image2_guard",
+          "real-calls-missing-model",
+          "DreamMakerImage2CoverGenerationService",
+          IntegrationReadinessStatus.BLOCKED,
+          true,
+          requiredEnvVars,
+          "Image 2 真实调用开关已打开，但缺少 IMAGE2_MODEL_NAME；不得发出外部请求。");
     }
     return new IntegrationComponentReadiness(
         "image2_guard",
-        "real-calls-client-pending",
-        "RealImage2CoverGenerationService pending",
-        IntegrationReadinessStatus.BLOCKED,
-        true,
+        "real-calls-enabled",
+        "DreamMakerImage2CoverGenerationService",
+        IntegrationReadinessStatus.READY_FOR_LOCAL,
+        false,
         requiredEnvVars,
-        "Image 2 真实调用配置已进入联调准备状态，但仓库尚未实现真实客户端；需先按 Runbook 补硬开关、超时、默认封面兜底、失败码映射和脱敏日志。");
+        "Image 2 通过 DreamMaker 任务式客户端接入，供应商图片会导入平台对象存储后再进入发布包。");
   }
 
   private static String normalize(String value) {

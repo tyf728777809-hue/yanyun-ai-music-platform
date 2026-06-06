@@ -1,7 +1,7 @@
 # 本地商用闭环交付走查记录
 
 日期：2026-06-06 17:37 CST
-最新更新：2026-06-06 23:45 CST
+最新更新：2026-06-07 00:10 CST
 状态：本地 Mock / 前端 / MP4 成片链路已复验通过；用户已可用 `prototypes/Claude-web-v1 + music-api` 做本地完整链路实测。真实 AI 出歌尚未完成供应商真实调用 smoke，真实公司系统仍为外部接入项。
 
 ## 当前可测范围
@@ -11,8 +11,8 @@
 | 本地用户创作链路 | 可测 | 用 Claude Web v1 前端连接真实后端，走灵感成歌、填词成歌、润色/续写限制、确认出歌、生成中、成品页、发布交接和失败重试。 |
 | 本地 MP4 成片链路 | 可测 | `RENDER_WORKER_MODE=local-process` 下已跑通 Java 调用 render-worker 并用 `ffprobe` 验证 MP4。 |
 | 真实 Suno / MiniMax 音乐 | 准备好进入首次受控 smoke | DreamMaker Provider、JWT 鉴权、安全硬开关、runtime sync 保护、readiness AK/SK 配置检查、runbook、10 分钟 smoke 清单和脚本化单作品 smoke 已准备；尚未真正向 DreamMaker 发起真实生成请求。 |
-| 真实 DeepSeek 写词 | 未到用户实测 | 已有 runbook、验收清单和 readiness guard；真实客户端尚未实现。 |
-| 真实 Image 2 封面 | 未到用户实测 | 已有 runbook、验收清单和 readiness guard；真实客户端尚未实现。 |
+| 真实 DeepSeek 写词 | 准备好进入首次受控 smoke | OpenAI 兼容 `RealDeepSeekLyricsClient`、双开关、runbook、验收清单和 readiness guard 已准备；尚未真正向 DeepSeek 发起真实请求。 |
+| 真实 Image 2 封面 | 准备好进入首次受控 smoke | DreamMaker `gpt-image-2` 封面客户端、对象存储导入、runbook、验收清单和 readiness guard 已准备；尚未真正向 DreamMaker Image2 发起真实请求。 |
 | 公司账号/审核/权益/发布/分享 | 外部接入项 | 本平台只提供 Adapter 边界、readiness 报告和交接清单，真实接入由公司开发替换。 |
 
 ## 交付阻塞矩阵
@@ -21,8 +21,8 @@
 |---|---|---|---|---|
 | DreamMaker / Suno 真实音乐 | 待首次受控 smoke | 本项目 + 用户提供联调窗口和凭据 | 不建议豁免；真实 AI 出歌必须验证 | 按 `docs/checklists/dreammaker-real-music-smoke-10min.md` 或 `scripts/smoke/dreammaker-real-music-smoke.sh` 单作品执行 |
 | DreamMaker / MiniMax 真实音乐 | 待首次受控 smoke | 本项目 + 用户提供联调窗口和凭据 | 不建议豁免；若首发只开放一个 Provider，可记录产品豁免 | Suno 成功后再跑或反向先跑 MiniMax；同样使用受控 smoke 清单或脚本 |
-| DeepSeek 真实写词 | 阻塞 | 本项目 + 用户提供 URL/API 协议/Key | 可阶段性豁免，用 Mock 写词先测音乐 | 实现真实客户端后按 DeepSeek runbook 单样本联调 |
-| Image 2 真实封面 | 阻塞 | 本项目 + 用户提供 URL/API 协议/Key | 可阶段性豁免，用 Mock 封面先测音乐 | 实现真实客户端后按 Image 2 runbook 单样本联调 |
+| DeepSeek 真实写词 | 待首次受控 smoke | 本项目 + 用户安全注入 API Key 并确认联调窗口 | 可阶段性豁免，用 Mock 写词先测音乐 | 按 DeepSeek runbook 单样本联调 |
+| Image 2 真实封面 | 待首次受控 smoke | 本项目 + 用户安全注入 DreamMaker AK/SK 并确认联调窗口 | 可阶段性豁免，用 Mock 封面先测音乐 | 按 Image 2 runbook 单样本联调 |
 | render-worker 生产形态 | 待公司部署确认 | 公司开发 / 运维 | 不可长期豁免 | 确认本地进程、独立服务或队列化 worker |
 | `prototypes/Claude-web-v1` 前端承接 | 待决策 | 用户 / 公司前端 / 本项目 | 不可长期豁免 | 决定保留原型、迁移到 `apps/web` 或公司重建 |
 | 公司账号 Adapter | 外部接入 | 公司开发 | 生产不可豁免 | 替换 `MockAccountAdapter`，禁用 `X-Mock-User-Id` 信任 |

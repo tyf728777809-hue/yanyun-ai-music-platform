@@ -34,7 +34,7 @@
 ## 代码侧保护
 
 - `DEEPSEEK_REAL_CALLS_ENABLED=false` 时，真实 DeepSeek 客户端必须在外部 HTTP 请求前失败。
-- 缺失 `DEEPSEEK_BASE_URL` 或 `DEEPSEEK_API_KEY` 时，必须在外部 HTTP 请求前失败。
+- 缺失 `DEEPSEEK_API_KEY`、模型名或 `AGENT_REAL_CALLS_ENABLED=true` 总开关时，必须在外部 HTTP 请求前失败。
 - 真实客户端必须设置超时和最大尝试次数；默认不得无限重试。
 - `agent_runs` 只记录 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不记录完整 Prompt 或完整输出。
 - 日志必须禁用请求/响应 body 原文输出。
@@ -48,6 +48,7 @@
 ```bash
 export DEEPSEEK_BASE_URL="<from-secure-channel>"
 export DEEPSEEK_API_KEY="<from-secure-channel>"
+export AGENT_REAL_CALLS_ENABLED=true
 export DEEPSEEK_REAL_CALLS_ENABLED=true
 ```
 

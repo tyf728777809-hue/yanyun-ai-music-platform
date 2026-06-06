@@ -11,7 +11,7 @@
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 使用 outbox temporal 模式，真实调用由 worker 执行。
 - [ ] `/internal/integration-readiness` 中 `dreammaker_guard=READY_FOR_LOCAL`，且缺少 AK/SK 时必须显示 `BLOCKED`。
-- [ ] 运行时已阻止 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时在 `sync` 模式确认或重试 `suno` / `minimax`。
+- [ ] `scripts/smoke/dreammaker-real-guard-smoke.sh` 已验证运行时阻止 `DREAMMAKER_REAL_CALLS_ENABLED=true` 时在 `sync` 模式确认或重试 `suno` / `minimax`。
 
 ## Suno 成功路径
 

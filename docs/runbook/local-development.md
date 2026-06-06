@@ -159,6 +159,14 @@ export SUNO_MODEL=chirp-crow
 会在外部 HTTP 请求前拒绝调用，防止误触真实供应商。真实联调推荐走 outbox + Temporal worker，
 不要使用默认 `sync` 模式。
 
+如果 API 已用 `DREAMMAKER_REAL_CALLS_ENABLED=true` 和默认 `sync` workflow 模式启动，可先运行非真实 guard smoke：
+
+```bash
+scripts/smoke/dreammaker-real-guard-smoke.sh
+```
+
+预期确认出歌返回 HTTP 409，作品仍停留在 `LYRICS_READY / WAITING_CONFIRM`，且不会写入 `provider_calls`。
+
 MiniMax 可用：
 
 ```bash

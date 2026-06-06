@@ -5,10 +5,12 @@
 - [ ] `git status --short` 无未记录的无关改动。
 - [ ] `DEEPSEEK_REAL_CALLS_ENABLED=false` 是默认状态。
 - [ ] 真实凭据只通过当前 shell、部署 Secret 或公司配置中心注入。
+- [ ] `AGENT_REAL_CALLS_ENABLED=true` 与 `DEEPSEEK_REAL_CALLS_ENABLED=true` 必须同时打开才允许真实调用。
+- [ ] `DEEPSEEK_BASE_URL=https://api.deepseek.com`、`DEEPSEEK_MODEL_NAME=deepseek-v4-pro` 或经批准的等价值已配置。
 - [ ] `./gradlew :modules:deepseek:test :modules:lyrics:test :modules:creative-agent:test` 通过。
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 可在全 Mock 状态跑通 `scripts/smoke/api-main-flow.sh`。
-- [ ] 真实客户端已有硬开关、timeout、max attempts、失败码映射和脱敏日志。
+- [ ] 真实客户端已有硬开关、timeout、max attempts、JSON 输出解析和脱敏错误处理。
 
 ## 灵感成歌成功路径
 
@@ -43,7 +45,7 @@
 ## 失败与止损
 
 - [ ] 未设置 `DEEPSEEK_REAL_CALLS_ENABLED=true` 时，真实请求被本地保护层拒绝。
-- [ ] 缺失 API Key 或 base URL 时，请求不会发出外部 HTTP。
+- [ ] 缺失 API Key、模型名或总开关时，请求不会发出外部 HTTP。
 - [ ] 401 / 403 / 429 / timeout 至少能落库为脱敏错误。
 - [ ] 输出解析失败能映射为可读失败码。
 - [ ] 回退 Mock 后本地主链路仍能跑通。

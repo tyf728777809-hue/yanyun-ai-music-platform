@@ -114,7 +114,7 @@ class IntegrationReadinessServiceTest {
   }
 
   @Test
-  void deepseekRealCallsRemainBlockedUntilRealClientIsImplemented() {
+  void deepseekRealCallsAreBlockedWhenApiKeyIsMissing() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setAgentRealCallsEnabled(true);
     properties.setDeepseekRealCallsEnabled(true);
@@ -130,16 +130,37 @@ class IntegrationReadinessServiceTest {
             .findFirst()
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.BLOCKED, deepseek.status());
-    assertEquals("real-calls-client-pending", deepseek.configuredMode());
+    assertEquals("real-calls-missing-api-key", deepseek.configuredMode());
     assertTrue(deepseek.blocksCompanyDeployment());
   }
 
   @Test
-  void image2RealCallsRemainBlockedUntilRealClientIsImplemented() {
+  void deepseekRealCallsAreReadyWhenClientAndRequiredConfigExist() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setAgentRealCallsEnabled(true);
+    properties.setDeepseekRealCallsEnabled(true);
+    properties.setDeepseekBaseUrl("https://deepseek.example.test");
+    properties.setDeepseekModelName("deepseek-test-model");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock, false, false, true).buildReport();
+
+    IntegrationComponentReadiness deepseek =
+        report.components().stream()
+            .filter(component -> component.component().equals("deepseek_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, deepseek.status());
+    assertEquals("real-calls-enabled", deepseek.configuredMode());
+    assertEquals("RealDeepSeekLyricsClient", deepseek.implementation());
+    assertFalse(deepseek.blocksCompanyDeployment());
+  }
+
+  @Test
+  void image2RealCallsAreBlockedWhenDreamMakerGuardIsDisabled() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setImageProvider("image2");
     properties.setImageRealCallsEnabled(true);
-    properties.setImage2BaseUrl("https://image2.example.test");
     properties.setImage2ModelName("image2-test-model");
 
     IntegrationReadinessReport report =
@@ -151,8 +172,30 @@ class IntegrationReadinessServiceTest {
             .findFirst()
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.BLOCKED, image2.status());
-    assertEquals("real-calls-client-pending", image2.configuredMode());
+    assertEquals("image2-enabled-dreammaker-disabled", image2.configuredMode());
     assertTrue(image2.blocksCompanyDeployment());
+  }
+
+  @Test
+  void image2RealCallsAreReadyWhenDreamMakerCredentialsExist() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setImageProvider("image2");
+    properties.setImageRealCallsEnabled(true);
+    properties.setDreammakerRealCallsEnabled(true);
+    properties.setImage2ModelName("gpt-image-2");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock, true, true).buildReport();
+
+    IntegrationComponentReadiness image2 =
+        report.components().stream()
+            .filter(component -> component.component().equals("image2_guard"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, image2.status());
+    assertEquals("real-calls-enabled", image2.configuredMode());
+    assertEquals("DreamMakerImage2CoverGenerationService", image2.implementation());
+    assertFalse(image2.blocksCompanyDeployment());
   }
 
   @Test
