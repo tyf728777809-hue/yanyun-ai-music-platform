@@ -10,7 +10,7 @@
 - [ ] `./gradlew :modules:image2:test :modules:creative-agent:test :apps:music-api:test --tests '*MockSongProductionWorkflow*'` 通过。
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 可在全 Mock 状态跑通 `scripts/smoke/api-main-flow.sh`。
-- [ ] 真实客户端已有硬开关、WellAPI URL / `b64_json` 输出处理、对象存储导入和脱敏错误处理；默认封面兜底若未实现，需明确本次联调接受 `PACKAGE_BUILD_FAILED` 收口。
+- [ ] 真实客户端已有硬开关、WellAPI URL / `b64_json` 输出处理、对象存储导入、脱敏错误处理和平台默认封面兜底。
 
 ## 封面成功路径
 
@@ -39,7 +39,7 @@
 - [ ] 供应商内容安全阻断能映射为可读失败码。
 - [ ] 供应商 URL 下载失败能映射为可读失败码。
 - [ ] 供应商仅返回 `b64_json` 时，图片会直接写入平台对象存储，metadata 和发布包不保留 base64 原文。
-- [ ] 默认封面兜底可进入 `media_assets` 和发布包。
+- [ ] 默认封面兜底可进入对象存储、`media_assets` 和发布包，metadata 不保存完整视觉 Prompt。
 - [ ] 回退 `IMAGE_PROVIDER=mock` 后本地主链路仍能跑通。
 
 ## 安全

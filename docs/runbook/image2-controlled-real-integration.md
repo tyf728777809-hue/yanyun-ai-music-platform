@@ -206,11 +206,12 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
 
 ## 默认封面兜底
 
-真实 Image 2 阶段仍需补默认封面兜底策略：
+当前 workflow 已具备平台默认封面兜底策略：
 
-- 供应商失败但音乐和视频可继续时，优先使用平台默认 16:9 封面。
-- 若默认封面不可用，才按 `PACKAGE_BUILD_FAILED` 收口。
-- 兜底封面也必须进入 `media_assets` 和发布包，不得使用前端临时占位图冒充平台资产。
+- `CoverPromptAgent` 成功但 Image 2 Provider 生成或远程导入失败时，workflow 会写入平台默认 16:9 SVG 封面对象。
+- 默认封面会进入对象存储、`media_assets` 和发布包，metadata 只保留失败摘要和 prompt hash，不保存完整视觉 Prompt。
+- 若默认封面对象写入失败，才按 `PACKAGE_BUILD_FAILED` 收口并释放权益。
+- 兜底封面不得使用前端临时占位图冒充平台资产。
 
 ## 快速回滚
 

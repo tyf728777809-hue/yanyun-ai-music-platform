@@ -74,7 +74,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private static final Pattern JWT_PATTERN =
       Pattern.compile("\\b[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\b");
   private static final Pattern SECRET_FIELD_PATTERN =
-      Pattern.compile("(?i)(access[_ -]?key|secret[_ -]?key|token)\\s*[:=]\\s*[^,;\\s]+");
+      Pattern.compile(
+          "(?i)(access[_ -]?key|secret[_ -]?key|api[_ -]?key|token)\\s*[:=]\\s*[^,;\\s]+");
+  private static final Pattern URL_PATTERN = Pattern.compile("https?://[^,;\\s]+");
 
   private final WorkRepository workRepository;
   private final QuotaAdapter quotaAdapter;
@@ -460,20 +462,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                 input.coverPromptSeed(),
                 1920,
                 1080));
-    CoverGenerationResult coverResult =
-        coverGenerationService.generateCover(
-            new CoverGenerationRequest(
-                workId.toString(),
-                input.songTitle(),
-                input.songSummary(),
-                input.lyricsText(),
-                input.musicPrompt(),
-                coverPrompt.visualPrompt(),
-                coverPrompt.negativePrompt(),
-                coverPrompt.width(),
-                coverPrompt.height(),
-                coverPrompt.providerOptions()));
-    MediaAssetDescriptor coverDescriptor = importRemoteCoverIfNeeded(coverResult.asset());
+    MediaAssetDescriptor coverDescriptor = generateCoverOrDefault(workId, input, coverPrompt);
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
     workRepository.upsertMediaAsset(coverAsset);
 
@@ -493,6 +482,28 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     workRepository.upsertMediaAsset(videoAsset);
     workRepository.upsertMediaAsset(timelineAsset);
     return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
+  }
+
+  private MediaAssetDescriptor generateCoverOrDefault(
+      UUID workId, SongProductionWorkflowInput input, CoverPromptResult coverPrompt) {
+    try {
+      CoverGenerationResult coverResult =
+          coverGenerationService.generateCover(
+              new CoverGenerationRequest(
+                  workId.toString(),
+                  input.songTitle(),
+                  input.songSummary(),
+                  input.lyricsText(),
+                  input.musicPrompt(),
+                  coverPrompt.visualPrompt(),
+                  coverPrompt.negativePrompt(),
+                  coverPrompt.width(),
+                  coverPrompt.height(),
+                  coverPrompt.providerOptions()));
+      return importRemoteCoverIfNeeded(coverResult.asset());
+    } catch (RuntimeException exception) {
+      return defaultCoverAsset(workId, coverPrompt, exception);
+    }
   }
 
   private QualityEvaluationResult evaluatePackageQuality(
@@ -616,6 +627,50 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         metadata);
   }
 
+  private MediaAssetDescriptor defaultCoverAsset(
+      UUID workId, CoverPromptResult coverPrompt, RuntimeException cause) {
+    byte[] content = defaultCoverSvg().getBytes(StandardCharsets.UTF_8);
+    String objectKey = "covers/" + workId + "-default.svg";
+    StoredObject storedCover =
+        objectStorageClient.putObject(
+            new ObjectStoragePutRequest(objectKey, "image/svg+xml", content));
+    Map<String, Object> metadata = new LinkedHashMap<>();
+    metadata.put("provider", "default-cover");
+    metadata.put("fallback", true);
+    metadata.put(
+        "fallback_reason",
+        firstNonBlank(sanitizeProviderError(cause.getMessage()), "cover generation unavailable"));
+    metadata.put("visual_prompt_hash", sha256(coverPrompt.visualPrompt()));
+    metadata.put("negative_prompt_hash", sha256(coverPrompt.negativePrompt()));
+    metadata.put("width", coverPrompt.width());
+    metadata.put("height", coverPrompt.height());
+    metadata.put("object_storage_imported", true);
+    metadata.put("object_storage_import_source", "default_cover");
+    return new MediaAssetDescriptor(
+        "COVER",
+        storedCover.objectKey(),
+        storedCover.contentType(),
+        storedCover.sizeBytes(),
+        sha256(new String(content, StandardCharsets.UTF_8)),
+        coverPrompt.width(),
+        coverPrompt.height(),
+        null,
+        metadata);
+  }
+
+  private String defaultCoverSvg() {
+    return """
+        <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+          <rect width="1920" height="1080" fill="#16181f"/>
+          <rect x="96" y="96" width="1728" height="888" fill="none" stroke="#c6a35b" stroke-width="8"/>
+          <path d="M240 760 C520 560 720 620 960 460 C1210 295 1430 350 1680 220" fill="none" stroke="#7f8f99" stroke-width="18" opacity="0.72"/>
+          <circle cx="1480" cy="260" r="88" fill="#c6a35b" opacity="0.78"/>
+          <text x="160" y="205" font-family="serif" font-size="72" fill="#e9dfc3">Yanyun AI Music</text>
+          <text x="160" y="300" font-family="serif" font-size="40" fill="#aeb7bb">Default cover fallback</text>
+        </svg>
+        """;
+  }
+
   private MusicProviderSelection selectedProvider(SongProductionWorkflowInput input) {
     return input.musicProvider() == null || input.musicProvider().isBlank()
         ? musicProviderSelection
@@ -675,6 +730,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     String sanitized = value.replaceAll("[\\r\\n\\t]+", " ").trim();
     sanitized = BEARER_TOKEN_PATTERN.matcher(sanitized).replaceAll("Bearer <redacted>");
     sanitized = JWT_PATTERN.matcher(sanitized).replaceAll("<jwt-redacted>");
+    sanitized = URL_PATTERN.matcher(sanitized).replaceAll("<url-redacted>");
     sanitized = SECRET_FIELD_PATTERN.matcher(sanitized).replaceAll("$1=<redacted>");
     return sanitized.length() <= 240 ? sanitized : sanitized.substring(0, 240);
   }

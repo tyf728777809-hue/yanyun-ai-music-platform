@@ -24,7 +24,7 @@
 - FR-4：本地阶段的封面和视频服务 MUST 使用 Mock/Fake 实现，不得调用真实 Image 2、真实 Remotion 服务、真实公司系统或外部网络。
 - FR-5：首期视频输出规格 MUST 为 16:9，宽 1920、高 1080、容器 MP4、编码口径为 H.264/AAC 目标。
 - FR-6：歌词字幕时间轴 MUST 以 `TIMELINE` 媒体资产形式记录，供发布包 `lyrics.timeline_url` 引用。
-- FR-7：封面生成失败 SHOULD 使用默认封面兜底；若本地 Mock 边界尚未实现兜底分支，必须至少把失败收口为 `PACKAGE_BUILD_FAILED` 并释放权益。
+- FR-7：封面生成失败 SHOULD 使用平台默认封面兜底；若默认封面对象写入也失败，必须把失败收口为 `PACKAGE_BUILD_FAILED` 并释放权益。
 - FR-8：视频渲染失败 MUST 收口为 `PACKAGE_BUILD_FAILED`，释放已锁权益，不提交主出歌权益，不生成发布包。
 - FR-9：发布包 JSON MUST 使用实际生成的 media asset object key 组装 `video.url`、`cover.url` 和 `lyrics.timeline_url`，不得再写死路径。
 - FR-10：render-worker MUST 保留 Remotion 16:9 composition，并 SHOULD 提供本地样例渲染命令输出 MP4。
@@ -49,7 +49,7 @@
 ## 6. 边界情况
 
 - EC-1：音乐 Provider 返回远程音频 URL 时，workflow 必须先导入本地对象存储，再把导入后的 audio object key 传给视频渲染边界。
-- EC-2：封面 Mock 失败时，本批允许收口为 `PACKAGE_BUILD_FAILED`；真实 Image 2 阶段必须按 `docs/runbook/image2-controlled-real-integration.md` 补默认封面兜底。
+- EC-2：封面生成失败时，workflow 应优先写入平台默认封面对象并继续发布包链路；若默认封面对象写入失败，再收口为 `PACKAGE_BUILD_FAILED`。
 - EC-3：视频 Mock 失败时，不得调用发布包准备、发布包审核、对象存储写包或权益提交。
 - EC-4：timeline 生成失败视为视频渲染失败，按 `PACKAGE_BUILD_FAILED` 收口。
 - EC-5：render-worker 本地样例渲染失败时，不影响后端 Mock 测试通过，但必须记录为第 7 批剩余风险。

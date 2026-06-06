@@ -331,6 +331,95 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void usesDefaultCoverFallbackWhenCoverGenerationFails() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+    CoverGenerationService failingCoverGenerationService =
+        request -> {
+          throw new IllegalStateException(
+              "image provider unavailable at https://supplier.example/cover.png api_key=secret");
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(),
+                new MockCoverPromptAgent(),
+                failingCoverGenerationService)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    ObjectStoragePutRequest defaultCoverPut =
+        storagePut.getAllValues().stream()
+            .filter(request -> request.objectKey().equals("covers/" + workId + "-default.svg"))
+            .findFirst()
+            .orElseThrow();
+    assertThat(defaultCoverPut.contentType()).isEqualTo("image/svg+xml");
+    assertThat(new String(defaultCoverPut.content(), java.nio.charset.StandardCharsets.UTF_8))
+        .contains("Default cover fallback");
+
+    ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
+    verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
+    MediaAssetRow coverAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "COVER".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(coverAsset.objectKey()).isEqualTo("covers/" + workId + "-default.svg");
+    assertThat(coverAsset.mimeType()).isEqualTo("image/svg+xml");
+    assertThat(coverAsset.metadataJson()).contains("\"provider\":\"default-cover\"");
+    assertThat(coverAsset.metadataJson()).contains("\"fallback\":true");
+    assertThat(coverAsset.metadataJson()).contains("<url-redacted>");
+    assertThat(coverAsset.metadataJson()).contains("api_key=<redacted>");
+    assertThat(coverAsset.metadataJson()).contains("visual_prompt_hash");
+    assertThat(coverAsset.metadataJson()).doesNotContain("16:9 cinematic key art");
+    assertThat(coverAsset.metadataJson()).doesNotContain("supplier.example");
+    assertThat(coverAsset.metadataJson()).doesNotContain("api_key=secret");
+    verify(workRepository).markPackageReady(workId, "Mock title", "Mock summary", true, true);
+    verify(quotaAdapter, never()).releaseGenerateQuota(any(), any(), any());
+  }
+
+  @Test
   void releasesQuotaAndStopsBeforeCoverGenerationWhenCoverPromptAgentFails() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
