@@ -16,7 +16,7 @@ The next milestone is a controlled Suno smoke, not a broad production integratio
 - FR-1: The stack smoke MUST refuse to run unless `ALLOW_DREAMMAKER_REAL_SMOKE=1`.
 - FR-2: The stack smoke MUST support `REAL_PROVIDER=suno|minimax` and default to `suno`.
 - FR-3: The stack smoke MUST collect `DREAMMAKER_ACCESS_KEY` and `DREAMMAKER_SECRET_KEY` using existing environment variables or interactive silent prompts.
-- FR-4: The stack smoke MUST NOT print DreamMaker AK/SK, JWT, `X-Access-Token`, or full provider payload.
+- FR-4: The stack smoke MUST NOT print DreamMaker AK/SK, JWT, `X-Access-Token`, full provider payload, full provider task id, supplier media URL, or platform signed package/media URL.
 - FR-5: The stack smoke MUST refuse to start when local API or worker ports are already occupied, unless the operator uses the lower-level smoke script manually.
 - FR-6: The stack smoke MUST start `music-worker` with `MUSIC_PROVIDER=mock`, `DREAMMAKER_REAL_CALLS_ENABLED=true`, and `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`.
 - FR-7: The stack smoke MUST start `music-api` with `MUSIC_WORKFLOW_DISPATCH_MODE=outbox`, `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`, `WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true`, `MUSIC_PROVIDER=mock`, and `DREAMMAKER_REAL_CALLS_ENABLED=true`.

@@ -146,7 +146,19 @@ if [ -z "$FINAL_DETAIL" ]; then
   exit 1
 fi
 
-echo "$FINAL_DETAIL" | jq '{work_id, status, generation_stage, package_status, failure, media_assets}'
+echo "$FINAL_DETAIL" | jq '{
+  work_id,
+  status,
+  generation_stage,
+  package_status,
+  failure,
+  media_assets_present: (.media_assets != null),
+  media_url_present: {
+    audio: (((.media_assets.audio_url? // "") | length) > 0),
+    cover: (((.media_assets.cover_url? // "") | length) > 0),
+    video: (((.media_assets.video_url? // "") | length) > 0)
+  }
+}'
 
 FINAL_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.status')"
 PACKAGE_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.package_status')"
@@ -160,7 +172,14 @@ fi
 if [ "$FINAL_STATUS" = "GENERATED" ] && [ "$PACKAGE_STATUS" = "PACKAGE_READY" ]; then
   echo "Fetching publish package..."
   curl -fsS "$API_BASE/works/$WORK_ID/publish-package" \
-    -H "X-Mock-User-Id: $MOCK_USER" | jq '{work_id, package_status, package_url, expires_at, media}'
+    -H "X-Mock-User-Id: $MOCK_USER" \
+    | jq '{
+      work_id,
+      package_status,
+      package_url_present: (((.package_url // "") | length) > 0),
+      expires_at,
+      media_present: (.media != null)
+    }'
   echo "PASS real DreamMaker music smoke. work_id=$WORK_ID provider=$REAL_PROVIDER"
   exit 0
 fi

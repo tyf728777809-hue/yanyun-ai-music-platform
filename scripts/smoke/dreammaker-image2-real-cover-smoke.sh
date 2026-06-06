@@ -176,7 +176,19 @@ if [ -z "$FINAL_DETAIL" ]; then
   fail "real DreamMaker Image2 smoke timed out. work_id=$WORK_ID"
 fi
 
-echo "$FINAL_DETAIL" | jq '{work_id, status, generation_stage, package_status, failure, media_assets}'
+echo "$FINAL_DETAIL" | jq '{
+  work_id,
+  status,
+  generation_stage,
+  package_status,
+  failure,
+  media_assets_present: (.media_assets != null),
+  media_url_present: {
+    audio: (((.media_assets.audio_url? // "") | length) > 0),
+    cover: (((.media_assets.cover_url? // "") | length) > 0),
+    video: (((.media_assets.video_url? // "") | length) > 0)
+  }
+}'
 
 FINAL_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.status')"
 PACKAGE_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.package_status')"
@@ -213,7 +225,17 @@ log "cover provider=$COVER_PROVIDER object_key=$COVER_OBJECT_KEY mime=$COVER_MIM
 if [ "$FINAL_STATUS" = "GENERATED" ] && [ "$PACKAGE_STATUS" = "PACKAGE_READY" ]; then
   log "fetching publish package"
   PACKAGE_RESPONSE="$(get_json "/works/$WORK_ID/publish-package")"
-  echo "$PACKAGE_RESPONSE" | jq '{work_id, package_status, expires_at, package_json: {cover: .package_json.cover, video: .package_json.video, lyrics: {timeline_url: .package_json.lyrics.timeline_url}}}'
+  echo "$PACKAGE_RESPONSE" | jq '{
+    work_id,
+    package_status,
+    expires_at,
+    package_url_present: (((.package_url // "") | length) > 0),
+    package_json_url_present: {
+      cover: (((.package_json.cover.url? // "") | length) > 0),
+      video: (((.package_json.video.url? // "") | length) > 0),
+      timeline: (((.package_json.lyrics.timeline_url? // "") | length) > 0)
+    }
+  }'
   echo "$PACKAGE_RESPONSE" | jq -e '.package_json.cover.url | length > 0' >/dev/null \
     || fail "publish package cover URL missing"
   log "PASS real DreamMaker Image2 cover smoke. work_id=$WORK_ID"

@@ -66,6 +66,42 @@ check_secret_patterns() {
   printf '%s\n' "$matches" | awk -F: '{print "  " $1 ":" $2}' | sort -u
 }
 
+check_real_smoke_script_redaction() {
+  local script_files=(
+    "scripts/smoke/dreammaker-real-music-smoke.sh"
+    "scripts/smoke/yunwu-suno-real-music-smoke.sh"
+    "scripts/smoke/wellapi-image2-real-cover-smoke.sh"
+    "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
+  )
+  local raw_media
+  local raw_package
+  local raw_trace
+
+  raw_media="$(rg -n "jq '\\{work_id, status, generation_stage, package_status, failure, media_assets\\}'" "${script_files[@]}" || true)"
+  if [[ -z "$raw_media" ]]; then
+    pass "real smoke scripts do not print raw media_assets blocks"
+  else
+    fail_check "real smoke scripts print raw media_assets at:"
+    printf '%s\n' "$raw_media" | awk -F: '{print "  " $1 ":" $2}' | sort -u
+  fi
+
+  raw_package="$(rg -n "jq '\\{work_id, package_status, package_url|jq '\\{work_id, package_status, expires_at, package_json:" "${script_files[@]}" || true)"
+  if [[ -z "$raw_package" ]]; then
+    pass "real smoke scripts do not print raw package URL blocks"
+  else
+    fail_check "real smoke scripts print raw package URL blocks at:"
+    printf '%s\n' "$raw_package" | awk -F: '{print "  " $1 ":" $2}' | sort -u
+  fi
+
+  raw_trace="$(rg -n "select provider, model_name, provider_trace_id" scripts/smoke/dreammaker-real-music-smoke.sh scripts/smoke/yunwu-suno-real-music-smoke.sh docs/checklists/dreammaker-real-music-smoke-10min.md docs/runbook/dreammaker-controlled-real-integration.md || true)"
+  if [[ -z "$raw_trace" ]]; then
+    pass "real smoke script/runbook provider_trace_id summaries are masked"
+  else
+    fail_check "provider_trace_id summaries are unmasked at:"
+    printf '%s\n' "$raw_trace" | awk -F: '{print "  " $1 ":" $2}' | sort -u
+  fi
+}
+
 cd "$REPO_ROOT"
 
 require_tool rg
@@ -114,6 +150,7 @@ require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "$EVIDE
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "$EVIDENCE_LOG" "company package references unified evidence log"
 
 check_secret_patterns
+check_real_smoke_script_redaction
 
 if [[ "$FAIL_COUNT" -gt 0 ]]; then
   log "SUMMARY fail=$FAIL_COUNT pass=$PASS_COUNT"

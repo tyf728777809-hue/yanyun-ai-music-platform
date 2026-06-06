@@ -20,7 +20,7 @@ Decision: DreamMaker Image 2 remains the production-target interface. Yunwu and 
 - FR-3: The smoke MUST require `IMAGE_REAL_CALLS_ENABLED=true` and `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - FR-4: The smoke MUST keep `MUSIC_PROVIDER=mock`, DeepSeek real calls disabled, Yunwu disabled, render worker mocked, and company Adapters mocked.
 - FR-5: The stack smoke MUST collect `DREAMMAKER_ACCESS_KEY` and `DREAMMAKER_SECRET_KEY` using existing environment variables or interactive silent prompts.
-- FR-6: The stack smoke MUST NOT print DreamMaker AK/SK, JWTs, `X-Access-Token`, full provider payloads, complete prompts, provider task ids, or supplier image URLs.
+- FR-6: The stack smoke MUST NOT print DreamMaker AK/SK, JWTs, `X-Access-Token`, full provider payloads, complete prompts, provider task ids, supplier image URLs, or platform signed package/media URLs.
 - FR-7: The stack smoke MUST refuse to start when local API port `8080` is already occupied, unless the operator uses the lower-level smoke script manually.
 - FR-8: The stack smoke MUST start `music-api` with DreamMaker Image 2 real calls enabled and stop the process that it started on success, failure, or interruption.
 - FR-9: The lower-level smoke MUST run strict `TARGET=dreammaker-image2` preflight before checking API readiness.

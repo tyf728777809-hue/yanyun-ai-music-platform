@@ -18,7 +18,7 @@ Decision: Yunwu is a temporary public-network validation backend only. DreamMake
 - FR-1: The stack smoke MUST refuse to run unless `ALLOW_YUNWU_REAL_SMOKE=1`.
 - FR-2: The stack smoke MUST only test `music_provider=suno` with `SUNO_BACKEND=yunwu`.
 - FR-3: The stack smoke MUST collect `YUNWU_API_KEY` using an existing environment variable or an interactive silent prompt.
-- FR-4: The stack smoke MUST NOT print `YUNWU_API_KEY`, Bearer tokens, full provider payloads, or supplier audio URLs.
+- FR-4: The stack smoke MUST NOT print `YUNWU_API_KEY`, Bearer tokens, full provider payloads, supplier audio URLs, full provider task ids, or platform signed package/media URLs.
 - FR-5: The stack smoke MUST refuse to start when local API or worker ports are already occupied, unless the operator uses the lower-level smoke script manually.
 - FR-6: The stack smoke MUST start `music-worker` with `MUSIC_PROVIDER=mock`, `SUNO_BACKEND=yunwu`, `YUNWU_REAL_CALLS_ENABLED=true`, and `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`.
 - FR-7: The stack smoke MUST start `music-api` with `MUSIC_WORKFLOW_DISPATCH_MODE=outbox`, `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`, `WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true`, `MUSIC_PROVIDER=mock`, `SUNO_BACKEND=yunwu`, and `YUNWU_REAL_CALLS_ENABLED=true`.

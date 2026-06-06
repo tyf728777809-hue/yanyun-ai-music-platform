@@ -19,7 +19,7 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 - FR-2: The smoke MUST only test `IMAGE_PROVIDER=image2` with `IMAGE2_BACKEND=wellapi`.
 - FR-3: The smoke MUST keep `MUSIC_PROVIDER=mock`, DeepSeek real calls disabled, render worker mocked, and company adapters mocked.
 - FR-4: The stack smoke MUST collect `WELLAPI_API_KEY` using an existing environment variable or an interactive silent prompt.
-- FR-5: The stack smoke MUST NOT print `WELLAPI_API_KEY`, Bearer tokens, full provider payloads, complete prompts, or supplier image URLs.
+- FR-5: The stack smoke MUST NOT print `WELLAPI_API_KEY`, Bearer tokens, full provider payloads, complete prompts, supplier image URLs, or platform signed package/media URLs.
 - FR-6: The stack smoke MUST refuse to start when the local API port is already occupied, unless the operator uses the lower-level smoke script manually.
 - FR-7: The stack smoke MUST start `music-api` with image real calls enabled for WellAPI and stop the process that it started on success, failure, or interruption.
 - FR-8: The lower-level smoke MUST verify `/internal/integration-readiness` reports `image2_guard=READY_FOR_LOCAL`, `configured_mode=real-calls-enabled/wellapi`, and `music_provider=mock` before confirming the work.

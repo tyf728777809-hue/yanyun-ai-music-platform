@@ -25,6 +25,7 @@ Real-model smoke evidence is useful for provider handoff, failure-code mapping, 
 - FR-8: Provider task ids and trace ids MAY be recorded only as `<present>`, `<empty>`, or a separately approved masked value.
 - FR-9: Real smoke runbooks and acceptance checklists MUST point operators to the unified evidence log after each attempt.
 - FR-10: A local audit script MUST verify the evidence log, target coverage, DreamMaker production-target rule, public-network smoke labels, and secret-like pattern absence without starting services or calling providers.
+- FR-11: The audit script MUST verify real smoke scripts do not print raw `media_assets`, raw `package_url`, raw package media URL blocks, or unmasked `provider_trace_id` summaries.
 
 ## Non-Functional Requirements
 
@@ -40,6 +41,7 @@ Real-model smoke evidence is useful for provider handoff, failure-code mapping, 
 - AC-3: Given the evidence log, when the audit scans it, then it finds the sanitized-only policy and rejects obvious secret-like patterns. Covers FR-6, FR-8, NFR-1, and NFR-2.
 - AC-4: Given the DreamMaker 403 attempt, when the evidence log is reviewed, then it contains only status, failure class, suspected environment cause, and next decision, without raw payload or credentials. Covers FR-7.
 - AC-5: Given the runbooks and acceptance checklists, when the audit scans them, then they reference `docs/integrations/real-model-smoke-evidence-log.md`. Covers FR-9 and FR-10.
+- AC-6: Given real smoke scripts, when the audit scans their output projections, then raw package/media URLs and raw provider trace ids are not printed. Covers FR-6, FR-8, and FR-11.
 
 ## Edge Cases
 

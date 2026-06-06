@@ -19,7 +19,7 @@
 - [ ] `music_provider=suno` 能创建真实 DreamMaker task。
 - [ ] `provider_calls.provider=SUNO`。
 - [ ] `provider_calls.model_name` 含 DreamMaker app/sub_app/model。
-- [ ] `provider_calls.provider_trace_id` 有真实 task id。
+- [ ] `provider_calls.provider_trace_id` 只以 `<present>` / `<empty>` 形式记录，完整 task id 不进入文档、截图或提交。
 - [ ] 供应商音频 URL 被导入平台对象存储。
 - [ ] 作品进入 `GENERATED / PACKAGE_READY`。
 - [ ] 发布包可获取，且只暴露平台 URL。
@@ -29,7 +29,7 @@
 - [ ] `music_provider=minimax` 能创建真实 DreamMaker task。
 - [ ] `provider_calls.provider=MINIMAX`。
 - [ ] `provider_calls.model_name` 含 DreamMaker app/sub_app/model。
-- [ ] `provider_calls.provider_trace_id` 有真实 task id。
+- [ ] `provider_calls.provider_trace_id` 只以 `<present>` / `<empty>` 形式记录，完整 task id 不进入文档、截图或提交。
 - [ ] 供应商音频 URL 被导入平台对象存储。
 - [ ] 作品进入 `GENERATED / PACKAGE_READY`。
 - [ ] 发布包可获取，且只暴露平台 URL。

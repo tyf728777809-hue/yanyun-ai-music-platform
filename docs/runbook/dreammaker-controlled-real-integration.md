@@ -129,7 +129,7 @@ java -jar apps/music-api/build/libs/music-api-0.1.0-SNAPSHOT.jar
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
-  "select provider, model_name, provider_trace_id, status, error_code from provider_calls where work_id = '{work_id}' order by created_at"
+  "select provider, model_name, case when provider_trace_id is null or provider_trace_id = '' then '<empty>' else '<present>' end, status, error_code from provider_calls where work_id = '{work_id}' order by created_at"
 ```
 
 ## 脚本化单作品 Smoke
@@ -181,7 +181,7 @@ scripts/smoke/dreammaker-real-music-smoke.sh
 
 - `provider_calls.provider` 分别出现 `SUNO` / `MINIMAX`。
 - `provider_calls.model_name` 能区分实际 DreamMaker app/sub_app/model。
-- `provider_calls.provider_trace_id` 有真实 task id。
+- `provider_calls.provider_trace_id` 只以 `<present>` / `<empty>` 形式记录；完整 task id 不进入文档、截图或提交。
 - `works.status=GENERATED`。
 - `works.package_status=PACKAGE_READY`。
 - `generation_jobs.status=SUCCEEDED` 且 `stage=PACKAGE_READY`。
