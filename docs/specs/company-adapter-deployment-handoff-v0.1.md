@@ -1,6 +1,6 @@
 # Company Adapter Deployment Handoff v0.1
 
-更新时间：2026-06-06
+更新时间：2026-06-07
 
 ## 1. 标题与元数据
 
@@ -28,6 +28,7 @@
 - FR-6：readiness 报告 MUST 同时展示生成链路关键部署依赖，包括音乐 Provider、render-worker 模式、对象存储 Provider、Workflow dispatch mode、Temporal target 和 DreamMaker 真实调用开关。
 - FR-7：公司交接文档 MUST 给出替换清单、接口契约、字段映射、部署变量、验收 smoke 和禁止事项。
 - FR-8：`.env.example` MUST 只包含本地占位或空值，不得加入真实公司凭据。
+- FR-9：公司交接文档 MUST 明确 `.env.example` 是本地 Mock / 公网 smoke 便利配置，生产 profile 和生产变量样例 MUST 默认 DreamMaker。
 
 ## 4. 非功能需求
 
@@ -44,6 +45,7 @@
 - AC-3：Given readiness 报告返回，When 检查 JSON，Then 不包含 SecretKey、API key、JWT、Bearer token、Cookie 或签名 URL。覆盖 FR-3、NFR-3。
 - AC-4：Given 本地 API 构建测试，When 运行相关单元测试，Then readiness 服务和内部 controller 测试通过。覆盖 FR-2、NFR-5。
 - AC-5：Given 交接文档，When 公司开发阅读，Then 能看到账号、审核、权益、发布、分享各自的替换接口、输入输出、状态口径、环境变量和 smoke 步骤。覆盖 FR-7、FR-8。
+- AC-6：Given 交接文档，When 公司开发阅读生产部署变量，Then 能看到 `SPRING_PROFILES_ACTIVE=prod`、`deploy/env.production.example`、`SUNO_BACKEND=dreammaker`、`IMAGE2_BACKEND=dreammaker` 和生产默认审计入口。覆盖 FR-9。
 
 ## 6. 边界情况
 

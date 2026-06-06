@@ -9,7 +9,7 @@ public class CompanyIntegrationProperties {
   private String publishAdapterMode = "mock";
   private String shareAdapterMode = "mock";
   private String musicProvider = "mock";
-  private String sunoBackend = "yunwu";
+  private String sunoBackend = "dreammaker";
   private String renderWorkerMode = "mock";
   private String objectStorageProvider = "local";
   private String workflowDispatchMode = "sync";
@@ -20,7 +20,7 @@ public class CompanyIntegrationProperties {
   private String deepseekBaseUrl = "";
   private String deepseekModelName = "";
   private String imageProvider = "mock";
-  private String image2Backend = "wellapi";
+  private String image2Backend = "dreammaker";
   private boolean imageRealCallsEnabled;
   private String image2BaseUrl = "";
   private String image2ModelName = "";

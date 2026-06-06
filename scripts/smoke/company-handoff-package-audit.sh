@@ -63,6 +63,8 @@ required_files=(
   "docs/specs/local-commercial-backend-acceptance-stack-smoke-v0.1.md"
   "docs/specs/local-commercial-full-acceptance-stack-smoke-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
+  "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
+  "deploy/env.production.example"
 )
 
 for file in "${required_files[@]}"; do
@@ -71,6 +73,7 @@ done
 
 required_executables=(
   "scripts/smoke/local-delivery-evidence-audit.sh"
+  "scripts/smoke/production-provider-defaults-audit.sh"
   "scripts/smoke/company-adapter-readiness-smoke.sh"
   "scripts/smoke/openapi-contract.sh"
   "scripts/smoke/api-main-flow.sh"
@@ -101,6 +104,9 @@ require_package_pattern 'company-adapter-readiness-smoke\.sh' 'package reference
 require_package_pattern 'local-delivery-evidence-audit\.sh' 'package references local delivery evidence audit'
 require_package_pattern 'local-commercial-backend-acceptance-stack\.sh' 'package references backend acceptance stack smoke'
 require_package_pattern 'local-commercial-full-acceptance-stack\.sh' 'package references full acceptance stack smoke'
+require_package_pattern 'production-provider-defaults-audit\.sh' 'package references production provider defaults audit'
+require_package_pattern 'deploy/env\.production\.example' 'package references production env example'
+require_package_pattern 'SPRING_PROFILES_ACTIVE=prod' 'package references production Spring profile'
 require_package_pattern 'api-package-blocked-flow\.sh' 'package references package block smoke'
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
 require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references real-model safety gates audit'

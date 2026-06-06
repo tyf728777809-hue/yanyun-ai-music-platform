@@ -391,7 +391,7 @@ public final class IntegrationReadinessService {
   private IntegrationComponentReadiness yunwuComponent() {
     boolean selectedForSuno =
         "suno".equals(normalize(properties.getMusicProvider()))
-            && "yunwu".equals(normalizeOr(properties.getSunoBackend(), "yunwu"));
+            && "yunwu".equals(normalizeOr(properties.getSunoBackend(), "dreammaker"));
     boolean enabled = selectedForSuno && properties.isYunwuRealCallsEnabled();
     List<String> requiredEnvVars =
         List.of(
@@ -454,7 +454,7 @@ public final class IntegrationReadinessService {
 
   private IntegrationComponentReadiness image2Component() {
     String provider = normalize(properties.getImageProvider());
-    String backend = normalizeOr(properties.getImage2Backend(), "wellapi");
+    String backend = normalizeOr(properties.getImage2Backend(), "dreammaker");
     boolean enabled = properties.isImageRealCallsEnabled() || !"mock".equals(provider);
     List<String> requiredEnvVars =
         "dreammaker".equals(backend)

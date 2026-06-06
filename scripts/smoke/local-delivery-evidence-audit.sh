@@ -121,6 +121,17 @@ check_real_model_gate_audit() {
   printf '%s\n' "$output" | tail -40
 }
 
+check_production_provider_defaults_audit() {
+  local output
+  if output="$(scripts/smoke/production-provider-defaults-audit.sh 2>&1)"; then
+    pass "production provider defaults audit passes"
+    return
+  fi
+
+  fail_check "production provider defaults audit failed"
+  printf '%s\n' "$output" | tail -40
+}
+
 check_secret_patterns() {
   local matches
   matches="$(
@@ -197,6 +208,8 @@ required_files=(
   "docs/specs/local-commercial-full-acceptance-stack-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
+  "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
+  "deploy/env.production.example"
 )
 
 for file in "${required_files[@]}"; do
@@ -217,6 +230,7 @@ required_executables=(
   "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
   "scripts/smoke/local-delivery-evidence-audit.sh"
+  "scripts/smoke/production-provider-defaults-audit.sh"
   "scripts/smoke/company-handoff-package-audit.sh"
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
   "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh"
@@ -235,6 +249,7 @@ require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README reference
 require_pattern "README.md" "api-package-blocked-flow\\.sh" "README references package block smoke"
 require_pattern "README.md" "local-commercial-backend-acceptance-stack\\.sh" "README references backend acceptance stack smoke"
 require_pattern "README.md" "local-commercial-full-acceptance-stack\\.sh" "README references full acceptance stack smoke"
+require_pattern "README.md" "production-provider-defaults-audit\\.sh" "README references production provider defaults audit"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
@@ -250,9 +265,11 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "MODE=
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_REAL_MODEL_SMOKE=1" "acceptance checklist requires global real-smoke allow gate"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-backend-acceptance-stack\\.sh" "acceptance checklist references backend acceptance stack"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-full-acceptance-stack\\.sh" "acceptance checklist references full acceptance stack"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "production-provider-defaults-audit\\.sh" "acceptance checklist references production provider defaults audit"
 
 check_smoke_index
 check_real_model_gate_audit
+check_production_provider_defaults_audit
 check_secret_patterns
 check_large_tracked_files
 

@@ -94,3 +94,14 @@ yanyun:
     namespace: ${TEMPORAL_NAMESPACE:default}
     task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}
     song-production-workflow-mode: ${TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE:legacy}
+---
+spring:
+  config:
+    activate:
+      on-profile: prod | production
+
+yanyun:
+  suno:
+    backend: ${SUNO_BACKEND:dreammaker}
+  image2:
+    backend: ${IMAGE2_BACKEND:dreammaker}

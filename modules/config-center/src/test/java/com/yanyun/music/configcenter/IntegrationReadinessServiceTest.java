@@ -160,6 +160,7 @@ class IntegrationReadinessServiceTest {
   void image2WellApiRealCallsAreBlockedWhenApiKeyIsMissing() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setImageProvider("image2");
+    properties.setImage2Backend("wellapi");
     properties.setImageRealCallsEnabled(true);
     properties.setImage2BaseUrl("https://wellapi.example.test");
     properties.setImage2ModelName("image2-test-model");
@@ -181,6 +182,7 @@ class IntegrationReadinessServiceTest {
   void image2WellApiRealCallsAreReadyWhenApiKeyExists() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setImageProvider("image2");
+    properties.setImage2Backend("wellapi");
     properties.setImageRealCallsEnabled(true);
     properties.setImage2BaseUrl("https://wellapi.example.test");
     properties.setImage2ModelName("gpt-image-2");

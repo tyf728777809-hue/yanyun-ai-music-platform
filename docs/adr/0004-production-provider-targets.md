@@ -24,6 +24,7 @@
 ## 影响
 
 - 配置上继续保留 `SUNO_BACKEND=dreammaker|yunwu` 和 `IMAGE2_BACKEND=dreammaker|wellapi` 的切换边界。
+- `prod/production` Spring profile 和 `deploy/env.production.example` 必须默认 `SUNO_BACKEND=dreammaker` 与 `IMAGE2_BACKEND=dreammaker`；`.env.example` 只作为本地 Mock / 公网 smoke 便利配置。
 - 公司内网或生产环境应优先验证 `dreammaker-suno`、`dreammaker-minimax` 和 `dreammaker-image2`。
 - 当前公网 smoke 可使用 `yunwu-suno` 和 `wellapi-image2` 缩短联调等待，但交付状态必须标注为公网临时路径。
 - 交接包、runbook、验收清单和审计脚本必须能证明 DreamMaker 生产目标仍然存在。

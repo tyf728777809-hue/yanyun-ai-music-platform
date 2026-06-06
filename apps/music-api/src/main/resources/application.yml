@@ -142,3 +142,18 @@ yanyun:
     target: ${TEMPORAL_TARGET:localhost:7233}
     namespace: ${TEMPORAL_NAMESPACE:default}
     task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}
+---
+spring:
+  config:
+    activate:
+      on-profile: prod | production
+
+yanyun:
+  integration:
+    environment: ${YANYUN_ENV:production}
+    suno-backend: ${SUNO_BACKEND:dreammaker}
+    image2-backend: ${IMAGE2_BACKEND:dreammaker}
+  suno:
+    backend: ${SUNO_BACKEND:dreammaker}
+  image2:
+    backend: ${IMAGE2_BACKEND:dreammaker}

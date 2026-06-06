@@ -149,7 +149,7 @@ public class WorkerProductionConfiguration {
 
   @Bean
   MusicProvider sunoMusicProvider(
-      @Value("${yanyun.suno.backend:yunwu}") String sunoBackend,
+      @Value("${yanyun.suno.backend:dreammaker}") String sunoBackend,
       DreamMakerClient dreamMakerClient,
       DreamMakerProperties dreamMakerProperties,
       YunwuProperties yunwuProperties,

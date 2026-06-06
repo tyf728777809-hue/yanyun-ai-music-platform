@@ -28,7 +28,7 @@ public class MediaGenerationConfiguration {
   @Bean
   public CoverGenerationService coverGenerationService(
       @Value("${yanyun.image.provider:mock}") String imageProvider,
-      @Value("${yanyun.image2.backend:wellapi}") String image2Backend,
+      @Value("${yanyun.image2.backend:dreammaker}") String image2Backend,
       DreamMakerClient dreamMakerClient,
       Image2Properties image2Properties,
       ObjectMapper objectMapper) {

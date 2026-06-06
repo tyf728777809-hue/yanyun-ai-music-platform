@@ -1,6 +1,6 @@
 # 公司 Adapter 接入与部署交接说明 v0.1
 
-更新时间：2026-06-06
+更新时间：2026-06-07
 
 ## 1. 交接目标
 
@@ -21,6 +21,9 @@
 `render_worker` 组件；本地进程模式可证明 Remotion MP4 链路可跑通，但生产是否采用进程模式、独立服务或队列化 render worker 需要公司部署方案确认。
 
 真实音乐和 Image 2 供应商边界中，DreamMaker 是必须保留的正式生产目标。Yunwu / WellAPI 只用于当前非公司内网环境下的公网受控联调，不作为删除 DreamMaker 接口的理由。
+生产或公司内网部署应参考 `deploy/env.production.example`，启用 `SPRING_PROFILES_ACTIVE=prod`；
+API 与 worker 的 `prod/production` profile 会把 `SUNO_BACKEND` 和 `IMAGE2_BACKEND` 的默认值切回
+`dreammaker`。`.env.example` 是本地 Mock / 公网 smoke 便利配置，不得直接当作生产默认。
 
 ## 2. 当前可检查接口
 
@@ -161,10 +164,23 @@ COMPANY_SHARE_BASE_URL=
 
 公司部署变量分为三类：基础运行必需项、公司 Adapter 替换必需项、以及真实模型和 render-worker 的部署选型项。当前仓库默认仍可使用 Mock Provider 和 Mock render-worker 做本地验证；生产是否启用真实 Suno / MiniMax、是否采用 `local-process` render-worker，需要公司部署方案和联调窗口确认。
 
+生产变量名样例：
+
+```bash
+deploy/env.production.example
+```
+
+交付前可运行以下只读审计，确认生产 profile、Java fallback、readiness 默认值和交接文档没有把公网联调后端当成生产默认：
+
+```bash
+scripts/smoke/production-provider-defaults-audit.sh
+```
+
 ### 8.1 基础运行必需项
 
 ```text
 YANYUN_ENV=
+SPRING_PROFILES_ACTIVE=prod
 POSTGRES_HOST=
 POSTGRES_DB=
 POSTGRES_USER=
@@ -221,16 +237,17 @@ RENDER_WORKER_TIMEOUT=
 ## 9. 公司接入 Smoke
 
 1. 调用 `/internal/integration-readiness`，并运行 `scripts/smoke/company-adapter-readiness-smoke.sh`，确认公司 Adapter 状态可解释且 readiness 响应不泄露密钥。
-2. 调用 `/api/v1/me`，确认返回真实公司用户。
-3. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
-4. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
-5. 运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`，确认真实后端模式下前端创作、改词、409 友好提示、成品交接、作品列表和失败重试恢复。
-6. 灵感成歌创建作品，确认作品归属到真实 `user_id`。
-7. 输入一条公司审核应阻断的内容，确认返回可读失败提示。
-8. 正常作品确认出歌，确认权益先锁定，发布包可用后扣减。
-9. 触发一次音乐失败或模拟失败，确认权益释放或重试口径正确。
-10. 作品生成到 `PACKAGE_READY` 后，确认公司发布系统能读取发布包 URL。
-11. 调用标记已交接接口，确认公司侧不把它误解为“已发布成功”。
+2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh`，确认生产默认仍指向 DreamMaker，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
+3. 调用 `/api/v1/me`，确认返回真实公司用户。
+4. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
+5. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
+6. 运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`，确认真实后端模式下前端创作、改词、409 友好提示、成品交接、作品列表和失败重试恢复。
+7. 灵感成歌创建作品，确认作品归属到真实 `user_id`。
+8. 输入一条公司审核应阻断的内容，确认返回可读失败提示。
+9. 正常作品确认出歌，确认权益先锁定，发布包可用后扣减。
+10. 触发一次音乐失败或模拟失败，确认权益释放或重试口径正确。
+11. 作品生成到 `PACKAGE_READY` 后，确认公司发布系统能读取发布包 URL。
+12. 调用标记已交接接口，确认公司侧不把它误解为“已发布成功”。
 
 ## 10. 总体验收清单
 
