@@ -27,9 +27,10 @@
 3. `docs/adr/0001-user-web-scope.md`
 4. `docs/adr/0002-commercial-grade-stack.md`
 5. `docs/adr/0003-frontend-delivery-track.md`
-6. `docs/project-progress.md`
-7. `docs/codex-batch-01-repository-initialization.md`
-8. `docs/tech-design-required-supplements.md`
+6. `docs/adr/0004-production-provider-targets.md`
+7. `docs/project-progress.md`
+8. `docs/codex-batch-01-repository-initialization.md`
+9. `docs/tech-design-required-supplements.md`
 
 如果这些文档之间冲突：
 

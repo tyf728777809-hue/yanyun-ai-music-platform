@@ -59,6 +59,7 @@ required_files=(
   "docs/api/openapi-v0.1.yaml"
   "docs/runbook/local-development.md"
   "docs/adr/0003-frontend-delivery-track.md"
+  "docs/adr/0004-production-provider-targets.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
 )
 
@@ -98,6 +99,7 @@ require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references 
 require_package_pattern 'deepseek-real-lyrics-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek single-sample smoke'
 require_package_pattern 'dreammaker-minimax' 'package references DreamMaker MiniMax production target'
 require_package_pattern 'dreammaker-image2-real-cover-stack-smoke\.sh|TARGET=dreammaker-image2 MODE=execute' 'package references DreamMaker Image2 single-work smoke'
+require_package_pattern '0004-production-provider-targets' 'package references production provider ADR'
 require_package_pattern '公司系统负责|公司社区系统' 'package states company-system responsibility'
 require_package_pattern '不调用真实模型|不访问真实公司系统|不调用真实供应商' 'package includes no-real-call safety language'
 require_package_pattern 'prototypes/Claude-web-v1' 'package references current frontend acceptance target'

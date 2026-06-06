@@ -185,6 +185,7 @@ required_files=(
   "docs/handover/company-delivery-package-v0.1.md"
   "docs/checklists/company-adapter-replacement-readiness.md"
   "docs/adr/0003-frontend-delivery-track.md"
+  "docs/adr/0004-production-provider-targets.md"
   "docs/api/openapi-v0.1.yaml"
   "docs/specs/real-model-controlled-smoke-index-v0.1.md"
   "docs/specs/real-model-readiness-preflight-v0.1.md"
@@ -221,6 +222,8 @@ for file in "${required_executables[@]}"; do
 done
 
 require_pattern "AGENTS.md" "DreamMaker.*正式生产目标" "AGENTS keeps DreamMaker production-target rule"
+require_pattern "docs/adr/0004-production-provider-targets.md" "DreamMaker.*正式生产供应商目标" "production provider ADR keeps DreamMaker target"
+require_pattern "docs/handover/company-delivery-package-v0.1.md" "0004-production-provider-targets" "company package references production provider ADR"
 require_pattern "README.md" "real-model-controlled-smoke\\.sh" "README references real-model controlled smoke index"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
