@@ -7,7 +7,7 @@ Reviewers: User
 
 ## Context
 
-The project now has separate controlled smoke scripts and runbooks for Yunwu Suno, DreamMaker Suno/MiniMax, WellAPI Image 2, DeepSeek, and DreamMaker Image 2. This is safer than a single always-on integration path, but it is easy for an operator to choose the wrong script, skip preflight, or misread a public-network smoke backend as the production target.
+The project now has separate controlled smoke scripts and runbooks for Yunwu Suno, DreamMaker Suno/MiniMax, WellAPI Image 2, DeepSeek, and DreamMaker Image 2. It also has one combined public-network full-experience smoke that intentionally opens DeepSeek, Yunwu Suno, WellAPI Image 2, local-process MP4 rendering, and Claude Web v1 together. This is safer than a single always-on integration path, but it is easy for an operator to choose the wrong script, skip preflight, or misread a public-network smoke backend as the production target.
 
 DreamMaker remains the mandatory production target for music and Image 2. Yunwu and WellAPI are current public-network smoke paths only. A central smoke index is needed so future local testing, user handoff, and company handoff all start from the same target matrix and safety gates.
 
@@ -15,7 +15,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 
 - FR-1: The smoke index MUST provide one command entry point for listing, planning, preflight, and eligible execution of real-model controlled smokes.
 - FR-2: The default mode MUST NOT call real model providers, company systems, databases, object storage, work APIs, or user-facing APIs.
-- FR-3: The index MUST support these targets: `yunwu-suno`, `dreammaker-suno`, `dreammaker-minimax`, `deepseek`, `wellapi-image2`, and `dreammaker-image2`.
+- FR-3: The index MUST support these targets: `yunwu-suno`, `dreammaker-suno`, `dreammaker-minimax`, `deepseek`, `wellapi-image2`, `dreammaker-image2`, and `public-real-full-experience`.
 - FR-4: The index MUST clearly label DreamMaker music and DreamMaker Image 2 as production-target paths.
 - FR-5: The index MUST clearly label Yunwu and WellAPI as public-network smoke paths, not production replacements for DreamMaker.
 - FR-6: `MODE=preflight` MUST delegate to `scripts/smoke/real-model-readiness-preflight.sh` with the matching `TARGET` and `STRICT=true`.
@@ -24,6 +24,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - FR-9: Targets without a dedicated safe execution script MAY refuse `MODE=execute` and print the relevant runbook path instead.
 - FR-10: The index MUST NOT print credentials, token values, JWTs, provider raw payloads, or full supplier media URLs.
 - FR-11: `MODE=execute` MUST run the strict read-only preflight for the selected target before delegating to any real smoke script.
+- FR-12: `public-real-full-experience` MUST be labeled as a public-network full-experience smoke, MUST require `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`, and MUST NOT be described as DreamMaker production validation.
 
 ## Non-Functional Requirements
 
@@ -41,6 +42,8 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - AC-6: Given any mode, when output is scanned for likely `sk-...` or long Bearer token patterns, then no such value is emitted by the index itself. Covers FR-10.
 - AC-7: Given `TARGET=wellapi-image2 MODE=execute` with global allow gate but missing Image 2 readiness variables, when the command runs, then strict preflight fails before the WellAPI smoke script is invoked. Covers FR-11.
 - AC-8: Given `TARGET=deepseek MODE=execute` with global allow gate but missing `ALLOW_DEEPSEEK_REAL_SMOKE=1`, when strict preflight passes, then the delegated DeepSeek script still refuses before creating a work. Covers FR-8 and FR-11.
+- AC-9: Given `TARGET=public-real-full-experience MODE=plan`, when the command runs, then it prints the public full-experience role, the public full-experience script path, and both global and target allow gates. Covers FR-3, FR-8, and FR-12.
+- AC-10: Given `TARGET=public-real-full-experience MODE=execute` with global allow gate but missing `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`, when strict public full-experience preflight passes, then the delegated public full-experience script still refuses before service startup. Covers FR-8, FR-11, and FR-12.
 
 ## Edge Cases
 
@@ -49,6 +52,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - EC-3: `MODE=execute` for DreamMaker music MUST set `REAL_PROVIDER=suno|minimax` only for the delegated command scope.
 - EC-4: `MODE=execute` for WellAPI Image 2 MUST not open music, DeepSeek, render-worker, or company Adapter real paths by itself.
 - EC-5: `dreammaker-image2` MUST delegate to its dedicated stack smoke and still require `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1`.
+- EC-6: `public-real-full-experience` intentionally enables multiple real provider switches, so the preflight MAY suppress the single-provider warning for this target only.
 
 ## API Contracts
 
@@ -63,10 +67,12 @@ N/A - this feature is a local shell orchestration entry point and does not add H
 | `ALLOW_REAL_MODEL_SMOKE` | string | Required as `1` only for `MODE=execute` | Global explicit real-call gate. |
 | `ALLOW_DEEPSEEK_REAL_SMOKE` | string | Required as `1` only for DeepSeek delegated execution | Target-specific explicit real-call gate for `scripts/smoke/deepseek-real-lyrics-smoke.sh`. |
 | `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE` | string | Required as `1` only for DreamMaker Image 2 delegated execution | Target-specific explicit real-call gate for `scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh`. |
+| `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE` | string | Required as `1` only for public full-experience delegated execution | Target-specific explicit real-call gate for `scripts/smoke/public-real-full-experience-stack.sh`. |
 
 ## Out of Scope
 
 - OS-1: This does not run all real providers as a suite.
+- OS-1a: `public-real-full-experience` is the only combined public-network target; it is still not a production DreamMaker validation suite.
 - OS-2: This does not replace per-provider runbooks or checklists.
 - OS-3: This does not run DreamMaker Image 2 unless the operator explicitly uses `MODE=execute` with both global and target allow gates.
 - OS-4: This does not store credentials, read `.env`, or prompt for secrets.

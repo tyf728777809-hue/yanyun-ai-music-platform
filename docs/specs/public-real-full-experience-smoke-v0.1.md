@@ -23,6 +23,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - FR-8: The smoke MUST run strict preflight for `deepseek`, `yunwu-suno`, and `wellapi-image2` before starting services.
 - FR-9: The smoke MUST create one work, use real DeepSeek lyrics, confirm with `music_provider=suno`, wait for `GENERATED / PACKAGE_READY`, fetch the publish package, verify media summaries, open Claude Web v1, refresh the handoff link, and mark the package fetched.
 - FR-10: The smoke output MUST be sanitized and MUST NOT print API keys, Bearer tokens, full prompts, complete lyrics, provider raw payloads, supplier media URLs, platform signed URLs, full provider task ids, or full provider trace ids.
+- FR-11: The smoke MUST be available from the unified real-model controlled smoke index as `TARGET=public-real-full-experience` and MUST still require `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`.
 
 ## Non-Functional Requirements
 
@@ -39,6 +40,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - AC-4: Given all providers succeed, when the script finishes, then one work reaches `PACKAGE_FETCHED` after the frontend handoff action, and the output contains only sanitized summaries. Covers FR-2, FR-9, and FR-10.
 - AC-5: Given any provider returns 401, 403, 429, timeout, or malformed output, when the script reaches terminal state, then it exits non-zero and prints the platform failure code without raw provider payloads. Covers NFR-2.
 - AC-6: Given repository audits run after implementation, when `local-delivery-evidence-audit.sh` executes, then it verifies this spec and script exist while retaining DreamMaker production-target language. Covers FR-4.
+- AC-7: Given `TARGET=public-real-full-experience MODE=plan`, when `real-model-controlled-smoke.sh` runs, then it prints the public full-experience plan and both required allow gates without calling suppliers. Covers FR-1, FR-10, and FR-11.
 
 ## Edge Cases
 

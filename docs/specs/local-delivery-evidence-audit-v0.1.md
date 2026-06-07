@@ -29,7 +29,7 @@ This audit is intentionally narrower than the full smoke suite. It proves that t
 - FR-14: The audit MUST include the real-model evidence log audit, proving sanitized evidence logging exists and keeps DreamMaker as the production target while Yunwu and WellAPI remain public-network smoke paths.
 - FR-15: The audit MUST include the stepwise production boundary audit, proving `stepwise-recording` is not treated as a production/user-test path and `stepwise-production` is not overstated before implementation.
 - FR-16: The audit MUST verify the current long-goal completion audit exists and preserves the DreamMaker production-target rule.
-- FR-17: The audit MUST verify the public real full experience smoke spec and executable exist, require the public full experience allow gate, and preserve the DreamMaker production-target rule while using Yunwu / WellAPI only for public-network validation.
+- FR-17: The audit MUST verify the public real full experience smoke spec and executable exist, the unified controlled smoke index exposes `TARGET=public-real-full-experience`, the public full experience allow gate is required, and the DreamMaker production-target rule is preserved while using Yunwu / WellAPI only for public-network validation.
 
 ## Non-Functional Requirements
 

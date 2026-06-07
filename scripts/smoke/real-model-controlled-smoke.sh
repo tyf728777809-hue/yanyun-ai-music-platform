@@ -24,6 +24,8 @@ Targets:
   deepseek            Real lyrics model path; script: deepseek-real-lyrics-smoke.sh
   wellapi-image2      Public-network Image 2 smoke path; not the production replacement for DreamMaker.
   dreammaker-image2   Production-target Image 2 path through DreamMaker.
+  public-real-full-experience
+                      Public-network full experience path: DeepSeek + Yunwu + WellAPI + local MP4 + Claude Web v1.
 
 Modes:
   list       Print target matrix only.
@@ -52,6 +54,7 @@ dreammaker-minimax production-target music       script: dreammaker-real-music-s
 deepseek           real lyrics model             script: deepseek-real-lyrics-smoke.sh
 wellapi-image2     public-network smoke          script: wellapi-image2-real-cover-stack-smoke.sh
 dreammaker-image2  production-target image2      script: dreammaker-image2-real-cover-stack-smoke.sh
+public-real-full-experience public-network full  script: public-real-full-experience-stack.sh
 
 DreamMaker music and DreamMaker Image 2 must remain the production-target paths.
 Yunwu and WellAPI are current public-network controlled smoke paths only.
@@ -64,6 +67,7 @@ runbook_for() {
     dreammaker-suno|dreammaker-minimax) printf '%s\n' "docs/runbook/dreammaker-controlled-real-integration.md" ;;
     deepseek) printf '%s\n' "docs/runbook/deepseek-controlled-real-integration.md" ;;
     wellapi-image2|dreammaker-image2) printf '%s\n' "docs/runbook/image2-controlled-real-integration.md" ;;
+    public-real-full-experience) printf '%s\n' "docs/specs/public-real-full-experience-smoke-v0.1.md" ;;
     *) fail "Unsupported target: $1" ;;
   esac
 }
@@ -87,6 +91,9 @@ target_note() {
       ;;
     dreammaker-image2)
       printf '%s\n' "DreamMaker Image 2 is a production-target path. Open only the Image 2 path for first smoke; keep music/DeepSeek/company systems mocked."
+      ;;
+    public-real-full-experience)
+      printf '%s\n' "Public real full experience opens DeepSeek, Yunwu Suno, WellAPI Image 2, local-process MP4, and Claude Web v1 together. It is not DreamMaker production validation."
       ;;
     *)
       fail "Unsupported target: $1"
@@ -124,6 +131,9 @@ print_plan() {
     dreammaker-image2)
       printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
       ;;
+    public-real-full-experience)
+      printf 'Execute: ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh\n'
+      ;;
     *)
       fail "Unsupported target: $target"
       ;;
@@ -135,6 +145,33 @@ run_preflight() {
   TARGET="$target" STRICT=true "$PREFLIGHT"
 }
 
+run_execute_preflight() {
+  local target="$1"
+  case "$target" in
+    public-real-full-experience)
+      TARGET="$target" \
+      STRICT=true \
+      AGENT_REAL_CALLS_ENABLED=true \
+      DEEPSEEK_REAL_CALLS_ENABLED=true \
+      SUNO_BACKEND=yunwu \
+      YUNWU_REAL_CALLS_ENABLED=true \
+      IMAGE_PROVIDER=image2 \
+      IMAGE2_BACKEND=wellapi \
+      IMAGE_REAL_CALLS_ENABLED=true \
+      DREAMMAKER_REAL_CALLS_ENABLED=false \
+      MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
+      WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \
+      WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+      TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
+      RENDER_WORKER_MODE=local-process \
+        "$PREFLIGHT"
+      ;;
+    *)
+      run_preflight "$target"
+      ;;
+  esac
+}
+
 require_execute_gate() {
   if [[ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]]; then
     fail "MODE=execute requires ALLOW_REAL_MODEL_SMOKE=1. Run MODE=plan and MODE=preflight first."
@@ -144,7 +181,7 @@ require_execute_gate() {
 execute_target() {
   local target="$1"
   require_execute_gate
-  run_preflight "$target"
+  run_execute_preflight "$target"
 
   case "$target" in
     yunwu-suno)
@@ -164,6 +201,9 @@ execute_target() {
       ;;
     dreammaker-image2)
       ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE="${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-image2-real-cover-stack-smoke.sh"
+      ;;
+    public-real-full-experience)
+      ALLOW_PUBLIC_REAL_FULL_EXPERIENCE="${ALLOW_PUBLIC_REAL_FULL_EXPERIENCE:-}" "${SCRIPT_DIR}/public-real-full-experience-stack.sh"
       ;;
     *)
       fail "Unsupported target: $target"

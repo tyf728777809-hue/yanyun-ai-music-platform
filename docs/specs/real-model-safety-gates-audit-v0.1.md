@@ -7,7 +7,7 @@ Reviewers: User
 
 ## Context
 
-The project now has controlled smoke entries for Yunwu Suno, DreamMaker Suno/MiniMax, DeepSeek, WellAPI Image 2, and DreamMaker Image 2. Each real provider path has a global gate through `scripts/smoke/real-model-controlled-smoke.sh` and a target-specific `ALLOW_*` gate in the delegated script.
+The project now has controlled smoke entries for Yunwu Suno, DreamMaker Suno/MiniMax, DeepSeek, WellAPI Image 2, DreamMaker Image 2, and the combined public-network full-experience smoke. Each real provider path has a global gate through `scripts/smoke/real-model-controlled-smoke.sh` and a target-specific `ALLOW_*` gate in the delegated script.
 
 Manual review is no longer enough. The delivery handoff needs a non-real-call audit that proves the safety matrix still behaves as designed: list/plan modes are safe, execute mode refuses without the global gate, and even with the global gate, each target still refuses without its target-specific gate. This audit protects against future edits that accidentally bypass one of the real-cost or credential-bearing controls.
 
@@ -15,7 +15,7 @@ Manual review is no longer enough. The delivery handoff needs a non-real-call au
 
 - FR-1: The audit MUST run without starting API, worker, Docker Compose, browsers, databases, object storage, or external providers.
 - FR-2: The audit MUST verify the real-model controlled smoke index list mode succeeds and labels DreamMaker music/Image 2 as production-target paths.
-- FR-3: The audit MUST verify `MODE=plan` succeeds for all supported targets: `yunwu-suno`, `dreammaker-suno`, `dreammaker-minimax`, `deepseek`, `wellapi-image2`, and `dreammaker-image2`.
+- FR-3: The audit MUST verify `MODE=plan` succeeds for all supported targets: `yunwu-suno`, `dreammaker-suno`, `dreammaker-minimax`, `deepseek`, `wellapi-image2`, `dreammaker-image2`, and `public-real-full-experience`.
 - FR-4: The audit MUST verify `MODE=execute` without `ALLOW_REAL_MODEL_SMOKE=1` fails for every supported target before delegated script execution.
 - FR-5: The audit MUST verify `MODE=execute` with `ALLOW_REAL_MODEL_SMOKE=1` but without the target-specific `ALLOW_*` gate still fails for every supported target.
 - FR-6: The audit MUST provide only fake placeholder environment values for strict preflight and MUST NOT use real credentials.
@@ -42,6 +42,7 @@ Manual review is no longer enough. The delivery handoff needs a non-real-call au
 - EC-1: If `rg` is missing, the audit MUST fail with an explicit tool-missing message.
 - EC-2: If a delegated script reorders checks and requires secrets before its target allow gate, the audit MUST fail because that is a regression in safety ergonomics.
 - EC-3: If a target is renamed in the real-model controlled smoke index, this audit MUST be updated in the same change.
+- EC-4: The `public-real-full-experience` target intentionally uses fake placeholder values for three provider credentials during target-gate testing and still MUST fail on missing `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1` before service startup.
 
 ## API Contracts
 

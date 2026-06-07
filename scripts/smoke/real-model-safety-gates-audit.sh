@@ -16,6 +16,7 @@ TARGETS=(
   "deepseek"
   "wellapi-image2"
   "dreammaker-image2"
+  "public-real-full-experience"
 )
 
 log() {
@@ -154,6 +155,7 @@ expected_target_gate() {
     deepseek) printf '%s\n' "ALLOW_DEEPSEEK_REAL_SMOKE=1" ;;
     wellapi-image2) printf '%s\n' "ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1" ;;
     dreammaker-image2) printf '%s\n' "ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" ;;
+    public-real-full-experience) printf '%s\n' "ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1" ;;
     *) printf '%s\n' "ALLOW_" ;;
   esac
 }
@@ -236,6 +238,29 @@ capture_target_execute_without_target_gate() {
         DREAMMAKER_REAL_CALLS_ENABLED=true \
         DREAMMAKER_ACCESS_KEY=redacted \
         DREAMMAKER_SECRET_KEY=redacted \
+        "$INDEX"
+      ;;
+    public-real-full-experience)
+      capture_command "$__status_var" "$__output_var" env \
+        ALLOW_REAL_MODEL_SMOKE=1 \
+        TARGET=public-real-full-experience \
+        MODE=execute \
+        AGENT_REAL_CALLS_ENABLED=true \
+        DEEPSEEK_REAL_CALLS_ENABLED=true \
+        DEEPSEEK_API_KEY=redacted \
+        SUNO_BACKEND=yunwu \
+        YUNWU_REAL_CALLS_ENABLED=true \
+        YUNWU_API_KEY=redacted \
+        MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
+        WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \
+        WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
+        IMAGE_PROVIDER=image2 \
+        IMAGE2_BACKEND=wellapi \
+        IMAGE_REAL_CALLS_ENABLED=true \
+        WELLAPI_API_KEY=redacted \
+        DREAMMAKER_REAL_CALLS_ENABLED=false \
+        TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
+        RENDER_WORKER_MODE=local-process \
         "$INDEX"
       ;;
     *)

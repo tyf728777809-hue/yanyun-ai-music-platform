@@ -26,8 +26,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. Yunw
 | TBD | `deepseek` | DeepSeek v4Pro | Public network | N/A | N/A | N/A | Not started | N/A | N/A | N/A | N/A | Run controlled smoke only through `TARGET=deepseek` | N/A | Run one lyrics-only sample when user provides a safe window. |
 | TBD | `wellapi-image2` | WellAPI gpt-image-2 | Public network | N/A | N/A | N/A | Not started | N/A | N/A | N/A | N/A | Run controlled smoke only through `TARGET=wellapi-image2` | N/A | Optional public-network cover smoke; does not replace DreamMaker Image 2. |
 | TBD | `dreammaker-image2` | DreamMaker Image 2 | TBD | N/A | N/A | N/A | Not started | N/A | N/A | N/A | N/A | Run controlled smoke only through `TARGET=dreammaker-image2` | N/A | Await company intranet / credentials window. |
-| 2026-06-07 | `public-real-full-experience` | DeepSeek v4Pro + Yunwu Suno + WellAPI gpt-image-2 + local-process MP4 | Local public network | N/A | N/A | N/A | Blocked before service startup because current shell credentials were missing | N/A | N/A | N/A | N/A | Gate checks passed; strict single-target preflights reported missing env / disabled real-call switches; no provider call made | No cost | Export credentials in current shell or run script interactively, then re-run with both allow gates. |
-| TBD | `public-real-full-experience` | DeepSeek v4Pro + Yunwu Suno + WellAPI gpt-image-2 + local-process MP4 | Public network | N/A | N/A | N/A | Prepared, not executed | N/A | N/A | N/A | N/A | Run only through `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 scripts/smoke/public-real-full-experience-stack.sh` | N/A | Use only after single-target plan/preflight; does not replace DreamMaker production validation. |
+| 2026-06-07 | `public-real-full-experience` | DeepSeek v4Pro + Yunwu Suno + WellAPI gpt-image-2 + local-process MP4 | Local public network | N/A | N/A | N/A | Blocked before service startup because current shell credentials were missing | N/A | N/A | N/A | N/A | Gate checks passed; strict preflight reported missing current-shell credentials; no provider call made | No cost | Export credentials in current shell or run script interactively, then re-run through unified target execute with both allow gates. |
+| TBD | `public-real-full-experience` | DeepSeek v4Pro + Yunwu Suno + WellAPI gpt-image-2 + local-process MP4 | Public network | N/A | N/A | N/A | Prepared, not executed | N/A | N/A | N/A | N/A | Run only through `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh` | N/A | Use only after single-target plan/preflight plus public full-experience plan/preflight; does not replace DreamMaker production validation. |
 
 ## Entry Template
 
@@ -37,7 +37,7 @@ Use this template after each real smoke attempt. Keep evidence concise and sanit
 |---|---|
 | Date / time |  |
 | Target | `dreammaker-suno` / `dreammaker-minimax` / `yunwu-suno` / `deepseek` / `wellapi-image2` / `dreammaker-image2` / `public-real-full-experience` |
-| Provider role | `production-target` / `public-network-smoke` / `model-smoke` |
+| Provider role | `production-target` / `public-network-smoke` / `model-smoke` / `public-network-full-experience` |
 | Backend / model |  |
 | Operator |  |
 | Environment | local public network / company intranet / staging / production-like |

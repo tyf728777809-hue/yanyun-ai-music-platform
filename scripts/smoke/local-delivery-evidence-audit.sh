@@ -108,6 +108,17 @@ check_smoke_index() {
       fail_check "real-model controlled smoke index ${target} plan missing production/gate text"
     fi
   done
+
+  if ! plan_output="$(TARGET=public-real-full-experience MODE=plan scripts/smoke/real-model-controlled-smoke.sh 2>&1)"; then
+    fail_check "real-model controlled smoke index public-real-full-experience plan failed"
+    return
+  fi
+
+  if [[ "$plan_output" == *"public-real-full-experience"* && "$plan_output" == *"ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1"* ]]; then
+    pass "real-model controlled smoke index prints public full experience execution gate"
+  else
+    fail_check "real-model controlled smoke index public full experience plan missing target/gate text"
+  fi
 }
 
 check_real_model_gate_audit() {
@@ -300,6 +311,7 @@ require_pattern "README.md" "real-model-evidence-log-audit\\.sh" "README referen
 require_pattern "README.md" "company-deployment-readiness-audit\\.sh" "README references company deployment readiness audit"
 require_pattern "README.md" "stepwise-production-boundary-audit\\.sh" "README references stepwise production boundary audit"
 require_pattern "README.md" "public-real-full-experience-stack\\.sh" "README references public full experience smoke"
+require_pattern "README.md" "TARGET=public-real-full-experience" "README references public full experience controlled target"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
@@ -323,6 +335,7 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "company-deployment-readiness-audit\\.sh" "acceptance checklist references company deployment readiness audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "stepwise-production-boundary-audit\\.sh" "acceptance checklist references stepwise production boundary audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1" "acceptance checklist requires public full experience allow gate"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "TARGET=public-real-full-experience" "acceptance checklist references public full experience controlled target"
 require_pattern "docs/specs/public-real-full-experience-smoke-v0.1.md" "Yunwu.*WellAPI" "public full experience spec names public-network providers"
 require_pattern "docs/specs/public-real-full-experience-smoke-v0.1.md" "DreamMaker.*production|DreamMaker.*生产" "public full experience spec keeps DreamMaker production-target rule"
 

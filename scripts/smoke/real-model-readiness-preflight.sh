@@ -220,7 +220,49 @@ check_dreammaker_image2() {
   record_target "dreammaker-image2" "$status" "$(secret_state DREAMMAKER_ACCESS_KEY),$(secret_state DREAMMAKER_SECRET_KEY)"
 }
 
+check_public_real_full_experience() {
+  MISSING=""
+  BLOCKERS=""
+  local enabled="false"
+  if [ "$TARGET" = "public-real-full-experience" ]; then
+    enabled="true"
+  fi
+
+  append_missing_var DEEPSEEK_BASE_URL
+  append_missing_var DEEPSEEK_API_KEY
+  append_missing_var DEEPSEEK_MODEL_NAME
+  is_true "${AGENT_REAL_CALLS_ENABLED:-}" || append_blocker "AGENT_REAL_CALLS_ENABLED must be true"
+  is_true "${DEEPSEEK_REAL_CALLS_ENABLED:-}" || append_blocker "DEEPSEEK_REAL_CALLS_ENABLED must be true"
+
+  [ "${SUNO_BACKEND:-yunwu}" = "yunwu" ] || append_blocker "SUNO_BACKEND must be yunwu"
+  append_missing_var YUNWU_BASE_URL
+  append_missing_var YUNWU_API_KEY
+  append_missing_var YUNWU_SUNO_MODEL
+  is_true "${YUNWU_REAL_CALLS_ENABLED:-}" || append_blocker "YUNWU_REAL_CALLS_ENABLED must be true"
+  require_music_dispatch
+
+  [ "${IMAGE_PROVIDER:-mock}" = "image2" ] || append_blocker "IMAGE_PROVIDER must be image2"
+  [ "${IMAGE2_BACKEND:-wellapi}" = "wellapi" ] || append_blocker "IMAGE2_BACKEND must be wellapi"
+  append_missing_var WELLAPI_BASE_URL
+  append_missing_var WELLAPI_API_KEY
+  append_missing_var IMAGE2_MODEL_NAME
+  is_true "${IMAGE_REAL_CALLS_ENABLED:-}" || append_blocker "IMAGE_REAL_CALLS_ENABLED must be true"
+
+  if is_true "${DREAMMAKER_REAL_CALLS_ENABLED:-}"; then
+    append_blocker "DREAMMAKER_REAL_CALLS_ENABLED must be false for public full experience"
+  fi
+  [ "${TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE:-legacy}" = "legacy" ] || append_blocker "TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE must be legacy"
+  [ "${RENDER_WORKER_MODE:-}" = "local-process" ] || append_blocker "RENDER_WORKER_MODE must be local-process"
+
+  local status
+  status="$(status_from_missing_and_blockers "$enabled")"
+  record_target "public-real-full-experience" "$status" "$(secret_state DEEPSEEK_API_KEY),$(secret_state YUNWU_API_KEY),$(secret_state WELLAPI_API_KEY)"
+}
+
 warn_multiple_real_targets() {
+  if [ "$TARGET" = "public-real-full-experience" ]; then
+    return
+  fi
   local count=0
   is_true "${YUNWU_REAL_CALLS_ENABLED:-}" && count=$((count + 1))
   is_true "${DEEPSEEK_REAL_CALLS_ENABLED:-}" && count=$((count + 1))
@@ -288,7 +330,8 @@ run_target_checks() {
     deepseek) check_deepseek ;;
     wellapi-image2) check_wellapi_image2 ;;
     dreammaker-image2) check_dreammaker_image2 ;;
-    *) fail "TARGET must be all|yunwu-suno|dreammaker-suno|dreammaker-minimax|deepseek|wellapi-image2|dreammaker-image2, got: $TARGET" ;;
+    public-real-full-experience) check_public_real_full_experience ;;
+    *) fail "TARGET must be all|yunwu-suno|dreammaker-suno|dreammaker-minimax|deepseek|wellapi-image2|dreammaker-image2|public-real-full-experience, got: $TARGET" ;;
   esac
 }
 

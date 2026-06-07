@@ -195,7 +195,8 @@ get_json() {
 }
 
 run_preflights() {
-  log "running strict preflight for deepseek/yunwu-suno/wellapi-image2"
+  log "running strict preflight for public real full experience"
+  TARGET=public-real-full-experience STRICT=true scripts/smoke/real-model-readiness-preflight.sh
   TARGET=deepseek STRICT=true scripts/smoke/real-model-readiness-preflight.sh
   TARGET=yunwu-suno STRICT=true scripts/smoke/real-model-readiness-preflight.sh
   TARGET=wellapi-image2 STRICT=true scripts/smoke/real-model-readiness-preflight.sh
@@ -575,6 +576,8 @@ main() {
   export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
   export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
   export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
+  export TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
+  export RENDER_WORKER_MODE=local-process
 
   mkdir -p "$LOG_DIR"
   log "logs will be written under $LOG_DIR"

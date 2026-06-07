@@ -82,7 +82,7 @@
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
 - [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
-- [ ] 公网真实完整体验首测前，DeepSeek、Yunwu Suno、WellAPI Image 2 已分别完成 `MODE=plan/preflight`；执行完整体验时只使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 scripts/smoke/public-real-full-experience-stack.sh`，并确认 `DEEPSEEK_API_KEY`、`YUNWU_API_KEY`、`WELLAPI_API_KEY` 只来自当前 shell 或交互式静默输入。
+- [ ] 公网真实完整体验首测前，DeepSeek、Yunwu Suno、WellAPI Image 2 已分别完成 `MODE=plan/preflight`，并已运行 `TARGET=public-real-full-experience MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`；执行完整体验时只使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh`，并确认 `DEEPSEEK_API_KEY`、`YUNWU_API_KEY`、`WELLAPI_API_KEY` 只来自当前 shell 或交互式静默输入。
 - [ ] 公网真实完整体验若成功，只能记录为 DeepSeek + Yunwu Suno + WellAPI Image 2 的公网样本；若失败，失败码、推荐动作、provider trace 是否存在、对象存储导入和发布素材交接状态需脱敏记录，不记录完整 prompt、歌词、供应商原始响应或媒体 URL。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到 `docs/integrations/real-model-smoke-evidence-log.md`；Yunwu / WellAPI 公网样本不得写成 DreamMaker 生产目标已完成。
 
