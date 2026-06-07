@@ -72,6 +72,7 @@ check_real_smoke_script_redaction() {
     "scripts/smoke/yunwu-suno-real-music-smoke.sh"
     "scripts/smoke/wellapi-image2-real-cover-smoke.sh"
     "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
+    "scripts/smoke/public-real-full-experience-stack.sh"
   )
   local raw_media
   local raw_package
@@ -93,7 +94,7 @@ check_real_smoke_script_redaction() {
     printf '%s\n' "$raw_package" | awk -F: '{print "  " $1 ":" $2}' | sort -u
   fi
 
-  raw_trace="$(rg -n "select provider, model_name, provider_trace_id" scripts/smoke/dreammaker-real-music-smoke.sh scripts/smoke/yunwu-suno-real-music-smoke.sh docs/checklists/dreammaker-real-music-smoke-10min.md docs/runbook/dreammaker-controlled-real-integration.md || true)"
+  raw_trace="$(rg -n "select provider, model_name, provider_trace_id" scripts/smoke/dreammaker-real-music-smoke.sh scripts/smoke/yunwu-suno-real-music-smoke.sh scripts/smoke/public-real-full-experience-stack.sh docs/checklists/dreammaker-real-music-smoke-10min.md docs/runbook/dreammaker-controlled-real-integration.md || true)"
   if [[ -z "$raw_trace" ]]; then
     pass "real smoke script/runbook provider_trace_id summaries are masked"
   else
@@ -110,6 +111,7 @@ require_tool sort
 
 required_files=(
   "docs/specs/real-model-smoke-evidence-log-v0.1.md"
+  "docs/specs/public-real-full-experience-smoke-v0.1.md"
   "$EVIDENCE_LOG"
   "docs/checklists/local-commercial-delivery-acceptance.md"
   "docs/checklists/dreammaker-real-integration-acceptance.md"
@@ -128,7 +130,7 @@ for file in "${required_files[@]}"; do
   require_file "$file"
 done
 
-for target in dreammaker-suno dreammaker-minimax yunwu-suno deepseek wellapi-image2 dreammaker-image2; do
+for target in dreammaker-suno dreammaker-minimax yunwu-suno deepseek wellapi-image2 dreammaker-image2 public-real-full-experience; do
   require_pattern "$EVIDENCE_LOG" "$target" "evidence log covers target $target"
 done
 
@@ -148,6 +150,9 @@ require_pattern "docs/runbook/image2-controlled-real-integration.md" "$EVIDENCE_
 require_pattern "docs/runbook/yunwu-suno-controlled-real-integration.md" "$EVIDENCE_LOG" "Yunwu runbook references unified evidence log"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "$EVIDENCE_LOG" "status handoff references unified evidence log"
 require_pattern "docs/handover/company-delivery-package-v0.1.md" "$EVIDENCE_LOG" "company package references unified evidence log"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "public-real-full-experience-stack\\.sh" "delivery checklist references public full experience smoke"
+require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "public-real-full-experience-stack\\.sh" "status handoff references public full experience smoke"
+require_pattern "docs/specs/public-real-full-experience-smoke-v0.1.md" "DreamMaker.*production|DreamMaker.*生产" "public full experience spec keeps DreamMaker production rule"
 
 check_secret_patterns
 check_real_smoke_script_redaction

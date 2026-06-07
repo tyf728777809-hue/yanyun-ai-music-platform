@@ -243,6 +243,7 @@ required_files=(
   "docs/specs/local-commercial-backend-acceptance-stack-smoke-v0.1.md"
   "docs/specs/local-commercial-full-acceptance-stack-smoke-v0.1.md"
   "docs/specs/local-delivery-evidence-audit-v0.1.md"
+  "docs/specs/public-real-full-experience-smoke-v0.1.md"
   "docs/specs/company-handoff-package-index-v0.1.md"
   "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
@@ -277,6 +278,7 @@ required_executables=(
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
   "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh"
   "scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh"
+  "scripts/smoke/public-real-full-experience-stack.sh"
 )
 
 for file in "${required_executables[@]}"; do
@@ -297,6 +299,7 @@ require_pattern "README.md" "production-provider-defaults-audit\\.sh" "README re
 require_pattern "README.md" "real-model-evidence-log-audit\\.sh" "README references real-model evidence log audit"
 require_pattern "README.md" "company-deployment-readiness-audit\\.sh" "README references company deployment readiness audit"
 require_pattern "README.md" "stepwise-production-boundary-audit\\.sh" "README references stepwise production boundary audit"
+require_pattern "README.md" "public-real-full-experience-stack\\.sh" "README references public full experience smoke"
 require_pattern "README.md" "real-model-safety-gates-audit\\.sh" "README references real-model safety gates audit"
 require_pattern "README.md" "deepseek-real-lyrics-smoke\\.sh" "README references DeepSeek real lyrics smoke"
 require_pattern "README.md" "dreammaker-image2-real-cover-stack-smoke\\.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1" "README references DreamMaker Image2 smoke"
@@ -309,6 +312,7 @@ require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "PREPAR
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "BLOCKED_EXTERNAL" "status handoff includes BLOCKED_EXTERNAL"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "DECISION_REQUIRED" "status handoff includes DECISION_REQUIRED"
 require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "stepwise-production" "status handoff includes stepwise-production boundary"
+require_pattern "docs/handover/local-commercial-delivery-status-v0.1.md" "public-real-full-experience-stack\\.sh" "status handoff references public full experience smoke"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "MODE=preflight" "acceptance checklist requires real-model preflight"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_REAL_MODEL_SMOKE=1" "acceptance checklist requires global real-smoke allow gate"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "local-commercial-backend-acceptance-stack\\.sh" "acceptance checklist references backend acceptance stack"
@@ -318,6 +322,9 @@ require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "real-model-evidence-log-audit\\.sh" "acceptance checklist references real-model evidence log audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "company-deployment-readiness-audit\\.sh" "acceptance checklist references company deployment readiness audit"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "stepwise-production-boundary-audit\\.sh" "acceptance checklist references stepwise production boundary audit"
+require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1" "acceptance checklist requires public full experience allow gate"
+require_pattern "docs/specs/public-real-full-experience-smoke-v0.1.md" "Yunwu.*WellAPI" "public full experience spec names public-network providers"
+require_pattern "docs/specs/public-real-full-experience-smoke-v0.1.md" "DreamMaker.*production|DreamMaker.*生产" "public full experience spec keeps DreamMaker production-target rule"
 
 check_smoke_index
 check_real_model_gate_audit

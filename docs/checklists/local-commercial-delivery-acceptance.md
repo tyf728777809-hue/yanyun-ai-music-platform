@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 06:06 CST
+更新时间：2026-06-07 13:20 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -26,6 +26,7 @@
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 通过，证明后端本地 Mock 主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断可组合复验。
 - [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 通过，证明后端基线、local-process MP4 和 Claude 前端真实后端模式可组合复验。
+- [ ] `docs/specs/public-real-full-experience-smoke-v0.1.md` 与 `scripts/smoke/public-real-full-experience-stack.sh` 已同步当前公网真实完整体验口径，且没有把 Yunwu / WellAPI 写成 DreamMaker 生产替代。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。
 
@@ -81,6 +82,8 @@
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
 - [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
+- [ ] 公网真实完整体验首测前，DeepSeek、Yunwu Suno、WellAPI Image 2 已分别完成 `MODE=plan/preflight`；执行完整体验时只使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 scripts/smoke/public-real-full-experience-stack.sh`，并确认 `DEEPSEEK_API_KEY`、`YUNWU_API_KEY`、`WELLAPI_API_KEY` 只来自当前 shell 或交互式静默输入。
+- [ ] 公网真实完整体验若成功，只能记录为 DeepSeek + Yunwu Suno + WellAPI Image 2 的公网样本；若失败，失败码、推荐动作、provider trace 是否存在、对象存储导入和发布素材交接状态需脱敏记录，不记录完整 prompt、歌词、供应商原始响应或媒体 URL。
 - [ ] 真实失败码、限流、超时、音频 URL 过期和计费样本已脱敏记录到 `docs/integrations/real-model-smoke-evidence-log.md`；Yunwu / WellAPI 公网样本不得写成 DreamMaker 生产目标已完成。
 
 ## F. 公司 Adapter 交接
@@ -108,6 +111,7 @@
 - [ ] 本地 Mock 成功链路可一键复验。
 - [ ] 后端组合验收入口可一键复验，且没有真实供应商或公司系统调用。
 - [ ] 本地完整验收栈可一键复验，且没有真实供应商或公司系统调用。
+- [ ] 公网真实完整体验已通过 `scripts/smoke/public-real-full-experience-stack.sh` 产生 1 个 `GENERATED / PACKAGE_READY / PACKAGE_FETCHED` 样本，或已把外部供应商、凭据、端口、依赖或网络问题作为阻塞项记录。
 - [ ] 本地真实 MP4 成片链路可复验。
 - [ ] 前端真实后端模式可脚本化复验。
 - [ ] Suno / MiniMax 至少各完成 1 次受控真实成功联调，或明确记录为公司接入前阻塞项。

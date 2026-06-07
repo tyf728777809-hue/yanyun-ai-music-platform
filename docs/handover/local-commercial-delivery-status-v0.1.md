@@ -1,13 +1,13 @@
 # 本地商用交付状态说明 v0.1
 
-更新时间：2026-06-07 07:03 CST
+更新时间：2026-06-07 13:20 CST
 状态：本地 Mock 闭环可交付实测；真实模型与公司系统仍按受控联调 / 外部接入推进。
 
 ## 1. 阅读结论
 
 当前项目已经具备“本地商用级闭环验证”的主要证据：后端主链路、OpenAPI 契约、Claude 前端原型真实后端模式、render-worker 本地 MP4 成片、公司 Adapter readiness 报告和只读 smoke 都有可复验入口。
 
-当前项目还不能宣称“完整真实 AI 出歌已成功”：真实 Suno via DreamMaker 曾触达创建任务但返回 HTTP 403；Yunwu Suno、WellAPI Image2、DeepSeek v4Pro、MiniMax 仍处在受控 smoke 准备或待首次成功阶段。公司账号、审核、权益、社区发布、分享仍是公司系统外部接入项。
+当前项目还不能宣称“完整真实 AI 出歌已成功”：真实 Suno via DreamMaker 曾触达创建任务但返回 HTTP 403；Yunwu Suno、WellAPI Image2、DeepSeek v4Pro、MiniMax 仍处在受控 smoke 准备或待首次成功阶段。公网真实完整体验脚本已准备，固定使用 DeepSeek + Yunwu Suno + WellAPI Image 2 + local-process MP4 + Claude Web v1，但尚未产生成功样本。公司账号、审核、权益、社区发布、分享仍是公司系统外部接入项。
 
 DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两条 DreamMaker Adapter / smoke / runbook 路径。Yunwu / WellAPI 只是当前非公司内网环境下的公网联调后端，不替代 DreamMaker 音乐或 DreamMaker Image 2 路径。公司交付验收、用户实测和生产部署 smoke 必须保持 `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`，直到 `stepwise-production` 有专用 production activity 和独立 smoke 证据；`stepwise-recording` 只允许作为 step audit 受控验证。
 
@@ -52,6 +52,7 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 | 真实模型受控 smoke 总入口 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-controlled-smoke.sh`、`docs/specs/real-model-controlled-smoke-index-v0.1.md` | 默认只列矩阵/计划；`execute` 仍需要双重显式开关，不代表真实模型已成功。 |
 | 真实模型安全门矩阵审计 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-safety-gates-audit.sh`、`docs/specs/real-model-safety-gates-audit-v0.1.md` | 只证明所有真实模型 target 的全局 gate 和目标 `ALLOW_*` gate 未被绕过，不证明真实供应商成功。 |
 | 真实模型 smoke 脱敏证据日志 | `READY_LOCAL` | 本项目 | `docs/integrations/real-model-smoke-evidence-log.md`、`scripts/smoke/real-model-evidence-log-audit.sh` | 只证明证据留痕格式、脱敏规则和 DreamMaker 生产保留口径齐全，不证明真实供应商成功。 |
+| 公网真实完整体验 smoke | `PREPARED_SMOKE` | 本项目 + 用户安全注入凭据 | `docs/specs/public-real-full-experience-smoke-v0.1.md`、`scripts/smoke/public-real-full-experience-stack.sh` | 组合 DeepSeek、Yunwu Suno、WellAPI Image 2、local-process MP4 和 Claude Web v1；仅用于公网首测，不能替代 DreamMaker 生产验证。 |
 | 生产 DreamMaker 默认约束 | `READY_LOCAL` | 本项目 | `deploy/env.production.example`、`scripts/smoke/production-provider-defaults-audit.sh`、`docs/specs/production-dreammaker-provider-defaults-v0.1.md` | 只证明生产 profile / fallback / 交接口径默认 DreamMaker；不代表真实 DreamMaker 已在当前公网环境成功调用。 |
 | 公司部署 readiness 静态审计 | `READY_LOCAL` | 本项目 | `scripts/smoke/company-deployment-readiness-audit.sh`、`docs/specs/company-deployment-readiness-audit-v0.1.md` | 只证明本地基础设施 compose、应用 Dockerfile、监控配置和部署交接文档齐全；不代表公司生产拓扑已确定或已部署。 |
 | Stepwise recording Temporal 验证 | `READY_LOCAL` | 本项目 | `scripts/smoke/temporal-stepwise-recording.sh`、`docs/specs/stepwise-temporal-production-state-advancement-v0.1.md` | 只证明 outbox 可启动分步 workflow 且 step audit 写入；不推进作品到 `GENERATED / PACKAGE_READY`，不能作为用户实测或生产发布包完成证据。 |
@@ -64,8 +65,9 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 2. 若要测真实 AI 出歌，先运行 `TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh` 和 `TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh`，再跑单作品 Yunwu Suno 公网受控 smoke；进入公司内网或生产联调时再切回 DreamMaker Suno / MiniMax。
 3. 若要测真实写词，先运行 `TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh` 和 `TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh`，再用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 跑一条样本，不同时打开真实音乐和真实 Image 2。
 4. 若要测真实封面，当前公网可先运行 `TARGET=wellapi-image2 MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`，再跑 WellAPI Image2 单作品受控 smoke；生产路径运行 `TARGET=dreammaker-image2 MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`，再用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 验证 DreamMaker Image 2。
-5. 前端交付前必须决定 `prototypes/Claude-web-v1` 的去向：保留原型、迁移到 `apps/web`，或由公司前端按原型重建。
-6. 公司开发接入前，按公司 Adapter handoff 文档替换账号、审核、权益、发布、分享边界，并复跑 readiness、OpenAPI、主链路和前端 smoke。
+5. 公网完整体验首测时，先保证 DeepSeek、Yunwu Suno、WellAPI Image 2 的计划/预检均可解释，再以 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 scripts/smoke/public-real-full-experience-stack.sh` 跑单作品组合样本；凭据只能来自当前 shell 或交互式静默输入。
+6. 前端交付前必须决定 `prototypes/Claude-web-v1` 的去向：保留原型、迁移到 `apps/web`，或由公司前端按原型重建。
+7. 公司开发接入前，按公司 Adapter handoff 文档替换账号、审核、权益、发布、分享边界，并复跑 readiness、OpenAPI、主链路和前端 smoke。
 
 ## 5. 交付给公司前必须说清楚
 
@@ -85,6 +87,8 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 - 真实模型 smoke 总入口：`scripts/smoke/real-model-controlled-smoke.sh`
 - 真实模型 smoke 脱敏证据日志：`docs/integrations/real-model-smoke-evidence-log.md`
 - 真实模型 smoke 脱敏证据审计：`scripts/smoke/real-model-evidence-log-audit.sh`
+- 公网真实完整体验规格：`docs/specs/public-real-full-experience-smoke-v0.1.md`
+- 公网真实完整体验脚本：`scripts/smoke/public-real-full-experience-stack.sh`
 - 当前长期 Goal 完成度审计：`docs/checklists/local-commercial-goal-completion-audit-2026-06-07.md`
 - Mock 发布包审核阻断 smoke：`scripts/smoke/api-package-blocked-flow.sh`
 - 后端本地商用组合验收：`scripts/smoke/local-commercial-backend-acceptance-stack.sh`

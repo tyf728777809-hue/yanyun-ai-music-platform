@@ -7,7 +7,7 @@ Reviewers: User
 
 ## Context
 
-The project now has controlled smoke entry points for six real-model targets: `dreammaker-suno`, `dreammaker-minimax`, `yunwu-suno`, `deepseek`, `wellapi-image2`, and `dreammaker-image2`.
+The project now has controlled smoke entry points for six single-provider real-model targets: `dreammaker-suno`, `dreammaker-minimax`, `yunwu-suno`, `deepseek`, `wellapi-image2`, and `dreammaker-image2`, plus one combined public-network full-experience target: `public-real-full-experience`.
 
 DreamMaker music and DreamMaker Image 2 must remain the production-target interfaces. Yunwu Suno and WellAPI Image 2 are public-network controlled smoke paths for the current non-company-intranet environment only. A successful Yunwu or WellAPI smoke must not be recorded as a DreamMaker production success.
 
@@ -16,7 +16,7 @@ Real-model smoke evidence is useful for provider handoff, failure-code mapping, 
 ## Functional Requirements
 
 - FR-1: The evidence log MUST exist at `docs/integrations/real-model-smoke-evidence-log.md`.
-- FR-2: The evidence log MUST cover `dreammaker-suno`, `dreammaker-minimax`, `yunwu-suno`, `deepseek`, `wellapi-image2`, and `dreammaker-image2`.
+- FR-2: The evidence log MUST cover `dreammaker-suno`, `dreammaker-minimax`, `yunwu-suno`, `deepseek`, `wellapi-image2`, `dreammaker-image2`, and `public-real-full-experience`.
 - FR-3: The evidence log MUST label DreamMaker music and DreamMaker Image 2 as production-target paths.
 - FR-4: The evidence log MUST label Yunwu and WellAPI as public-network smoke paths only.
 - FR-5: Each real smoke attempt SHOULD record target, backend/model, date, operator, environment, work id, job id when available, status, failure code, retryable judgement, duration, platform object import result, package URL availability, audit table evidence, cost/rate-limit notes, and next decision.
@@ -26,6 +26,7 @@ Real-model smoke evidence is useful for provider handoff, failure-code mapping, 
 - FR-9: Real smoke runbooks and acceptance checklists MUST point operators to the unified evidence log after each attempt.
 - FR-10: A local audit script MUST verify the evidence log, target coverage, DreamMaker production-target rule, public-network smoke labels, and secret-like pattern absence without starting services or calling providers.
 - FR-11: The audit script MUST verify real smoke scripts do not print raw `media_assets`, raw `package_url`, raw package media URL blocks, or unmasked `provider_trace_id` summaries.
+- FR-12: The combined `public-real-full-experience` target MUST be labeled as public-network validation only and MUST NOT be used as DreamMaker production-target success evidence.
 
 ## Non-Functional Requirements
 
@@ -36,7 +37,7 @@ Real-model smoke evidence is useful for provider handoff, failure-code mapping, 
 
 ## Acceptance Criteria
 
-- AC-1: Given a checkout, when `scripts/smoke/real-model-evidence-log-audit.sh` runs, then it verifies the evidence log exists and names all six targets. Covers FR-1 and FR-2.
+- AC-1: Given a checkout, when `scripts/smoke/real-model-evidence-log-audit.sh` runs, then it verifies the evidence log exists and names all single-provider targets plus `public-real-full-experience`. Covers FR-1 and FR-2.
 - AC-2: Given the evidence log, when the audit scans it, then it finds DreamMaker production-target language and Yunwu/WellAPI public-network smoke language. Covers FR-3 and FR-4.
 - AC-3: Given the evidence log, when the audit scans it, then it finds the sanitized-only policy and rejects obvious secret-like patterns. Covers FR-6, FR-8, NFR-1, and NFR-2.
 - AC-4: Given the DreamMaker 403 attempt, when the evidence log is reviewed, then it contains only status, failure class, suspected environment cause, and next decision, without raw payload or credentials. Covers FR-7.
@@ -58,8 +59,8 @@ N/A - this feature is a documentation and local shell audit gate.
 
 | Field | Type | Constraint | Description |
 |---|---|---|---|
-| `target` | string | One of the six stable target ids | Real-model smoke target. |
-| `provider_role` | string | `production-target` or `public-network-smoke` | Handoff meaning of the target. |
+| `target` | string | One of the stable target ids | Real-model smoke target. |
+| `provider_role` | string | `production-target`, `public-network-smoke`, `model-smoke`, or `public-network-full-experience` | Handoff meaning of the target. |
 | `status` | string | `not_started`, `failed`, `succeeded`, `blocked_external` | Sanitized attempt status. |
 | `trace_id` | string | `<present>`, `<empty>`, `N/A`, or masked | Provider task or trace presence only. |
 | `evidence` | string | Sanitized summary only | What was verified without raw payloads. |
