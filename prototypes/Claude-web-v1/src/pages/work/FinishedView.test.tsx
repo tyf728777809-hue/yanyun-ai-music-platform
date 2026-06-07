@@ -52,6 +52,7 @@ describe('FinishedView', () => {
       package_url_expires_at: '2026-06-07T00:00:00Z',
       package_json: {
         work_id: 'work-1',
+        audio: { url: 'https://cdn.local/package-audio.mp3', mime_type: 'audio/mpeg' },
         video: { url: 'https://cdn.local/package-video.mp4', mime_type: 'video/mp4' },
         cover: { url: 'https://cdn.local/package-cover.png', mime_type: 'image/png' },
         lyrics: { text: '第一句\n第二句', timeline_url: 'https://cdn.local/timeline.json' },
@@ -67,6 +68,7 @@ describe('FinishedView', () => {
     );
 
     expect(await screen.findByText('交接下载链接')).toBeInTheDocument();
+    expect(screen.getByText('音频地址')).toBeInTheDocument();
     expect(screen.getByText('视频地址')).toBeInTheDocument();
     expect(screen.getByText('封面地址')).toBeInTheDocument();
     expect(screen.getByText((_, element) => element?.textContent === '第一句\n第二句')).toBeInTheDocument();
@@ -80,6 +82,7 @@ describe('FinishedView', () => {
       package_url_expires_at: '2026-06-07T00:00:00Z',
       package_json: {
         work_id: 'work-1',
+        audio: { url: 'https://cdn.local/package-audio.mp3', mime_type: 'audio/mpeg' },
         video: { url: 'https://cdn.local/package-video.mp4', mime_type: 'video/mp4' },
         cover: { url: 'https://cdn.local/package-cover.png', mime_type: 'image/png' },
         lyrics: { text: '第一句', timeline_url: 'https://cdn.local/timeline.json' },

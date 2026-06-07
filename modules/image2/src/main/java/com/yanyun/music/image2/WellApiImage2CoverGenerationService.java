@@ -79,7 +79,9 @@ public final class WellApiImage2CoverGenerationService implements CoverGeneratio
     Map<String, Object> metadata = new LinkedHashMap<>();
     metadata.put("provider", "wellapi-image2");
     metadata.put("model", properties.getModelName());
-    metadata.put("provider_task_id", providerTaskId);
+    if (hasText(providerTaskId)) {
+      metadata.put("provider_task_id", providerTaskId);
+    }
     metadata.put("base_url", properties.getBaseUrl().toString());
     metadata.put("size", size);
     metadata.put("quality", properties.getQuality());

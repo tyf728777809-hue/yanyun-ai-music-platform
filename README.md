@@ -143,7 +143,9 @@ DreamMaker Image 2 生产目标 smoke 使用
 `docs/specs/public-real-full-experience-smoke-v0.1.md`。该脚本会启动一次 API、worker 和
 `prototypes/Claude-web-v1`，固定使用 DeepSeek 真实写词、Yunwu Suno 真实音乐、WellAPI Image 2
 真实封面、`RENDER_WORKER_MODE=local-process` MP4 和公司 Adapter Mock。它只用于当前公网环境首测，
-不能作为 DreamMaker 生产验证证据。
+不能作为 DreamMaker 生产验证证据。2026-06-07 已成功跑通一条脱敏样本，证据见
+`docs/integrations/real-model-smoke-evidence-log.md`：发布素材包包含 audio / cover / video /
+timeline，Claude Web v1 成品页已完成刷新下载链接和标记交接。
 
 ```bash
 TARGET=public-real-full-experience MODE=plan scripts/smoke/real-model-controlled-smoke.sh

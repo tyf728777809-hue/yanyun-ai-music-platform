@@ -209,12 +209,15 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
 
   private boolean accepted(JsonNode root) {
     String providerCode = text(root, "code");
-    if (hasText(providerCode) && !successCode(providerCode)) {
-      return false;
-    }
-    int code = code(root);
-    if (code > 0) {
-      return false;
+    if (hasText(providerCode)) {
+      if (!successCode(providerCode)) {
+        return false;
+      }
+    } else {
+      int code = code(root);
+      if (code > 0) {
+        return false;
+      }
     }
     String status = status(root);
     if (terminalFailed(status)) {
@@ -288,6 +291,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
   private boolean successCode(String value) {
     String normalized = normalize(value);
     return normalized.equals("0")
+        || normalized.equals("200")
         || normalized.equals("ok")
         || normalized.equals("success")
         || normalized.equals("succeeded");

@@ -72,7 +72,7 @@ response:
 
 | Table | Fields Used | Requirement |
 |---|---|---|
-| `agent_runs` | `agent_name`, `operation`, `model_name`, `status`, `input_hash`, `output_hash`, `latency_ms`, `error_code` | Must prove real `LyricsAgent` call without storing prompt/output text. |
+| `agent_runs` | `agent_name`, `operation`, `model_name`, `status`, `input_hash`, `output_hash`, `latency_ms`, `failure_code` | Must prove real `LyricsAgent` call without storing prompt/output text. |
 
 ## Out of Scope
 

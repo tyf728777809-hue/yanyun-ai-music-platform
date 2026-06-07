@@ -116,7 +116,6 @@ class WellApiImage2CoverGenerationServiceTest {
           byte[] body =
               """
               {
-                "id": "img-task-1",
                 "data": [
                   {
                     "b64_json": "ZmFrZS1pbWFnZQ=="

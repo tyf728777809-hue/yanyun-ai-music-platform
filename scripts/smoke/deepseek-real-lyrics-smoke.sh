@@ -166,7 +166,7 @@ fi
 log "checking agent_runs summary"
 AGENT_ROW="$(
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
-    "select agent_name, operation, model_name, status, input_hash is not null, output_hash is not null, coalesce(error_code,''), coalesce(latency_ms,0) from agent_runs where work_id = '$WORK_ID'::uuid and agent_name = 'LyricsAgent' order by started_at desc limit 1;"
+    "select agent_name, operation, model_name, status, input_hash is not null, output_hash is not null, coalesce(failure_code,''), coalesce(latency_ms,0) from agent_runs where work_id = '$WORK_ID'::uuid and agent_name = 'LyricsAgent' order by created_at desc limit 1;"
 )"
 
 if [ -z "$AGENT_ROW" ]; then

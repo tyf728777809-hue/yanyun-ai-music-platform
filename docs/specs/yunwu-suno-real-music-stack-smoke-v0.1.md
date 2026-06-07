@@ -20,13 +20,14 @@ Decision: Yunwu is a temporary public-network validation backend only. DreamMake
 - FR-3: The stack smoke MUST collect `YUNWU_API_KEY` using an existing environment variable or an interactive silent prompt.
 - FR-4: The stack smoke MUST NOT print `YUNWU_API_KEY`, Bearer tokens, full provider payloads, supplier audio URLs, full provider task ids, or platform signed package/media URLs.
 - FR-5: The stack smoke MUST refuse to start when local API or worker ports are already occupied, unless the operator uses the lower-level smoke script manually.
-- FR-6: The stack smoke MUST start `music-worker` with `MUSIC_PROVIDER=mock`, `SUNO_BACKEND=yunwu`, `YUNWU_REAL_CALLS_ENABLED=true`, and `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`.
-- FR-7: The stack smoke MUST start `music-api` with `MUSIC_WORKFLOW_DISPATCH_MODE=outbox`, `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`, `WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true`, `MUSIC_PROVIDER=mock`, `SUNO_BACKEND=yunwu`, and `YUNWU_REAL_CALLS_ENABLED=true`.
+- FR-6: The stack smoke MUST start `music-worker` with `MUSIC_PROVIDER=suno`, `SUNO_BACKEND=yunwu`, `YUNWU_REAL_CALLS_ENABLED=true`, and `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`.
+- FR-7: The stack smoke MUST start `music-api` with `MUSIC_WORKFLOW_DISPATCH_MODE=outbox`, `WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal`, `WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true`, `MUSIC_PROVIDER=suno`, `SUNO_BACKEND=yunwu`, and `YUNWU_REAL_CALLS_ENABLED=true`.
 - FR-8: The stack smoke MUST wait for worker and API health endpoints before running the single-work smoke.
 - FR-9: The lower-level smoke MUST verify `/internal/integration-readiness` reports `yunwu_suno_guard=READY_FOR_LOCAL` and `workflow_dispatch=outbox/temporal` before confirming the work.
 - FR-10: The lower-level smoke MUST create one lyrics work, confirm it with `music_provider=suno`, poll until terminal state, and print only platform work/status evidence.
 - FR-11: The stack smoke MUST stop API and worker processes that it started on success, failure, or interruption.
 - FR-12: Both scripts MUST leave real credentials out of committed files and logs.
+- FR-13: The stack smoke SHOULD set `YUNWU_REQUEST_TIMEOUT` explicitly so request timeout does not depend on application defaults.
 
 ## Non-Functional Requirements
 
@@ -34,6 +35,7 @@ Decision: Yunwu is a temporary public-network validation backend only. DreamMake
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if worker or API health does not become ready.
 - NFR-4: Automated validation MUST NOT call Yunwu unless `ALLOW_YUNWU_REAL_SMOKE=1` is explicitly set by the operator.
+- NFR-5: Real audio source import SHOULD rely on the platform remote object importer, which follows redirects and retries transient CDN download failures.
 
 ## Acceptance Criteria
 

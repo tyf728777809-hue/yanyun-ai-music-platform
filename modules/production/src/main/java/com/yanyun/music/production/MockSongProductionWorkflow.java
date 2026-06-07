@@ -640,6 +640,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     metadata.put(
         "fallback_reason",
         firstNonBlank(sanitizeProviderError(cause.getMessage()), "cover generation unavailable"));
+    metadata.put("fallback_error_type", cause.getClass().getSimpleName());
+    metadata.put("fallback_error_location", firstStackFrame(cause));
     metadata.put("visual_prompt_hash", sha256(coverPrompt.visualPrompt()));
     metadata.put("negative_prompt_hash", sha256(coverPrompt.negativePrompt()));
     metadata.put("width", coverPrompt.width());
@@ -669,6 +671,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           <text x="160" y="300" font-family="serif" font-size="40" fill="#aeb7bb">Default cover fallback</text>
         </svg>
         """;
+  }
+
+  private String firstStackFrame(RuntimeException cause) {
+    if (cause.getStackTrace().length == 0) {
+      return "unknown";
+    }
+    StackTraceElement frame = cause.getStackTrace()[0];
+    return frame.getClassName() + "#" + frame.getMethodName();
   }
 
   private MusicProviderSelection selectedProvider(SongProductionWorkflowInput input) {
@@ -756,6 +766,16 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     return Map.of(
         "work_id",
         workId.toString(),
+        "audio",
+        Map.of(
+            "url",
+            assetUrl(mediaAssets.audioAsset()),
+            "mime_type",
+            mediaAssets.audioAsset().mimeType(),
+            "file_size_bytes",
+            mediaAssets.audioAsset().fileSizeBytes(),
+            "checksum",
+            mediaAssets.audioAsset().checksum()),
         "video",
         Map.of(
             "url",

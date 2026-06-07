@@ -17,12 +17,13 @@
 只在当前 shell 或公司 Secret 系统注入：
 
 ```bash
-export MUSIC_PROVIDER=mock
+export MUSIC_PROVIDER=suno
 export SUNO_BACKEND=yunwu
 export YUNWU_BASE_URL=https://yunwu.ai
 export YUNWU_API_KEY="<from-secure-channel>"
 export YUNWU_REAL_CALLS_ENABLED=true
 export YUNWU_SUNO_MODEL=chirp-v5
+export YUNWU_REQUEST_TIMEOUT=90s
 export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
 export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
 export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
@@ -56,6 +57,7 @@ scripts/smoke/yunwu-suno-real-music-stack-smoke.sh
 
 ```bash
 ALLOW_YUNWU_REAL_SMOKE=1 \
+MUSIC_PROVIDER=suno \
 SUNO_BACKEND=yunwu \
 YUNWU_REAL_CALLS_ENABLED=true \
 scripts/smoke/yunwu-suno-real-music-smoke.sh
@@ -87,3 +89,5 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 ## 证据记录
 
 每次 Yunwu 公网 smoke 后同步到统一脱敏日志：`docs/integrations/real-model-smoke-evidence-log.md`。只记录 `work_id`、最终状态、失败码、trace 是否 `<present>`、对象存储导入结果和下一步判断；不要记录完整 task id、音频 URL、请求/响应或 API Key。Yunwu 成功只代表公网路径通过，不代表 DreamMaker 生产目标完成。
+
+2026-06-07 已完成一条 Yunwu Suno 公网成功样本，并完成一条公网完整体验成功样本；详见统一脱敏证据日志。真实音频 URL 会先经平台远程对象导入器进入对象存储，导入器已支持重定向和短重试，发布包只暴露平台对象 URL。

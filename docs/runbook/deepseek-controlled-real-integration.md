@@ -129,7 +129,7 @@ curl http://localhost:8080/internal/integration-readiness
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
-  "select agent_name, agent_version, operation, model_name, status, input_hash is not null, output_hash is not null, error_code from agent_runs where work_id = '{work_id}' order by started_at"
+  "select agent_name, agent_version, operation, model_name, status, input_hash is not null, output_hash is not null, failure_code from agent_runs where work_id = '{work_id}' order by created_at"
 ```
 
 期望能看到真实模型名，且只记录 hash、版本、状态和脱敏失败信息。

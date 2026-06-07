@@ -24,7 +24,7 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 - FR-7: The stack smoke MUST start `music-api` with image real calls enabled for WellAPI and stop the process that it started on success, failure, or interruption.
 - FR-8: The lower-level smoke MUST verify `/internal/integration-readiness` reports `image2_guard=READY_FOR_LOCAL`, `configured_mode=real-calls-enabled/wellapi`, and `music_provider=mock` before confirming the work.
 - FR-9: The lower-level smoke MUST create one lyrics work, confirm it with mock music, poll until terminal state, and print only platform work/status evidence.
-- FR-10: The lower-level smoke MUST verify the `COVER` media asset was produced by `wellapi-image2`, imported into platform object storage, has 1920x1080 workflow dimensions, and does not retain raw supplier URL or inline base64 metadata.
+- FR-10: The lower-level smoke MUST verify the `COVER` media asset was produced by `wellapi-image2`, imported into platform object storage, matches the configured `IMAGE2_SIZE` dimensions, and does not retain raw supplier URL or inline base64 metadata.
 - FR-11: Both scripts MUST leave real credentials out of committed files and logs.
 
 ## Non-Functional Requirements
@@ -33,6 +33,7 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if API health does not become ready.
 - NFR-4: Automated validation MUST NOT call WellAPI unless `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1` is explicitly set by the operator.
+- NFR-5: The stack smoke SHOULD default `WELLAPI_REQUEST_TIMEOUT` to at least `180s` because public Image 2 generation can exceed the API default `30s` request timeout.
 
 ## Acceptance Criteria
 
@@ -73,8 +74,8 @@ The script verifies the existing `media_assets` `COVER` row:
 |---|---|
 | `asset_type` | `COVER` |
 | `provider` | `wellapi-image2` |
-| `width` | `1920` |
-| `height` | `1080` |
+| `width` | Configured `IMAGE2_SIZE` width; default `2048` |
+| `height` | Configured `IMAGE2_SIZE` height; default `1152` |
 | `metadata_json.provider` | `wellapi-image2` |
 | `metadata_json.object_storage_imported` | `true` |
 | `metadata_json.source_url` | absent |

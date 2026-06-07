@@ -26,7 +26,7 @@ Decision: DreamMaker Image 2 remains the production-target interface. Yunwu and 
 - FR-9: The lower-level smoke MUST run strict `TARGET=dreammaker-image2` preflight before checking API readiness.
 - FR-10: The lower-level smoke MUST verify `/internal/integration-readiness` reports `image2_guard=READY_FOR_LOCAL`, `configured_mode=real-calls-enabled/dreammaker`, `implementation=DreamMakerImage2CoverGenerationService`, `dreammaker_guard=READY_FOR_LOCAL`, and `music_provider=mock`.
 - FR-11: The lower-level smoke MUST create one lyrics work, confirm it with mock music, poll until terminal state, and print only platform work/status evidence.
-- FR-12: The lower-level smoke MUST verify the `COVER` media asset was produced by `dreammaker-image2`, imported into platform object storage, has 1920x1080 workflow dimensions, and does not retain raw supplier URL or inline base64 metadata.
+- FR-12: The lower-level smoke MUST verify the `COVER` media asset was produced by `dreammaker-image2`, imported into platform object storage, matches the configured `IMAGE2_SIZE` dimensions, and does not retain raw supplier URL or inline base64 metadata.
 - FR-13: Both scripts MUST leave real credentials out of committed files and logs.
 
 ## Non-Functional Requirements
@@ -75,8 +75,8 @@ The script verifies the existing `media_assets` `COVER` row:
 |---|---|
 | `asset_type` | `COVER` |
 | `provider` | `dreammaker-image2` |
-| `width` | `1920` |
-| `height` | `1080` |
+| `width` | Configured `IMAGE2_SIZE` width; default `2048` |
+| `height` | Configured `IMAGE2_SIZE` height; default `1152` |
 | `metadata_json.provider` | `dreammaker-image2` |
 | `metadata_json.object_storage_imported` | `true` |
 | `metadata_json.source_url` | absent |

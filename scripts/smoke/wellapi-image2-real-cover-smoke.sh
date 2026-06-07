@@ -11,6 +11,9 @@ IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-wellapi-image2-real-cover-$(date +%s)}
 POSTGRES_CONTAINER="${POSTGRES_CONTAINER:-yanyun-postgres}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_DB="${POSTGRES_DB:-yanyun_music}"
+EXPECTED_COVER_SIZE="${IMAGE2_SIZE:-2048x1152}"
+EXPECTED_COVER_WIDTH="${EXPECTED_COVER_SIZE%x*}"
+EXPECTED_COVER_HEIGHT="${EXPECTED_COVER_SIZE#*x}"
 
 fail() {
   printf '[wellapi-image2-smoke] ERROR: %s\n' "$*" >&2
@@ -166,7 +169,7 @@ PACKAGE_STATUS="$(echo "$FINAL_DETAIL" | jq -r '.package_status')"
 log "checking cover media asset row"
 COVER_ROW="$(
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
-    "select provider, object_key, mime_type, width, height, coalesce(metadata_json->>'provider',''), coalesce(metadata_json->>'model',''), coalesce(metadata_json->>'object_storage_imported',''), (metadata_json ? 'source_url'), (metadata_json ? 'inline_base64') from media_assets where work_id = '$WORK_ID'::uuid and asset_type = 'COVER' limit 1;"
+    "select coalesce(metadata_json->>'provider',''), object_key, mime_type, width, height, coalesce(metadata_json->>'provider',''), coalesce(metadata_json->>'model',''), coalesce(metadata_json->>'object_storage_imported',''), (metadata_json ? 'source_url'), (metadata_json ? 'inline_base64') from media_assets where work_id = '$WORK_ID'::uuid and asset_type = 'COVER' limit 1;"
 )"
 if [ -z "$COVER_ROW" ]; then
   fail "COVER media asset row missing for work_id=$WORK_ID"
@@ -178,8 +181,8 @@ if [ "$COVER_PROVIDER" != "wellapi-image2" ] || [ "$META_PROVIDER" != "wellapi-i
   fail "cover provider is not wellapi-image2: provider=$COVER_PROVIDER metadata_provider=$META_PROVIDER"
 fi
 
-if [ "$COVER_WIDTH" != "1920" ] || [ "$COVER_HEIGHT" != "1080" ]; then
-  fail "cover dimensions are not workflow 1920x1080: ${COVER_WIDTH}x${COVER_HEIGHT}"
+if [ "$COVER_WIDTH" != "$EXPECTED_COVER_WIDTH" ] || [ "$COVER_HEIGHT" != "$EXPECTED_COVER_HEIGHT" ]; then
+  fail "cover dimensions are not expected ${EXPECTED_COVER_WIDTH}x${EXPECTED_COVER_HEIGHT}: ${COVER_WIDTH}x${COVER_HEIGHT}"
 fi
 
 if [ "$IMPORTED" != "true" ]; then

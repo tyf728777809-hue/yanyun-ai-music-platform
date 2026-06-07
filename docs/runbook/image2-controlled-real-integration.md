@@ -83,7 +83,7 @@ MUSIC_PROVIDER=mock \
 scripts/smoke/wellapi-image2-real-cover-smoke.sh
 ```
 
-两个脚本都会真实调用 WellAPI；不要作为普通自动化测试运行。当前 workflow 的封面请求尺寸固定为 1920x1080，`IMAGE2_SIZE=2048x1152` 只是 Image 2 客户端在直接请求尺寸无效时使用的兜底值。
+两个脚本都会真实调用 WellAPI；不要作为普通自动化测试运行。当前 workflow 会请求 16:9 封面；真实 Image 2 验收按 `IMAGE2_SIZE` 的实际配置尺寸检查，默认是 `2048x1152`。
 
 若要验证正式生产目标 DreamMaker Image 2 路径，先切换凭据和后端：
 
@@ -171,14 +171,14 @@ curl http://localhost:8080/internal/integration-readiness
 
 ```bash
 docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
-  "select asset_type, provider, object_key, mime_type, width, height, metadata_json from media_assets where work_id = '{work_id}' and asset_type = 'COVER'"
+  "select asset_type, metadata_json->>'provider', object_key, mime_type, width, height, metadata_json from media_assets where work_id = '{work_id}' and asset_type = 'COVER'"
 ```
 
 期望：
 
 - `asset_type=COVER`。
 - `provider` 或 metadata 能区分 `wellapi-image2` 或 `dreammaker-image2`。
-- `width=1920`、`height=1080`。
+- `width` / `height` 匹配 `IMAGE2_SIZE`；默认 `2048x1152`。
 - `metadata_json.object_storage_imported=true`。
 - `object_key` 指向平台对象存储，不是供应商原始 URL。
 - metadata 不包含 API Key、鉴权 header、完整供应商 payload、供应商原始 URL 或 inline base64 原文。

@@ -96,9 +96,9 @@ class YunwuSunoMusicProviderTest {
           byte[] body =
               """
               {
-                "code": "success",
+                "code": 200,
                 "data": "task-1",
-                "message": ""
+                "msg": "操作成功"
               }
               """
                   .getBytes(StandardCharsets.UTF_8);
@@ -113,7 +113,7 @@ class YunwuSunoMusicProviderTest {
           byte[] body =
               """
               {
-                "code": "success",
+                "code": 200,
                 "data": {
                   "status": "SUCCESS",
                   "clips": [

@@ -210,6 +210,8 @@ class MockSongProductionWorkflowTest {
         .isEqualTo("packages/" + workId + ".json");
     JsonNode packageJson = objectMapper.readTree(publishPackage.getValue().packageJson());
     assertThat(packageJson.path("work_id").asText()).isEqualTo(workId.toString());
+    assertThat(packageJson.path("audio").path("url").asText()).endsWith("audio/" + workId + ".mp3");
+    assertThat(packageJson.path("audio").path("mime_type").asText()).isEqualTo("audio/mpeg");
     assertThat(packageJson.path("video").path("url").asText())
         .endsWith("videos/" + workId + ".mp4");
     assertThat(packageJson.path("metadata").path("song_title").asText()).isEqualTo("Mock title");

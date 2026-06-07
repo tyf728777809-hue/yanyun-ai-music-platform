@@ -18,7 +18,7 @@
 - [ ] `CoverGenerationService` 受控调用真实 Image 2。
 - [ ] 供应商封面图被导入平台对象存储。
 - [ ] `media_assets` 写入 `COVER` 资产。
-- [ ] 当前 workflow 的 `COVER.width` / `COVER.height` 为 1920x1080；`IMAGE2_SIZE=2048x1152` 只是客户端兜底值，不作为本链路验收尺寸。
+- [ ] 当前 workflow 的 `COVER.width` / `COVER.height` 匹配 `IMAGE2_SIZE`；默认 `IMAGE2_SIZE=2048x1152`。
 - [ ] `COVER.mime_type` 与真实文件一致。
 - [ ] `media_assets.metadata_json.object_storage_imported=true`。
 - [ ] `media_assets.metadata_json` 不包含 API Key、鉴权 header、供应商完整 payload、供应商原始图片 URL 或 inline base64 原文。

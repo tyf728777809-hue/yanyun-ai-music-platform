@@ -108,7 +108,7 @@ start_worker() {
   YUNWU_REAL_CALLS_ENABLED=true \
   YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}" \
   YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}" \
-  MUSIC_PROVIDER=mock \
+  MUSIC_PROVIDER=suno \
   TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
   ./gradlew :apps:music-worker:bootRun >"$WORKER_LOG" 2>&1 &
   WORKER_PID="$!"
@@ -121,7 +121,7 @@ start_api() {
   YUNWU_REAL_CALLS_ENABLED=true \
   YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}" \
   YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}" \
-  MUSIC_PROVIDER=mock \
+  MUSIC_PROVIDER=suno \
   MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
   WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
   WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \

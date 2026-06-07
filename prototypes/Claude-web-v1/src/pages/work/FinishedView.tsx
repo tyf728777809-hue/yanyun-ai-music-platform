@@ -173,6 +173,19 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
             {packageJson && (
               <div className="handoff-assets" aria-label="作品交接内容">
+                {packageJson.audio?.url && (
+                  <div className="handoff-block">
+                    <span className="handoff-block__label">音频地址</span>
+                    <a
+                      className="handoff-url"
+                      href={packageJson.audio.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {packageJson.audio.url}
+                    </a>
+                  </div>
+                )}
                 <div className="handoff-block">
                   <span className="handoff-block__label">视频地址</span>
                   <a

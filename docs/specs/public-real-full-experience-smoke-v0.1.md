@@ -24,6 +24,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - FR-9: The smoke MUST create one work, use real DeepSeek lyrics, confirm with `music_provider=suno`, wait for `GENERATED / PACKAGE_READY`, fetch the publish package, verify media summaries, open Claude Web v1, refresh the handoff link, and mark the package fetched.
 - FR-10: The smoke output MUST be sanitized and MUST NOT print API keys, Bearer tokens, full prompts, complete lyrics, provider raw payloads, supplier media URLs, platform signed URLs, full provider task ids, or full provider trace ids.
 - FR-11: The smoke MUST be available from the unified real-model controlled smoke index as `TARGET=public-real-full-experience` and MUST still require `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`.
+- FR-12: If the work fails with `MUSIC_GENERATION_FAILED` and `available_actions` contains `RETRY_MUSIC`, the smoke MAY use the product retry endpoint with `music_provider=suno`; it MUST NOT retry by guessing state outside `available_actions`.
+- FR-13: The publish package verification MUST require audio, cover, video, and lyrics timeline URL presence without printing the URLs.
 
 ## Non-Functional Requirements
 
@@ -31,6 +33,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - NFR-2: The script MUST fail closed on missing credentials, failed readiness, provider failure, frontend failure, or unsafe port state.
 - NFR-3: The script SHOULD write raw application logs only under `build/smoke/...`, which is not a committed evidence location.
 - NFR-4: The script SHOULD complete with one real work sample unless external provider latency exceeds the configured polling window.
+- NFR-5: The script SHOULD default WellAPI Image 2 request timeout to at least `180s` so a synchronous public image generation call is not cut off by the API default `30s` timeout.
+- NFR-6: The script SHOULD default Yunwu request timeout to at least `90s` and rely on the platform remote object importer to follow redirects and retry transient media CDN download failures.
 
 ## Acceptance Criteria
 
@@ -41,6 +45,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - AC-5: Given any provider returns 401, 403, 429, timeout, or malformed output, when the script reaches terminal state, then it exits non-zero and prints the platform failure code without raw provider payloads. Covers NFR-2.
 - AC-6: Given repository audits run after implementation, when `local-delivery-evidence-audit.sh` executes, then it verifies this spec and script exist while retaining DreamMaker production-target language. Covers FR-4.
 - AC-7: Given `TARGET=public-real-full-experience MODE=plan`, when `real-model-controlled-smoke.sh` runs, then it prints the public full-experience plan and both required allow gates without calling suppliers. Covers FR-1, FR-10, and FR-11.
+- AC-8: Given a public-network successful sample, when the smoke fetches the publish package, then sanitized output reports `audio`, `cover`, `video`, and `timeline` URL presence as true, and Claude Web v1 displays the audio, cover, and video handoff fields. Covers FR-9 and FR-13.
 
 ## Edge Cases
 

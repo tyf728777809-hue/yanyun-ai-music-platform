@@ -20,6 +20,7 @@ STOP_TIMEOUT_SECONDS="${STOP_TIMEOUT_SECONDS:-60}"
 MAX_POLL_ATTEMPTS="${MAX_POLL_ATTEMPTS:-180}"
 POLL_INTERVAL_SECONDS="${POLL_INTERVAL_SECONDS:-5}"
 SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
+MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-2}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-public-real-full-$(date +%s)}"
 LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/public-real-full-experience-$(date +%Y%m%d%H%M%S)}"
 POSTGRES_CONTAINER="${POSTGRES_CONTAINER:-yanyun-postgres}"
@@ -207,11 +208,12 @@ start_worker() {
   log "starting music-worker; log=$WORKER_LOG"
   (
     cd "$REPO_ROOT"
-    export MUSIC_PROVIDER=mock
+    export MUSIC_PROVIDER=suno
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
     export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
     export IMAGE_REAL_CALLS_ENABLED=true
@@ -220,6 +222,7 @@ start_worker() {
     export IMAGE2_SIZE="${IMAGE2_SIZE:-2048x1152}"
     export IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}"
     export IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}"
+    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-180s}"
     export AGENT_REAL_CALLS_ENABLED=false
     export DEEPSEEK_REAL_CALLS_ENABLED=false
     export DREAMMAKER_REAL_CALLS_ENABLED=false
@@ -256,11 +259,12 @@ start_api() {
     export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
     export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-1800}"
     export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
-    export MUSIC_PROVIDER=mock
+    export MUSIC_PROVIDER=suno
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
     export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
     export IMAGE_REAL_CALLS_ENABLED=true
@@ -269,6 +273,7 @@ start_api() {
     export IMAGE2_SIZE="${IMAGE2_SIZE:-2048x1152}"
     export IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}"
     export IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}"
+    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-180s}"
     export DREAMMAKER_REAL_CALLS_ENABLED=false
     export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
     export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
@@ -350,9 +355,28 @@ confirm_real_music() {
   echo "$CONFIRM_RESPONSE" | jq '{work_id, status, generation_stage, package_status, job_id}'
 }
 
+can_retry_real_music() {
+  local detail="$1"
+  echo "$detail" \
+    | jq -e '.status == "FAILED" and .failure.failure_code == "MUSIC_GENERATION_FAILED" and ((.available_actions // []) | index("RETRY_MUSIC") != null)' \
+    >/dev/null
+}
+
+retry_real_music() {
+  local attempt="$1" retry_response
+  log "retrying real Yunwu Suno music generation via product retry action attempt=$attempt"
+  retry_response="$(
+    post_json "/works/$WORK_ID/music/retry" "$IDEMPOTENCY_PREFIX-music-retry-$attempt" '{
+      "music_provider": "suno"
+    }'
+  )"
+  echo "$retry_response" | jq '{work_id, status, generation_stage, package_status, job_id, available_actions}'
+}
+
 wait_for_package_ready() {
-  local detail status stage package_status failure
+  local detail status stage package_status failure music_retry_attempts
   FINAL_DETAIL=""
+  music_retry_attempts=0
   for _ in $(seq 1 "$MAX_POLL_ATTEMPTS"); do
     detail="$(get_json "/works/$WORK_ID")"
     status="$(echo "$detail" | jq -r '.status')"
@@ -360,7 +384,17 @@ wait_for_package_ready() {
     package_status="$(echo "$detail" | jq -r '.package_status')"
     failure="$(echo "$detail" | jq -r '.failure.failure_code // empty')"
     log "$(date '+%H:%M:%S') status=$status stage=$stage package=$package_status failure=${failure:-none}"
-    if [ "$status" = "GENERATED" ] || [ "$status" = "FAILED" ] || [ "$status" = "LYRICS_FAILED" ]; then
+    if [ "$status" = "GENERATED" ]; then
+      FINAL_DETAIL="$detail"
+      break
+    fi
+    if [ "$status" = "FAILED" ] && can_retry_real_music "$detail" && [ "$music_retry_attempts" -lt "$MAX_MUSIC_RETRY_ATTEMPTS" ]; then
+      music_retry_attempts=$((music_retry_attempts + 1))
+      retry_real_music "$music_retry_attempts"
+      sleep "$POLL_INTERVAL_SECONDS"
+      continue
+    fi
+    if [ "$status" = "FAILED" ] || [ "$status" = "LYRICS_FAILED" ]; then
       FINAL_DETAIL="$detail"
       break
     fi
@@ -400,7 +434,7 @@ verify_sanitized_db_evidence() {
 
   log "agent_runs summary"
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
-    "select agent_name, operation, model_name, status, input_hash is not null, output_hash is not null, coalesce(error_code,''), coalesce(latency_ms,0) from agent_runs where work_id = '$WORK_ID'::uuid order by started_at;" || true
+    "select agent_name, operation, model_name, status, input_hash is not null, output_hash is not null, coalesce(failure_code,''), coalesce(latency_ms,0) from agent_runs where work_id = '$WORK_ID'::uuid order by created_at;" || true
 
   log "provider_calls summary"
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
@@ -408,7 +442,7 @@ verify_sanitized_db_evidence() {
 
   log "media_assets summary"
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
-    "select asset_type, provider, case when object_key is null then '<empty>' else '<present>' end, mime_type, coalesce(width,0), coalesce(height,0) from media_assets where work_id = '$WORK_ID'::uuid order by asset_type;" || true
+    "select asset_type, coalesce(metadata_json->>'provider',''), case when object_key is null then '<empty>' else '<present>' end, mime_type, coalesce(width,0), coalesce(height,0) from media_assets where work_id = '$WORK_ID'::uuid order by asset_type;" || true
 }
 
 fetch_publish_package() {
@@ -568,6 +602,7 @@ main() {
   export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
   export YUNWU_REAL_CALLS_ENABLED=true
   export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+  export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
   export IMAGE_PROVIDER=image2
   export IMAGE2_BACKEND=wellapi
   export IMAGE_REAL_CALLS_ENABLED=true
