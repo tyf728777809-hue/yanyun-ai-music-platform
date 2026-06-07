@@ -214,6 +214,11 @@ capture_target_execute_without_target_gate() {
         AGENT_REAL_CALLS_ENABLED=true \
         DEEPSEEK_REAL_CALLS_ENABLED=true \
         DEEPSEEK_API_KEY=redacted \
+        MUSIC_PROVIDER=mock \
+        IMAGE_PROVIDER=mock \
+        DREAMMAKER_REAL_CALLS_ENABLED=false \
+        IMAGE_REAL_CALLS_ENABLED=false \
+        YUNWU_REAL_CALLS_ENABLED=false \
         "$INDEX"
       ;;
     wellapi-image2)

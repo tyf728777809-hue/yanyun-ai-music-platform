@@ -73,6 +73,7 @@ check_real_smoke_script_redaction() {
     "scripts/smoke/wellapi-image2-real-cover-smoke.sh"
     "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
     "scripts/smoke/public-real-full-experience-stack.sh"
+    "scripts/smoke/deepseek-real-lyrics-stack-smoke.sh"
   )
   local raw_media
   local raw_package
@@ -112,6 +113,7 @@ require_tool sort
 required_files=(
   "docs/specs/real-model-smoke-evidence-log-v0.1.md"
   "docs/specs/public-real-full-experience-smoke-v0.1.md"
+  "docs/specs/deepseek-real-lyrics-stack-smoke-v0.1.md"
   "$EVIDENCE_LOG"
   "docs/checklists/local-commercial-delivery-acceptance.md"
   "docs/checklists/dreammaker-real-integration-acceptance.md"

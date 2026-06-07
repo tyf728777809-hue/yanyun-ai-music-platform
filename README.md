@@ -108,13 +108,15 @@ DeepSeek 写词默认仍使用 Mock；显式设置 `AGENT_REAL_CALLS_ENABLED=tru
 [DeepSeek 验收清单](docs/checklists/deepseek-real-integration-acceptance.md) 执行；API Key 只允许通过本地 shell、
 部署 Secret 或公司配置中心注入，不写入仓库。`/internal/integration-readiness`
 已包含 `deepseek_guard`，用于展示 DeepSeek 真实调用开关、模型名和 API Key 配置状态。
-DeepSeek 单样本受控 smoke 已脚本化到
-`scripts/smoke/deepseek-real-lyrics-smoke.sh`，统一入口执行命令为：
+DeepSeek 单样本受控 smoke 已脚本化到一键栈
+`scripts/smoke/deepseek-real-lyrics-stack-smoke.sh`，统一入口执行命令为：
 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh`。
 该脚本只验证真实写词，音乐、封面、DreamMaker、Yunwu、WellAPI、render-worker 和公司 Adapter
 必须保持 Mock 或关闭；运行前仍应先执行
 `TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh` 和
 `TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh`。
+若 API 已由操作者手动以真实 DeepSeek 模式启动，可改用低层入口
+`scripts/smoke/deepseek-real-lyrics-smoke.sh`。
 
 Image 2 封面默认仍使用 Mock；WellAPI 是当前非公司内网环境下的公网联调后端。
 显式设置 `IMAGE_PROVIDER=image2`、`IMAGE_REAL_CALLS_ENABLED=true` 后，默认使用

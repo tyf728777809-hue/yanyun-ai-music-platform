@@ -65,7 +65,7 @@ N/A - this feature is a local shell orchestration entry point and does not add H
 | `TARGET` | string | Optional; one supported target | Smoke target to plan, preflight, or execute. |
 | `MODE` | string | Optional; `list`, `plan`, `preflight`, `execute` | Operation mode. Defaults to `list` when target is omitted, otherwise `plan`. |
 | `ALLOW_REAL_MODEL_SMOKE` | string | Required as `1` only for `MODE=execute` | Global explicit real-call gate. |
-| `ALLOW_DEEPSEEK_REAL_SMOKE` | string | Required as `1` only for DeepSeek delegated execution | Target-specific explicit real-call gate for `scripts/smoke/deepseek-real-lyrics-smoke.sh`. |
+| `ALLOW_DEEPSEEK_REAL_SMOKE` | string | Required as `1` only for DeepSeek delegated execution | Target-specific explicit real-call gate for `scripts/smoke/deepseek-real-lyrics-stack-smoke.sh`. |
 | `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE` | string | Required as `1` only for DreamMaker Image 2 delegated execution | Target-specific explicit real-call gate for `scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh`. |
 | `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE` | string | Required as `1` only for public full-experience delegated execution | Target-specific explicit real-call gate for `scripts/smoke/public-real-full-experience-stack.sh`. |
 

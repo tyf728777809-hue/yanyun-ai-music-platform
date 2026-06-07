@@ -65,6 +65,7 @@ required_files=(
   "docs/specs/company-handoff-package-index-v0.1.md"
   "docs/specs/production-dreammaker-provider-defaults-v0.1.md"
   "docs/specs/real-model-smoke-evidence-log-v0.1.md"
+  "docs/specs/deepseek-real-lyrics-stack-smoke-v0.1.md"
   "docs/integrations/real-model-smoke-evidence-log.md"
   "docs/specs/company-deployment-readiness-audit-v0.1.md"
   "docs/handover/stepwise-production-implementation-task-package-v0.1.md"
@@ -90,6 +91,7 @@ required_executables=(
   "scripts/smoke/real-model-safety-gates-audit.sh"
   "scripts/smoke/real-model-evidence-log-audit.sh"
   "scripts/smoke/deepseek-real-lyrics-smoke.sh"
+  "scripts/smoke/deepseek-real-lyrics-stack-smoke.sh"
   "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh"
   "scripts/smoke/stepwise-production-boundary-audit.sh"
 )
@@ -123,7 +125,8 @@ require_package_pattern 'SPRING_PROFILES_ACTIVE=prod' 'package references produc
 require_package_pattern 'api-package-blocked-flow\.sh' 'package references package block smoke'
 require_package_pattern 'real-model-controlled-smoke\.sh' 'package references real-model controlled smoke index'
 require_package_pattern 'real-model-safety-gates-audit\.sh' 'package references real-model safety gates audit'
-require_package_pattern 'deepseek-real-lyrics-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek single-sample smoke'
+require_package_pattern 'deepseek-real-lyrics-stack-smoke\.sh|TARGET=deepseek MODE=execute' 'package references DeepSeek stack smoke'
+require_package_pattern 'deepseek-real-lyrics-smoke\.sh' 'package references DeepSeek low-level smoke'
 require_package_pattern 'dreammaker-minimax' 'package references DreamMaker MiniMax production target'
 require_package_pattern 'dreammaker-image2-real-cover-stack-smoke\.sh|TARGET=dreammaker-image2 MODE=execute' 'package references DreamMaker Image2 single-work smoke'
 require_package_pattern '0004-production-provider-targets' 'package references production provider ADR'

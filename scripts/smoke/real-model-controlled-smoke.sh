@@ -21,7 +21,7 @@ Targets:
   yunwu-suno          Public-network Suno smoke path; not the production replacement for DreamMaker.
   dreammaker-suno     Production-target Suno path through DreamMaker.
   dreammaker-minimax  Production-target MiniMax path through DreamMaker.
-  deepseek            Real lyrics model path; script: deepseek-real-lyrics-smoke.sh
+  deepseek            Real lyrics model path; script: deepseek-real-lyrics-stack-smoke.sh
   wellapi-image2      Public-network Image 2 smoke path; not the production replacement for DreamMaker.
   dreammaker-image2   Production-target Image 2 path through DreamMaker.
   public-real-full-experience
@@ -51,7 +51,7 @@ TARGET              TYPE                         EXECUTION
 yunwu-suno         public-network smoke          script: yunwu-suno-real-music-stack-smoke.sh
 dreammaker-suno    production-target music       script: dreammaker-real-music-stack-smoke.sh REAL_PROVIDER=suno
 dreammaker-minimax production-target music       script: dreammaker-real-music-stack-smoke.sh REAL_PROVIDER=minimax
-deepseek           real lyrics model             script: deepseek-real-lyrics-smoke.sh
+deepseek           real lyrics model             script: deepseek-real-lyrics-stack-smoke.sh
 wellapi-image2     public-network smoke          script: wellapi-image2-real-cover-stack-smoke.sh
 dreammaker-image2  production-target image2      script: dreammaker-image2-real-cover-stack-smoke.sh
 public-real-full-experience public-network full  script: public-real-full-experience-stack.sh
@@ -197,7 +197,7 @@ execute_target() {
       ALLOW_WELLAPI_IMAGE2_REAL_SMOKE="${ALLOW_WELLAPI_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/wellapi-image2-real-cover-stack-smoke.sh"
       ;;
     deepseek)
-      ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-smoke.sh"
+      ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-stack-smoke.sh"
       ;;
     dreammaker-image2)
       ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE="${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-image2-real-cover-stack-smoke.sh"

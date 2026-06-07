@@ -76,7 +76,7 @@
 - [ ] 真实模型安全门矩阵审计 `scripts/smoke/real-model-safety-gates-audit.sh` 通过，证明所有真实模型 target 仍需要全局 gate 和目标 `ALLOW_*` gate。
 - [ ] 若使用 `MODE=execute`，已同时设置 `ALLOW_REAL_MODEL_SMOKE=1` 和目标脚本自己的 `ALLOW_*` 开关，并记录目标供应商、执行窗口和回滚方式。
 - [ ] `agent_runs` 可记录 Agent 调用摘要，且只包含 hash、模型名、模板版本、状态、耗时和脱敏失败信息，不保存完整 Prompt、用户原文或密钥。
-- [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式；首次单样本 smoke 可通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，且音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 必须保持 Mock 或关闭。
+- [ ] DeepSeek 真实写词前已按 `docs/checklists/deepseek-real-integration-acceptance.md` 确认双开关、真实客户端、密钥注入、日志脱敏和回滚方式；首次单样本 smoke 可通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，默认委托 `scripts/smoke/deepseek-real-lyrics-stack-smoke.sh` 自动启动/清理 API；音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 必须保持 Mock 或关闭。
 - [ ] Image 2 真实封面前已按 `docs/checklists/image2-real-integration-acceptance.md` 确认当前后端凭据、真实客户端、对象存储导入、失败收口/兜底策略、日志脱敏和回滚方式；当前公网联调用 WellAPI，正式生产目标 DreamMaker Image 2 路径必须保留。
 - [ ] 公司内网或生产环境启用真实供应商前，已使用 `deploy/env.production.example` 或公司配置中心等价变量名，并确认 `SPRING_PROFILES_ACTIVE=prod`、`SUNO_BACKEND=dreammaker`、`IMAGE2_BACKEND=dreammaker`。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。

@@ -11,6 +11,7 @@
 - [ ] 本地 Docker 基础设施健康。
 - [ ] API 可在全 Mock 状态跑通 `scripts/smoke/api-main-flow.sh`。
 - [ ] 真实客户端已有硬开关、timeout、max attempts、JSON 输出解析和脱敏错误处理。
+- [ ] 首次单样本真实写词优先通过 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，默认委托 `scripts/smoke/deepseek-real-lyrics-stack-smoke.sh` 自动启动/清理 API；若 API 已手动启动，才使用低层 `scripts/smoke/deepseek-real-lyrics-smoke.sh`。
 
 ## 灵感成歌成功路径
 
