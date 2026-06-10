@@ -31,6 +31,7 @@ import com.yanyun.music.musicprovider.MusicGenerationResult;
 import com.yanyun.music.musicprovider.MusicGenerationStatus;
 import com.yanyun.music.musicprovider.MusicProviderRegistry;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
+import com.yanyun.music.musicprovider.MusicProviderType;
 import com.yanyun.music.publish.PublishAdapter;
 import com.yanyun.music.publish.PublishHandoff;
 import com.yanyun.music.quota.QuotaAdapter;
@@ -53,6 +54,14 @@ import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.ProviderCallRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -64,6 +73,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -77,6 +87,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       Pattern.compile(
           "(?i)(access[_ -]?key|secret[_ -]?key|api[_ -]?key|token)\\s*[:=]\\s*[^,;\\s]+");
   private static final Pattern URL_PATTERN = Pattern.compile("https?://[^,;\\s]+");
+  private static final int MOCK_AUDIO_SAMPLE_RATE = 8_000;
+  private static final short MOCK_AUDIO_CHANNELS = 1;
+  private static final short MOCK_AUDIO_BITS_PER_SAMPLE = 16;
 
   private final WorkRepository workRepository;
   private final QuotaAdapter quotaAdapter;
@@ -432,19 +445,15 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
   private GeneratedMediaAssets createMediaAssets(
       UUID workId, SongProductionWorkflowInput input, MusicGenerationResult musicResult) {
-    StoredObject importedAudio = importProviderAudio(workId, musicResult);
-    String audioObjectKey =
-        firstNonBlank(
-            musicResult.audioObjectKey(),
-            importedAudio == null ? "audio/" + workId + ".mp3" : importedAudio.objectKey());
+    AudioObject audioObject = resolveAudioObject(workId, musicResult);
     MediaAssetRow audioAsset =
         new MediaAssetRow(
             workId,
             "AUDIO",
-            audioObjectKey,
-            firstNonBlank(musicResult.audioContentType(), "audio/mpeg"),
-            importedAudio == null ? 4_800_000L : importedAudio.sizeBytes(),
-            importedAudio == null ? "mock-audio" : "provider-audio",
+            audioObject.objectKey(),
+            audioObject.contentType(),
+            audioObject.sizeBytes(),
+            audioObject.checksum(),
             null,
             null,
             musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
@@ -500,7 +509,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                   coverPrompt.width(),
                   coverPrompt.height(),
                   coverPrompt.providerOptions()));
-      return importRemoteCoverIfNeeded(coverResult.asset());
+      return materializeMockCoverIfNeeded(importRemoteCoverIfNeeded(coverResult.asset()));
     } catch (RuntimeException exception) {
       return defaultCoverAsset(workId, coverPrompt, exception);
     }
@@ -583,6 +592,80 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             firstNonBlank(musicResult.audioContentType(), "audio/mpeg")));
   }
 
+  private AudioObject resolveAudioObject(UUID workId, MusicGenerationResult musicResult) {
+    StoredObject importedAudio = importProviderAudio(workId, musicResult);
+    if (importedAudio != null) {
+      return new AudioObject(
+          importedAudio.objectKey(),
+          firstNonBlank(importedAudio.contentType(), "audio/mpeg"),
+          importedAudio.sizeBytes(),
+          "provider-audio");
+    }
+    if (musicResult.providerType() == MusicProviderType.MOCK) {
+      String objectKey = firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".wav");
+      String contentType =
+          firstNonBlank(musicResult.audioContentType(), mockAudioContentType(objectKey));
+      byte[] content =
+          silentWav(musicResult.durationMs() == null ? 180_000 : musicResult.durationMs());
+      StoredObject storedAudio =
+          objectStorageClient.putObject(
+              new ObjectStoragePutRequest(objectKey, contentType, content));
+      long sizeBytes = storedAudio == null ? content.length : storedAudio.sizeBytes();
+      return new AudioObject(objectKey, contentType, sizeBytes, "mock-audio");
+    }
+    return new AudioObject(
+        firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".mp3"),
+        firstNonBlank(musicResult.audioContentType(), "audio/mpeg"),
+        4_800_000L,
+        "provider-audio");
+  }
+
+  private String mockAudioContentType(String objectKey) {
+    return objectKey != null && objectKey.toLowerCase(java.util.Locale.ROOT).endsWith(".wav")
+        ? "audio/wav"
+        : "audio/mpeg";
+  }
+
+  private byte[] silentWav(int durationMs) {
+    int safeDurationMs = Math.max(durationMs, 1);
+    int sampleCount = Math.max(1, (int) (((long) MOCK_AUDIO_SAMPLE_RATE * safeDurationMs) / 1000L));
+    int bytesPerSample = MOCK_AUDIO_BITS_PER_SAMPLE / 8;
+    int dataSize = sampleCount * MOCK_AUDIO_CHANNELS * bytesPerSample;
+    int totalSize = 44 + dataSize;
+    byte[] wav = new byte[totalSize];
+    writeAscii(wav, 0, "RIFF");
+    writeLittleEndianInt(wav, 4, totalSize - 8);
+    writeAscii(wav, 8, "WAVE");
+    writeAscii(wav, 12, "fmt ");
+    writeLittleEndianInt(wav, 16, 16);
+    writeLittleEndianShort(wav, 20, (short) 1);
+    writeLittleEndianShort(wav, 22, MOCK_AUDIO_CHANNELS);
+    writeLittleEndianInt(wav, 24, MOCK_AUDIO_SAMPLE_RATE);
+    writeLittleEndianInt(wav, 28, MOCK_AUDIO_SAMPLE_RATE * MOCK_AUDIO_CHANNELS * bytesPerSample);
+    writeLittleEndianShort(wav, 32, (short) (MOCK_AUDIO_CHANNELS * bytesPerSample));
+    writeLittleEndianShort(wav, 34, MOCK_AUDIO_BITS_PER_SAMPLE);
+    writeAscii(wav, 36, "data");
+    writeLittleEndianInt(wav, 40, dataSize);
+    return wav;
+  }
+
+  private void writeAscii(byte[] target, int offset, String value) {
+    byte[] bytes = value.getBytes(StandardCharsets.US_ASCII);
+    System.arraycopy(bytes, 0, target, offset, bytes.length);
+  }
+
+  private void writeLittleEndianInt(byte[] target, int offset, int value) {
+    target[offset] = (byte) (value & 0xff);
+    target[offset + 1] = (byte) ((value >>> 8) & 0xff);
+    target[offset + 2] = (byte) ((value >>> 16) & 0xff);
+    target[offset + 3] = (byte) ((value >>> 24) & 0xff);
+  }
+
+  private void writeLittleEndianShort(byte[] target, int offset, short value) {
+    target[offset] = (byte) (value & 0xff);
+    target[offset + 1] = (byte) ((value >>> 8) & 0xff);
+  }
+
   private MediaAssetDescriptor importRemoteCoverIfNeeded(MediaAssetDescriptor asset) {
     Object sourceUrl = asset.metadata().get(CoverGenerationService.SOURCE_URL_METADATA_KEY);
     if (sourceUrl instanceof String value && !value.isBlank()) {
@@ -627,6 +710,90 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         metadata);
   }
 
+  private MediaAssetDescriptor materializeMockCoverIfNeeded(MediaAssetDescriptor asset) {
+    if (!"mock-image2".equals(asset.metadata().get("provider"))) {
+      return asset;
+    }
+    byte[] content = mockCoverPng(asset.width(), asset.height());
+    StoredObject storedCover =
+        objectStorageClient.putObject(
+            new ObjectStoragePutRequest(asset.objectKey(), asset.mimeType(), content));
+    Map<String, Object> metadata = new LinkedHashMap<>(asset.metadata());
+    metadata.put("object_storage_imported", true);
+    metadata.put("object_storage_import_source", "mock_cover");
+    long sizeBytes = storedCover == null ? content.length : storedCover.sizeBytes();
+    return new MediaAssetDescriptor(
+        asset.assetType(),
+        asset.objectKey(),
+        asset.mimeType(),
+        sizeBytes,
+        sha256(content),
+        asset.width(),
+        asset.height(),
+        asset.durationMs(),
+        metadata);
+  }
+
+  private byte[] mockCoverPng(Integer width, Integer height) {
+    int safeWidth = width == null || width <= 0 ? 1920 : width;
+    int safeHeight = height == null || height <= 0 ? 1080 : height;
+    BufferedImage image = new BufferedImage(safeWidth, safeHeight, BufferedImage.TYPE_INT_RGB);
+    Graphics2D graphics = image.createGraphics();
+    try {
+      graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      graphics.setPaint(
+          new GradientPaint(
+              0, 0, new Color(18, 20, 27), safeWidth, safeHeight, new Color(45, 42, 37)));
+      graphics.fillRect(0, 0, safeWidth, safeHeight);
+
+      graphics.setColor(new Color(198, 163, 91, 150));
+      graphics.fillOval(
+          (int) (safeWidth * 0.68),
+          (int) (safeHeight * 0.16),
+          (int) (safeWidth * 0.12),
+          (int) (safeWidth * 0.12));
+
+      Path2D.Double ridge = new Path2D.Double();
+      ridge.moveTo(safeWidth * 0.08, safeHeight * 0.72);
+      ridge.curveTo(
+          safeWidth * 0.24,
+          safeHeight * 0.57,
+          safeWidth * 0.35,
+          safeHeight * 0.64,
+          safeWidth * 0.47,
+          safeHeight * 0.49);
+      ridge.curveTo(
+          safeWidth * 0.60,
+          safeHeight * 0.34,
+          safeWidth * 0.76,
+          safeHeight * 0.40,
+          safeWidth * 0.91,
+          safeHeight * 0.25);
+      graphics.setStroke(
+          new BasicStroke(
+              Math.max(8f, safeWidth / 120f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+      graphics.setColor(new Color(129, 143, 153, 190));
+      graphics.draw(ridge);
+
+      graphics.setStroke(new BasicStroke(Math.max(2f, safeWidth / 480f)));
+      graphics.setColor(new Color(231, 218, 184, 85));
+      graphics.drawRect(
+          (int) (safeWidth * 0.055),
+          (int) (safeHeight * 0.09),
+          (int) (safeWidth * 0.89),
+          (int) (safeHeight * 0.82));
+    } finally {
+      graphics.dispose();
+    }
+    try {
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
+      ImageIO.write(image, "png", output);
+      return output.toByteArray();
+    } catch (java.io.IOException exception) {
+      throw new IllegalStateException("Failed to write mock cover PNG", exception);
+    }
+  }
+
   private MediaAssetDescriptor defaultCoverAsset(
       UUID workId, CoverPromptResult coverPrompt, RuntimeException cause) {
     byte[] content = defaultCoverSvg().getBytes(StandardCharsets.UTF_8);
@@ -653,7 +820,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         storedCover.objectKey(),
         storedCover.contentType(),
         storedCover.sizeBytes(),
-        sha256(new String(content, StandardCharsets.UTF_8)),
+        sha256(content),
         coverPrompt.width(),
         coverPrompt.height(),
         null,
@@ -838,9 +1005,21 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     }
   }
 
+  private String sha256(byte[] value) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      return HexFormat.of().formatHex(digest.digest(value == null ? new byte[0] : value));
+    } catch (NoSuchAlgorithmException exception) {
+      throw new IllegalStateException("SHA-256 digest is unavailable", exception);
+    }
+  }
+
   private record GeneratedMediaAssets(
       MediaAssetRow audioAsset,
       MediaAssetRow coverAsset,
       MediaAssetRow videoAsset,
       MediaAssetRow timelineAsset) {}
+
+  private record AudioObject(
+      String objectKey, String contentType, long sizeBytes, String checksum) {}
 }

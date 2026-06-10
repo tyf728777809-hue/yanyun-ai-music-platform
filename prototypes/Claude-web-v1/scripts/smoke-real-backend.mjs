@@ -130,7 +130,7 @@ async function runMainFlow(page) {
   const workId = page.url().split('/work/')[1];
   assert(workId, 'work id was not present in route');
   await waitForVisibleText(page, '歌词待确认', 'lyrics confirmation page');
-  await waitForVisibleText(page, '燕云意象', 'yanyun references');
+  await waitForVisibleText(page, '编曲方向', 'music prompt section');
 
   await page.getByRole('button', { name: 'AI 润色' }).click();
   await page.getByRole('button', { name: '开始润色' }).waitFor({ state: 'visible', timeout: timeoutMs });

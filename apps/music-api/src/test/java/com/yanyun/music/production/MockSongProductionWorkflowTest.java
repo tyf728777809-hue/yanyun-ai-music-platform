@@ -60,6 +60,7 @@ import com.yanyun.music.workpersistence.WorkRepository.ProviderCallRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -220,10 +221,14 @@ class MockSongProductionWorkflowTest {
 
     ArgumentCaptor<ObjectStoragePutRequest> storagePut =
         ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
-    verify(objectStorageClient).putObject(storagePut.capture());
-    assertThat(storagePut.getValue().objectKey()).isEqualTo("packages/" + workId + ".json");
-    assertThat(storagePut.getValue().contentType()).isEqualTo("application/json");
-    assertThat(new String(storagePut.getValue().content(), java.nio.charset.StandardCharsets.UTF_8))
+    verify(objectStorageClient, org.mockito.Mockito.times(3)).putObject(storagePut.capture());
+    ObjectStoragePutRequest packagePut =
+        storagePut.getAllValues().stream()
+            .filter(request -> request.objectKey().equals("packages/" + workId + ".json"))
+            .findFirst()
+            .orElseThrow();
+    assertThat(packagePut.contentType()).isEqualTo("application/json");
+    assertThat(new String(packagePut.content(), java.nio.charset.StandardCharsets.UTF_8))
         .contains("\"work_id\":\"" + workId + "\"");
     verifyNoInteractions(remoteObjectImporter);
 
@@ -308,7 +313,7 @@ class MockSongProductionWorkflowTest {
     assertThat(result.packageReady()).isTrue();
     ArgumentCaptor<ObjectStoragePutRequest> storagePut =
         ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
-    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    verify(objectStorageClient, org.mockito.Mockito.times(3)).putObject(storagePut.capture());
     ObjectStoragePutRequest coverPut =
         storagePut.getAllValues().stream()
             .filter(request -> request.objectKey().startsWith("covers/"))
@@ -390,7 +395,7 @@ class MockSongProductionWorkflowTest {
     assertThat(result.packageReady()).isTrue();
     ArgumentCaptor<ObjectStoragePutRequest> storagePut =
         ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
-    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    verify(objectStorageClient, org.mockito.Mockito.times(3)).putObject(storagePut.capture());
     ObjectStoragePutRequest defaultCoverPut =
         storagePut.getAllValues().stream()
             .filter(request -> request.objectKey().equals("covers/" + workId + "-default.svg"))
@@ -791,6 +796,107 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void writesMockAudioObjectBeforeLocalProcessStyleVideoRenderReadsIt() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    Map<String, byte[]> storedObjects = new HashMap<>();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              storedObjects.put(request.objectKey(), request.content());
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(objectStorageClient.getObject(any()))
+        .thenAnswer(
+            invocation -> {
+              String objectKey = invocation.getArgument(0, String.class);
+              byte[] content = storedObjects.get(objectKey);
+              if (content == null) {
+                throw new IllegalStateException("Missing object: " + objectKey);
+              }
+              return content;
+            });
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+    VideoRenderService localProcessStyleRenderer =
+        request -> {
+          byte[] audio = objectStorageClient.getObject(request.audioObjectKey());
+          byte[] cover = objectStorageClient.getObject(request.coverObjectKey());
+          assertThat(
+                  new String(
+                      audio,
+                      0,
+                      Math.min(audio.length, 4),
+                      java.nio.charset.StandardCharsets.US_ASCII))
+              .isEqualTo("RIFF");
+          assertThat(cover).startsWith(new byte[] {(byte) 0x89, 'P', 'N', 'G'});
+          return new VideoRenderResult(
+              new MediaAssetDescriptor(
+                  "VIDEO",
+                  "videos/" + request.workId() + ".mp4",
+                  "video/mp4",
+                  12_000_000L,
+                  "mock-video",
+                  1920,
+                  1080,
+                  request.durationMs(),
+                  java.util.Map.of("renderer", "local-process-style-test")),
+              new MediaAssetDescriptor(
+                  "TIMELINE",
+                  "timelines/" + request.workId() + ".json",
+                  "application/json",
+                  64_000L,
+                  "mock-timeline",
+                  null,
+                  null,
+                  request.durationMs(),
+                  java.util.Map.of("renderer", "mock-timeline")));
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.MOCK, localProcessStyleRenderer)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    assertThat(storedObjects).containsKey("audio/" + workId + ".mp3");
+    assertThat(storedObjects).containsKey("covers/" + workId + ".png");
+    verify(objectStorageClient).getObject("audio/" + workId + ".mp3");
+    verify(objectStorageClient).getObject("covers/" + workId + ".png");
+    verify(remoteObjectImporter, never()).importObject(any());
+  }
+
+  @Test
   void packageModerationBlockFailsWorkAndDoesNotWriteReadyPackage() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -829,7 +935,12 @@ class MockSongProductionWorkflowTest {
     assertThat(result.failureMessage()).isEqualTo("作品暂不能交给社区发布。");
     verify(workRepository).markFailure(workId, FailureCode.PACKAGE_BLOCKED, "作品暂不能交给社区发布。", false);
     verify(workRepository, never()).upsertPublishPackage(any());
-    verify(objectStorageClient, never()).putObject(any(ObjectStoragePutRequest.class));
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    assertThat(storagePut.getAllValues())
+        .extracting(ObjectStoragePutRequest::objectKey)
+        .containsExactlyInAnyOrder("audio/" + workId + ".mp3", "covers/" + workId + ".png");
     verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
     verify(workRepository)
@@ -1095,7 +1206,12 @@ class MockSongProductionWorkflowTest {
     verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
     verify(publishAdapter, never()).preparePackage(any());
     verify(moderationAdapter, never()).preCheckPublishPackage(any(), any());
-    verify(objectStorageClient, never()).putObject(any());
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    assertThat(storagePut.getAllValues())
+        .extracting(ObjectStoragePutRequest::objectKey)
+        .containsExactlyInAnyOrder("audio/" + workId + ".mp3", "covers/" + workId + ".png");
     verify(workRepository, never()).upsertPublishPackage(any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
   }
@@ -1128,7 +1244,18 @@ class MockSongProductionWorkflowTest {
     when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
         .thenReturn(ModerationDecision.allow());
     when(objectStorageClient.putObject(any()))
-        .thenThrow(new IllegalStateException("storage unavailable"));
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              if (request.objectKey().startsWith("packages/")) {
+                throw new IllegalStateException("storage unavailable");
+              }
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
     when(quotaAdapter.releaseGenerateQuota(
             "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
@@ -1211,8 +1338,13 @@ class MockSongProductionWorkflowTest {
     verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
     verify(workRepository, never()).upsertPublishPackage(any());
     verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
-    verifyNoInteractions(
-        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    assertThat(storagePut.getAllValues())
+        .extracting(ObjectStoragePutRequest::objectKey)
+        .containsExactlyInAnyOrder("audio/" + workId + ".mp3", "covers/" + workId + ".png");
+    verifyNoInteractions(publishAdapter, moderationAdapter, remoteObjectImporter);
   }
 
   private MockSongProductionWorkflow workflowWith(MusicProvider musicProvider) {

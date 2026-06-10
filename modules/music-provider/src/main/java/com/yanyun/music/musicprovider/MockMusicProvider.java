@@ -27,13 +27,18 @@ public final class MockMusicProvider implements MusicProvider {
   @Override
   public MusicGenerationResult submit(MusicGenerationRequest request) {
     String taskId = "mock-music-" + UUID.randomUUID();
-    String audioObjectKey = "audio/" + request.workId() + ".mp3";
-    return MusicGenerationResult.succeeded(
+    String audioObjectKey = "audio/" + request.workId() + ".wav";
+    return new MusicGenerationResult(
         providerType(),
         taskId,
         "mock",
+        MusicGenerationStatus.SUCCEEDED,
         audioObjectKey,
+        null,
+        "audio/wav",
         durationMs,
+        null,
+        null,
         "Mock music generation succeeded");
   }
 }

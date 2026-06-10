@@ -19,7 +19,8 @@ class MockMusicProviderTest {
 
     assertEquals(MusicProviderType.MOCK, result.providerType());
     assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
-    assertEquals("audio/work-1.mp3", result.audioObjectKey());
+    assertEquals("audio/work-1.wav", result.audioObjectKey());
+    assertEquals("audio/wav", result.audioContentType());
     assertEquals(180_000, result.durationMs());
   }
 
