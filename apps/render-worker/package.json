@@ -11,7 +11,7 @@
     "test": "node --test --import tsx src/smoke.test.ts",
     "preview": "remotion preview src/index.ts",
     "render:job": "tsx src/render-job.ts",
-    "render:sample": "remotion render src/index.ts LyricVideo16x9 out/sample.mp4 --codec=h264"
+    "render:sample": "remotion render src/index.ts LyricVideo16x9V2 out/sample.mp4 --codec=h264 --audio-codec=aac"
   },
   "dependencies": {
     "@remotion/cli": "4.0.472",

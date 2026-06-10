@@ -23,6 +23,7 @@ SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
 MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-2}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-public-real-full-$(date +%s)}"
 LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/public-real-full-experience-$(date +%Y%m%d%H%M%S)}"
+LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-worker/build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
 POSTGRES_CONTAINER="${POSTGRES_CONTAINER:-yanyun-postgres}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_DB="${POSTGRES_DB:-yanyun_music}"
@@ -193,6 +194,11 @@ post_json() {
 get_json() {
   local path="$1"
   curl -fsS "$API_BASE$path" -H "X-Mock-User-Id: $MOCK_USER"
+}
+
+psql_query() {
+  local sql="$1"
+  docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "$sql"
 }
 
 run_preflights() {
@@ -433,16 +439,63 @@ verify_sanitized_db_evidence() {
   fi
 
   log "agent_runs summary"
-  docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
+  psql_query \
     "select agent_name, operation, model_name, status, input_hash is not null, output_hash is not null, coalesce(failure_code,''), coalesce(latency_ms,0) from agent_runs where work_id = '$WORK_ID'::uuid order by created_at;" || true
 
   log "provider_calls summary"
-  docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
+  psql_query \
     "select provider, model_name, case when provider_trace_id is null then '<empty>' else '<present>' end, status, coalesce(error_code,'') from provider_calls where work_id = '$WORK_ID'::uuid order by created_at;" || true
 
   log "media_assets summary"
-  docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
+  psql_query \
     "select asset_type, coalesce(metadata_json->>'provider',''), case when object_key is null then '<empty>' else '<present>' end, mime_type, coalesce(width,0), coalesce(height,0) from media_assets where work_id = '$WORK_ID'::uuid order by asset_type;" || true
+}
+
+resolve_local_object_path() {
+  local object_key="$1"
+  local root candidate
+  IFS=':' read -r -a roots <<<"$LOCAL_OBJECT_ROOTS"
+  for root in "${roots[@]}"; do
+    if [ -z "$root" ]; then
+      continue
+    fi
+    if [[ "$root" = /* ]]; then
+      candidate="$root/$object_key"
+    else
+      candidate="$REPO_ROOT/$root/$object_key"
+    fi
+    if [ -f "$candidate" ]; then
+      printf '%s\n' "$candidate"
+      return
+    fi
+  done
+  return 1
+}
+
+assert_mp4_has_audio_and_video() {
+  local video_path="$1"
+  local streams
+  streams="$(ffprobe -v error -show_entries stream=codec_type -of csv=p=0 "$video_path")"
+  if ! printf '%s\n' "$streams" | grep -qx 'video'; then
+    fail "generated MP4 is missing video stream"
+  fi
+  if ! printf '%s\n' "$streams" | grep -qx 'audio'; then
+    fail "generated MP4 is missing audio stream"
+  fi
+}
+
+verify_local_video_file_streams() {
+  local video_object_key video_path
+  video_object_key="$(
+    psql_query "select object_key from media_assets where work_id = '$WORK_ID'::uuid and asset_type = 'VIDEO' limit 1;"
+  )"
+  if [ -z "$video_object_key" ]; then
+    fail "VIDEO media asset object_key is missing"
+  fi
+  video_path="$(resolve_local_object_path "$video_object_key")" \
+    || fail "VIDEO object file was not found under LOCAL_OBJECT_ROOTS"
+  assert_mp4_has_audio_and_video "$video_path"
+  log "verified generated MP4 has video and audio streams"
 }
 
 fetch_publish_package() {
@@ -631,6 +684,7 @@ main() {
   confirm_real_music
   wait_for_package_ready
   verify_sanitized_db_evidence
+  verify_local_video_file_streams
   fetch_publish_package
   start_frontend
   run_frontend_handoff_check

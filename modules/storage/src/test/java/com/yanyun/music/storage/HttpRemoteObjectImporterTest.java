@@ -173,5 +173,10 @@ class HttpRemoteObjectImporterTest {
       return new ObjectStorageDownloadUrl(
           objectKey, "http://localhost/" + objectKey, OffsetDateTime.now().plusHours(1));
     }
+
+    @Override
+    public byte[] getObject(String objectKey) {
+      throw new UnsupportedOperationException("CapturingStorageClient does not support reads");
+    }
   }
 }

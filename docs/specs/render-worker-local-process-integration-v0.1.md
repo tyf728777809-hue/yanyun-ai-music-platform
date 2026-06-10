@@ -24,7 +24,7 @@
 - FR-4：render-worker CLI MUST 输出 JSON 结果文件，至少包含 `work_id`、`video_file_path`、`timeline_file_path`、`width`、`height`、`fps`、`duration_ms`、`duration_in_frames`、`renderer`、`composition_id`。
 - FR-5：Java 本地进程适配器 MUST 将 render-worker 输出的 MP4 和 timeline JSON 写入 `ObjectStorageClient`，并返回 `VIDEO` 与 `TIMELINE` 两类 `MediaAssetDescriptor`。
 - FR-6：Java 本地进程适配器 MUST 使用对象存储 object key，而不是本地临时文件路径，作为 workflow 后续发布包引用。
-- FR-7：render-worker `LyricVideo16x9` composition MUST 支持按输入 `duration_ms` 计算 `durationInFrames`，避免默认 8 秒样例污染真实歌曲链路。
+- FR-7：render-worker `LyricVideo16x9V2` composition MUST 支持按输入 `duration_ms` 计算 `durationInFrames`，避免默认 8 秒样例污染真实歌曲链路，并输出包含 video/audio 双轨的 MP4。
 - FR-8：本批 MUST NOT 接入真实公司账号、审核、权益、发布、分享系统。
 - FR-9：本批 MUST NOT 提交大体积 MP4、Node `node_modules`、真实密钥或本地构建产物。
 
@@ -68,10 +68,15 @@ type RenderWorkerJobInput = {
   audio_object_key: string;
   audio_mime_type?: string;
   cover_object_key: string;
+  audio_source_path?: string;
+  cover_source_path?: string;
+  template_id?: "lyric-video-16x9-v2" | "lyric-video-16x9-v3";
   duration_ms?: number;
-  composition_id?: "LyricVideo16x9";
+  composition_id?: "LyricVideo16x9V2" | "LyricVideo16x9V3";
 };
 ```
+
+`audio_source_path` 和 `cover_source_path` 如果是本地文件路径，render-worker CLI 必须先把文件复制到本次输出目录下的 Remotion public 目录，再通过 `staticFile()` 生成浏览器可加载 URL。不要直接把裸 `file://` 路径交给 `<Img>` 或 `<Audio>`，否则 Chromium 可能拒绝加载本地资源，尤其是在路径包含中文、空格或来自输出目录外部时。
 
 内部 CLI 输出：
 
@@ -86,7 +91,7 @@ type RenderWorkerJobOutput = {
   duration_ms: number;
   duration_in_frames: number;
   renderer: "remotion";
-  composition_id: "LyricVideo16x9";
+  composition_id: "LyricVideo16x9V2" | "LyricVideo16x9V3";
 };
 ```
 

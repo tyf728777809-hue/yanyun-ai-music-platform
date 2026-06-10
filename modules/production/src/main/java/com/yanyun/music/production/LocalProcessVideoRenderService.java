@@ -27,6 +27,7 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
 
   private static final int LOG_TAIL_LIMIT = 1_600;
   private static final Duration DEFAULT_TIMEOUT = Duration.ofMinutes(10);
+  private static final String TEMPLATE_ID = "lyric-video-16x9-v2";
 
   private final RenderWorkerProperties properties;
   private final ObjectStorageClient objectStorageClient;
@@ -53,7 +54,17 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
       Path outputDirectory = tempDirectory.resolve("assets");
       Path logPath = tempDirectory.resolve("render-worker.log");
       Files.createDirectories(outputDirectory);
-      objectMapper.writeValue(inputPath.toFile(), jobInput(request));
+      Path stagedAudio =
+          stageObject(
+              tempDirectory,
+              request.audioObjectKey(),
+              stagedFileName("audio", request.audioObjectKey(), ".mp3"));
+      Path stagedCover =
+          stageObject(
+              tempDirectory,
+              request.coverObjectKey(),
+              stagedFileName("cover", request.coverObjectKey(), ".png"));
+      objectMapper.writeValue(inputPath.toFile(), jobInput(request, stagedAudio, stagedCover));
 
       ProcessBuilder processBuilder =
           new ProcessBuilder(command(inputPath, outputPath, outputDirectory));
@@ -127,7 +138,8 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
     }
   }
 
-  private RenderWorkerJobInput jobInput(VideoRenderRequest request) {
+  private RenderWorkerJobInput jobInput(
+      VideoRenderRequest request, Path stagedAudio, Path stagedCover) {
     return new RenderWorkerJobInput(
         request.workId(),
         firstNonBlank(request.songTitle(), "燕云新曲"),
@@ -136,8 +148,46 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
         request.audioObjectKey(),
         firstNonBlank(request.audioMimeType(), "audio/mpeg"),
         request.coverObjectKey(),
+        stagedAudio.toAbsolutePath().toString(),
+        stagedCover.toAbsolutePath().toString(),
         request.durationMs(),
-        firstNonBlank(properties.getCompositionId(), "LyricVideo16x9"));
+        firstNonBlank(properties.getCompositionId(), "LyricVideo16x9V2"),
+        TEMPLATE_ID);
+  }
+
+  private String stagedFileName(String baseName, String objectKey, String fallbackExtension) {
+    String safeBaseName = safeFileSegment(baseName);
+    String extension = extensionFromObjectKey(objectKey);
+    return safeBaseName + (extension.isBlank() ? fallbackExtension : extension);
+  }
+
+  private String extensionFromObjectKey(String objectKey) {
+    if (objectKey == null || objectKey.isBlank()) {
+      return "";
+    }
+    String fileName = Path.of(objectKey).getFileName().toString();
+    int dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex < 0 || dotIndex == fileName.length() - 1) {
+      return "";
+    }
+    String extension = fileName.substring(dotIndex).toLowerCase(java.util.Locale.ROOT);
+    return extension.matches("\\.[a-z0-9]{1,8}") ? extension : "";
+  }
+
+  private Path stageObject(Path tempDirectory, String objectKey, String fileName) {
+    try {
+      Path assetDirectory = tempDirectory.resolve("input-assets");
+      Files.createDirectories(assetDirectory);
+      Path target = assetDirectory.resolve(fileName).normalize();
+      if (!target.startsWith(assetDirectory.normalize())) {
+        throw new IllegalStateException("Render input asset path escapes temp directory");
+      }
+      Files.write(target, objectStorageClient.getObject(objectKey));
+      return target;
+    } catch (IOException exception) {
+      throw new IllegalStateException(
+          "Failed to stage render input asset: " + objectKey, exception);
+    }
   }
 
   private List<String> command(Path inputPath, Path outputPath, Path outputDirectory) {
@@ -227,6 +277,8 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
         fps,
         "duration_in_frames",
         durationInFrames,
+        "template_id",
+        TEMPLATE_ID,
         "audio_object_key",
         request.audioObjectKey(),
         "cover_object_key",
@@ -329,8 +381,11 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
       @JsonProperty("audio_object_key") String audioObjectKey,
       @JsonProperty("audio_mime_type") String audioMimeType,
       @JsonProperty("cover_object_key") String coverObjectKey,
+      @JsonProperty("audio_source_path") String audioSourcePath,
+      @JsonProperty("cover_source_path") String coverSourcePath,
       @JsonProperty("duration_ms") Integer durationMs,
-      @JsonProperty("composition_id") String compositionId) {}
+      @JsonProperty("composition_id") String compositionId,
+      @JsonProperty("template_id") String templateId) {}
 
   private record RenderWorkerJobOutput(
       @JsonProperty("work_id") String workId,

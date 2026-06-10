@@ -50,6 +50,27 @@ class LocalObjectStorageClientTest {
   }
 
   @Test
+  void readsObjectContentBySafeKey() {
+    LocalObjectStorageClient storage =
+        new LocalObjectStorageClient(tempDir, "http://localhost:9000/yanyun-works-local");
+    storage.putObject(
+        new ObjectStoragePutRequest(
+            "audio/work-1.mp3", "audio/mpeg", "fake-audio".getBytes(StandardCharsets.UTF_8)));
+
+    byte[] content = storage.getObject("audio/work-1.mp3");
+
+    assertEquals("fake-audio", new String(content, StandardCharsets.UTF_8));
+  }
+
+  @Test
+  void rejectsReadObjectKeyThatEscapesRoot() {
+    LocalObjectStorageClient storage =
+        new LocalObjectStorageClient(tempDir, "http://localhost:9000/yanyun-works-local");
+
+    assertThrows(IllegalArgumentException.class, () -> storage.getObject("../outside.json"));
+  }
+
+  @Test
   void returnsDownloadUrlWithExpiry() {
     LocalObjectStorageClient storage =
         new LocalObjectStorageClient(

@@ -1,8 +1,10 @@
 import {bundle} from '@remotion/bundler';
 import {renderMedia, selectComposition} from '@remotion/renderer';
-import {mkdir, readFile, stat, writeFile} from 'node:fs/promises';
+import {execFile} from 'node:child_process';
+import {copyFile, mkdir, readFile, stat, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {promisify} from 'node:util';
 import {
   durationMsFromFrames,
   lyricVideoPropsFromJobInput,
@@ -13,7 +15,8 @@ import {
   VIDEO_WIDTH,
 } from './render-input';
 
-const DEFAULT_COMPOSITION_ID = 'LyricVideo16x9';
+const DEFAULT_COMPOSITION_ID = 'LyricVideo16x9V2';
+const execFileAsync = promisify(execFile);
 
 type RenderJobPaths = {
   readonly inputPath: string;
@@ -23,6 +26,7 @@ type RenderJobPaths = {
 
 type TimelineJson = {
   readonly work_id: string;
+  readonly template_id: string;
   readonly fps: number;
   readonly duration_ms: number;
   readonly duration_in_frames: number;
@@ -43,16 +47,23 @@ export async function runRenderJob(paths: RenderJobPaths): Promise<RenderWorkerJ
   const input = JSON.parse(
     await readFile(paths.inputPath, 'utf8'),
   ) as RenderWorkerJobInput;
-  const props = lyricVideoPropsFromJobInput(input);
   const compositionId = input.composition_id || DEFAULT_COMPOSITION_ID;
   const outputDirectory = path.resolve(paths.outDir);
   await mkdir(outputDirectory, {recursive: true});
 
   const safeWorkId = sanitizeFileSegment(input.work_id);
+  const {input: renderInput, publicDir} = await stageLocalRenderAssets(
+    input,
+    outputDirectory,
+    safeWorkId,
+  );
+  const props = lyricVideoPropsFromJobInput(renderInput);
   const videoFilePath = path.join(outputDirectory, `${safeWorkId}.mp4`);
   const timelineFilePath = path.join(outputDirectory, `${safeWorkId}.timeline.json`);
   const entryPoint = path.join(renderWorkerRoot(), 'src', 'index.ts');
-  const serveUrl = await bundle(entryPoint);
+  const serveUrl = publicDir
+    ? await bundle({entryPoint, publicDir})
+    : await bundle(entryPoint);
   const composition = await selectComposition({
     serveUrl,
     id: compositionId,
@@ -60,18 +71,22 @@ export async function runRenderJob(paths: RenderJobPaths): Promise<RenderWorkerJ
     logLevel: 'warn',
   });
 
-  await writeFile(timelineFilePath, JSON.stringify(timelineJson(input, props), null, 2));
+  await writeFile(
+    timelineFilePath,
+    JSON.stringify(timelineJson(renderInput, props), null, 2),
+  );
   await renderMedia({
+    audioCodec: 'aac',
     codec: 'h264',
     composition,
     inputProps: props,
     logLevel: 'warn',
-    muted: true,
     outputLocation: videoFilePath,
     overwrite: true,
     serveUrl,
   });
   await stat(videoFilePath);
+  await assertPlayableMp4(videoFilePath);
 
   const output: RenderWorkerJobOutput = {
     work_id: input.work_id,
@@ -95,15 +110,11 @@ function timelineJson(
 ): TimelineJson {
   return {
     work_id: input.work_id,
+    template_id: props.templateId,
     fps: VIDEO_FPS,
     duration_ms: durationMsFromFrames(props.durationInFrames),
     duration_in_frames: props.durationInFrames,
-    safe_area: {
-      left: 120,
-      right: 120,
-      top: 72,
-      bottom: 72,
-    },
+    safe_area: props.safeArea,
     lines: props.lyrics.map((line) => ({
       start_frame: line.startFrame,
       end_frame: line.endFrame,
@@ -112,9 +123,108 @@ function timelineJson(
   };
 }
 
+async function assertPlayableMp4(videoFilePath: string): Promise<void> {
+  const {stdout} = await execFileAsync('ffprobe', [
+    '-v',
+    'error',
+    '-show_entries',
+    'stream=codec_type,codec_name',
+    '-of',
+    'json',
+    videoFilePath,
+  ]);
+  const parsed = JSON.parse(stdout) as {
+    streams?: Array<{codec_type?: string; codec_name?: string}>;
+  };
+  const streams = parsed.streams ?? [];
+  if (!streams.some((stream) => stream.codec_type === 'video')) {
+    throw new Error('Rendered MP4 is missing video stream');
+  }
+  if (!streams.some((stream) => stream.codec_type === 'audio')) {
+    throw new Error('Rendered MP4 is missing audio stream');
+  }
+}
+
 function sanitizeFileSegment(value: string): string {
   const sanitized = value.replace(/[^a-zA-Z0-9._-]/g, '-');
   return sanitized.length > 0 ? sanitized : 'work';
+}
+
+async function stageLocalRenderAssets(
+  input: RenderWorkerJobInput,
+  outputDirectory: string,
+  safeWorkId: string,
+): Promise<{input: RenderWorkerJobInput; publicDir?: string}> {
+  const publicDir = path.join(outputDirectory, `${safeWorkId}.public`);
+  let stagedInput = input;
+  let stagedAnyAsset = false;
+
+  const stagedAudio = await stageLocalAsset(
+    input.audio_source_path,
+    publicDir,
+    'audio',
+  );
+  if (stagedAudio) {
+    stagedAnyAsset = true;
+    stagedInput = {...stagedInput, audio_source_path: `static://${stagedAudio}`};
+  }
+
+  const stagedCover = await stageLocalAsset(
+    input.cover_source_path,
+    publicDir,
+    'cover',
+  );
+  if (stagedCover) {
+    stagedAnyAsset = true;
+    stagedInput = {...stagedInput, cover_source_path: `static://${stagedCover}`};
+  }
+
+  return stagedAnyAsset ? {input: stagedInput, publicDir} : {input};
+}
+
+async function stageLocalAsset(
+  source: string | undefined,
+  publicDir: string,
+  baseName: string,
+): Promise<string | undefined> {
+  const localPath = localFilePathFromSource(source);
+  if (!localPath) {
+    return undefined;
+  }
+
+  const sourceStat = await stat(localPath).catch(() => undefined);
+  if (!sourceStat?.isFile()) {
+    return undefined;
+  }
+
+  await mkdir(publicDir, {recursive: true});
+  const extension = path.extname(localPath) || '.bin';
+  const publicFileName = `${baseName}${extension}`;
+  await copyFile(localPath, path.join(publicDir, publicFileName));
+  return publicFileName;
+}
+
+function localFilePathFromSource(source: string | undefined): string | undefined {
+  const trimmedSource = source?.trim();
+  if (!trimmedSource) {
+    return undefined;
+  }
+  if (
+    trimmedSource.startsWith('http://') ||
+    trimmedSource.startsWith('https://') ||
+    trimmedSource.startsWith('data:') ||
+    trimmedSource.startsWith('blob:') ||
+    trimmedSource.startsWith('static://')
+  ) {
+    return undefined;
+  }
+  if (trimmedSource.startsWith('file://')) {
+    return fileURLToPath(trimmedSource);
+  }
+  if (path.isAbsolute(trimmedSource)) {
+    return trimmedSource;
+  }
+  return undefined;
 }
 
 function renderWorkerRoot(): string {

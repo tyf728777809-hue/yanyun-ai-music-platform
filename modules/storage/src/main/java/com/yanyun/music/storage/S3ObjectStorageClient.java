@@ -83,6 +83,18 @@ public final class S3ObjectStorageClient implements ObjectStorageClient {
   }
 
   @Override
+  public byte[] getObject(String objectKey) {
+    String safeObjectKey = ObjectStorageKeys.requireSafeObjectKey(objectKey);
+    GetObjectRequest getObjectRequest =
+        GetObjectRequest.builder().bucket(bucket).key(safeObjectKey).build();
+    try {
+      return s3Client.getObjectAsBytes(getObjectRequest).asByteArray();
+    } catch (S3Exception exception) {
+      throw exception;
+    }
+  }
+
+  @Override
   public ObjectStorageDownloadUrl createDownloadUrl(String objectKey) {
     String safeObjectKey = ObjectStorageKeys.requireSafeObjectKey(objectKey);
     GetObjectRequest getObjectRequest =

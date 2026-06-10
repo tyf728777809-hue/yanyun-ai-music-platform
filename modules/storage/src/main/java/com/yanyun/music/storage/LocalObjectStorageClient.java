@@ -64,6 +64,20 @@ public final class LocalObjectStorageClient implements ObjectStorageClient {
         safeObjectKey, publicBaseUrl + "/" + safeObjectKey, OffsetDateTime.now().plus(urlTtl));
   }
 
+  @Override
+  public byte[] getObject(String objectKey) {
+    String safeObjectKey = ObjectStorageKeys.requireSafeObjectKey(objectKey);
+    Path target = rootDirectory.resolve(safeObjectKey).normalize();
+    if (!target.startsWith(rootDirectory)) {
+      throw new IllegalArgumentException("objectKey escapes storage root");
+    }
+    try {
+      return Files.readAllBytes(target);
+    } catch (IOException exception) {
+      throw new IllegalStateException("Failed to read object: " + safeObjectKey, exception);
+    }
+  }
+
   private String trimTrailingSlash(String value) {
     String trimmed = value.trim();
     while (trimmed.endsWith("/")) {

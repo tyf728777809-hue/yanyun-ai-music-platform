@@ -11,7 +11,7 @@ public final class RenderWorkerProperties {
   private String command = "npm";
   private List<String> arguments = new ArrayList<>(List.of("run", "render:job", "--"));
   private Duration timeout = Duration.ofMinutes(10);
-  private String compositionId = "LyricVideo16x9";
+  private String compositionId = "LyricVideo16x9V2";
   private String videoObjectKeyPrefix = "videos";
   private String timelineObjectKeyPrefix = "timelines";
 

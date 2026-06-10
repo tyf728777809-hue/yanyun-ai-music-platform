@@ -100,7 +100,7 @@ yanyun:
     command: ${RENDER_WORKER_COMMAND:npm}
     arguments: ${RENDER_WORKER_ARGUMENTS:run,render:job,--}
     timeout: ${RENDER_WORKER_TIMEOUT:10m}
-    composition-id: ${RENDER_WORKER_COMPOSITION_ID:LyricVideo16x9}
+    composition-id: ${RENDER_WORKER_COMPOSITION_ID:LyricVideo16x9V2}
     video-object-key-prefix: ${RENDER_WORKER_VIDEO_OBJECT_KEY_PREFIX:videos}
     timeline-object-key-prefix: ${RENDER_WORKER_TIMELINE_OBJECT_KEY_PREFIX:timelines}
   storage:

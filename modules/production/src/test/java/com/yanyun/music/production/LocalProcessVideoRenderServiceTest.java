@@ -41,7 +41,7 @@ class LocalProcessVideoRenderServiceTest {
 
   @Test
   void uploadsVideoAndTimelineFromSuccessfulLocalProcess() {
-    CapturingStorageClient storageClient = new CapturingStorageClient();
+    CapturingStorageClient storageClient = storageClientWithRenderInputs();
     LocalProcessVideoRenderService service =
         new LocalProcessVideoRenderService(
             successfulProperties(), storageClient, new ObjectMapper());
@@ -61,6 +61,8 @@ class LocalProcessVideoRenderServiceTest {
     assertEquals(180000, result.timelineAsset().durationMs());
     assertTrue(storageClient.objects.containsKey("videos/work-123.mp4"));
     assertTrue(storageClient.objects.containsKey("timelines/work-123.json"));
+    assertEquals("lyric-video-16x9-v2", result.videoAsset().metadata().get("template_id"));
+    assertEquals("lyric-video-16x9-v2", result.timelineAsset().metadata().get("template_id"));
   }
 
   @Test
@@ -70,7 +72,7 @@ class LocalProcessVideoRenderServiceTest {
     Files.createDirectories(apiDirectory);
     Files.createDirectories(renderWorkerDirectory);
     String originalUserDirectory = System.getProperty("user.dir");
-    CapturingStorageClient storageClient = new CapturingStorageClient();
+    CapturingStorageClient storageClient = storageClientWithRenderInputs();
     RenderWorkerProperties properties = successfulProperties();
     properties.setWorkingDirectory("apps/render-worker");
     LocalProcessVideoRenderService service =
@@ -90,7 +92,7 @@ class LocalProcessVideoRenderServiceTest {
 
   @Test
   void failsWhenRenderWorkerProcessExitsNonZero() {
-    CapturingStorageClient storageClient = new CapturingStorageClient();
+    CapturingStorageClient storageClient = storageClientWithRenderInputs();
     RenderWorkerProperties properties = successfulProperties();
     properties.setArguments(
         List.of("-cp", System.getProperty("java.class.path"), FailingRenderWorker.class.getName()));
@@ -101,7 +103,8 @@ class LocalProcessVideoRenderServiceTest {
         assertThrows(IllegalStateException.class, () -> service.renderVideo(videoRenderRequest()));
 
     assertTrue(exception.getMessage().contains("exited with code"));
-    assertTrue(storageClient.objects.isEmpty());
+    assertTrue(!storageClient.objects.containsKey("videos/work-123.mp4"));
+    assertTrue(!storageClient.objects.containsKey("timelines/work-123.json"));
   }
 
   private RenderWorkerProperties successfulProperties() {
@@ -124,6 +127,13 @@ class LocalProcessVideoRenderServiceTest {
         "audio/mpeg",
         "covers/work-123.png",
         180000);
+  }
+
+  private CapturingStorageClient storageClientWithRenderInputs() {
+    CapturingStorageClient storageClient = new CapturingStorageClient();
+    storageClient.objects.put("audio/work-123.mp3", "fake-audio".getBytes(StandardCharsets.UTF_8));
+    storageClient.objects.put("covers/work-123.png", "fake-cover".getBytes(StandardCharsets.UTF_8));
+    return storageClient;
   }
 
   private String javaBinary() {
@@ -149,13 +159,24 @@ class LocalProcessVideoRenderServiceTest {
       return new ObjectStorageDownloadUrl(
           objectKey, "http://localhost/" + objectKey, OffsetDateTime.now().plusHours(1));
     }
+
+    @Override
+    public byte[] getObject(String objectKey) {
+      byte[] content = objects.get(objectKey);
+      if (content == null) {
+        throw new IllegalStateException("Missing object: " + objectKey);
+      }
+      return content;
+    }
   }
 
   public static final class FakeRenderWorker {
 
     public static void main(String[] args) throws IOException {
+      Path inputPath = Path.of(requiredValue(args, "--input"));
       Path outputPath = Path.of(requiredValue(args, "--output"));
       Path outputDirectory = Path.of(requiredValue(args, "--out-dir"));
+      validateRenderInput(inputPath);
       Files.createDirectories(outputDirectory);
       Path videoPath = outputDirectory.resolve("work-123.mp4");
       Path timelinePath = outputDirectory.resolve("work-123.timeline.json");
@@ -174,11 +195,42 @@ class LocalProcessVideoRenderServiceTest {
             "duration_ms": 180000,
             "duration_in_frames": 5400,
             "renderer": "remotion",
-            "composition_id": "LyricVideo16x9"
+            "composition_id": "LyricVideo16x9V2"
           }
           """
               .formatted(jsonPath(videoPath), jsonPath(timelinePath)),
           StandardCharsets.UTF_8);
+    }
+
+    private static void validateRenderInput(Path inputPath) throws IOException {
+      Map<?, ?> input = new ObjectMapper().readValue(inputPath.toFile(), Map.class);
+      Path audioSourcePath = Path.of(requiredString(input, "audio_source_path"));
+      Path coverSourcePath = Path.of(requiredString(input, "cover_source_path"));
+      if (!Files.isRegularFile(audioSourcePath) || !Files.isReadable(audioSourcePath)) {
+        throw new IllegalStateException("Staged audio source is not readable");
+      }
+      if (!Files.isRegularFile(coverSourcePath) || !Files.isReadable(coverSourcePath)) {
+        throw new IllegalStateException("Staged cover source is not readable");
+      }
+      String audioContent = Files.readString(audioSourcePath, StandardCharsets.UTF_8);
+      String coverContent = Files.readString(coverSourcePath, StandardCharsets.UTF_8);
+      if (!"fake-audio".equals(audioContent)) {
+        throw new IllegalStateException("Unexpected staged audio content");
+      }
+      if (!"fake-cover".equals(coverContent)) {
+        throw new IllegalStateException("Unexpected staged cover content");
+      }
+      if (!"lyric-video-16x9-v2".equals(input.get("template_id"))) {
+        throw new IllegalStateException("Render input template_id is not lyric-video-16x9-v2");
+      }
+    }
+
+    private static String requiredString(Map<?, ?> input, String name) {
+      Object value = input.get(name);
+      if (!(value instanceof String text) || text.isBlank()) {
+        throw new IllegalStateException("Missing render input field: " + name);
+      }
+      return text;
     }
 
     private static String requiredValue(String[] args, String name) {
