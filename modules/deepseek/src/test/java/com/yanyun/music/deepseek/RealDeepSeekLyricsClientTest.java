@@ -53,6 +53,12 @@ class RealDeepSeekLyricsClientTest {
     assertEquals("Bearer test-api-key", capturedAuthorization.get());
     assertEquals("deepseek-v4-pro", capturedBody.get().path("model").asText());
     assertEquals("json_object", capturedBody.get().path("response_format").path("type").asText());
+    String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
+    assertTrue(systemPrompt.contains("顶级中文作词 Agent"));
+    assertTrue(systemPrompt.contains("世界级中文作词家"));
+    assertTrue(systemPrompt.contains("不编造官方设定"));
+    assertTrue(systemPrompt.contains("只输出 JSON object"));
+    assertTrue(systemPrompt.contains("0.90-1.00"));
     assertEquals("边城旧梦", response.songTitle());
     assertTrue(response.lyricsText().contains("[Verse]"));
     assertEquals("国风民谣，女声，古筝，笛子，武侠叙事", response.musicPrompt());
