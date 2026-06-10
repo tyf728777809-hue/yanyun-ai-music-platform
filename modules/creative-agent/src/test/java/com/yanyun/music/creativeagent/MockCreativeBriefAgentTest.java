@@ -59,7 +59,7 @@ class MockCreativeBriefAgentTest {
                     "user-1", "work-1", "LYRICS", "", "旧词", "", null, null, null, List.of()));
 
     assertEquals("ancient chinese folk pop", result.musicDirection());
-    assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
+    assertEquals(List.of(), result.yanyunReferences());
     assertEquals("user-lyrics-centered", result.narrativeViewpoint());
   }
 }

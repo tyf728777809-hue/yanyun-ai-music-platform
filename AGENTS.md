@@ -28,9 +28,10 @@
 4. `docs/adr/0002-commercial-grade-stack.md`
 5. `docs/adr/0003-frontend-delivery-track.md`
 6. `docs/adr/0004-production-provider-targets.md`
-7. `docs/project-progress.md`
-8. `docs/codex-batch-01-repository-initialization.md`
-9. `docs/tech-design-required-supplements.md`
+7. `docs/adr/0005-no-standalone-yanyun-knowledge-base.md`
+8. `docs/project-progress.md`
+9. `docs/codex-batch-01-repository-initialization.md`
+10. `docs/tech-design-required-supplements.md`
 
 如果这些文档之间冲突：
 
@@ -48,7 +49,7 @@
 - 数据库为 PostgreSQL 16，缓存/幂等辅助为 Redis 7。
 - 长耗时生成任务使用 Temporal。
 - 对象存储使用 S3 兼容接口，本地用 MinIO。
-- 燕云语料检索使用 OpenSearch。
+- 独立燕云知识库 / Markdown 语料库 / OpenSearch 检索已取消；写词调性由 Prompt、CreativeBriefAgent 和模型指令约束。
 - 视频成片使用 Node.js 22 + Remotion + FFmpeg/FFprobe。
 - 可观测保留 OpenTelemetry + Prometheus + Grafana。
 - DeepSeek、MiniMax、Image 2、公司系统都必须通过 Provider/Adapter 边界接入。
@@ -203,7 +204,7 @@ npm test
 - 根 Gradle 工程和 Java 模块边界。
 - `apps/web` React + Vite + TypeScript scaffold。
 - `apps/render-worker` Node.js 22 + Remotion scaffold。
-- PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana 的 Docker Compose 基础配置。
+- PostgreSQL、Redis、Temporal、MinIO、Prometheus、Grafana 的 Docker Compose 基础配置；OpenSearch 为已取消知识库路径的遗留组件，不再作为新增验收要求。
 - `.gitignore`、`.env.example`、README 和基础测试/构建命令。
 
 不得包含：

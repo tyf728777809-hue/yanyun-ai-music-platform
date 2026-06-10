@@ -2,6 +2,8 @@
 
 更新时间：2026-06-06
 
+> 2026-06-11 更新：独立燕云知识库、Markdown 语料索引、OpenSearch 检索和 RAG 重排已由 ADR 0005 取消。本文件中涉及 `KnowledgeService`、`knowledge_base_version`、知识库引用和 Mock 知识库的内容仅作为历史实现记录；当前主链路默认使用 no-op knowledge，写词调性由 Prompt、CreativeBriefAgent 和模型指令约束。
+
 ## 目标
 
 第 6 批目标是在不调用真实 DeepSeek、不改变 OpenAPI v0.1 主路径的前提下，把写词、润色、续写从 `WorkService` 内部硬编码 Mock 拆成可替换的商用级边界：

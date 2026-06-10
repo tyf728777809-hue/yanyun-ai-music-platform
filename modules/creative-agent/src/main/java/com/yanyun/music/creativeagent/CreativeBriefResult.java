@@ -23,7 +23,7 @@ public record CreativeBriefResult(
     musicDirection = firstNonBlank(musicDirection, "ancient chinese folk pop");
     yanyunReferences =
         yanyunReferences == null || yanyunReferences.isEmpty()
-            ? List.of("Mock Yanyun Reference")
+            ? List.of()
             : List.copyOf(yanyunReferences);
     constraints =
         constraints == null || constraints.isEmpty()

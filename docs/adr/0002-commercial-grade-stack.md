@@ -14,14 +14,15 @@
 
 ## 决策
 
-- 保留 Java 21、Spring Boot 3、PostgreSQL、Redis、Temporal、MinIO/S3、OpenSearch、Remotion、FFmpeg、OpenTelemetry、Prometheus、Grafana。
+- 保留 Java 21、Spring Boot 3、PostgreSQL、Redis、Temporal、MinIO/S3、Remotion、FFmpeg、OpenTelemetry、Prometheus、Grafana。
+- OpenSearch 原用于独立燕云知识库检索；该能力已由 ADR 0005 取消，不再作为当前必需核心组件。
 - 保留 Provider/Adapter 边界，不把公司系统或模型供应商协议写入业务域。
 - 第 1 批完成完整商用级组件的工程预置和本地基础设施纳入。
 - 业务能力按批次逐步启用，不要求第 1 批实现主链路。
-- 不为短期提速移除 Temporal、对象存储、渲染 Worker、语料检索、可观测或 Adapter 边界。
+- 不为短期提速移除 Temporal、对象存储、渲染 Worker、可观测或 Adapter 边界；独立语料检索已按产品决策取消，不属于短期降级。
 
 ## 影响
 
 - 第 1 批仓库初始化任务必须包含商用级组件目录、配置、Docker Compose 和基础验收。
-- 后续批次按数据库/状态机、Mock Adapter、知识库、Provider、渲染、端到端工作流、可观测和压测逐步完成。
+- 后续批次按数据库/状态机、Mock Adapter、Provider、渲染、端到端工作流、可观测和压测逐步完成。
 - 如果未来需要替换核心技术栈，必须先更新 PRD/技术方案/ADR/进度文档，再执行实现。

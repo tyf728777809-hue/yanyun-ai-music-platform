@@ -24,7 +24,7 @@ import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
 import com.yanyun.music.knowledge.KnowledgeService;
-import com.yanyun.music.knowledge.MockKnowledgeService;
+import com.yanyun.music.knowledge.NoopKnowledgeService;
 import com.yanyun.music.lyrics.DefaultLyricsGenerationService;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.minimax.MiniMaxMusicProvider;
@@ -108,7 +108,7 @@ public class AdapterConfiguration {
 
   @Bean
   KnowledgeService knowledgeService() {
-    return new MockKnowledgeService();
+    return new NoopKnowledgeService();
   }
 
   @Bean

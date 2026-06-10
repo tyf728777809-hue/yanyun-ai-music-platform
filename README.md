@@ -10,7 +10,7 @@
 
 - Backend: Java 21, Spring Boot 3, Gradle Kotlin DSL。
 - Workflow: Temporal。
-- Storage and data: PostgreSQL 16, Redis 7, MinIO/S3, OpenSearch。
+- Storage and data: PostgreSQL 16, Redis 7, MinIO/S3。OpenSearch 属于已取消知识库路径的遗留本地组件。
 - Web: React, Vite, TypeScript，移动端优先，兼容 PC Web。
 - Render worker: Node.js 22, TypeScript, Remotion，后续接 FFmpeg/FFprobe。
 - Observability: Spring Actuator, Prometheus, Grafana。
@@ -43,7 +43,7 @@ docker compose -f deploy/docker-compose.yml ps
 - Temporal UI: `http://localhost:8233`
 - MinIO: `http://localhost:9000`
 - MinIO Console: `http://localhost:9001`
-- OpenSearch: `http://localhost:9200`
+- OpenSearch: `http://localhost:9200`（遗留可选；当前写词链路不依赖）
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
 

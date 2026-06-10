@@ -32,7 +32,7 @@
 
 ## B. 本地基础设施
 
-- [ ] Docker Compose 可启动 PostgreSQL、Redis、Temporal、MinIO、OpenSearch、Prometheus、Grafana。
+- [ ] Docker Compose 可启动 PostgreSQL、Redis、Temporal、MinIO、Prometheus、Grafana；OpenSearch 如仍在 compose 中仅作为遗留可选组件，不作为当前写词链路验收条件。
 - [ ] PostgreSQL migration 可完整应用，重复启动不报错。
 - [ ] MinIO/S3 发布包对象可写入、读取和刷新 URL。
 - [ ] Temporal worker 与 API 可分进程启动，并能通过 readiness 或日志证明连接成功。

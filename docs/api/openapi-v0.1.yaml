@@ -609,6 +609,7 @@ components:
           items:
             type: string
         yanyun_references:
+          description: Legacy compatibility field. New no-knowledge-base runs return an empty array.
           type: array
           items:
             type: string

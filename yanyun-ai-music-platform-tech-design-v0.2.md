@@ -49,7 +49,6 @@ PostgreSQL 16
 Redis 7
 Temporal
 S3-compatible Object Storage，本地使用 MinIO
-OpenSearch，本地用于燕云 Markdown 语料检索
 FFmpeg / FFprobe
 Node.js 22 + Remotion，用于高质量歌词视频渲染
 React + Vite + TypeScript，用于移动端优先、兼容 PC Web 的用户侧 Web
@@ -57,7 +56,7 @@ Docker Compose，本地集成环境
 OpenTelemetry + Prometheus + Grafana，第 1 批工程预置，后续完善指标和面板
 ```
 
-商用级目标不降级：Temporal、对象存储、OpenSearch、Redis、Remotion、FFmpeg、OpenTelemetry、Prometheus、Grafana、Provider/Adapter 边界均作为正式架构组成部分保留。第 1 批要求完成工程预置和本地基础设施纳入，具体业务能力按开发批次启用。
+商用级目标不降级：Temporal、对象存储、Redis、Remotion、FFmpeg、OpenTelemetry、Prometheus、Grafana、Provider/Adapter 边界均作为正式架构组成部分保留。独立燕云知识库 / OpenSearch 语料检索已按 ADR 0005 取消，不再作为当前必需组件。第 1 批要求完成工程预置和本地基础设施纳入，具体业务能力按开发批次启用。
 
 ### 2.2 为什么不是单一 Java 服务完成所有事情
 
@@ -85,12 +84,10 @@ music-api              用户 API、配置 API、发布包 API
 music-worker           Temporal Worker，执行写词、出歌、封面、视频编排
 render-worker          Remotion + FFmpeg，生成 MP4
 web                    React + Vite + TypeScript 用户侧 Web，移动端优先，兼容 PC Web
-knowledge-indexer      Markdown 语料库索引命令或一次性任务
 PostgreSQL             业务数据库
 Redis                  缓存、限流、幂等辅助
 Temporal               长任务工作流
 MinIO/S3               素材对象存储
-OpenSearch             燕云语料检索
 ```
 
 ---
@@ -111,7 +108,7 @@ flowchart TD
   TEMP --> WORKER[music-worker]
 
   WORKER --> DS[DeepSeekProvider\nDeepSeek V4 Pro]
-  WORKER --> KB[KnowledgeService\nOpenSearch + Markdown chunks]
+  WORKER --> PROMPT[PromptTemplateService\n燕云风格约束]
   WORKER --> MM[MiniMaxMusicProvider\nMusic-2.6]
   WORKER --> IMG[ImageProvider\nImage 2]
   WORKER --> QUOTA[QuotaAdapter\n本地 Mock]
@@ -135,7 +132,7 @@ flowchart TD
 ```text
 创建草稿
   ↓
-DeepSeek + 燕云语料库生成歌词和歌曲方案
+DeepSeek + 燕云风格 Prompt 生成歌词和歌曲方案
   ↓
 用户确认歌词
   ↓
@@ -175,7 +172,6 @@ yanyun-ai-music-platform/
     music-api/                 # Spring Boot API 应用
     music-worker/              # Spring Boot Temporal Worker 应用
     render-worker/             # Node.js + Remotion 渲染应用
-    knowledge-indexer/         # Markdown 语料入库/索引命令，可 Java CLI 或 Spring profile
 
   modules/
     common/                    # 通用类型、错误码、工具、审计、时间、ID
@@ -185,7 +181,7 @@ yanyun-ai-music-platform/
     publish/                   # PublishAdapter、MockPublishAdapter
     work-domain/               # Work 聚合、状态机、领域服务
     lyrics/                    # 歌词生成、续写、润色、质量评分
-    knowledge/                 # Markdown 语料检索、语料版本、chunk 管理
+    knowledge/                 # 遗留兼容 no-op knowledge 边界，后续可清理
     prompt/                    # Prompt 模板、Prompt Builder、版本管理
     minimax/                   # MiniMax Music Provider
     deepseek/                  # DeepSeek Provider
@@ -216,11 +212,6 @@ yanyun-ai-music-platform/
     adr/
     runbook/
 
-  knowledge-base/              # 本地 Markdown 语料库样例目录，不放保密生产语料
-    worldview.md
-    locations.md
-    characters.md
-    plot_events.md
     lyric_style_guide.md
     forbidden_claims.md
 
@@ -355,7 +346,7 @@ Steps:
 1. Load work
 2. Input validation
 3. ModerationAdapter.preCheck，当前本地 MockAllow
-4. KnowledgeService.retrieve
+4. PromptTemplateService.render with Yanyun style constraints
 5. DeepSeekProvider.generateLyricsOrStructure
 6. LyricsQualityEvaluator.evaluate
 7. If score below threshold: auto rewrite once
@@ -460,7 +451,7 @@ Adapter：公司系统接入边界，例如账号、审核、权益、发布。
 职责：
 
 1. 用户意图理解。
-2. 燕云语料整合。
+2. 燕云风格约束。
 3. 歌词生成、续写、润色。
 4. 歌曲结构整理。
 5. MiniMax prompt 生成。
@@ -614,77 +605,15 @@ public interface PublishAdapter {
 
 ---
 
-## 9. 燕云 Markdown 语料库技术方案
+## 9. 燕云风格 Prompt 技术方案
 
-### 9.1 输入形态
+### 9.1 设计结论
 
-本地目录：
+独立燕云知识库、Markdown 语料索引、OpenSearch 检索和 RAG 重排已取消。当前写词链路不再依赖 `KnowledgeService.retrieve` 的真实检索结果；默认实现为 no-op，只保留历史接口兼容。
 
-```text
-knowledge-base/
-  worldview.md
-  locations.md
-  characters.md
-  plot_events.md
-  factions.md
-  cultural_terms.md
-  lyric_style_guide.md
-  official_copy_examples.md
-  forbidden_claims.md
-  glossary.md
-```
+燕云风格由 Prompt 模板、CreativeBriefAgent、DeepSeek 系统指令和人工回归样本共同约束。
 
-### 9.2 索引流程
-
-```text
-读取 Markdown 文件
-  ↓
-按标题层级切分 section
-  ↓
-按 token 长度切分 chunk
-  ↓
-提取 metadata：file、heading、tags、content_type、version
-  ↓
-写入 PostgreSQL knowledge_document / knowledge_chunk
-  ↓
-同步到 OpenSearch
-```
-
-### 9.3 检索策略
-
-本地第一阶段采用：
-
-```text
-OpenSearch 中文检索 + 标签过滤 + Prompt Builder 重排
-```
-
-预留增强：
-
-```text
-EmbeddingProvider + 向量检索
-Hybrid Search：关键词检索 + 向量检索 + LLM rerank
-```
-
-不在第一批代码里强依赖具体 Embedding 模型，避免模型能力未确认导致主链路卡住。
-
-### 9.4 语料版本
-
-每次索引生成一个 `kb_version`。
-
-```text
-kb_version = yanyun-kb-YYYYMMDD-HHMMSS-gitsha
-```
-
-每次 Work 必须记录：
-
-```text
-knowledge_base_version
-retrieved_chunk_ids
-retrieved_file_names
-prompt_template_version
-```
-
-### 9.5 Prompt 上下文拼装
+### 9.2 Prompt 上下文拼装
 
 ```text
 System Prompt
@@ -695,7 +624,7 @@ System Prompt
   ↓
 用户控制项：情绪、场景、风格、演唱倾向、篇幅
   ↓
-检索到的语料 chunks
+燕云风格约束与禁止编造规则
   ↓
 歌词结构要求
   ↓
@@ -1080,7 +1009,7 @@ FFprobe
 ```json
 {
   "render_job_id": "rj_xxx",
-  "template_id": "lyric-video-16x9-v1",
+  "template_id": "lyric-video-16x9-v2",
   "output": {
     "width": 1920,
     "height": 1080,
@@ -1117,7 +1046,7 @@ FFprobe
 
 ### 15.4 模板要求
 
-默认模板：`lyric-video-16x9-v1`
+默认模板：`lyric-video-16x9-v2`
 
 元素：
 
@@ -1129,6 +1058,7 @@ FFprobe
 轻动态背景
 音频频谱或波形
 结尾卡 1–2 秒
+输出 MP4 必须包含 video/audio 双轨，不能产出无声假成功
 ```
 
 备用模板：`cover-video-16x9-v1`
@@ -1597,7 +1527,6 @@ PUT /admin/v1/configs/{config_key}
 GET /admin/v1/prompt-templates
 POST /admin/v1/prompt-templates
 PUT /admin/v1/prompt-templates/{id}/enable
-POST /admin/v1/knowledge/index
 GET /admin/v1/works/{work_id}/debug
 ```
 
@@ -1745,11 +1674,10 @@ real：全部真实模型，适合联调和压测
 ```text
 1. docker compose up 基础依赖
 2. 执行 Flyway migration
-3. 启动 knowledge-indexer 导入 Markdown 语料
-4. 启动 music-api
-5. 启动 music-worker
-6. 启动 render-worker
-7. 使用 fake provider 完成端到端生成
+3. 启动 music-api
+4. 启动 music-worker
+5. 启动 render-worker
+6. 使用 fake provider 完成端到端生成
 8. 切换 MiniMax real provider 验证出歌
 9. 切换 DeepSeek real provider 验证作词
 10. 切换 Image2 real provider 验证封面
@@ -1877,7 +1805,6 @@ MiniMax 出歌耗时和并发
 Image 2 封面耗时和并发
 MP4 渲染 CPU/内存/磁盘 IO
 对象存储上传下载
-OpenSearch 检索延迟
 Temporal Worker 并发
 ```
 
@@ -1913,7 +1840,6 @@ MiniMax 异常：关闭 confirm 出歌入口
 DeepSeek 异常：关闭歌词润色/生成入口，保留已完成作品查看
 Image 2 异常：默认封面兜底
 Render 异常：生成音频和封面后标记视频失败，可稍后重渲染
-OpenSearch 异常：使用基础 Prompt 或内置最小语料，不建议正式商用时启用
 ```
 
 ---
@@ -1941,7 +1867,6 @@ Object Key 生成
 PostgreSQL
 Redis
 MinIO
-OpenSearch
 ```
 
 Provider 使用 Mock HTTP Server，不在自动测试里调用真实模型。
@@ -2016,7 +1941,6 @@ PostgreSQL: 使用公司托管数据库或高可用实例
 Redis: 公司托管或高可用实例
 Temporal: 自建或公司基础设施
 对象存储: 公司对象存储
-OpenSearch: 公司托管或独立部署
 ```
 
 ### 26.3 K8s 资源建议
@@ -2026,7 +1950,6 @@ music-api: CPU 1–2 core，内存 2–4GB
 web: CPU 0.5–1 core，内存 512MB–1GB，静态资源可独立托管
 music-worker: CPU 2–4 core，内存 4–8GB
 render-worker: CPU 4–8 core，内存 8–16GB，需本地临时磁盘
-OpenSearch: 视语料规模调整
 ```
 
 具体资源需要压测后调整。
@@ -2047,9 +1970,9 @@ OpenSearch: 视语料规模调整
 Create a multi-module Java 21 Spring Boot 3 project with Gradle Kotlin DSL.
 Add apps/web as React + Vite + TypeScript scaffold, mobile-first responsive, PC Web compatible.
 Add apps/music-api and apps/music-worker.
-Add modules/common, auth, quota, moderation, publish, work-domain, lyrics, knowledge, prompt, minimax, deepseek, image2, media, storage, workflow, config-center, observability.
+Add modules/common, auth, quota, moderation, publish, work-domain, lyrics, prompt, minimax, deepseek, image2, media, storage, workflow, config-center, observability.
 Add apps/render-worker as Node.js 22 + TypeScript + Remotion scaffold.
-Add Docker Compose with PostgreSQL, Redis, MinIO, Temporal, OpenSearch, Prometheus, Grafana.
+Add Docker Compose with PostgreSQL, Redis, MinIO, Temporal, Prometheus, Grafana.
 Add Flyway, jOOQ, JUnit 5, Testcontainers, springdoc-openapi, Spotless.
 Add AGENTS.md with build/test/lint commands.
 Do not implement business logic yet.
@@ -2069,7 +1992,7 @@ music-worker 可连接 Temporal
 ### 27.2 第 2 批：数据库与领域状态机
 
 ```text
-Implement Flyway migrations for works, work_inputs, lyrics_drafts, generation_jobs, media_assets, publish_packages, provider_calls, quota_transactions, knowledge tables, prompt_templates, system_configs, idempotency_keys.
+Implement Flyway migrations for works, work_inputs, lyrics_drafts, generation_jobs, media_assets, publish_packages, provider_calls, quota_transactions, prompt_templates, system_configs, idempotency_keys.
 Generate jOOQ classes.
 Implement Work aggregate and status transition rules.
 Add unit tests for valid and invalid transitions.
@@ -2084,12 +2007,9 @@ Implement POST /api/v1/works/inspiration, POST /api/v1/works/lyrics, GET /api/v1
 Use fake lyrics provider initially.
 ```
 
-### 27.4 第 4 批：知识库索引与 DeepSeek Provider
+### 27.4 第 4 批：DeepSeek Provider 与 Prompt 风格约束
 
 ```text
-Implement Markdown knowledge indexer.
-Index chunks into PostgreSQL and OpenSearch.
-Implement KnowledgeService retrieve.
 Implement DeepSeekProvider with JSON output parsing and repair.
 Implement fake DeepSeek tests with MockWebServer.
 ```
@@ -2126,7 +2046,7 @@ Implement cover regenerate limit = 1.
 ### 27.8 第 8 批：render-worker 与 MP4 生成
 
 ```text
-Implement Remotion lyric-video-16x9-v1 template.
+Implement Remotion lyric-video-16x9-v2 template.
 Implement cover-video-16x9-v1 fallback template.
 Implement render job input JSON.
 Implement FFmpeg H.264/AAC export.
@@ -2173,7 +2093,6 @@ Yanyun AI Music Platform.
 - Redis 7
 - Temporal
 - MinIO/S3
-- OpenSearch
 - Node.js 22 + TypeScript + Remotion for render-worker
 
 ## Build
@@ -2214,7 +2133,7 @@ npm test
 | MiniMax 出歌耗时不稳定 | 用户等待长、队列积压 | Temporal 异步、阶段提示、并发限流、压测后设置阈值 |
 | MiniMax 输出 URL 过期 | 音频资产丢失 | 生成后立即下载并转存对象存储 |
 | 歌词质量不稳定 | 用户不确认歌词、出歌浪费 | DeepSeek 结构化输出、质量评分、低质量自动重写 |
-| 燕云语料检索不准 | 歌词跑偏或乱编 | 语料分层、OpenSearch 检索、命中 chunk 记录、Prompt 约束 |
+| 燕云风格约束不足 | 歌词跑偏或乱编 | Prompt 模板、CreativeBriefAgent、低质量自动重写、人工回归样本 |
 | Image 2 封面跑偏 | 成品观感差 | 预设封面 Prompt、默认封面兜底、封面重生一次 |
 | 字幕时间轴不准 | 视频质量下降 | 句级字幕、错位容忍、封面视频兜底、未来 ASR 对齐预留 |
 | MP4 渲染资源吃紧 | 生成吞吐受限 | render-worker 独立资源池、task queue 隔离、并发配置 |
@@ -2262,3 +2181,4 @@ OpenAPI 接口契约 v0.1 + Codex 第 1 批任务说明 + apps/web scaffold
 |---|---|---|
 | v0.1 | 2026-06-03 | 基于 PRD v0.2 输出首版技术方案，确定 Java + Temporal + PostgreSQL + OpenSearch + Remotion + FFmpeg 架构 |
 | v0.2 | 2026-06-05 | 基于 PRD v0.3 明确商用级目标不降级、移动端优先兼容 PC Web、apps/web、发布包审核落点、权益扣减口径、works.version 和 OpenAPI v0.1 覆盖范围 |
+| v0.2.1 | 2026-06-11 | 按 ADR 0005 取消独立燕云知识库、Markdown 语料索引、OpenSearch 检索和 RAG 重排，写词调性改由 Prompt、CreativeBriefAgent 和模型指令约束 |
