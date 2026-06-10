@@ -1,6 +1,7 @@
 package com.yanyun.music.suno;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ class YunwuSunoMusicProviderTest {
 
   @Test
   void postsCustomSongAndReturnsAudioSourceUrl() throws Exception {
-    server = startSuccessServer();
+    server = startSuccessServer("id", "audio-1");
     YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
 
     MusicGenerationResult result =
@@ -55,10 +57,41 @@ class YunwuSunoMusicProviderTest {
     assertEquals("https://cdn.example.test/song.mp3", result.audioSourceUrl());
     assertEquals("audio/mpeg", result.audioContentType());
     assertEquals(181_500, result.durationMs());
+    assertEquals("audio-1", result.metadata().get("provider_audio_id"));
+    assertEquals("task_id_and_audio_id", result.metadata().get("timestamped_lyrics_lookup"));
     assertEquals("Bearer " + TEST_API_KEY, authorizationHeader);
     assertEquals("chirp-fenix", requestBody.path("mv").asText());
     assertEquals("Border Ballad", requestBody.path("title").asText());
     assertEquals("cinematic folk,female voice", requestBody.path("tags").asText());
+  }
+
+  @Test
+  void extractsProviderAudioIdFromAlternateYunwuFields() throws Exception {
+    for (String fieldName : List.of("audioId", "clip_id", "clipId")) {
+      server = startSuccessServer(fieldName, "audio-from-" + fieldName);
+      YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+      MusicGenerationResult result =
+          provider.submit(
+              new MusicGenerationRequest("work-1", "lyrics", "prompt", "AUTO", Map.of()));
+
+      assertEquals("audio-from-" + fieldName, result.metadata().get("provider_audio_id"));
+      assertEquals("task_id_and_audio_id", result.metadata().get("timestamped_lyrics_lookup"));
+      server.stop(0);
+      server = null;
+    }
+  }
+
+  @Test
+  void marksTimestampedLyricsLookupMissingWhenAudioIdIsAbsent() throws Exception {
+    server = startSuccessServer(null, null);
+    YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+    MusicGenerationResult result =
+        provider.submit(new MusicGenerationRequest("work-1", "lyrics", "prompt", "AUTO", Map.of()));
+
+    assertFalse(result.metadata().containsKey("provider_audio_id"));
+    assertEquals("missing_audio_id", result.metadata().get("timestamped_lyrics_lookup"));
   }
 
   @Test
@@ -86,7 +119,8 @@ class YunwuSunoMusicProviderTest {
     assertEquals("PROVIDER_AUTH_FAILED", result.failureCode());
   }
 
-  private HttpServer startSuccessServer() throws IOException {
+  private HttpServer startSuccessServer(String audioIdFieldName, String audioId)
+      throws IOException {
     HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
     httpServer.createContext(
         "/suno/submit/music",
@@ -110,14 +144,17 @@ class YunwuSunoMusicProviderTest {
     httpServer.createContext(
         "/suno/fetch/task-1",
         exchange -> {
+          String audioIdJson =
+              audioIdFieldName == null ? "" : "\"" + audioIdFieldName + "\": \"" + audioId + "\",";
           byte[] body =
-              """
+              ("""
               {
                 "code": 200,
                 "data": {
                   "status": "SUCCESS",
                   "clips": [
                     {
+                      %s
                       "audio_url": "https://cdn.example.test/song.mp3",
                       "duration": 181.5
                     }
@@ -125,6 +162,7 @@ class YunwuSunoMusicProviderTest {
                 }
               }
               """
+                      .formatted(audioIdJson))
                   .getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "application/json");
           exchange.sendResponseHeaders(200, body.length);

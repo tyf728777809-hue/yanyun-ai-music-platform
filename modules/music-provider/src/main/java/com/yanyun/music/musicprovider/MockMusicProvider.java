@@ -1,5 +1,6 @@
 package com.yanyun.music.musicprovider;
 
+import java.util.Map;
 import java.util.UUID;
 
 public final class MockMusicProvider implements MusicProvider {
@@ -39,6 +40,7 @@ public final class MockMusicProvider implements MusicProvider {
         durationMs,
         null,
         null,
-        "Mock music generation succeeded");
+        "Mock music generation succeeded",
+        Map.of("provider", "mock-audio"));
   }
 }

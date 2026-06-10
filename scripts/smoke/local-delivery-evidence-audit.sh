@@ -290,6 +290,7 @@ required_executables=(
   "scripts/smoke/company-handoff-package-audit.sh"
   "scripts/smoke/dreammaker-real-music-stack-smoke.sh"
   "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh"
+  "scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh"
   "scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh"
   "scripts/smoke/public-real-full-experience-stack.sh"
 )

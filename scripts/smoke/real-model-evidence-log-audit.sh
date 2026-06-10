@@ -74,6 +74,7 @@ check_real_smoke_script_redaction() {
     "scripts/smoke/dreammaker-image2-real-cover-smoke.sh"
     "scripts/smoke/public-real-full-experience-stack.sh"
     "scripts/smoke/deepseek-real-lyrics-stack-smoke.sh"
+    "scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh"
   )
   local raw_media
   local raw_package
@@ -126,13 +127,14 @@ required_files=(
   "docs/handover/local-commercial-delivery-status-v0.1.md"
   "docs/handover/company-delivery-package-v0.1.md"
   "docs/project-progress.md"
+  "scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh"
 )
 
 for file in "${required_files[@]}"; do
   require_file "$file"
 done
 
-for target in dreammaker-suno dreammaker-minimax yunwu-suno deepseek wellapi-image2 dreammaker-image2 public-real-full-experience; do
+for target in dreammaker-suno dreammaker-minimax yunwu-suno yunwu-suno-timestamped-lyrics deepseek wellapi-image2 dreammaker-image2 public-real-full-experience; do
   require_pattern "$EVIDENCE_LOG" "$target" "evidence log covers target $target"
 done
 
@@ -140,6 +142,7 @@ require_pattern "$EVIDENCE_LOG" "Sanitized only|脱敏" "evidence log states san
 require_pattern "$EVIDENCE_LOG" "DreamMaker.*production-target|DreamMaker.*生产目标" "evidence log keeps DreamMaker production-target rule"
 require_pattern "$EVIDENCE_LOG" "Yunwu.*public-network|Yunwu.*公网" "evidence log labels Yunwu as public-network smoke"
 require_pattern "$EVIDENCE_LOG" "WellAPI.*public-network|WellAPI.*公网" "evidence log labels WellAPI as public-network smoke"
+require_pattern "$EVIDENCE_LOG" "timestamped lyrics|时间轴歌词" "evidence log covers timestamped lyrics evidence fields"
 require_pattern "$EVIDENCE_LOG" "HTTP 403" "evidence log records sanitized DreamMaker 403 sample"
 require_pattern "$EVIDENCE_LOG" "<present>|<empty>|N/A" "evidence log uses redacted trace markers"
 require_pattern "docs/checklists/local-commercial-delivery-acceptance.md" "$EVIDENCE_LOG" "delivery checklist references unified evidence log"

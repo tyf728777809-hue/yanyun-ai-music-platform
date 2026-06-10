@@ -26,6 +26,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - FR-11: The smoke MUST be available from the unified real-model controlled smoke index as `TARGET=public-real-full-experience` and MUST still require `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`.
 - FR-12: If the work fails with `MUSIC_GENERATION_FAILED` and `available_actions` contains `RETRY_MUSIC`, the smoke MAY use the product retry endpoint with `music_provider=suno`; it MUST NOT retry by guessing state outside `available_actions`.
 - FR-13: The publish package verification MUST require audio, cover, video, and lyrics timeline URL presence without printing the URLs.
+- FR-14: After a successful Yunwu Suno music sample, the smoke SHOULD verify timestamped lyrics via the gated `yunwu-suno-timestamped-lyrics-smoke.sh` subcheck using the paired `provider_task_id + provider_audio_id` stored on the platform `AUDIO` asset.
+- FR-15: Timestamped lyrics verification MUST NOT print or persist raw provider payloads, full aligned word arrays, full lyrics text, supplier media URLs, Bearer tokens, or signed URLs.
 
 ## Non-Functional Requirements
 
@@ -35,6 +37,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - NFR-4: The script SHOULD complete with one real work sample unless external provider latency exceeds the configured polling window.
 - NFR-5: The script SHOULD default WellAPI Image 2 request timeout to at least `180s` so a synchronous public image generation call is not cut off by the API default `30s` timeout.
 - NFR-6: The script SHOULD default Yunwu request timeout to at least `90s` and rely on the platform remote object importer to follow redirects and retry transient media CDN download failures.
+- NFR-7: Timestamped lyrics verification SHOULD be enabled by default for public full experience, but MAY be skipped with `CHECK_YUNWU_TIMESTAMPED_LYRICS=false` when isolating unrelated API/worker/frontend failures.
 
 ## Acceptance Criteria
 
@@ -46,6 +49,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - AC-6: Given repository audits run after implementation, when `local-delivery-evidence-audit.sh` executes, then it verifies this spec and script exist while retaining DreamMaker production-target language. Covers FR-4.
 - AC-7: Given `TARGET=public-real-full-experience MODE=plan`, when `real-model-controlled-smoke.sh` runs, then it prints the public full-experience plan and both required allow gates without calling suppliers. Covers FR-1, FR-10, and FR-11.
 - AC-8: Given a public-network successful sample, when the smoke fetches the publish package, then sanitized output reports `audio`, `cover`, `video`, and `timeline` URL presence as true, and Claude Web v1 displays the audio, cover, and video handoff fields. Covers FR-9 and FR-13.
+- AC-9: Given Yunwu exposes a provider audio id, when timestamped lyrics verification runs, then the evidence file contains only `http_status`, provider code, aligned word count, waveform presence, and timestamp presence. Covers FR-14 and FR-15.
+- AC-10: Given Yunwu does not expose `provider_audio_id` or returns no aligned timestamps, when timestamped lyrics verification runs, then the smoke fails with a sanitized reason and the project must treat exact subtitles as not yet verified. Covers FR-14.
 
 ## Edge Cases
 
@@ -54,6 +59,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - EC-3: If Claude Web v1 cannot load the finished work, the script MUST fail even when API generated the publish package.
 - EC-4: If mark-fetched succeeds but package status remains not fetched, the script MUST fail.
 - EC-5: If a future change removes DreamMaker production docs or provider guards, this smoke still MUST NOT be used as replacement evidence.
+- EC-6: If timestamped lyrics fails but the main media package is otherwise ready, operators MAY rerun with `CHECK_YUNWU_TIMESTAMPED_LYRICS=false` only to debug the product chain; the official subtitle-sync decision remains unresolved until the timestamped check passes.
 
 ## API Contracts
 
@@ -70,7 +76,7 @@ No public API changes. The script uses existing OpenAPI v0.1 endpoints:
 
 ## Data Models
 
-No schema changes. Evidence is read from existing `agent_runs`, `provider_calls`, `media_assets`, and `works` rows using sanitized projections only.
+No schema changes. Evidence is read from existing `agent_runs`, `provider_calls`, `media_assets`, and `works` rows using sanitized projections only. Yunwu timestamped lyrics uses `media_assets.metadata_json.provider_task_id` and `media_assets.metadata_json.provider_audio_id` on the `AUDIO` asset to avoid pairing a task id from one retry with an audio id from another retry.
 
 ## Out of Scope
 

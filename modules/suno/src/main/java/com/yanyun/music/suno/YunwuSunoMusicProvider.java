@@ -125,21 +125,30 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
   }
 
   private MusicGenerationResult successFromStatus(String taskId, JsonNode root) {
-    Optional<String> audioUrl = firstUrlByField(root, true).or(() -> firstAudioLikeUrl(root));
-    if (audioUrl.isEmpty()) {
+    Optional<AudioOutput> audioOutput = firstAudioOutput(root);
+    if (audioOutput.isEmpty()) {
       return providerFailure(
           taskId,
           DreamMakerFailureMapper.MUSIC_QUALITY_FAILED,
           "Yunwu Suno provider returned success without audio output");
     }
+    Map<String, Object> metadata = new LinkedHashMap<>();
+    metadata.put("provider", "yunwu-suno");
+    if (hasText(audioOutput.get().audioId())) {
+      metadata.put("provider_audio_id", audioOutput.get().audioId());
+      metadata.put("timestamped_lyrics_lookup", "task_id_and_audio_id");
+    } else {
+      metadata.put("timestamped_lyrics_lookup", "missing_audio_id");
+    }
     return MusicGenerationResult.succeededFromSource(
         providerType(),
         taskId,
         modelName(),
-        audioUrl.get(),
+        audioOutput.get().audioUrl(),
         CONTENT_TYPE,
-        durationMs(root),
-        "Yunwu Suno music generation succeeded");
+        firstNonNull(audioOutput.get().durationMs(), durationMs(root)),
+        "Yunwu Suno music generation succeeded",
+        metadata);
   }
 
   private JsonNode postJson(URI uri, Map<String, Object> body) {
@@ -307,6 +316,65 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
     List<String> urls = new ArrayList<>();
     collectUrls(root, false, urls);
     return urls.stream().filter(this::isAudioUrl).findFirst().or(() -> urls.stream().findFirst());
+  }
+
+  private Optional<AudioOutput> firstAudioOutput(JsonNode root) {
+    List<AudioOutput> outputs = new ArrayList<>();
+    collectAudioOutputs(root, outputs);
+    return outputs.stream()
+        .filter(output -> isAudioUrl(output.audioUrl()))
+        .findFirst()
+        .or(() -> outputs.stream().findFirst())
+        .or(
+            () ->
+                firstUrlByField(root, true)
+                    .or(() -> firstAudioLikeUrl(root))
+                    .map(url -> new AudioOutput(url, null, durationMs(root))));
+  }
+
+  private void collectAudioOutputs(JsonNode node, List<AudioOutput> outputs) {
+    if (node == null || node.isMissingNode() || node.isNull()) {
+      return;
+    }
+    if (node.isObject()) {
+      String audioUrl = directAudioUrl(node);
+      if (hasText(audioUrl)) {
+        outputs.add(new AudioOutput(audioUrl, directAudioId(node), durationMs(node)));
+      }
+      node.fields().forEachRemaining(entry -> collectAudioOutputs(entry.getValue(), outputs));
+      return;
+    }
+    if (node.isArray()) {
+      node.forEach(value -> collectAudioOutputs(value, outputs));
+    }
+  }
+
+  private String directAudioUrl(JsonNode node) {
+    var fields = node.fields();
+    while (fields.hasNext()) {
+      var entry = fields.next();
+      String fieldName = entry.getKey().toLowerCase(Locale.ROOT);
+      JsonNode value = entry.getValue();
+      if (!value.isTextual()) {
+        continue;
+      }
+      String text = value.asText("");
+      boolean urlField = fieldName.contains("url");
+      boolean audioField = fieldName.contains("audio") || fieldName.contains("song");
+      if (hasText(text) && isHttpUrl(text) && urlField && audioField) {
+        return text.trim();
+      }
+    }
+    return null;
+  }
+
+  private String directAudioId(JsonNode node) {
+    String explicit = text(node, "audio_id", "audioId", "clip_id", "clipId");
+    if (hasText(explicit)) {
+      return explicit.trim();
+    }
+    String id = text(node, "id");
+    return hasText(id) ? id.trim() : null;
   }
 
   private void collectUrls(JsonNode node, boolean requireAudioFieldName, List<String> urls) {
@@ -503,6 +571,10 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
     return hasText(value) ? value.trim() : fallback;
   }
 
+  private Integer firstNonNull(Integer value, Integer fallback) {
+    return value == null ? fallback : value;
+  }
+
   private boolean hasText(String value) {
     return value != null && !value.isBlank();
   }
@@ -537,4 +609,6 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
       return failureCode;
     }
   }
+
+  private record AudioOutput(String audioUrl, String audioId, Integer durationMs) {}
 }

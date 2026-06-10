@@ -1,5 +1,8 @@
 package com.yanyun.music.musicprovider;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public record MusicGenerationResult(
     MusicProviderType providerType,
     String providerTaskId,
@@ -11,7 +14,23 @@ public record MusicGenerationResult(
     Integer durationMs,
     String failureCode,
     String failureMessage,
-    String message) {
+    String message,
+    Map<String, Object> metadata) {
+
+  public MusicGenerationResult {
+    if (metadata == null || metadata.isEmpty()) {
+      metadata = Map.of();
+    } else {
+      Map<String, Object> sanitizedMetadata = new LinkedHashMap<>();
+      metadata.forEach(
+          (key, value) -> {
+            if (key != null && value != null) {
+              sanitizedMetadata.put(key, value);
+            }
+          });
+      metadata = Map.copyOf(sanitizedMetadata);
+    }
+  }
 
   public static MusicGenerationResult accepted(
       MusicProviderType providerType, String providerTaskId) {
@@ -20,6 +39,7 @@ public record MusicGenerationResult(
         providerTaskId,
         null,
         MusicGenerationStatus.QUEUED,
+        null,
         null,
         null,
         null,
@@ -56,7 +76,8 @@ public record MusicGenerationResult(
         durationMs,
         null,
         null,
-        message);
+        message,
+        Map.of());
   }
 
   public static MusicGenerationResult succeededFromSource(
@@ -78,6 +99,26 @@ public record MusicGenerationResult(
       String audioContentType,
       Integer durationMs,
       String message) {
+    return succeededFromSource(
+        providerType,
+        providerTaskId,
+        modelName,
+        audioSourceUrl,
+        audioContentType,
+        durationMs,
+        message,
+        Map.of());
+  }
+
+  public static MusicGenerationResult succeededFromSource(
+      MusicProviderType providerType,
+      String providerTaskId,
+      String modelName,
+      String audioSourceUrl,
+      String audioContentType,
+      Integer durationMs,
+      String message,
+      Map<String, Object> metadata) {
     return new MusicGenerationResult(
         providerType,
         providerTaskId,
@@ -89,7 +130,8 @@ public record MusicGenerationResult(
         durationMs,
         null,
         null,
-        message);
+        message,
+        metadata);
   }
 
   public static MusicGenerationResult failed(
@@ -117,6 +159,7 @@ public record MusicGenerationResult(
         null,
         failureCode,
         failureMessage,
-        failureMessage);
+        failureMessage,
+        Map.of());
   }
 }

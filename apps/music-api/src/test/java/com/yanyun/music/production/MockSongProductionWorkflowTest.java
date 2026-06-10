@@ -183,6 +183,11 @@ class MockSongProductionWorkflowTest {
             .filter(asset -> "COVER".equals(asset.assetType()))
             .findFirst()
             .orElseThrow();
+    MediaAssetRow audioAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "AUDIO".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
     MediaAssetRow videoAsset =
         mediaAsset.getAllValues().stream()
             .filter(asset -> "VIDEO".equals(asset.assetType()))
@@ -193,6 +198,8 @@ class MockSongProductionWorkflowTest {
             .filter(asset -> "TIMELINE".equals(asset.assetType()))
             .findFirst()
             .orElseThrow();
+    assertThat(audioAsset.metadataJson()).contains("\"provider\":\"mock\"");
+    assertThat(audioAsset.metadataJson()).contains("\"source\":\"mock-audio\"");
     assertThat(coverAsset.metadataJson()).contains("mock-image2");
     assertThat(coverAsset.metadataJson()).contains("CoverPromptAgent");
     assertThat(coverAsset.metadataJson()).contains("visual_prompt");
@@ -724,7 +731,7 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
-  void importsProviderAudioSourceBeforeWritingMediaAsset() {
+  void importsProviderAudioSourceBeforeWritingMediaAsset() throws Exception {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
     MusicProvider musicProvider = mockMusicProvider(MusicProviderType.SUNO);
@@ -743,10 +750,22 @@ class MockSongProductionWorkflowTest {
             MusicGenerationResult.succeededFromSource(
                 MusicProviderType.SUNO,
                 "task-1",
+                "chirp-fenix",
                 "https://provider.example/audio.mp3",
                 "audio/mpeg",
                 123_000,
-                "ok"));
+                "ok",
+                Map.of(
+                    "provider_audio_id",
+                    "audio-1",
+                    "timestamped_lyrics_lookup",
+                    "task_id_and_audio_id",
+                    "audioSourceUrl",
+                    "https://provider.example/audio.mp3",
+                    "Authorization",
+                    "Bearer secret-token",
+                    "api_key",
+                    "secret-api-key")));
     when(remoteObjectImporter.importObject(any()))
         .thenReturn(
             new StoredObject(
@@ -793,6 +812,17 @@ class MockSongProductionWorkflowTest {
     assertThat(audioAsset.objectKey()).isEqualTo("audio/" + workId + ".mp3");
     assertThat(audioAsset.fileSizeBytes()).isEqualTo(3_000_000L);
     assertThat(audioAsset.checksum()).isEqualTo("provider-audio");
+    JsonNode audioMetadata = objectMapper.readTree(audioAsset.metadataJson());
+    assertThat(audioMetadata.path("provider").asText()).isEqualTo("suno");
+    assertThat(audioMetadata.path("provider_task_id").asText()).isEqualTo("task-1");
+    assertThat(audioMetadata.path("provider_audio_id").asText()).isEqualTo("audio-1");
+    assertThat(audioMetadata.path("timestamped_lyrics_lookup").asText())
+        .isEqualTo("task_id_and_audio_id");
+    assertThat(audioAsset.metadataJson()).doesNotContain("audioSourceUrl");
+    assertThat(audioAsset.metadataJson()).doesNotContain("Authorization");
+    assertThat(audioAsset.metadataJson()).doesNotContain("api_key");
+    assertThat(audioAsset.metadataJson()).doesNotContain("provider.example");
+    assertThat(audioAsset.metadataJson()).doesNotContain("secret");
   }
 
   @Test

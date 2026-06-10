@@ -457,7 +457,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             null,
             null,
             musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
-            "{}");
+            writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
 
     CoverPromptResult coverPrompt =
@@ -599,7 +599,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           importedAudio.objectKey(),
           firstNonBlank(importedAudio.contentType(), "audio/mpeg"),
           importedAudio.sizeBytes(),
-          "provider-audio");
+          "provider-audio",
+          audioMetadata(musicResult, "provider-audio"));
     }
     if (musicResult.providerType() == MusicProviderType.MOCK) {
       String objectKey = firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".wav");
@@ -611,13 +612,40 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           objectStorageClient.putObject(
               new ObjectStoragePutRequest(objectKey, contentType, content));
       long sizeBytes = storedAudio == null ? content.length : storedAudio.sizeBytes();
-      return new AudioObject(objectKey, contentType, sizeBytes, "mock-audio");
+      return new AudioObject(
+          objectKey,
+          contentType,
+          sizeBytes,
+          "mock-audio",
+          audioMetadata(musicResult, "mock-audio"));
     }
     return new AudioObject(
         firstNonBlank(musicResult.audioObjectKey(), "audio/" + workId + ".mp3"),
         firstNonBlank(musicResult.audioContentType(), "audio/mpeg"),
         4_800_000L,
-        "provider-audio");
+        "provider-audio",
+        audioMetadata(musicResult, "provider-audio"));
+  }
+
+  private Map<String, Object> audioMetadata(MusicGenerationResult musicResult, String source) {
+    Map<String, Object> metadata = new LinkedHashMap<>();
+    metadata.put("source", source);
+    metadata.put("provider", musicResult.providerType().name().toLowerCase(java.util.Locale.ROOT));
+    metadata.put("model_name", firstNonBlank(musicResult.modelName(), "unknown"));
+    if (musicResult.providerTaskId() != null && !musicResult.providerTaskId().isBlank()) {
+      metadata.put("provider_task_id", musicResult.providerTaskId());
+    }
+    putSafeProviderMetadata(metadata, musicResult.metadata(), "provider_audio_id");
+    putSafeProviderMetadata(metadata, musicResult.metadata(), "timestamped_lyrics_lookup");
+    return metadata;
+  }
+
+  private void putSafeProviderMetadata(
+      Map<String, Object> metadata, Map<String, Object> providerMetadata, String key) {
+    Object value = providerMetadata.get(key);
+    if (value != null) {
+      metadata.put(key, value);
+    }
   }
 
   private String mockAudioContentType(String objectKey) {
@@ -1021,5 +1049,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       MediaAssetRow timelineAsset) {}
 
   private record AudioObject(
-      String objectKey, String contentType, long sizeBytes, String checksum) {}
+      String objectKey,
+      String contentType,
+      long sizeBytes,
+      String checksum,
+      Map<String, Object> metadata) {}
 }

@@ -21,6 +21,7 @@ MAX_POLL_ATTEMPTS="${MAX_POLL_ATTEMPTS:-180}"
 POLL_INTERVAL_SECONDS="${POLL_INTERVAL_SECONDS:-5}"
 SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
 MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-2}"
+CHECK_YUNWU_TIMESTAMPED_LYRICS="${CHECK_YUNWU_TIMESTAMPED_LYRICS:-true}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-public-real-full-$(date +%s)}"
 LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/public-real-full-experience-$(date +%Y%m%d%H%M%S)}"
 LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-worker/build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
@@ -198,7 +199,8 @@ get_json() {
 
 psql_query() {
   local sql="$1"
-  docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "$sql"
+  docker exec "$POSTGRES_CONTAINER" \
+    psql -X -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "$sql"
 }
 
 run_preflights() {
@@ -515,6 +517,29 @@ fetch_publish_package() {
   }'
 }
 
+verify_timestamped_lyrics() {
+  if [ "$CHECK_YUNWU_TIMESTAMPED_LYRICS" != "true" ]; then
+    log "skipping timestamped lyrics check because CHECK_YUNWU_TIMESTAMPED_LYRICS=$CHECK_YUNWU_TIMESTAMPED_LYRICS"
+    return
+  fi
+  log "checking Yunwu/Suno timestamped lyrics availability"
+  (
+    cd "$REPO_ROOT"
+    ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1 \
+      WORK_ID="$WORK_ID" \
+      YUNWU_API_KEY="$YUNWU_API_KEY" \
+      YUNWU_REAL_CALLS_ENABLED=true \
+      SUNO_BACKEND=yunwu \
+      YUNWU_BASE_URL="$YUNWU_BASE_URL" \
+      YUNWU_TIMESTAMPED_LYRICS_PATH="${YUNWU_TIMESTAMPED_LYRICS_PATH:-/api/v1/generate/get-timestamped-lyrics}" \
+      POSTGRES_CONTAINER="$POSTGRES_CONTAINER" \
+      POSTGRES_USER="$POSTGRES_USER" \
+      POSTGRES_DB="$POSTGRES_DB" \
+      LOG_DIR="$LOG_DIR/timestamped-lyrics" \
+      scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh
+  )
+}
+
 start_frontend() {
   FRONTEND_LOG="${LOG_DIR}/claude-web-v1.log"
   log "starting Claude Web v1; log=$FRONTEND_LOG"
@@ -542,6 +567,7 @@ const frontendUrl = process.env.FRONTEND_URL;
 const workId = process.env.WORK_ID;
 const timeout = Number(process.env.SMOKE_TIMEOUT_MS ?? 30000);
 const headless = process.env.HEADLESS !== 'false';
+const frontendOrigin = new URL(frontendUrl).origin;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -580,7 +606,16 @@ try {
   const httpErrors = [];
   const consoleErrors = [];
   page.on('response', (response) => {
-    if (response.status() >= 400) httpErrors.push({ status: response.status(), url: response.url() });
+    if (response.status() >= 400) {
+      let path = '<redacted-url>';
+      try {
+        const url = new URL(response.url());
+        path = `${url.origin === frontendOrigin ? '' : '<external-origin>'}${url.pathname}`;
+      } catch {
+        path = '<unparseable-url>';
+      }
+      httpErrors.push({ status: response.status(), path });
+    }
   });
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
@@ -686,6 +721,7 @@ main() {
   verify_sanitized_db_evidence
   verify_local_video_file_streams
   fetch_publish_package
+  verify_timestamped_lyrics
   start_frontend
   run_frontend_handoff_check
   verify_package_fetched

@@ -78,6 +78,29 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 - Custom request：`mv`、`make_instrumental=false`、`prompt`、`tags`、`title`。
 - Poll：`GET /suno/fetch/{task_id}`。
 - 响应结构以容错解析为准：提交成功可能是 `data=<task_id>` 或 `data.task_id`；音频 URL 会兼容 `audio_url`、`url`、`data.clips[].audio_url` 等字段。
+- 默认音乐模型：`chirp-fenix`（对应 Suno v5.5 公网联调口径）。
+- Timestamped lyrics：`POST /api/v1/generate/get-timestamped-lyrics`，只在成功生成音乐后用 `taskId + audioId` 查询。`audioId` 来自 Yunwu 音频结果对象，平台会将它脱敏落入 `AUDIO.metadata_json.provider_audio_id`，同时写入 `provider_task_id` 供本地 smoke 配对。
+
+## 时间轴歌词验证
+
+如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。优先通过公网完整体验脚本自动执行；如需只测时间轴，可用下面的低层脚本：
+
+```bash
+ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1 \
+SUNO_BACKEND=yunwu \
+YUNWU_REAL_CALLS_ENABLED=true \
+YUNWU_API_KEY="<from-current-shell>" \
+WORK_ID="<successful-yunwu-work-id>" \
+scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh
+```
+
+安全规则：
+
+- 脚本必须同时满足 `ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1`、`SUNO_BACKEND=yunwu`、`YUNWU_REAL_CALLS_ENABLED=true` 才会外呼。
+- `YUNWU_API_KEY` 只能来自当前 shell 或交互式安全输入，不写入文件。
+- 脚本不会把 Bearer、原始 provider response、完整时间轴、媒体 URL 或完整 task id 写入 Git 文档。
+- 证据只记录脱敏摘要：HTTP 状态、provider code、aligned word count、waveform 是否存在、timestamp 是否存在。
+- 如果 `provider_audio_id` 不存在，说明供应商当前响应没有暴露可用于时间轴查询的音频 ID；此时本轮不能判定字幕可同步，应记录为阻塞或改走无字幕/弱字幕方案。
 
 ## 失败处理
 
