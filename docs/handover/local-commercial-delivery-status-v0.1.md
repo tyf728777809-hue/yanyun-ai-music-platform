@@ -1,13 +1,15 @@
 # 本地商用交付状态说明 v0.1
 
-更新时间：2026-06-07 15:20 CST
+更新时间：2026-06-11 03:40 CST
 状态：本地 Mock 闭环与公网真实完整体验均可交付实测；DreamMaker 生产验证和公司系统仍按受控联调 / 外部接入推进。
 
 ## 1. 阅读结论
 
 当前项目已经具备“本地商用级闭环验证”和“公网真实 AI 产品体验”的主要证据：后端主链路、OpenAPI 契约、Claude 前端原型真实后端模式、render-worker 本地 MP4 成片、公司 Adapter readiness 报告、只读 smoke、DeepSeek / Yunwu / WellAPI 单项 smoke，以及 DeepSeek + Yunwu Suno + WellAPI Image 2 + local-process MP4 + Claude Web v1 组合 smoke 都有可复验入口。
 
-当前项目可以宣称“公网真实完整产品体验已成功跑通一条样本”：作品 `0dd48e52-2477-4c89-ad7a-43d18a976657` 已通过真实写词、真实出歌、真实封面、本地 MP4、发布素材包和前端交接动作。当前项目仍不能宣称“DreamMaker 生产路径已验证”或“公司系统已接入”：真实 Suno via DreamMaker 曾触达创建任务但返回 HTTP 403，MiniMax / DreamMaker Image 2 尚未完成真实成功样本；公司账号、审核、权益、社区发布、分享仍是公司系统外部接入项。
+当前项目可以宣称“公网真实完整产品体验已成功跑通样本”：作品 `0dd48e52-2477-4c89-ad7a-43d18a976657` 已通过真实写词、真实出歌、真实封面、本地 MP4、发布素材包和前端交接动作；作品 `20fa149f-d5b1-40b2-9b22-8561148158db` 已用 DeepSeek v4Pro + Yunwu Suno `chirp-fenix` / v5.5 + WellAPI Image2 + local-process MP4 跑到 `GENERATED / PACKAGE_READY`，本地 MP4 已验证 H.264 video + AAC audio 双轨。当前项目仍不能宣称“DreamMaker 生产路径已验证”或“公司系统已接入”：真实 Suno via DreamMaker 曾触达创建任务但返回 HTTP 403，MiniMax / DreamMaker Image 2 尚未完成真实成功样本；公司账号、审核、权益、社区发布、分享仍是公司系统外部接入项。
+
+当前也可以宣称“Yunwu timestamped lyrics 能力已被验证但暂不可用”：`chirp-fenix` 样本已具备 task/audio id，但当前 Yunwu base URL 的默认 SunoAPI 兼容路径返回 404，若干 `/suno/*` 探测路径返回 HTML 非 JSON。供应商确认正确 JSON 接口前，视频 v3.1 不把硬同步字幕作为默认通过条件。
 
 DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两条 DreamMaker Adapter / smoke / runbook 路径。Yunwu / WellAPI 只是当前非公司内网环境下的公网联调后端，不替代 DreamMaker 音乐或 DreamMaker Image 2 路径。公司交付验收、用户实测和生产部署 smoke 必须保持 `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`，直到 `stepwise-production` 有专用 production activity 和独立 smoke 证据；`stepwise-recording` 只允许作为 step audit 受控验证。
 
@@ -45,7 +47,7 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 | 真实音乐成功样本 | `READY_LOCAL` | 本项目 + 用户安全注入凭据 | `docs/integrations/real-model-smoke-evidence-log.md`、`docs/project-progress.md` | Yunwu Suno 公网样本已成功；DreamMaker Suno / MiniMax 生产目标仍未成功验证。 |
 | DreamMaker Suno 真实音乐 | `PREPARED_SMOKE` | 本项目 + 用户 / 公司内网与凭据 | `docs/runbook/dreammaker-controlled-real-integration.md`、`scripts/smoke/dreammaker-real-music-stack-smoke.sh` | 曾收到 HTTP 403，不能宣称真实成功；生产仍保留 DreamMaker。 |
 | Yunwu Suno 公网联调 | `READY_LOCAL` | 本项目 + 用户安全注入凭据 | `docs/runbook/yunwu-suno-controlled-real-integration.md`、`scripts/smoke/yunwu-suno-real-music-stack-smoke.sh`、`docs/integrations/real-model-smoke-evidence-log.md` | 只作为当前公网联调，不替代 DreamMaker 生产路径。 |
-| Yunwu timestamped lyrics 字幕时间轴 | `PREPARED_SMOKE` | 本项目 + 用户安全注入凭据 | `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh`、`docs/runbook/yunwu-suno-controlled-real-integration.md`、`docs/integrations/real-model-smoke-evidence-log.md` | 下一条 `chirp-fenix` 真实音乐成功后验证；未通过前不能承诺精确字幕同步。 |
+| Yunwu timestamped lyrics 字幕时间轴 | `BLOCKED_EXTERNAL` | Yunwu 供应商 / 本项目 | `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh`、`docs/runbook/yunwu-suno-controlled-real-integration.md`、`docs/integrations/real-model-smoke-evidence-log.md` | 2026-06-11 已用 `chirp-fenix` 样本验证：当前 base URL 未暴露可用 JSON 时间轴接口；供应商确认前不能承诺精确字幕同步。 |
 | DreamMaker MiniMax 真实音乐 | `PREPARED_SMOKE` | 本项目 + 用户 / 公司内网与凭据 | `docs/checklists/dreammaker-real-integration-acceptance.md`、`docs/runbook/dreammaker-controlled-real-integration.md` | 仍未完成真实 MiniMax 成功样本。 |
 | DeepSeek v4Pro 真实写词 | `READY_LOCAL` | 本项目 + 用户安全注入凭据 | `modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsClient.java`、`docs/runbook/deepseek-controlled-real-integration.md`、`scripts/smoke/deepseek-real-lyrics-stack-smoke.sh`、`scripts/smoke/deepseek-real-lyrics-smoke.sh`、`docs/specs/deepseek-real-lyrics-stack-smoke-v0.1.md`、`docs/integrations/real-model-smoke-evidence-log.md` | 公网单样本已成功；默认仍可用 Mock 写词。 |
 | Image 2 真实封面 | `READY_LOCAL` | 本项目 + 用户安全注入 WellAPI 或 DreamMaker 凭据 | `scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh`、`scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh`、`docs/runbook/image2-controlled-real-integration.md`、`docs/integrations/real-model-smoke-evidence-log.md` | WellAPI 公网样本已成功；DreamMaker Image 2 是生产目标且尚未成功验证。 |
@@ -63,7 +65,7 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 ## 4. 建议下一步执行顺序
 
 1. 用户本地实测先用 `prototypes/Claude-web-v1 + music-api`，保持 `MUSIC_PROVIDER=mock`，验证完整产品体验和发布交接文案。
-2. 若要测真实 AI 出歌，先运行 `TARGET=yunwu-suno MODE=plan scripts/smoke/real-model-controlled-smoke.sh` 和 `TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh`，再跑单作品 Yunwu Suno 公网受控 smoke；成功后用 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh` 验证时间轴歌词。进入公司内网或生产联调时再切回 DreamMaker Suno / MiniMax。
+2. 若要继续测真实 AI 出歌，先运行 `TARGET=public-real-full-experience MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`，再用双 gate 跑 1 条 DeepSeek + Yunwu `chirp-fenix` + WellAPI + local-process MP4 公网样本。时间轴歌词暂不作为通过条件；如供应商确认 Yunwu `get-timestamped-lyrics` 正确 JSON 接口，再单独复跑 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh`。进入公司内网或生产联调时再切回 DreamMaker Suno / MiniMax。
 3. 若要测真实写词，先运行 `TARGET=deepseek MODE=plan scripts/smoke/real-model-controlled-smoke.sh` 和 `TARGET=deepseek MODE=preflight scripts/smoke/real-model-controlled-smoke.sh`，再用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 跑一条样本，不同时打开真实音乐和真实 Image 2。
 4. 若要测真实封面，当前公网可先运行 `TARGET=wellapi-image2 MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`，再跑 WellAPI Image2 单作品受控 smoke；生产路径运行 `TARGET=dreammaker-image2 MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`，再用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 验证 DreamMaker Image 2。
 5. 公网完整体验首测时，先保证 DeepSeek、Yunwu Suno、WellAPI Image 2 的计划/预检均可解释，再运行 `TARGET=public-real-full-experience MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`；执行单作品组合样本时使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh`，凭据只能来自当前 shell 或交互式静默输入。

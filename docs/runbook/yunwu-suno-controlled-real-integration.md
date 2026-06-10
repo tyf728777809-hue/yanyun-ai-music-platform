@@ -71,7 +71,7 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 4. 轮询作品状态，成功时应进入 `GENERATED / PACKAGE_READY`；失败时记录脱敏 `failure_code`、`provider_calls.model_name`、`provider_calls.status`。
 5. 确认供应商音频 URL 已被导入平台对象存储，发布包不直接暴露供应商原始 URL。
 
-## 当前接口契约
+## 当前音乐接口与时间轴状态
 
 - Auth：`Authorization: Bearer <YUNWU_API_KEY>`。
 - Submit：`POST /suno/submit/music`。
@@ -79,11 +79,11 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 - Poll：`GET /suno/fetch/{task_id}`。
 - 响应结构以容错解析为准：提交成功可能是 `data=<task_id>` 或 `data.task_id`；音频 URL 会兼容 `audio_url`、`url`、`data.clips[].audio_url` 等字段。
 - 默认音乐模型：`chirp-fenix`（对应 Suno v5.5 公网联调口径）。
-- Timestamped lyrics：`POST /api/v1/generate/get-timestamped-lyrics`，只在成功生成音乐后用 `taskId + audioId` 查询。`audioId` 来自 Yunwu 音频结果对象，平台会将它脱敏落入 `AUDIO.metadata_json.provider_audio_id`，同时写入 `provider_task_id` 供本地 smoke 配对。
+- Timestamped lyrics：当前脚本默认尝试 SunoAPI 兼容路径 `POST /api/v1/generate/get-timestamped-lyrics`，只在成功生成音乐后用 `taskId + audioId` 查询。`audioId` 来自 Yunwu 音频结果对象，平台会将它脱敏落入 `AUDIO.metadata_json.provider_audio_id`，同时写入 `provider_task_id` 供本地 smoke 配对。2026-06-11 实测当前 Yunwu base URL 对该路径返回 404，若干 `/suno/*` 探测路径返回 HTML 非 JSON；供应商确认正确 JSON 接口前，不要把该路径写成已可用能力。
 
 ## 时间轴歌词验证
 
-如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。优先通过公网完整体验脚本自动执行；如需只测时间轴，可用下面的低层脚本：
+如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。优先通过公网完整体验脚本自动执行；如需只测时间轴，可用下面的低层脚本。当前结论是 `blocked_provider_path`，除非供应商给出新的 base URL / path / request body，否则 v3.1 视频验收应采用无硬同步字幕或弱歌词卡方案。
 
 ```bash
 ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1 \

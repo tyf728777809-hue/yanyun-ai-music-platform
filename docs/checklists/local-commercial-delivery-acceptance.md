@@ -1,7 +1,7 @@
 # 本地商用闭环交付验收清单
 
 版本：v0.1
-更新时间：2026-06-07 13:20 CST
+更新时间：2026-06-11 03:50 CST
 适用范围：本地完整跑通后，交给公司开发替换真实账号、审核、权益、发布、分享系统并部署到公司服务器前的交付检查。
 
 ## 使用方式
@@ -81,7 +81,7 @@
 - [ ] 公司内网或生产环境启用真实供应商前，已使用 `deploy/env.production.example` 或公司配置中心等价变量名，并确认 `SPRING_PROFILES_ACTIVE=prod`、`SUNO_BACKEND=dreammaker`、`IMAGE2_BACKEND=dreammaker`。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
-- [ ] Yunwu Suno 公网真实音乐成功后，已通过 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh` 或公网完整体验脚本默认子检查验证 `get-timestamped-lyrics`；证据只记录 `provider_audio_id` 是否存在、aligned word count、waveform 是否存在和 timestamp 是否存在，不记录原始时间轴或媒体 URL。
+- [ ] Yunwu Suno 公网真实音乐成功后，已通过 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh` 或公网完整体验脚本默认子检查验证 `get-timestamped-lyrics`；若供应商路径阻塞，应在 `docs/integrations/real-model-smoke-evidence-log.md` 记录为 `blocked_provider_path`，并明确视频验收改走无硬同步字幕或弱歌词卡方案，不把精确字幕同步作为通过条件。
 - [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
 - [ ] 公网真实完整体验首测前，DeepSeek、Yunwu Suno、WellAPI Image 2 已分别完成 `MODE=plan/preflight`，并已运行 `TARGET=public-real-full-experience MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`；执行完整体验时只使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh`，并确认 `DEEPSEEK_API_KEY`、`YUNWU_API_KEY`、`WELLAPI_API_KEY` 只来自当前 shell 或交互式静默输入。
 - [ ] 公网真实完整体验若成功，只能记录为 DeepSeek + Yunwu Suno + WellAPI Image 2 的公网样本；若失败，失败码、推荐动作、provider trace 是否存在、对象存储导入和发布素材交接状态需脱敏记录，不记录完整 prompt、歌词、供应商原始响应或媒体 URL。
@@ -114,6 +114,7 @@
 - [ ] 本地完整验收栈可一键复验，且没有真实供应商或公司系统调用。
 - [ ] 公网真实完整体验已通过 `scripts/smoke/public-real-full-experience-stack.sh` 产生 1 个 `GENERATED / PACKAGE_READY / PACKAGE_FETCHED` 样本，或已把外部供应商、凭据、端口、依赖或网络问题作为阻塞项记录。
 - [ ] 本地真实 MP4 成片链路可复验。
+- [ ] 视频 v3.1 质量验收按 `docs/specs/lyric-video-16x9-v3-1-quality-acceptance.md` 执行；MP4 必须有 video/audio 双轨，字幕策略不得依赖未通过的 provider timestamped lyrics。
 - [ ] 前端真实后端模式可脚本化复验。
 - [ ] Suno / MiniMax 至少各完成 1 次受控真实成功联调，或明确记录为公司接入前阻塞项。
 - [ ] 正式前端承接策略已明确：保留 `prototypes/Claude-web-v1`、迁移到 `apps/web`，或公司前端重建。
