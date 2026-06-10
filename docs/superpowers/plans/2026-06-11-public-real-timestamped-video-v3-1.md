@@ -119,18 +119,18 @@ Expected: both commands pass.
 - Modify if needed: `apps/render-worker/src/*`
 - Modify if needed: `modules/production/src/main/java/com/yanyun/music/production/*`
 
-- [ ] **Step 1: Run strict preflight**
+- [x] **Step 1: Run strict preflight**
 
 Run:
 
 ```bash
 TARGET=public-real-full-experience MODE=plan scripts/smoke/real-model-controlled-smoke.sh
-TARGET=public-real-full-experience STRICT=true scripts/smoke/real-model-readiness-preflight.sh
+TARGET=public-real-full-experience MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 ```
 
-Expected: `READY` only when current shell has all keys and real-call gates set.
+Result: `MODE=plan` printed the unified controlled preflight command; `MODE=preflight` is `READY` only when current shell has all three credentials. Without credentials it reports only missing credential variables, not stack defaults that execute mode sets internally.
 
-- [ ] **Step 2: Execute one real sample**
+- [x] **Step 2: Execute one real sample**
 
 Only after preflight is ready:
 
@@ -138,13 +138,15 @@ Only after preflight is ready:
 ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh
 ```
 
-Expected: one work reaches `GENERATED / PACKAGE_READY`, frontend handoff reaches `PACKAGE_FETCHED`, and timestamped lyrics smoke records PASS or a sanitized failure reason.
+Result: one `chirp-fenix` work reached `GENERATED / PACKAGE_READY` with DeepSeek v4Pro lyrics, Yunwu Suno music, WellAPI Image2 cover, and local-process MP4. The first script run ended after package-ready because its ffprobe CSV parsing misread `video,` as missing video; the MP4 itself has H.264 video and AAC audio. Frontend handoff was not rerun in this cost-saving pass after the validation false-negative.
 
-- [ ] **Step 3: Decide subtitle strategy**
+- [x] **Step 3: Decide subtitle strategy**
 
 If timestamped lyrics returns usable aligned words, v3.1 uses provider timeline. If missing or failed, v3.1 defaults to no subtitles or weak lyric-card treatment; do not ship estimated line-by-line subtitles as the default.
 
-- [ ] **Step 4: Verify media quality**
+Decision: current Yunwu base URL did not expose a JSON timestamped lyrics endpoint. Default SunoAPI-compatible path returned 404; sampled `/suno/*` paths returned HTML. v3.1 must not depend on hard line-synced subtitles until the supplier confirms the correct path/base URL.
+
+- [x] **Step 4: Verify media quality**
 
 Run `ffprobe` on the generated MP4. Required evidence:
 
@@ -153,6 +155,8 @@ Run `ffprobe` on the generated MP4. Required evidence:
 - 1920x1080
 - playable in browser
 - subtitle strategy explicitly recorded
+
+Result: DB media assets contain audio, cover, video, and timeline. Local object storage MP4 was verified with H.264 video and AAC audio at 1920x1080. Browser playback remains a follow-up once frontend/manual test is rerun against this exact work.
 
 ---
 
@@ -164,19 +168,19 @@ Run `ffprobe` on the generated MP4. Required evidence:
 - Modify: `docs/integrations/suno-minimax-preintegration-notes.md`
 - Modify: `docs/project-progress.md`
 
-- [ ] **Step 1: Record DeepSeek evidence**
+- [x] **Step 1: Record DeepSeek evidence**
 
 Record model name, status, and sanitized failure if any. Do not record full prompts, lyrics payloads, keys, or raw responses.
 
-- [ ] **Step 2: Record Yunwu evidence**
+- [x] **Step 2: Record Yunwu evidence**
 
 Record `yunwu:suno:chirp-fenix`, provider trace presence, audio id presence, timestamped lyrics result, and retry/failure behavior.
 
-- [ ] **Step 3: Record WellAPI evidence**
+- [x] **Step 3: Record WellAPI evidence**
 
 Record cover provider, model, dimensions, object-storage import status, and no raw supplier URL retention.
 
-- [ ] **Step 4: Preserve DreamMaker production target**
+- [x] **Step 4: Preserve DreamMaker production target**
 
 Confirm docs still state DreamMaker music and DreamMaker Image2 are production targets, while Yunwu/WellAPI are public-network smoke paths only.
 

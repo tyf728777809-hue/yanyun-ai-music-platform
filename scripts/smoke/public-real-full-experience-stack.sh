@@ -477,7 +477,13 @@ resolve_local_object_path() {
 assert_mp4_has_audio_and_video() {
   local video_path="$1"
   local streams
-  streams="$(ffprobe -v error -show_entries stream=codec_type -of csv=p=0 "$video_path")"
+  streams="$(
+    ffprobe \
+      -v error \
+      -show_entries stream=codec_type \
+      -of default=noprint_wrappers=1:nokey=1 \
+      "$video_path"
+  )"
   if ! printf '%s\n' "$streams" | grep -qx 'video'; then
     fail "generated MP4 is missing video stream"
   fi

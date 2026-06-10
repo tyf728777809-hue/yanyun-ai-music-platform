@@ -18,7 +18,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - FR-3: The index MUST support these targets: `yunwu-suno`, `dreammaker-suno`, `dreammaker-minimax`, `deepseek`, `wellapi-image2`, `dreammaker-image2`, and `public-real-full-experience`.
 - FR-4: The index MUST clearly label DreamMaker music and DreamMaker Image 2 as production-target paths.
 - FR-5: The index MUST clearly label Yunwu and WellAPI as public-network smoke paths, not production replacements for DreamMaker.
-- FR-6: `MODE=preflight` MUST delegate to `scripts/smoke/real-model-readiness-preflight.sh` with the matching `TARGET` and `STRICT=true`.
+- FR-6: `MODE=preflight` MUST run the matching strict readiness preflight without calling suppliers. For combined targets such as `public-real-full-experience`, it MUST apply the same safe environment defaults that `MODE=execute` will apply before delegating, so preflight reports real operator gaps instead of script-internal defaults.
 - FR-7: `MODE=execute` MUST require a global explicit gate, `ALLOW_REAL_MODEL_SMOKE=1`, before delegating to any script that may call a real provider.
 - FR-8: `MODE=execute` MUST also rely on the target script's existing provider-specific `ALLOW_*` gate, so the index cannot bypass downstream safety controls.
 - FR-9: Targets without a dedicated safe execution script MAY refuse `MODE=execute` and print the relevant runbook path instead.
@@ -36,7 +36,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 
 - AC-1: Given no environment variables, when the command runs, then it lists supported targets and does not call any provider. Covers FR-1 and FR-2.
 - AC-2: Given `TARGET=dreammaker-suno MODE=plan`, when the command runs, then it labels DreamMaker as production-target and prints the DreamMaker runbook/script path. Covers FR-3 and FR-4.
-- AC-3: Given `TARGET=yunwu-suno MODE=preflight`, when the command runs, then it delegates to the readiness preflight for `yunwu-suno` with strict checks and does not call Yunwu directly. Covers FR-5 and FR-6.
+- AC-3: Given `TARGET=yunwu-suno MODE=preflight`, when the command runs, then it runs strict readiness checks for `yunwu-suno` and does not call Yunwu directly. Covers FR-5 and FR-6.
 - AC-4: Given `TARGET=yunwu-suno MODE=execute` without `ALLOW_REAL_MODEL_SMOKE=1`, when the command runs, then it exits non-zero before invoking preflight or the provider smoke script. Covers FR-7.
 - AC-5: Given `TARGET=deepseek MODE=execute` without `ALLOW_REAL_MODEL_SMOKE=1`, when the command runs, then it exits non-zero before invoking preflight or the DeepSeek smoke script. Covers FR-7.
 - AC-6: Given any mode, when output is scanned for likely `sk-...` or long Bearer token patterns, then no such value is emitted by the index itself. Covers FR-10.
@@ -44,6 +44,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - AC-8: Given `TARGET=deepseek MODE=execute` with global allow gate but missing `ALLOW_DEEPSEEK_REAL_SMOKE=1`, when strict preflight passes, then the delegated DeepSeek script still refuses before creating a work. Covers FR-8 and FR-11.
 - AC-9: Given `TARGET=public-real-full-experience MODE=plan`, when the command runs, then it prints the public full-experience role, the public full-experience script path, and both global and target allow gates. Covers FR-3, FR-8, and FR-12.
 - AC-10: Given `TARGET=public-real-full-experience MODE=execute` with global allow gate but missing `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`, when strict public full-experience preflight passes, then the delegated public full-experience script still refuses before service startup. Covers FR-8, FR-11, and FR-12.
+- AC-11: Given `TARGET=public-real-full-experience MODE=preflight` without current-shell provider credentials, when the command runs, then it reports missing `DEEPSEEK_API_KEY`, `YUNWU_API_KEY`, and `WELLAPI_API_KEY` without also reporting the environment defaults that the stack smoke itself supplies. Covers FR-6 and FR-12.
 
 ## Edge Cases
 

@@ -110,7 +110,7 @@ print_plan() {
   printf 'Role: '
   target_note "$target"
   printf 'Runbook: %s\n' "$runbook"
-  printf 'Preflight: TARGET=%s STRICT=true scripts/smoke/real-model-readiness-preflight.sh\n' "$target"
+  printf 'Preflight: TARGET=%s MODE=preflight scripts/smoke/real-model-controlled-smoke.sh\n' "$target"
 
   case "$target" in
     yunwu-suno)
@@ -229,7 +229,7 @@ case "$MODE" in
     ;;
   preflight)
     [[ -n "$TARGET" ]] || fail "MODE=preflight requires TARGET."
-    run_preflight "$TARGET"
+    run_execute_preflight "$TARGET"
     ;;
   execute)
     [[ -n "$TARGET" ]] || fail "MODE=execute requires TARGET."
