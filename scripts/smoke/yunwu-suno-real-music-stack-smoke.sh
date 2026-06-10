@@ -107,7 +107,7 @@ start_worker() {
   SUNO_BACKEND=yunwu \
   YUNWU_REAL_CALLS_ENABLED=true \
   YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}" \
-  YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}" \
+  YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}" \
   MUSIC_PROVIDER=suno \
   TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
   ./gradlew :apps:music-worker:bootRun >"$WORKER_LOG" 2>&1 &
@@ -120,7 +120,7 @@ start_api() {
   SUNO_BACKEND=yunwu \
   YUNWU_REAL_CALLS_ENABLED=true \
   YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}" \
-  YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}" \
+  YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}" \
   MUSIC_PROVIDER=suno \
   MUSIC_WORKFLOW_DISPATCH_MODE=outbox \
   WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
@@ -151,7 +151,7 @@ main() {
   export SUNO_BACKEND=yunwu
   export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
   export YUNWU_REAL_CALLS_ENABLED=true
-  export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+  export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
 
   mkdir -p "$LOG_DIR"
   WORKER_LOG="$LOG_DIR/music-worker.log"

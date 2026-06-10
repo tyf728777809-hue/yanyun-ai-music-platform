@@ -218,7 +218,7 @@ start_worker() {
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
-    export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+    export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
     export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
@@ -269,7 +269,7 @@ start_api() {
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
-    export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+    export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
     export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
@@ -654,7 +654,7 @@ main() {
   export SUNO_BACKEND=yunwu
   export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
   export YUNWU_REAL_CALLS_ENABLED=true
-  export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+  export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
   export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
   export IMAGE_PROVIDER=image2
   export IMAGE2_BACKEND=wellapi

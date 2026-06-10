@@ -11,7 +11,7 @@ public class YunwuProperties {
   private Duration requestTimeout = Duration.ofSeconds(30);
   private int maxPollAttempts = 60;
   private Duration pollInterval = Duration.ofSeconds(2);
-  private String sunoModel = "chirp-v5";
+  private String sunoModel = "chirp-fenix";
 
   public URI getBaseUrl() {
     return baseUrl;
@@ -70,6 +70,6 @@ public class YunwuProperties {
   }
 
   public void setSunoModel(String sunoModel) {
-    this.sunoModel = sunoModel == null || sunoModel.isBlank() ? "chirp-v5" : sunoModel.trim();
+    this.sunoModel = sunoModel == null || sunoModel.isBlank() ? "chirp-fenix" : sunoModel.trim();
   }
 }

@@ -77,7 +77,7 @@ Both Suno and MiniMax use DreamMaker task-style APIs:
 - Auth header: `Authorization: Bearer <YUNWU_API_KEY>`.
 - Submit endpoint: `POST /suno/submit/music`.
 - Poll endpoint: `GET /suno/fetch/{task_id}`.
-- Default model: `YUNWU_SUNO_MODEL=chirp-v5`.
+- Default model: `YUNWU_SUNO_MODEL=chirp-fenix`（对应 v5.5）。
 - Submit fields used by current adapter: `mv`, `make_instrumental=false`, `prompt`, `tags`, `title`.
 - Submit success may return `data` as the task id directly, or `data.task_id`; adapter parses both.
 - Status and audio URL shape is not fully documented; adapter tolerantly parses `status`, `data.status`,

@@ -198,7 +198,7 @@ export SUNO_BACKEND=yunwu
 export YUNWU_BASE_URL=https://yunwu.ai
 export YUNWU_API_KEY=...
 export YUNWU_REAL_CALLS_ENABLED=true
-export YUNWU_SUNO_MODEL=chirp-v5
+export YUNWU_SUNO_MODEL=chirp-fenix
 ```
 
 如需验证正式生产目标 DreamMaker Suno 路径，切换为：

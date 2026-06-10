@@ -51,12 +51,12 @@ class YunwuSunoMusicProviderTest {
     assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
     assertEquals(MusicProviderType.SUNO, result.providerType());
     assertEquals("task-1", result.providerTaskId());
-    assertEquals("yunwu:suno:chirp-v5", result.modelName());
+    assertEquals("yunwu:suno:chirp-fenix", result.modelName());
     assertEquals("https://cdn.example.test/song.mp3", result.audioSourceUrl());
     assertEquals("audio/mpeg", result.audioContentType());
     assertEquals(181_500, result.durationMs());
     assertEquals("Bearer " + TEST_API_KEY, authorizationHeader);
-    assertEquals("chirp-v5", requestBody.path("mv").asText());
+    assertEquals("chirp-fenix", requestBody.path("mv").asText());
     assertEquals("Border Ballad", requestBody.path("title").asText());
     assertEquals("cinematic folk,female voice", requestBody.path("tags").asText());
   }
@@ -165,7 +165,7 @@ class YunwuSunoMusicProviderTest {
     properties.setRequestTimeout(Duration.ofSeconds(5));
     properties.setPollInterval(Duration.ZERO);
     properties.setMaxPollAttempts(1);
-    properties.setSunoModel("chirp-v5");
+    properties.setSunoModel("chirp-fenix");
     return properties;
   }
 

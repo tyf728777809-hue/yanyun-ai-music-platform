@@ -8,7 +8,7 @@ CHECK_API="${CHECK_API:-false}"
 API_ROOT="${API_ROOT:-http://localhost:8080}"
 
 YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
-YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-v5}"
+YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
 DREAMMAKER_API_BASE_URL="${DREAMMAKER_API_BASE_URL:-https://api-all.dreammaker.netease.com}"
 DREAMMAKER_SUNO_MODEL="${DREAMMAKER_SUNO_MODEL:-chirp-crow}"
 MINIMAX_MODEL="${MINIMAX_MODEL:-minimax-music-2.6}"
