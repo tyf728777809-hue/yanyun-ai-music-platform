@@ -43,7 +43,7 @@ v3 默认方向定义为：
 
 - 更像一支电影风景短片，强调雾、月、雪、远山、城门、人物背影和长镜头。
 - 氛围上限高，但严重依赖封面/底板质量；如果图片不够好，整支视频会塌。
-- 可作为后续高级模板或活动模板，不作为当前默认模板。
+- 已被默认视频 v5 方向取代，不再作为后续高级模板或活动模板推进。
 
 ## 4. v3 视觉定位
 
@@ -150,7 +150,7 @@ text, logo, watermark, subtitles, UI, player controls, poster typography, busy c
 - 颜色用低透明米白、暗金或冷青灰。
 - v3 首版可继续用确定性伪波形，但视觉上要更细、更轻、更像刻度或声纹。
 - 后续 v3.1 再升级真实音频分析波形。
-- v3.1 默认不得依赖未验证的 provider hard line-synced subtitles；Yunwu timestamped lyrics 当前为 `blocked_provider_path` 时，优先使用无硬同步字幕或弱歌词卡方案。
+- v3.1 已被默认视频 v5 取代；Yunwu timestamped lyrics 当前为 `blocked_provider_path` 时，当前产品路径只使用无字幕默认视频。
 
 ### 6.7 进度层
 
@@ -274,4 +274,4 @@ v3 建议在 metadata 中补充：
 6. 用 `render:sample` 输出本地样例，抽帧检查 0s、2s、主歌、副歌、片尾。
 7. 再用公网真实完整链路输出一支真实样本，人工检查视觉质量和播放体验。
 8. 按 `docs/specs/lyric-video-16x9-v3-1-quality-acceptance.md` 确认字幕策略和媒体质量。
-9. 质量通过后，更新默认模板或保留为可选高级模板。
+9. 该方案已停止推进；默认视频改为 v5 专辑封面快速成片。

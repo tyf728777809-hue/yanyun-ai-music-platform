@@ -39,11 +39,11 @@ class MockCreativeBriefAgentTest {
     AgentRunRecord record = records.getFirst();
     assertEquals("work-1", record.workId());
     assertEquals("CreativeBriefAgent", record.agentName());
-    assertEquals("v0.1", record.agentVersion());
+    assertEquals("v0.5", record.agentVersion());
     assertEquals("INSPIRATION", record.operation());
     assertEquals("mock-creative-brief", record.modelName());
-    assertEquals("creative.brief.v1", record.promptTemplateKey());
-    assertEquals(1, record.promptTemplateVersion());
+    assertEquals("creative.brief.v5", record.promptTemplateKey());
+    assertEquals(5, record.promptTemplateVersion());
     assertEquals(AgentRunStatus.SUCCEEDED, record.status());
     assertNotNull(record.inputHash());
     assertNotNull(record.outputHash());
@@ -61,5 +61,44 @@ class MockCreativeBriefAgentTest {
     assertEquals("ancient chinese folk pop", result.musicDirection());
     assertEquals(List.of(), result.yanyunReferences());
     assertEquals("user-lyrics-centered", result.narrativeViewpoint());
+  }
+
+  @Test
+  void rejectsUnrelatedIpButAllowsYanyunStyleRewrite() {
+    CreativeBriefResult rejected =
+        new MockCreativeBriefAgent()
+            .generate(
+                new CreativeBriefRequest(
+                    "user-1",
+                    "work-1",
+                    "INSPIRATION",
+                    "写一首高达歌",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    List.of()));
+
+    assertEquals(CreativeDomainDecision.REJECT, rejected.domainDecision());
+    assertTrue(rejected.userFacingMessage().contains("燕云十六声"));
+
+    CreativeBriefResult rewrite =
+        new MockCreativeBriefAgent()
+            .generate(
+                new CreativeBriefRequest(
+                    "user-1",
+                    "work-2",
+                    "INSPIRATION",
+                    "写一首有高达那种热血孤独感的燕云歌",
+                    null,
+                    null,
+                    null,
+                    "周杰伦风格",
+                    null,
+                    List.of()));
+
+    assertEquals(CreativeDomainDecision.REWRITE_TO_YANYUN, rewrite.domainDecision());
+    assertTrue(rewrite.yanyunRewriteSuggestion().contains("燕云十六声"));
   }
 }

@@ -190,7 +190,7 @@ async function runMainFlow(page) {
 async function createFailedWork() {
   const created = await apiRequest('/api/v1/works/lyrics', {
     body: {
-      song_title: '失败重试 UI Smoke',
+      song_title: '雁门重燃',
       lyrics_input: '雁门风起，试一次失败再重试',
     },
     idempotencyKey: idempotencyKey('failure-lyrics'),

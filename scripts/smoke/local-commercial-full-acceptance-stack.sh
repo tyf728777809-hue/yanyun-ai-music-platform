@@ -141,10 +141,8 @@ wait_for_api() {
 }
 
 assert_dependencies() {
-  [[ -d "${REPO_ROOT}/apps/render-worker/node_modules" ]] \
-    || fail "apps/render-worker/node_modules is missing; run cd apps/render-worker && npm install"
-  [[ -x "${REPO_ROOT}/apps/render-worker/node_modules/.bin/remotion" ]] \
-    || fail "render-worker Remotion binary is missing; run cd apps/render-worker && npm install"
+  need_command ffmpeg
+  need_command ffprobe
   [[ -d "${REPO_ROOT}/prototypes/Claude-web-v1/node_modules" ]] \
     || fail "prototypes/Claude-web-v1/node_modules is missing; run cd prototypes/Claude-web-v1 && npm install"
   [[ -x "${REPO_ROOT}/prototypes/Claude-web-v1/node_modules/.bin/vite" ]] \
@@ -196,12 +194,12 @@ run_backend_stack() {
 }
 
 run_mp4_stack() {
-  log "phase 2/3: local-process MP4 backend smoke"
-  start_api "local-process-mp4" "local-process"
+  log "phase 2/3: album-ffmpeg MP4 backend smoke"
+  start_api "album-ffmpeg-mp4" "album-ffmpeg"
   API_BASE_URL="${API_ROOT}/api/v1" \
   API_HEALTH_URL="${API_ROOT}/health" \
   EXPECTED_DURATION_MS="$EXPECTED_DURATION_MS" \
-  EXPECT_RENDER_WORKER=local-process \
+  EXPECT_RENDER_WORKER=album-ffmpeg \
     scripts/smoke/api-main-flow.sh
   stop_api
 }

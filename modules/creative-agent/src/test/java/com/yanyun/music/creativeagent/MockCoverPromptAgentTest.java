@@ -39,11 +39,11 @@ class MockCoverPromptAgentTest {
     AgentRunRecord record = records.getFirst();
     assertEquals("work-1", record.workId());
     assertEquals("CoverPromptAgent", record.agentName());
-    assertEquals("v0.1", record.agentVersion());
+    assertEquals("v0.5", record.agentVersion());
     assertEquals("COVER_PROMPT", record.operation());
     assertEquals("mock-cover-prompt", record.modelName());
-    assertEquals("cover.prompt.v1", record.promptTemplateKey());
-    assertEquals(1, record.promptTemplateVersion());
+    assertEquals("cover.prompt.v5", record.promptTemplateKey());
+    assertEquals(5, record.promptTemplateVersion());
     assertEquals(AgentRunStatus.SUCCEEDED, record.status());
     assertNotNull(record.inputHash());
     assertNotNull(record.outputHash());
@@ -57,6 +57,8 @@ class MockCoverPromptAgentTest {
             .generate(new CoverPromptRequest("work-1", null, null, null, null, null, null, null));
 
     assertTrue(result.visualPrompt().contains("Yanyun AI Music Cover"));
+    assertTrue(result.visualPrompt().contains("title typography"));
+    assertTrue(result.textPrompt().contains("song title"));
     assertEquals(1920, result.width());
     assertEquals(1080, result.height());
   }

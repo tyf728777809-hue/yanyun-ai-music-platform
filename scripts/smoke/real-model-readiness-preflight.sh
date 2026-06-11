@@ -252,7 +252,7 @@ check_public_real_full_experience() {
     append_blocker "DREAMMAKER_REAL_CALLS_ENABLED must be false for public full experience"
   fi
   [ "${TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE:-legacy}" = "legacy" ] || append_blocker "TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE must be legacy"
-  [ "${RENDER_WORKER_MODE:-}" = "local-process" ] || append_blocker "RENDER_WORKER_MODE must be local-process"
+  [ "${RENDER_WORKER_MODE:-}" = "album-ffmpeg" ] || append_blocker "RENDER_WORKER_MODE must be album-ffmpeg"
 
   local status
   status="$(status_from_missing_and_blockers "$enabled")"

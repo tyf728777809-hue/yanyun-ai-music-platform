@@ -198,6 +198,36 @@ public class WorkRepository {
         jobId);
   }
 
+  public boolean markGenerationStage(UUID workId, UUID jobId, GenerationStage stage) {
+    int workUpdated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET generation_stage = ?,
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND status = ?
+            """,
+            stage.name(),
+            workId,
+            WorkStatus.GENERATING.name());
+    jdbcTemplate.update(
+        """
+        UPDATE generation_jobs
+        SET stage = ?,
+            updated_at = now()
+        WHERE id = ?
+          AND work_id = ?
+          AND status = ?
+        """,
+        stage.name(),
+        jobId,
+        workId,
+        "RUNNING");
+    return workUpdated == 1;
+  }
+
   public void upsertGenerationJobStep(GenerationJobStepRow step) {
     jdbcTemplate.update(
         """

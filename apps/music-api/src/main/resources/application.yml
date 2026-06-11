@@ -103,6 +103,8 @@ yanyun:
     composition-id: ${RENDER_WORKER_COMPOSITION_ID:LyricVideo16x9V2}
     video-object-key-prefix: ${RENDER_WORKER_VIDEO_OBJECT_KEY_PREFIX:videos}
     timeline-object-key-prefix: ${RENDER_WORKER_TIMELINE_OBJECT_KEY_PREFIX:timelines}
+    ffmpeg-command: ${RENDER_WORKER_FFMPEG_COMMAND:ffmpeg}
+    ffprobe-command: ${RENDER_WORKER_FFPROBE_COMMAND:ffprobe}
   storage:
     provider: ${OBJECT_STORAGE_PROVIDER:local}
     environment: ${YANYUN_ENV:local}

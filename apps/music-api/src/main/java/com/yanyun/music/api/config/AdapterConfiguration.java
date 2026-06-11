@@ -19,7 +19,11 @@ import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekProperties;
 import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
+import com.yanyun.music.deepseek.RealDeepSeekCoverPromptAgent;
+import com.yanyun.music.deepseek.RealDeepSeekCreativeBriefAgent;
 import com.yanyun.music.deepseek.RealDeepSeekLyricsClient;
+import com.yanyun.music.deepseek.RealDeepSeekMusicPromptAgent;
+import com.yanyun.music.deepseek.RealDeepSeekQualityEvaluationAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -137,7 +141,13 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  MusicPromptAgent musicPromptAgent(AgentRunRecorder agentRunRecorder) {
+  MusicPromptAgent musicPromptAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekMusicPromptAgent(deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockMusicPromptAgent(agentRunRecorder);
   }
 
@@ -147,17 +157,36 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  CreativeBriefAgent creativeBriefAgent(AgentRunRecorder agentRunRecorder) {
+  CreativeBriefAgent creativeBriefAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekCreativeBriefAgent(deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockCreativeBriefAgent(agentRunRecorder);
   }
 
   @Bean
-  CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
+  CoverPromptAgent coverPromptAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekCoverPromptAgent(deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockCoverPromptAgent(agentRunRecorder);
   }
 
   @Bean
-  QualityEvaluationAgent qualityEvaluationAgent(AgentRunRecorder agentRunRecorder) {
+  QualityEvaluationAgent qualityEvaluationAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekQualityEvaluationAgent(
+          deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockQualityEvaluationAgent(agentRunRecorder);
   }
 
@@ -167,12 +196,14 @@ public class AdapterConfiguration {
       PromptTemplateService promptTemplateService,
       CreativeBriefAgent creativeBriefAgent,
       DeepSeekLyricsClient deepSeekLyricsClient,
+      QualityEvaluationAgent qualityEvaluationAgent,
       AgentRunRecorder agentRunRecorder) {
     return new DefaultLyricsGenerationService(
         knowledgeService,
         promptTemplateService,
         creativeBriefAgent,
         deepSeekLyricsClient,
+        qualityEvaluationAgent,
         agentRunRecorder);
   }
 

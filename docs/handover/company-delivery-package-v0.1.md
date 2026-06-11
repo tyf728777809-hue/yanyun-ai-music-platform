@@ -82,10 +82,10 @@ STRICT_GIT_CLEAN=true scripts/smoke/local-delivery-evidence-audit.sh
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 ```
 
-如果要验证本地 Remotion MP4 成片边界：
+如果要验证本地 album-ffmpeg MP4 成片边界：
 
 ```bash
-RENDER_WORKER_MODE=local-process EXPECT_RENDER_WORKER=local-process \
+RENDER_WORKER_MODE=album-ffmpeg EXPECT_RENDER_WORKER=album-ffmpeg \
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 ```
 
@@ -184,7 +184,7 @@ TARGET=dreammaker-image2 MODE=plan scripts/smoke/real-model-controlled-smoke.sh
 | OpenAPI 运行时契约 | `scripts/smoke/openapi-contract.sh` |
 | 本地主链路 | `EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh` |
 | Mock 发布包审核阻断 | `MOCK_USER_ID=mock_package_block_smoke scripts/smoke/api-package-blocked-flow.sh` |
-| 本地 MP4 成片 | `RENDER_WORKER_MODE=local-process EXPECT_RENDER_WORKER=local-process EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh` |
+| 本地 MP4 成片 | `RENDER_WORKER_MODE=album-ffmpeg EXPECT_RENDER_WORKER=album-ffmpeg EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh` |
 | 前端真实后端模式 | `cd prototypes/Claude-web-v1 && npm run smoke:real-backend` |
 | 真实模型计划 / 预检 | `TARGET=<target> MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh` |
 | DeepSeek 单样本写词 smoke | `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 TARGET=deepseek MODE=execute scripts/smoke/real-model-controlled-smoke.sh` |

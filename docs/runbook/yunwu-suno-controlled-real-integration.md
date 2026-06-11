@@ -23,7 +23,9 @@ export YUNWU_BASE_URL=https://yunwu.ai
 export YUNWU_API_KEY="<from-secure-channel>"
 export YUNWU_REAL_CALLS_ENABLED=true
 export YUNWU_SUNO_MODEL=chirp-fenix
-export YUNWU_REQUEST_TIMEOUT=90s
+export YUNWU_REQUEST_TIMEOUT=300s
+export YUNWU_MAX_POLL_ATTEMPTS=180
+export YUNWU_POLL_INTERVAL=2s
 export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
 export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
 export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
@@ -85,7 +87,7 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 
 ## 时间轴歌词验证
 
-如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。优先通过公网完整体验脚本自动执行；如需只测时间轴，可用下面的低层脚本。当前结论是 `blocked_provider_path`，除非供应商给出新的 base URL / path / request body，否则 v3.1 视频验收应采用无硬同步字幕或弱歌词卡方案。
+如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。公网完整体验脚本默认不再检查时间轴；如需只测时间轴，可用下面的低层脚本，或显式设置 `CHECK_YUNWU_TIMESTAMPED_LYRICS=true`。当前结论是 `blocked_provider_path`，除非供应商给出新的 base URL / path / request body，否则默认视频验收采用无字幕方案。
 
 ```bash
 ALLOW_REAL_MODEL_SMOKE=1 \

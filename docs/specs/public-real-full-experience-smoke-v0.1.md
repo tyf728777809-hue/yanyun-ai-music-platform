@@ -7,14 +7,14 @@ Reviewers: User
 
 ## Context
 
-The local commercial baseline can already verify the full Mock product loop, local-process MP4 rendering, and Claude Web v1 against a real backend. Separately, the repository has controlled single-provider smoke scripts for DeepSeek, Yunwu Suno, and WellAPI Image 2. The next public-network milestone is a single real-product experience that combines those public-network providers while keeping company systems mocked.
+The local commercial baseline can already verify the full Mock product loop, album-ffmpeg MP4 rendering, and Claude Web v1 against a real backend. Separately, the repository has controlled single-provider smoke scripts for DeepSeek, Yunwu Suno, and WellAPI Image 2. The next public-network milestone is a single real-product experience that combines those public-network providers while keeping company systems mocked.
 
 DreamMaker music and DreamMaker Image 2 remain the production-target paths. This public-network smoke exists only because the current local environment is outside the company intranet. Yunwu and WellAPI success must not be recorded as DreamMaker production validation.
 
 ## Functional Requirements
 
 - FR-1: The smoke MUST run only when `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`.
-- FR-2: The smoke MUST use DeepSeek for lyrics, Yunwu Suno for music, WellAPI Image 2 for cover, local-process render-worker for MP4, and Claude Web v1 for the user-facing check.
+- FR-2: The smoke MUST use DeepSeek for lyrics, Yunwu Suno for music, WellAPI Image 2 for cover, album-ffmpeg renderer for MP4, and Claude Web v1 for the user-facing check.
 - FR-3: The smoke MUST keep company account, moderation, quota, publish, and share adapters in Mock mode.
 - FR-4: The smoke MUST keep DreamMaker real calls disabled while still preserving DreamMaker as the documented production target.
 - FR-5: The smoke MUST require credentials from the current shell only and MUST NOT read or write credential files.
@@ -24,7 +24,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - FR-9: The smoke MUST create one work, use real DeepSeek lyrics, confirm with `music_provider=suno`, wait for `GENERATED / PACKAGE_READY`, fetch the publish package, verify media summaries, open Claude Web v1, refresh the handoff link, and mark the package fetched.
 - FR-10: The smoke output MUST be sanitized and MUST NOT print API keys, Bearer tokens, full prompts, complete lyrics, provider raw payloads, supplier media URLs, platform signed URLs, full provider task ids, or full provider trace ids.
 - FR-11: The smoke MUST be available from the unified real-model controlled smoke index as `TARGET=public-real-full-experience` and MUST still require `ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1`.
-- FR-12: If the work fails with `MUSIC_GENERATION_FAILED` and `available_actions` contains `RETRY_MUSIC`, the smoke MAY use the product retry endpoint with `music_provider=suno`; it MUST NOT retry by guessing state outside `available_actions`.
+- FR-12: If the work fails with `MUSIC_GENERATION_FAILED`, `MUSIC_QUALITY_FAILED`, `PROVIDER_TIMEOUT`, or `RATE_LIMITED` and `available_actions` contains `RETRY_MUSIC`, the smoke MAY use the product retry endpoint with `music_provider=suno` only when `MAX_MUSIC_RETRY_ATTEMPTS` is explicitly greater than `0`; it MUST NOT retry by guessing state outside `available_actions`.
 - FR-13: The publish package verification MUST require audio, cover, video, and lyrics timeline URL presence without printing the URLs.
 - FR-14: After a successful Yunwu Suno music sample, the smoke SHOULD verify timestamped lyrics via the gated `yunwu-suno-timestamped-lyrics-smoke.sh` subcheck using the paired `provider_task_id + provider_audio_id` stored on the platform `AUDIO` asset.
 - FR-15: Timestamped lyrics verification MUST NOT print or persist raw provider payloads, full aligned word arrays, full lyrics text, supplier media URLs, Bearer tokens, or signed URLs.
@@ -36,8 +36,8 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - NFR-3: The script SHOULD write raw application logs only under `build/smoke/...`, which is not a committed evidence location.
 - NFR-4: The script SHOULD complete with one real work sample unless external provider latency exceeds the configured polling window.
 - NFR-5: The script SHOULD default WellAPI Image 2 request timeout to at least `180s` so a synchronous public image generation call is not cut off by the API default `30s` timeout.
-- NFR-6: The script SHOULD default Yunwu request timeout to at least `90s` and rely on the platform remote object importer to follow redirects and retry transient media CDN download failures.
-- NFR-7: Timestamped lyrics verification SHOULD be enabled by default for public full experience, but MAY be skipped with `CHECK_YUNWU_TIMESTAMPED_LYRICS=false` when isolating unrelated API/worker/frontend failures.
+- NFR-6: The script SHOULD default Yunwu request timeout to at least `300s`, `YUNWU_MAX_POLL_ATTEMPTS` to at least `180`, and `YUNWU_POLL_INTERVAL` to `2s`, so one public music task can wait roughly 6 minutes before being judged as timeout. The script SHOULD default `MAX_MUSIC_RETRY_ATTEMPTS=0` to avoid multiplying real music cost unless an operator explicitly enables product retries.
+- NFR-7: Timestamped lyrics verification SHOULD be disabled by default for public full experience while the current product path uses no-subtitle default videos; operators MAY enable it explicitly with `CHECK_YUNWU_TIMESTAMPED_LYRICS=true` when testing provider timestamp support.
 
 ## Acceptance Criteria
 
@@ -59,7 +59,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - EC-3: If Claude Web v1 cannot load the finished work, the script MUST fail even when API generated the publish package.
 - EC-4: If mark-fetched succeeds but package status remains not fetched, the script MUST fail.
 - EC-5: If a future change removes DreamMaker production docs or provider guards, this smoke still MUST NOT be used as replacement evidence.
-- EC-6: If timestamped lyrics fails but the main media package is otherwise ready, operators MAY rerun with `CHECK_YUNWU_TIMESTAMPED_LYRICS=false` only to debug the product chain; the official subtitle-sync decision remains unresolved until the timestamped check passes.
+- EC-6: If timestamped lyrics is explicitly enabled and fails while the main media package is otherwise ready, record it as `blocked_provider_path`; it MUST NOT fail the no-subtitle default video acceptance.
 
 ## API Contracts
 

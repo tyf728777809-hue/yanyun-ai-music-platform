@@ -24,7 +24,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - FR-7: The preflight MUST check DreamMaker production-target paths retain `DREAMMAKER_REAL_CALLS_ENABLED`, `DREAMMAKER_API_BASE_URL`, `DREAMMAKER_ACCESS_KEY`, and `DREAMMAKER_SECRET_KEY`.
 - FR-8: The preflight MUST distinguish disabled targets from blocked targets.
 - FR-9: When optional API readiness is enabled, the preflight MUST scan readiness responses for obvious `sk-...` or long Bearer token leaks before printing summaries.
-- FR-10: `TARGET=public-real-full-experience` MUST check the combined public-network configuration for DeepSeek, Yunwu Suno, WellAPI Image 2, outbox/Temporal dispatch, legacy workflow mode, local-process rendering, and DreamMaker real calls disabled.
+- FR-10: `TARGET=public-real-full-experience` MUST check the combined public-network configuration for DeepSeek, Yunwu Suno, WellAPI Image 2, outbox/Temporal dispatch, legacy workflow mode, album-ffmpeg rendering, and DreamMaker real calls disabled.
 
 ## Non-Functional Requirements
 
@@ -40,7 +40,7 @@ DreamMaker remains the mandatory production target for music and Image 2. Yunwu 
 - AC-3: Given a real music target is selected with `STRICT=true` and dispatch mode is not `outbox/temporal` with dispatcher enabled, when the preflight runs, then it exits non-zero. Covers FR-6.
 - AC-4: Given `TARGET=dreammaker-image2 STRICT=true` with DreamMaker AK/SK and image switches configured, when the preflight runs, then it can mark the target ready without requiring music outbox settings. Covers FR-6 and FR-7.
 - AC-5: Given `CHECK_API=true` and API readiness contains an obvious key or Bearer token, when the preflight runs, then it fails before printing the full response. Covers FR-9.
-- AC-6: Given `TARGET=public-real-full-experience STRICT=true` with DeepSeek, Yunwu, WellAPI, Temporal dispatch, legacy workflow, local-process render, and DreamMaker disabled variables configured, when the preflight runs, then it can mark the combined target ready without printing secret values. Covers FR-4, FR-5, and FR-10.
+- AC-6: Given `TARGET=public-real-full-experience STRICT=true` with DeepSeek, Yunwu, WellAPI, Temporal dispatch, legacy workflow, album-ffmpeg render, and DreamMaker disabled variables configured, when the preflight runs, then it can mark the combined target ready without printing secret values. Covers FR-4, FR-5, and FR-10.
 
 ## Edge Cases
 

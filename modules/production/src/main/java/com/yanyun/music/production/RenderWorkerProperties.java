@@ -14,6 +14,8 @@ public final class RenderWorkerProperties {
   private String compositionId = "LyricVideo16x9V2";
   private String videoObjectKeyPrefix = "videos";
   private String timelineObjectKeyPrefix = "timelines";
+  private String ffmpegCommand = "ffmpeg";
+  private String ffprobeCommand = "ffprobe";
 
   public String getMode() {
     return mode;
@@ -77,6 +79,22 @@ public final class RenderWorkerProperties {
 
   public void setTimelineObjectKeyPrefix(String timelineObjectKeyPrefix) {
     this.timelineObjectKeyPrefix = timelineObjectKeyPrefix;
+  }
+
+  public String getFfmpegCommand() {
+    return ffmpegCommand == null || ffmpegCommand.isBlank() ? "ffmpeg" : ffmpegCommand.trim();
+  }
+
+  public void setFfmpegCommand(String ffmpegCommand) {
+    this.ffmpegCommand = ffmpegCommand;
+  }
+
+  public String getFfprobeCommand() {
+    return ffprobeCommand == null || ffprobeCommand.isBlank() ? "ffprobe" : ffprobeCommand.trim();
+  }
+
+  public void setFfprobeCommand(String ffprobeCommand) {
+    this.ffprobeCommand = ffprobeCommand;
   }
 
   String normalizedMode() {

@@ -93,7 +93,7 @@ target_note() {
       printf '%s\n' "DreamMaker Image 2 is a production-target path. Open only the Image 2 path for first smoke; keep music/DeepSeek/company systems mocked."
       ;;
     public-real-full-experience)
-      printf '%s\n' "Public real full experience opens DeepSeek, Yunwu Suno, WellAPI Image 2, local-process MP4, and Claude Web v1 together. It is not DreamMaker production validation."
+      printf '%s\n' "Public real full experience opens DeepSeek, Yunwu Suno, WellAPI Image 2, album-ffmpeg MP4, and Claude Web v1 together. It is not DreamMaker production validation."
       ;;
     *)
       fail "Unsupported target: $1"
@@ -163,7 +163,7 @@ run_execute_preflight() {
       WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal \
       WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true \
       TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
-      RENDER_WORKER_MODE=local-process \
+      RENDER_WORKER_MODE=album-ffmpeg \
         "$PREFLIGHT"
       ;;
     *)

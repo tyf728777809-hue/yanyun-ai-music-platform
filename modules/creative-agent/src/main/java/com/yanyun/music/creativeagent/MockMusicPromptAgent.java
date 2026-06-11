@@ -11,10 +11,10 @@ import java.util.Map;
 public final class MockMusicPromptAgent implements MusicPromptAgent {
 
   private static final String AGENT_NAME = "MusicPromptAgent";
-  private static final String AGENT_VERSION = "v0.1";
+  private static final String AGENT_VERSION = "v0.5";
   private static final String MODEL_NAME = "mock-music-prompt";
-  private static final String TEMPLATE_KEY = "music.prompt.v1";
-  private static final int TEMPLATE_VERSION = 1;
+  private static final String TEMPLATE_KEY = "music.prompt.v5";
+  private static final int TEMPLATE_VERSION = 5;
 
   private final AgentRunRecorder agentRunRecorder;
 
@@ -47,9 +47,10 @@ public final class MockMusicPromptAgent implements MusicPromptAgent {
     String provider = firstNonBlank(request.musicProvider(), "MOCK").toUpperCase(Locale.ROOT);
     String vocal = firstNonBlank(request.vocalPreference(), "AUTO");
     String base =
-        firstNonBlank(
-            request.musicPromptSeed(),
-            "ancient chinese folk pop, cinematic, yanyun-inspired, steady verse chorus");
+        sanitizedStyle(
+            firstNonBlank(
+                request.musicPromptSeed(),
+                "ancient chinese folk pop, cinematic, yanyun-inspired, steady verse chorus"));
     String titlePart =
         request.songTitle() == null || request.songTitle().isBlank()
             ? ""
@@ -73,7 +74,21 @@ public final class MockMusicPromptAgent implements MusicPromptAgent {
             "prompt_template_key",
             TEMPLATE_KEY,
             "prompt_template_version",
-            TEMPLATE_VERSION));
+            TEMPLATE_VERSION),
+        request.songTitle(),
+        request.lyricsText(),
+        prompt,
+        "no direct real singer imitation, no vocal clone, no unrelated IP names",
+        Map.of("target_provider", provider, "custom_mode", true));
+  }
+
+  private String sanitizedStyle(String value) {
+    String sanitized = value.replace("周杰伦", "Chinese pop R&B with light rap rhythmic phrasing");
+    sanitized =
+        sanitized.replaceAll("(?i)jay\\s*chou", "Chinese pop R&B with light rap rhythmic phrasing");
+    sanitized = sanitized.replace("仿唱", "");
+    sanitized = sanitized.replace("声线模仿", "");
+    return sanitized;
   }
 
   private void record(
@@ -115,7 +130,15 @@ public final class MockMusicPromptAgent implements MusicPromptAgent {
   }
 
   private String outputFingerprint(MusicPromptResult result) {
-    return result.musicPrompt() + "\n" + result.providerOptions().toString();
+    return String.join(
+        "\n",
+        result.musicPrompt(),
+        result.providerOptions().toString(),
+        nullToEmpty(result.title()),
+        nullToEmpty(result.lyricsWithStructureTags()),
+        nullToEmpty(result.stylePrompt()),
+        nullToEmpty(result.excludePrompt()),
+        result.advancedOptions().toString());
   }
 
   private int elapsedMs(long startedAt) {

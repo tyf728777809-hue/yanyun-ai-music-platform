@@ -7,7 +7,7 @@ Reviewers: User
 
 ## Context
 
-The local commercial baseline has separate verification entries for backend Mock flow, OpenAPI contract, company Adapter readiness, publish-package moderation block, local-process MP4 rendering, and Claude Web v1 real-backend UI smoke. These are individually useful, but final local handoff still requires an operator to run them in the correct order with the correct Mock-only environment.
+The local commercial baseline has separate verification entries for backend Mock flow, OpenAPI contract, company Adapter readiness, publish-package moderation block, album-ffmpeg MP4 rendering, and Claude Web v1 real-backend UI smoke. These are individually useful, but final local handoff still requires an operator to run them in the correct order with the correct Mock-only environment.
 
 This full acceptance stack provides one high-level local gate for "can I hand this to the user/company for local testing?" It composes the existing lower-level scripts instead of duplicating their assertions.
 
@@ -16,7 +16,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target provider pa
 ## Functional Requirements
 
 - FR-1: The script MUST first run `scripts/smoke/local-commercial-backend-acceptance-stack.sh`.
-- FR-2: The script MUST then start `music-api` in `RENDER_WORKER_MODE=local-process` and run `api-main-flow.sh` with `EXPECT_RENDER_WORKER=local-process` to verify MP4 and timeline output.
+- FR-2: The script MUST then start `music-api` in `RENDER_WORKER_MODE=album-ffmpeg` and run `api-main-flow.sh` with `EXPECT_RENDER_WORKER=album-ffmpeg` to verify MP4 and timeline output.
 - FR-3: The script MUST then start `music-api` in Mock render mode and run `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`.
 - FR-4: The script MUST stop any API process it starts between phases and on failure or interruption.
 - FR-5: The script MUST explicitly keep DreamMaker, Yunwu, DeepSeek, Image 2, Agent real calls, and company-system calls disabled.
@@ -35,7 +35,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target provider pa
 ## Acceptance Criteria
 
 - AC-1: Given Docker infrastructure is running and ports are free, when the script runs, then the backend acceptance stack passes before MP4 or frontend phases run. Covers FR-1.
-- AC-2: Given render-worker dependencies and `ffprobe` are available, when the MP4 phase runs, then `api-main-flow.sh` verifies local-process MP4 output through `ffprobe`. Covers FR-2 and FR-6.
+- AC-2: Given render-worker dependencies and `ffprobe` are available, when the MP4 phase runs, then `api-main-flow.sh` verifies album-ffmpeg MP4 output through `ffprobe`. Covers FR-2 and FR-6.
 - AC-3: Given Claude Web v1 dependencies and Playwright are available, when the frontend phase runs, then `npm run smoke:real-backend` passes against the API started by this script. Covers FR-3 and FR-6.
 - AC-4: Given any phase fails, when the script exits, then it stops started API processes and prints log paths. Covers FR-4 and FR-7.
 - AC-5: Given readiness checks inside lower-level scripts run, then real provider calls remain disabled and DreamMaker guard remains visible as the production-target guard. Covers FR-5 and FR-8.
@@ -55,7 +55,7 @@ N/A - this is a local shell stack smoke that composes existing commands:
 
 ```text
 scripts/smoke/local-commercial-backend-acceptance-stack.sh
-EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
+EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=album-ffmpeg scripts/smoke/api-main-flow.sh
 cd prototypes/Claude-web-v1 && npm run smoke:real-backend
 ```
 

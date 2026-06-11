@@ -142,7 +142,10 @@ test('blank lyrics still produce a safe renderable timeline', () => {
 });
 
 test('lyric section labels are not rendered as standalone subtitles', () => {
-  const lines = lyricLinesFromText('主歌1:\n第一句\n副歌:\n第二句', 120);
+  const lines = lyricLinesFromText(
+    '主歌1:\n第一句\n[Pre-Chorus]\n第二句\n[Chorus]\n第三句',
+    120,
+  );
 
   assert.deepEqual(
     lines.map((line) => line.text),

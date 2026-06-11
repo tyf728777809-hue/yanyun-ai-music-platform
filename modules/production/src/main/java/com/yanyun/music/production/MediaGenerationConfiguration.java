@@ -59,10 +59,14 @@ public class MediaGenerationConfiguration {
       RenderWorkerProperties renderWorkerProperties,
       ObjectStorageClient objectStorageClient,
       ObjectMapper objectMapper) {
-    if ("local-process".equals(renderWorkerProperties.normalizedMode())) {
-      return new LocalProcessVideoRenderService(
+    String mode = renderWorkerProperties.normalizedMode();
+    if ("album-ffmpeg".equals(mode) || "ffmpeg-album".equals(mode)) {
+      return new FfmpegAlbumVideoRenderService(
           renderWorkerProperties, objectStorageClient, objectMapper);
     }
-    return new MockVideoRenderService();
+    if ("mock".equals(mode)) {
+      return new MockVideoRenderService();
+    }
+    throw new IllegalArgumentException("Unsupported render worker mode: " + mode);
   }
 }

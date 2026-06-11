@@ -2,6 +2,8 @@
 
 更新时间：2026-06-11
 
+> 2026-06-12 更新：四类创作 Agent 的最新设计与真实 DeepSeek 接入规则已升级到 `docs/specs/yanyun-creative-agent-v0.5.md`。本文件保留为 v0.2 Prompt 历史基线，其中 `LyricsAgent` v0.2 仍是写词系统提示词的重要来源，但 `CreativeBriefAgent`、`MusicPromptAgent`、`CoverPromptAgent`、`QualityEvaluationAgent` 的当前运行口径以 v0.5 为准。
+
 ## 1. 标题与元数据
 
 - 标题：燕云 AI 作曲平台四类创作 Agent Master Prompt

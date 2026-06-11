@@ -16,13 +16,18 @@ import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.CoverPromptRequest;
+import com.yanyun.music.creativeagent.CoverPromptResult;
 import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockModerationAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.ModerationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
+import com.yanyun.music.creativeagent.QualityDecision;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationRequest;
+import com.yanyun.music.creativeagent.QualityEvaluationResult;
+import com.yanyun.music.creativeagent.QualityGate;
 import com.yanyun.music.image2.CoverGenerationService;
 import com.yanyun.music.image2.MockCoverGenerationService;
 import com.yanyun.music.media.MediaAssetDescriptor;
@@ -130,6 +135,17 @@ class MockSongProductionWorkflowTest {
     assertThat(result.packageReady()).isTrue();
     assertThat(result.packageStatus()).isEqualTo(PackageStatus.PACKAGE_READY.name());
 
+    ArgumentCaptor<GenerationStage> stageCaptor = ArgumentCaptor.forClass(GenerationStage.class);
+    verify(workRepository, org.mockito.Mockito.times(5))
+        .markGenerationStage(eq(workId), eq(jobId), stageCaptor.capture());
+    assertThat(stageCaptor.getAllValues())
+        .containsExactly(
+            GenerationStage.MUSIC_GENERATING,
+            GenerationStage.COVER_GENERATING,
+            GenerationStage.VIDEO_RENDERING,
+            GenerationStage.PACKAGE_BUILDING,
+            GenerationStage.PACKAGE_PRECHECK);
+
     ArgumentCaptor<MusicGenerationRequest> musicRequest =
         ArgumentCaptor.forClass(MusicGenerationRequest.class);
     verify(musicProvider).submit(musicRequest.capture());
@@ -139,27 +155,33 @@ class MockSongProductionWorkflowTest {
     assertThat(musicRequest.getValue().musicPrompt()).contains("provider profile: mock");
     assertThat(musicRequest.getValue().providerOptions())
         .containsEntry("agent", "MusicPromptAgent");
-    assertThat(agentRuns).hasSize(4);
+    assertThat(agentRuns).hasSize(6);
     assertThat(agentRuns.getFirst().agentName()).isEqualTo("MusicPromptAgent");
     assertThat(agentRuns.getFirst().operation()).isEqualTo("MUSIC_PROMPT");
     assertThat(agentRuns.getFirst().status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.getFirst().inputHash()).hasSize(64);
     assertThat(agentRuns.getFirst().outputHash()).hasSize(64);
-    assertThat(agentRuns.get(1).agentName()).isEqualTo("ModerationAgent");
-    assertThat(agentRuns.get(1).operation()).isEqualTo("MUSIC_PROMPT_PRECHECK");
+    assertThat(agentRuns.get(1).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(1).operation()).isEqualTo("MUSIC_QUALITY_GATE");
     assertThat(agentRuns.get(1).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.get(1).inputHash()).hasSize(64);
     assertThat(agentRuns.get(1).outputHash()).hasSize(64);
-    assertThat(agentRuns.get(2).agentName()).isEqualTo("CoverPromptAgent");
-    assertThat(agentRuns.get(2).operation()).isEqualTo("COVER_PROMPT");
+    assertThat(agentRuns.get(2).agentName()).isEqualTo("ModerationAgent");
+    assertThat(agentRuns.get(2).operation()).isEqualTo("MUSIC_PROMPT_PRECHECK");
     assertThat(agentRuns.get(2).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.get(2).inputHash()).hasSize(64);
     assertThat(agentRuns.get(2).outputHash()).hasSize(64);
-    assertThat(agentRuns.get(3).agentName()).isEqualTo("QualityEvaluationAgent");
-    assertThat(agentRuns.get(3).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
+    assertThat(agentRuns.get(3).agentName()).isEqualTo("CoverPromptAgent");
+    assertThat(agentRuns.get(3).operation()).isEqualTo("COVER_PROMPT");
     assertThat(agentRuns.get(3).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
     assertThat(agentRuns.get(3).inputHash()).hasSize(64);
     assertThat(agentRuns.get(3).outputHash()).hasSize(64);
+    assertThat(agentRuns.get(4).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(4).operation()).isEqualTo("COVER_QUALITY_GATE");
+    assertThat(agentRuns.get(4).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+    assertThat(agentRuns.get(5).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(5).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
+    assertThat(agentRuns.get(5).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
 
     ArgumentCaptor<ProviderCallRow> providerCall = ArgumentCaptor.forClass(ProviderCallRow.class);
     verify(workRepository).insertProviderCall(providerCall.capture());
@@ -248,6 +270,91 @@ class MockSongProductionWorkflowTest {
     verify(workRepository)
         .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
     verify(quotaAdapter, never()).releaseGenerateQuota(any(), any(), any());
+  }
+
+  @Test
+  void passesCoverPromptSafetyConstraintsToQualityGate() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenReturn(
+            new StoredObject(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                "application/json",
+                512L));
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    CoverPromptAgent coverPromptAgent =
+        request ->
+            new CoverPromptResult(
+                "premium 16:9 album cover with clear Chinese song title typography",
+                "low quality, fake singer name, fake label, fake copyright, watermark, UI, garbled text",
+                1920,
+                1080,
+                List.of("16:9 composition", "premium album cover"),
+                Map.of("agent", "test-cover-prompt"),
+                "Use only the song title as the main cover title. Do not invent singer, label, copyright, or small credits.",
+                List.of("clear readable Chinese title", "no fake singer credits"));
+    List<QualityEvaluationRequest> qualityRequests = new ArrayList<>();
+    QualityEvaluationAgent qualityEvaluationAgent =
+        request -> {
+          qualityRequests.add(request);
+          return new QualityEvaluationResult(
+              request.gate(), QualityDecision.PASS, 100, List.of(), "PASS", false, Map.of());
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(),
+                coverPromptAgent,
+                qualityEvaluationAgent)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    QualityEvaluationRequest coverQualityRequest =
+        qualityRequests.stream()
+            .filter(request -> request.gate() == QualityGate.COVER)
+            .findFirst()
+            .orElseThrow();
+    assertThat(coverQualityRequest.context())
+        .containsEntry(
+            "negative_prompt",
+            "low quality, fake singer name, fake label, fake copyright, watermark, UI, garbled text")
+        .containsEntry(
+            "text_prompt",
+            "Use only the song title as the main cover title. Do not invent singer, label, copyright, or small credits.")
+        .containsEntry(
+            "typography_requirements",
+            List.of("clear readable Chinese title", "no fake singer credits"))
+        .containsEntry("provider_options", Map.of("agent", "test-cover-prompt"));
   }
 
   @Test
@@ -1211,10 +1318,10 @@ class MockSongProductionWorkflowTest {
     assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
     assertThat(result.failureMessage())
         .isEqualTo("Package quality gate failed: video asset is not 16:9");
-    assertThat(agentRuns).hasSize(4);
-    assertThat(agentRuns.get(3).agentName()).isEqualTo("QualityEvaluationAgent");
-    assertThat(agentRuns.get(3).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
-    assertThat(agentRuns.get(3).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
+    assertThat(agentRuns).hasSize(6);
+    assertThat(agentRuns.get(5).agentName()).isEqualTo("QualityEvaluationAgent");
+    assertThat(agentRuns.get(5).operation()).isEqualTo("PACKAGE_QUALITY_GATE");
+    assertThat(agentRuns.get(5).status()).isEqualTo(AgentRunStatus.SUCCEEDED);
 
     verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(any());
     verify(workRepository)

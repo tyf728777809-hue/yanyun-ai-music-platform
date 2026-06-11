@@ -160,6 +160,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     }
     workRepository.insertQuotaTransaction(
         workId, input.userId(), lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
+    markStage(workId, jobId, GenerationStage.MUSIC_GENERATING);
 
     MusicGenerationResult musicResult;
     MusicProviderSelection selectedProvider = selectedProvider(input);
@@ -182,6 +183,29 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           FailureCode.MUSIC_GENERATION_FAILED,
           firstNonBlank(exception.getMessage(), "Music prompt generation failed"),
           input.musicRetryAllowedAfterFailure(),
+          input.userId(),
+          lock.lockId());
+    }
+    QualityEvaluationResult musicPromptQuality;
+    try {
+      musicPromptQuality = evaluateMusicPromptQuality(input, selectedProvider, musicPrompt);
+    } catch (RuntimeException exception) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_QUALITY_FAILED,
+          firstNonBlank(exception.getMessage(), "Music prompt quality evaluation failed"),
+          input.musicRetryAllowedAfterFailure(),
+          input.userId(),
+          lock.lockId());
+    }
+    if (musicPromptQuality.decision() != QualityDecision.PASS) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.MUSIC_QUALITY_FAILED,
+          qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality),
+          musicPromptQuality.retryable(),
           input.userId(),
           lock.lockId());
     }
@@ -211,7 +235,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     MusicGenerationRequest musicRequest =
         new MusicGenerationRequest(
             input.workId(),
-            input.lyricsText(),
+            firstNonBlank(musicPrompt.lyricsWithStructureTags(), input.lyricsText()),
             musicPrompt.musicPrompt(),
             input.vocalPreference(),
             musicProviderOptions(input, musicPrompt));
@@ -263,7 +287,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     GeneratedMediaAssets mediaAssets;
     try {
-      mediaAssets = createMediaAssets(workId, input, musicResult);
+      mediaAssets = createMediaAssets(workId, jobId, input, musicResult);
     } catch (RuntimeException exception) {
       return fail(
           workId,
@@ -277,6 +301,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     QualityEvaluationResult packageQuality;
     try {
+      markStage(workId, jobId, GenerationStage.PACKAGE_BUILDING);
       packageQuality = evaluatePackageQuality(input, selectedProvider, mediaAssets);
     } catch (RuntimeException exception) {
       return fail(
@@ -301,6 +326,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     PublishHandoff handoff;
     try {
+      markStage(workId, jobId, GenerationStage.PACKAGE_PRECHECK);
       handoff = publishAdapter.preparePackage(input.workId());
     } catch (RuntimeException exception) {
       return fail(
@@ -371,6 +397,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     return SongProductionWorkflowResult.packageReady(
         jobId.toString(), PackageStatus.PACKAGE_READY.name());
+  }
+
+  private void markStage(UUID workId, UUID jobId, GenerationStage stage) {
+    workRepository.markGenerationStage(workId, jobId, stage);
   }
 
   private SongProductionWorkflowResult fail(
@@ -444,7 +474,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   }
 
   private GeneratedMediaAssets createMediaAssets(
-      UUID workId, SongProductionWorkflowInput input, MusicGenerationResult musicResult) {
+      UUID workId,
+      UUID jobId,
+      SongProductionWorkflowInput input,
+      MusicGenerationResult musicResult) {
     AudioObject audioObject = resolveAudioObject(workId, musicResult);
     MediaAssetRow audioAsset =
         new MediaAssetRow(
@@ -460,6 +493,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
 
+    markStage(workId, jobId, GenerationStage.COVER_GENERATING);
     CoverPromptResult coverPrompt =
         coverPromptAgent.generate(
             new CoverPromptRequest(
@@ -471,10 +505,16 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                 input.coverPromptSeed(),
                 1920,
                 1080));
+    QualityEvaluationResult coverPromptQuality = evaluateCoverPromptQuality(input, coverPrompt);
+    if (coverPromptQuality.decision() != QualityDecision.PASS) {
+      throw new IllegalStateException(
+          qualityFailureMessage("Cover prompt quality gate failed", coverPromptQuality));
+    }
     MediaAssetDescriptor coverDescriptor = generateCoverOrDefault(workId, input, coverPrompt);
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
     workRepository.upsertMediaAsset(coverAsset);
 
+    markStage(workId, jobId, GenerationStage.VIDEO_RENDERING);
     VideoRenderResult videoResult =
         videoRenderService.renderVideo(
             new VideoRenderRequest(
@@ -508,7 +548,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                   coverPrompt.negativePrompt(),
                   coverPrompt.width(),
                   coverPrompt.height(),
-                  coverPrompt.providerOptions()));
+                  coverProviderOptions(coverPrompt)));
       return materializeMockCoverIfNeeded(importRemoteCoverIfNeeded(coverResult.asset()));
     } catch (RuntimeException exception) {
       return defaultCoverAsset(workId, coverPrompt, exception);
@@ -539,6 +579,93 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             Map.of("workflow", "SongProductionWorkflow", "quality_gate", "publish_package")));
   }
 
+  private QualityEvaluationResult evaluateMusicPromptQuality(
+      SongProductionWorkflowInput input,
+      MusicProviderSelection selectedProvider,
+      MusicPromptResult musicPrompt) {
+    return qualityEvaluationAgent.evaluate(
+        new QualityEvaluationRequest(
+            input.workId(),
+            QualityGate.MUSIC,
+            input.songTitle(),
+            firstNonBlank(musicPrompt.lyricsWithStructureTags(), input.lyricsText()),
+            selectedProvider.providerType().name(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            Map.of(
+                "workflow",
+                "SongProductionWorkflow",
+                "quality_gate",
+                "music_prompt",
+                "music_prompt",
+                musicPrompt.musicPrompt(),
+                "style_prompt",
+                firstNonBlank(musicPrompt.stylePrompt(), ""),
+                "exclude_prompt",
+                firstNonBlank(musicPrompt.excludePrompt(), ""),
+                "provider_options",
+                musicPrompt.providerOptions(),
+                "advanced_options",
+                musicPrompt.advancedOptions())));
+  }
+
+  private QualityEvaluationResult evaluateCoverPromptQuality(
+      SongProductionWorkflowInput input, CoverPromptResult coverPrompt) {
+    return qualityEvaluationAgent.evaluate(
+        new QualityEvaluationRequest(
+            input.workId(),
+            QualityGate.COVER,
+            input.songTitle(),
+            input.lyricsText(),
+            null,
+            null,
+            null,
+            null,
+            coverPrompt.width(),
+            coverPrompt.height(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            Map.of(
+                "workflow",
+                "SongProductionWorkflow",
+                "quality_gate",
+                "cover_prompt",
+                "visual_prompt",
+                coverPrompt.visualPrompt(),
+                "negative_prompt",
+                coverPrompt.negativePrompt(),
+                "text_prompt",
+                firstNonBlank(coverPrompt.textPrompt(), ""),
+                "style_constraints",
+                coverPrompt.styleConstraints(),
+                "typography_requirements",
+                coverPrompt.typographyRequirements(),
+                "provider_options",
+                coverPrompt.providerOptions())));
+  }
+
+  private Map<String, Object> coverProviderOptions(CoverPromptResult coverPrompt) {
+    Map<String, Object> options = new LinkedHashMap<>(coverPrompt.providerOptions());
+    if (coverPrompt.textPrompt() != null && !coverPrompt.textPrompt().isBlank()) {
+      options.putIfAbsent("text_prompt", coverPrompt.textPrompt());
+    }
+    if (!coverPrompt.typographyRequirements().isEmpty()) {
+      options.putIfAbsent("typography_requirements", coverPrompt.typographyRequirements());
+    }
+    return options;
+  }
+
   private ModerationAgentResult preCheckMusicPrompt(
       SongProductionWorkflowInput input,
       MusicProviderSelection selectedProvider,
@@ -558,10 +685,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   }
 
   private String packageQualityFailureMessage(QualityEvaluationResult result) {
-    if (!result.reasons().isEmpty()) {
-      return "Package quality gate failed: " + String.join("; ", result.reasons());
+    return qualityFailureMessage("Package quality gate failed", result);
+  }
+
+  private String qualityFailureMessage(String prefix, QualityEvaluationResult result) {
+    if (result != null && !result.reasons().isEmpty()) {
+      return prefix + ": " + String.join("; ", result.reasons());
     }
-    return "Package quality gate failed: " + result.decision().name();
+    return prefix + ": " + (result == null ? "UNKNOWN" : result.decision().name());
   }
 
   private MediaAssetRow toMediaAssetRow(UUID workId, MediaAssetDescriptor asset) {
@@ -890,6 +1021,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     }
     if (input.songSummary() != null && !input.songSummary().isBlank()) {
       options.putIfAbsent("song_summary", input.songSummary());
+    }
+    if (musicPrompt.excludePrompt() != null && !musicPrompt.excludePrompt().isBlank()) {
+      options.putIfAbsent("exclude_prompt", musicPrompt.excludePrompt());
+    }
+    if (!musicPrompt.advancedOptions().isEmpty()) {
+      options.putIfAbsent("advanced_options", musicPrompt.advancedOptions());
     }
     return options;
   }

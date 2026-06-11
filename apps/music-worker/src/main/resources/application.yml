@@ -22,6 +22,16 @@ management:
         enabled: true
 
 yanyun:
+  deepseek:
+    agent-real-calls-enabled: ${AGENT_REAL_CALLS_ENABLED:false}
+    real-calls-enabled: ${DEEPSEEK_REAL_CALLS_ENABLED:false}
+    base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    api-key: ${DEEPSEEK_API_KEY:}
+    model-name: ${DEEPSEEK_MODEL_NAME:deepseek-v4-pro}
+    request-timeout: ${DEEPSEEK_TIMEOUT_MS:30000ms}
+    max-attempts: ${DEEPSEEK_MAX_ATTEMPTS:1}
+    response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:1800}
+    temperature: ${DEEPSEEK_TEMPERATURE:0.7}
   image:
     provider: ${IMAGE_PROVIDER:mock}
   image2:
@@ -64,6 +74,8 @@ yanyun:
     composition-id: ${RENDER_WORKER_COMPOSITION_ID:LyricVideo16x9V2}
     video-object-key-prefix: ${RENDER_WORKER_VIDEO_OBJECT_KEY_PREFIX:videos}
     timeline-object-key-prefix: ${RENDER_WORKER_TIMELINE_OBJECT_KEY_PREFIX:timelines}
+    ffmpeg-command: ${RENDER_WORKER_FFMPEG_COMMAND:ffmpeg}
+    ffprobe-command: ${RENDER_WORKER_FFPROBE_COMMAND:ffprobe}
   storage:
     provider: ${OBJECT_STORAGE_PROVIDER:local}
     environment: ${YANYUN_ENV:local}

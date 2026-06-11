@@ -8,6 +8,7 @@ EXPECTED_DURATION_MS="${EXPECTED_DURATION_MS:-}"
 EXPECT_RENDER_WORKER="${EXPECT_RENDER_WORKER:-}"
 CHECK_DB="${CHECK_DB:-true}"
 CHECK_LOCAL_FILES="${CHECK_LOCAL_FILES:-true}"
+CHECK_MEDIA_URLS="${CHECK_MEDIA_URLS:-false}"
 LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
 
 fail() {
@@ -70,6 +71,13 @@ find_local_object() {
   return 1
 }
 
+assert_url_readable() {
+  local url="$1"
+  local label="$2"
+  [[ -n "$url" && "$url" != "null" ]] || fail "${label} URL missing"
+  curl -sS -f -L -r 0-0 "$url" -o /dev/null || fail "${label} URL is not readable"
+}
+
 need_command curl
 need_command jq
 
@@ -111,6 +119,14 @@ log "fetching publish package"
 package_response="$(get_json "/works/${work_id}/publish-package")"
 assert_json "$package_response" '.package_status == "PACKAGE_READY" and (.package_url | length > 0)' "publish package is not ready"
 assert_json "$package_response" '(.package_json.video.url | length > 0) and (.package_json.cover.url | length > 0) and (.package_json.lyrics.text | length > 0)' "publish package json is incomplete"
+
+if [[ "$CHECK_MEDIA_URLS" == "true" ]]; then
+  log "checking publish package media URLs"
+  assert_url_readable "$(jq -r '.package_url' <<<"$package_response")" "package"
+  assert_url_readable "$(jq -r '.package_json.audio.url // empty' <<<"$package_response")" "audio"
+  assert_url_readable "$(jq -r '.package_json.cover.url // empty' <<<"$package_response")" "cover"
+  assert_url_readable "$(jq -r '.package_json.video.url // empty' <<<"$package_response")" "video"
+fi
 
 log "refreshing publish package URL"
 refresh_response="$(post_json "/works/${work_id}/publish-package/refresh-url" "$(idempotency_key refresh)" '{}')"

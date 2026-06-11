@@ -143,8 +143,14 @@ function lyricCardLinesFromText(
 }
 
 function isLyricSectionLabel(line: string): boolean {
-  return /^(主歌|副歌|桥段|间奏|尾声|verse|chorus|bridge)\s*\d*\s*[:：]$/i.test(
-    line.trim(),
+  const normalized = line
+    .trim()
+    .replace(/^\[/, '')
+    .replace(/\]$/, '')
+    .replace(/[:：]$/, '')
+    .trim();
+  return /^(主歌|副歌|桥段|间奏|尾声|verse|pre-chorus|prechorus|chorus|bridge|outro)\s*\d*$/i.test(
+    normalized,
   );
 }
 

@@ -42,7 +42,7 @@ MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 MOCK_MUSIC_DURATION_MS=1000 MUSIC_PROVIDER=mock ./gradlew :apps:music-api:bootRun
 ```
 
-该变量只影响 `MockMusicProvider` 返回的模拟音频时长，方便 `RENDER_WORKER_MODE=local-process`
+该变量只影响 `MockMusicProvider` 返回的模拟音频时长，方便 `RENDER_WORKER_MODE=album-ffmpeg`
 快速验证 Java 到 render-worker 的 MP4 成片链路；真实 Suno / MiniMax 返回时长不受它影响。
 
 Workflow dispatch 默认走同步本地模式，方便保持当前 Mock 主链路 smoke：
@@ -305,13 +305,13 @@ scripts/smoke/local-commercial-backend-acceptance-stack.sh
 该组合入口不替代以下人工或专项验收：
 
 - Claude 前端真实后端 UI smoke。
-- `RENDER_WORKER_MODE=local-process` MP4 + `ffprobe` smoke。
+- `RENDER_WORKER_MODE=album-ffmpeg` MP4 + `ffprobe` smoke。
 - 真实模型受控 smoke。
 - 公司 Adapter 真实替换联合验收。
 
 ### Local Commercial Full Acceptance Stack
 
-如果要在交付前一次性复验“后端 Mock 基线 + local-process MP4 + Claude Web v1 真实后端 UI”，并且
+如果要在交付前一次性复验“后端 Mock 基线 + album-ffmpeg MP4 + Claude Web v1 真实后端 UI”，并且
 `apps/render-worker`、`prototypes/Claude-web-v1` 依赖已经安装，可运行：
 
 ```bash
@@ -321,7 +321,7 @@ scripts/smoke/local-commercial-full-acceptance-stack.sh
 该脚本按顺序执行：
 
 1. `scripts/smoke/local-commercial-backend-acceptance-stack.sh`。
-2. 启动 `RENDER_WORKER_MODE=local-process` 的 API，并运行 `EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，用 `ffprobe` 验证 MP4。
+2. 启动 `RENDER_WORKER_MODE=album-ffmpeg` 的 API，并运行 `EXPECT_RENDER_WORKER=album-ffmpeg scripts/smoke/api-main-flow.sh`，用 `ffprobe` 验证 MP4。
 3. 启动 Mock render API，并运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`。
 
 依赖缺失时先安装：
@@ -361,14 +361,14 @@ WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
 EXPECTED_DURATION_MS=1000 scripts/smoke/api-main-flow.sh
 ```
 
-render-worker local-process 主链路：
+render-worker album-ffmpeg 主链路：
 
 ```bash
 MOCK_MUSIC_DURATION_MS=1000 \
 MUSIC_PROVIDER=mock \
 MUSIC_WORKFLOW_DISPATCH_MODE=sync \
 WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
-RENDER_WORKER_MODE=local-process \
+RENDER_WORKER_MODE=album-ffmpeg \
 RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker \
 RENDER_WORKER_COMMAND=npm \
 RENDER_WORKER_ARGUMENTS=run,render:job,-- \
@@ -380,11 +380,11 @@ RENDER_WORKER_TIMEOUT=120s \
 
 ```bash
 EXPECTED_DURATION_MS=1000 \
-EXPECT_RENDER_WORKER=local-process \
+EXPECT_RENDER_WORKER=album-ffmpeg \
 scripts/smoke/api-main-flow.sh
 ```
 
-local-process 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x1080，并检查时长接近
+album-ffmpeg 分支会额外用 `ffprobe` 验证本地 MP4 为 H.264、1920x1080，并检查时长接近
 `EXPECTED_DURATION_MS`。如不希望脚本检查 PostgreSQL 或本地文件，可分别设置
 `CHECK_DB=false`、`CHECK_LOCAL_FILES=false`。
 
@@ -628,7 +628,7 @@ npm test
 如需验证 Java 主链路可调用本地 render-worker 进程，先确保 `apps/render-worker` 依赖已安装，再启动 API 或 worker 时显式切换：
 
 ```bash
-RENDER_WORKER_MODE=local-process \
+RENDER_WORKER_MODE=album-ffmpeg \
 RENDER_WORKER_WORKING_DIRECTORY=apps/render-worker \
 RENDER_WORKER_COMMAND=npm \
 RENDER_WORKER_ARGUMENTS=run,render:job,-- \

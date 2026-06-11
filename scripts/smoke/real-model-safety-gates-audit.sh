@@ -309,7 +309,7 @@ capture_target_execute_without_target_gate() {
         WELLAPI_API_KEY=redacted \
         DREAMMAKER_REAL_CALLS_ENABLED=false \
         TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy \
-        RENDER_WORKER_MODE=local-process \
+        RENDER_WORKER_MODE=album-ffmpeg \
         "$INDEX"
       ;;
     *)

@@ -96,7 +96,25 @@ class IntegrationReadinessServiceTest {
   }
 
   @Test
-  void localProcessRenderWorkerIsReadyForLocal() {
+  void albumFfmpegRenderWorkerIsReadyForLocal() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setRenderWorkerMode("album-ffmpeg");
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness renderWorker =
+        report.components().stream()
+            .filter(component -> component.component().equals("render_worker"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, renderWorker.status());
+    assertEquals("FfmpegAlbumVideoRenderService", renderWorker.implementation());
+    assertTrue(renderWorker.blocksCompanyDeployment());
+  }
+
+  @Test
+  void unsupportedRenderWorkerModeIsBlocked() {
     CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
     properties.setRenderWorkerMode("local-process");
 
@@ -108,9 +126,8 @@ class IntegrationReadinessServiceTest {
             .filter(component -> component.component().equals("render_worker"))
             .findFirst()
             .orElseThrow();
-    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, renderWorker.status());
-    assertEquals("LocalProcessVideoRenderService", renderWorker.implementation());
-    assertTrue(renderWorker.blocksCompanyDeployment());
+    assertEquals(IntegrationReadinessStatus.BLOCKED, renderWorker.status());
+    assertTrue(renderWorker.handoffNote().contains("不受支持"));
   }
 
   @Test

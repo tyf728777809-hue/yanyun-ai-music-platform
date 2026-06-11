@@ -31,11 +31,11 @@ class MockMusicPromptAgentTest {
     AgentRunRecord record = records.getFirst();
     assertEquals("work-1", record.workId());
     assertEquals("MusicPromptAgent", record.agentName());
-    assertEquals("v0.1", record.agentVersion());
+    assertEquals("v0.5", record.agentVersion());
     assertEquals("MUSIC_PROMPT", record.operation());
     assertEquals("mock-music-prompt", record.modelName());
-    assertEquals("music.prompt.v1", record.promptTemplateKey());
-    assertEquals(1, record.promptTemplateVersion());
+    assertEquals("music.prompt.v5", record.promptTemplateKey());
+    assertEquals(5, record.promptTemplateVersion());
     assertEquals(AgentRunStatus.SUCCEEDED, record.status());
     assertNotNull(record.inputHash());
     assertNotNull(record.outputHash());
@@ -51,5 +51,18 @@ class MockMusicPromptAgentTest {
     assertTrue(result.musicPrompt().contains("ancient chinese folk pop"));
     assertTrue(result.musicPrompt().contains("provider profile: mock"));
     assertTrue(result.musicPrompt().contains("vocal: auto"));
+  }
+
+  @Test
+  void rewritesRealSingerStyleToGenericPrompt() {
+    MusicPromptResult result =
+        new MockMusicPromptAgent()
+            .generate(
+                new MusicPromptRequest(
+                    "work-1", "燕云行", "summary", "lyrics", "周杰伦风格，国风 R&B，轻说唱", null, "SUNO"));
+
+    assertTrue(result.musicPrompt().contains("Chinese pop R&B"));
+    assertTrue(result.excludePrompt().contains("no direct real singer imitation"));
+    assertTrue(!result.musicPrompt().contains("周杰伦"));
   }
 }

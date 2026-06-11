@@ -182,7 +182,7 @@ cd prototypes/Claude-web-v1 && npm run smoke:real-backend
 若启用真实 render-worker：
 
 ```bash
-EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
+EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=album-ffmpeg scripts/smoke/api-main-flow.sh
 ```
 
 如果临时使用 Yunwu / WellAPI 做公网联调，仍必须保留并复核 DreamMaker 生产切换路径：

@@ -9,6 +9,12 @@ import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
+import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
+import com.yanyun.music.creativeagent.QualityDecision;
+import com.yanyun.music.creativeagent.QualityEvaluationAgent;
+import com.yanyun.music.creativeagent.QualityEvaluationRequest;
+import com.yanyun.music.creativeagent.QualityEvaluationResult;
+import com.yanyun.music.creativeagent.QualityGate;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekLyricsRequest;
 import com.yanyun.music.deepseek.DeepSeekLyricsResponse;
@@ -26,13 +32,14 @@ import java.util.Map;
 public final class DefaultLyricsGenerationService implements LyricsGenerationService {
 
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.70);
-  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v1";
-  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 1;
+  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v5";
+  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 5;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
   private final CreativeBriefAgent creativeBriefAgent;
   private final DeepSeekLyricsClient deepSeekLyricsClient;
+  private final QualityEvaluationAgent qualityEvaluationAgent;
   private final AgentRunRecorder agentRunRecorder;
 
   public DefaultLyricsGenerationService(
@@ -44,6 +51,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         promptTemplateService,
         new MockCreativeBriefAgent(NoopAgentRunRecorder.INSTANCE),
         deepSeekLyricsClient,
+        new MockQualityEvaluationAgent(NoopAgentRunRecorder.INSTANCE),
         NoopAgentRunRecorder.INSTANCE);
   }
 
@@ -57,6 +65,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         promptTemplateService,
         new MockCreativeBriefAgent(agentRunRecorder),
         deepSeekLyricsClient,
+        new MockQualityEvaluationAgent(agentRunRecorder),
         agentRunRecorder);
   }
 
@@ -66,6 +75,22 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       CreativeBriefAgent creativeBriefAgent,
       DeepSeekLyricsClient deepSeekLyricsClient,
       AgentRunRecorder agentRunRecorder) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        creativeBriefAgent,
+        deepSeekLyricsClient,
+        new MockQualityEvaluationAgent(agentRunRecorder),
+        agentRunRecorder);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      QualityEvaluationAgent qualityEvaluationAgent,
+      AgentRunRecorder agentRunRecorder) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
     this.creativeBriefAgent =
@@ -73,6 +98,10 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             ? new MockCreativeBriefAgent(agentRunRecorder)
             : creativeBriefAgent;
     this.deepSeekLyricsClient = deepSeekLyricsClient;
+    this.qualityEvaluationAgent =
+        qualityEvaluationAgent == null
+            ? new MockQualityEvaluationAgent(agentRunRecorder)
+            : qualityEvaluationAgent;
     this.agentRunRecorder =
         agentRunRecorder == null ? NoopAgentRunRecorder.INSTANCE : agentRunRecorder;
   }
@@ -83,15 +112,28 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         knowledgeService.retrieve(
             new KnowledgeRetrievalRequest(query(request), List.of("yanyun", "lyrics"), 3));
     CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
+    ensureCreativeDomainAllowed(creativeBrief);
     LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
-    if (isLowQuality(response)) {
+    QualityEvaluationResult quality = evaluateLyricsQuality(briefedRequest, response);
+    if (isLowQuality(response) || shouldRewrite(quality)) {
       LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
+      quality = evaluateLyricsQuality(rewriteRequest, response);
     }
+    ensureLyricsQualityAllowed(quality);
     return toResult(response, knowledge, prompt);
+  }
+
+  private void ensureCreativeDomainAllowed(CreativeBriefResult creativeBrief) {
+    if (creativeBrief.domainDecision().rejected()) {
+      throw new LyricsCreativeDomainException(
+          firstNonBlank(
+              creativeBrief.userFacingMessage(), "当前只支持燕云十六声相关创作，请改成燕云里的江湖、武学、奇术、乱世同行或寻声记忆方向。"),
+          creativeBrief.yanyunRewriteSuggestion());
+    }
   }
 
   private PromptRenderResult renderPrompt(
@@ -141,6 +183,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private String creativeBriefInstruction(CreativeBriefResult creativeBrief) {
     return """
         Creative brief:
+        domain_decision=%s
         intent=%s
         theme=%s
         mood_tags=%s
@@ -150,14 +193,61 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         constraints=%s
         """
         .formatted(
+            creativeBrief.domainDecision(),
             creativeBrief.userIntentSummary(),
             creativeBrief.theme(),
             creativeBrief.moodTags(),
             creativeBrief.narrativeViewpoint(),
             creativeBrief.musicDirection(),
             creativeBrief.yanyunReferences(),
-            creativeBrief.constraints())
+            creativeBrief.constraints()
+                + (creativeBrief.yanyunRewriteSuggestion() == null
+                    ? ""
+                    : "\nyanyun_rewrite_suggestion=" + creativeBrief.yanyunRewriteSuggestion()))
         .trim();
+  }
+
+  private QualityEvaluationResult evaluateLyricsQuality(
+      LyricsGenerationRequest request, DeepSeekLyricsResponse response) {
+    return qualityEvaluationAgent.evaluate(
+        new QualityEvaluationRequest(
+            request.workId(),
+            QualityGate.LYRICS,
+            response.songTitle(),
+            response.lyricsText(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            Map.of(
+                "operation",
+                request.operation().name(),
+                "music_style",
+                firstNonBlank(request.musicStyle(), ""),
+                "risk_notes",
+                response.riskNotes())));
+  }
+
+  private boolean shouldRewrite(QualityEvaluationResult quality) {
+    return quality.decision() == QualityDecision.REWRITE
+        || quality.decision() == QualityDecision.RETRY;
+  }
+
+  private void ensureLyricsQualityAllowed(QualityEvaluationResult quality) {
+    if (quality.decision() == QualityDecision.BLOCK
+        || quality.decision() == QualityDecision.MANUAL_REVIEW) {
+      throw new IllegalArgumentException(
+          quality.reasons().isEmpty()
+              ? "Lyrics quality gate blocked the result"
+              : String.join("; ", quality.reasons()));
+    }
   }
 
   private DeepSeekLyricsResponse generateWithDeepSeek(

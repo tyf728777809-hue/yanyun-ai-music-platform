@@ -9,7 +9,7 @@ Reviewers: User
 
 The backend now has several separate local smoke scripts: main Mock production flow, OpenAPI runtime contract, company Adapter readiness, and Mock publish-package moderation block. Before local handoff or user testing, the operator still has to start the API manually, remember the right Mock-only environment, run multiple scripts, then restart the API with package-block configuration.
 
-This stack smoke provides one backend-only acceptance entry for the local commercial baseline. It intentionally does not cover the Claude frontend prototype, real Remotion MP4 local-process rendering, real DeepSeek, real Suno/MiniMax, real Image 2, or real company systems.
+This stack smoke provides one backend-only acceptance entry for the local commercial baseline. It intentionally does not cover the Claude frontend prototype, album-ffmpeg MP4 rendering, real DeepSeek, real Suno/MiniMax, real Image 2, or real company systems.
 
 DreamMaker music and DreamMaker Image 2 remain the production-target provider paths. This script must keep all real provider calls disabled; Yunwu and WellAPI are not used here and do not replace DreamMaker.
 
@@ -78,6 +78,6 @@ scripts/smoke/api-package-blocked-flow.sh
 
 - OS-1: The script MUST NOT start Docker Compose infrastructure automatically.
 - OS-2: The script MUST NOT run the frontend smoke.
-- OS-3: The script MUST NOT run `RENDER_WORKER_MODE=local-process` or verify MP4 with `ffprobe`.
+- OS-3: The script MUST NOT run `RENDER_WORKER_MODE=album-ffmpeg` or verify MP4 with `ffprobe`.
 - OS-4: The script MUST NOT execute real-model smoke targets.
 - OS-5: The script MUST NOT replace the final manual local commercial delivery checklist.

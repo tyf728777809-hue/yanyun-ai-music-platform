@@ -1102,6 +1102,27 @@
   background: linear-gradient(90deg, var(--jade-500), var(--gold-400));
   transition: width 0.5s ease;
 }
+.generation-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: 460px;
+  padding: 12px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-2);
+  background: color-mix(in srgb, var(--surface) 86%, var(--jade-500) 14%);
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.generation-status strong {
+  flex: none;
+  color: var(--paper);
+  font-weight: 600;
+  white-space: nowrap;
+}
 .steps {
   list-style: none;
   margin: var(--sp-2) 0 0;
@@ -1367,6 +1388,11 @@
   .work-list-item__title-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .generation-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--sp-1);
   }
 }
 

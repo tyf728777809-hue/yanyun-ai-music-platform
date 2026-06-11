@@ -8,6 +8,7 @@ dependencies {
     implementation(project(":modules:creative-agent"))
     implementation(project(":modules:common"))
     implementation(project(":modules:auth"))
+    implementation(project(":modules:deepseek"))
     implementation(project(":modules:dreammaker"))
     implementation(project(":modules:minimax"))
     implementation(project(":modules:moderation"))

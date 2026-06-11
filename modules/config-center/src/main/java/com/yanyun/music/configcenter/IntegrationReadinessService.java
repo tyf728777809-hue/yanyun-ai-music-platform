@@ -236,24 +236,28 @@ public final class IntegrationReadinessService {
 
   private IntegrationComponentReadiness renderWorkerComponent() {
     String mode = normalize(properties.getRenderWorkerMode());
-    boolean localProcess = "local-process".equals(mode);
+    boolean albumFfmpeg = "album-ffmpeg".equals(mode) || "ffmpeg-album".equals(mode);
+    boolean mock = "mock".equals(mode);
+    IntegrationReadinessStatus status =
+        albumFfmpeg
+            ? IntegrationReadinessStatus.READY_FOR_LOCAL
+            : mock ? IntegrationReadinessStatus.MOCK_ONLY : IntegrationReadinessStatus.BLOCKED;
     return new IntegrationComponentReadiness(
         "render_worker",
         mode,
-        localProcess ? "LocalProcessVideoRenderService" : "MockVideoRenderService",
-        localProcess
-            ? IntegrationReadinessStatus.READY_FOR_LOCAL
-            : IntegrationReadinessStatus.MOCK_ONLY,
+        albumFfmpeg ? "FfmpegAlbumVideoRenderService" : "MockVideoRenderService",
+        status,
         true,
         List.of(
             "RENDER_WORKER_MODE",
-            "RENDER_WORKER_WORKING_DIRECTORY",
-            "RENDER_WORKER_COMMAND",
-            "RENDER_WORKER_ARGUMENTS",
-            "RENDER_WORKER_TIMEOUT"),
-        localProcess
-            ? "已选择本地进程 render-worker，可用于本地真实 MP4 成片 smoke。"
-            : "默认 Mock 视频资产可跑通；真实 MP4 成片 smoke 需显式切换 local-process。");
+            "RENDER_WORKER_TIMEOUT",
+            "RENDER_WORKER_FFMPEG_COMMAND",
+            "RENDER_WORKER_FFPROBE_COMMAND"),
+        albumFfmpeg
+            ? "已选择默认专辑封面快速成片，可用于本地真实 MP4 成片 smoke。"
+            : mock
+                ? "默认 Mock 视频资产可跑通；真实 MP4 成片 smoke 需显式切换 album-ffmpeg。"
+                : "渲染模式不受支持；请使用 mock 或 album-ffmpeg。");
   }
 
   private IntegrationComponentReadiness workflowComponent() {

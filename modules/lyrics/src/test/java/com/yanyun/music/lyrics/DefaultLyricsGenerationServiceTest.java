@@ -47,7 +47,7 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
     assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
     assertEquals(7, result.promptTemplateVersions().get("lyrics.inspiration.v1"));
-    assertEquals(1, result.promptTemplateVersions().get("creative.brief.v1"));
+    assertEquals(5, result.promptTemplateVersions().get("creative.brief.v5"));
     assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
   }
 
@@ -70,15 +70,15 @@ class DefaultLyricsGenerationServiceTest {
 
     service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
-    assertEquals(2, records.size());
+    assertEquals(3, records.size());
     AgentRunRecord briefRecord = records.get(0);
     assertEquals("work-1", briefRecord.workId());
     assertEquals("CreativeBriefAgent", briefRecord.agentName());
-    assertEquals("v0.1", briefRecord.agentVersion());
+    assertEquals("v0.5", briefRecord.agentVersion());
     assertEquals("INSPIRATION", briefRecord.operation());
     assertEquals("mock-creative-brief", briefRecord.modelName());
-    assertEquals("creative.brief.v1", briefRecord.promptTemplateKey());
-    assertEquals(1, briefRecord.promptTemplateVersion());
+    assertEquals("creative.brief.v5", briefRecord.promptTemplateKey());
+    assertEquals(5, briefRecord.promptTemplateVersion());
     assertEquals(AgentRunStatus.SUCCEEDED, briefRecord.status());
     assertNotNull(briefRecord.inputHash());
     assertNotNull(briefRecord.outputHash());
@@ -88,6 +88,7 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("LyricsAgent", lyricsRecord.agentName());
     assertEquals("lyrics.inspiration.v1", lyricsRecord.promptTemplateKey());
     assertEquals(AgentRunStatus.SUCCEEDED, lyricsRecord.status());
+    assertEquals("QualityEvaluationAgent", records.get(2).agentName());
   }
 
   @Test
@@ -145,10 +146,12 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.POLISH));
 
     assertEquals(2, calls.get());
-    assertEquals(3, records.size());
+    assertEquals(5, records.size());
     assertEquals("CreativeBriefAgent", records.get(0).agentName());
     assertEquals("LyricsAgent", records.get(1).agentName());
-    assertEquals("LyricsAgent", records.get(2).agentName());
+    assertEquals("QualityEvaluationAgent", records.get(2).agentName());
+    assertEquals("LyricsAgent", records.get(3).agentName());
+    assertEquals("QualityEvaluationAgent", records.get(4).agentName());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(0).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(1).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(2).status());

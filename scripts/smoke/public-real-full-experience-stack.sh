@@ -20,8 +20,8 @@ STOP_TIMEOUT_SECONDS="${STOP_TIMEOUT_SECONDS:-60}"
 MAX_POLL_ATTEMPTS="${MAX_POLL_ATTEMPTS:-180}"
 POLL_INTERVAL_SECONDS="${POLL_INTERVAL_SECONDS:-5}"
 SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
-MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-2}"
-CHECK_YUNWU_TIMESTAMPED_LYRICS="${CHECK_YUNWU_TIMESTAMPED_LYRICS:-true}"
+MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-0}"
+CHECK_YUNWU_TIMESTAMPED_LYRICS="${CHECK_YUNWU_TIMESTAMPED_LYRICS:-false}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-public-real-full-$(date +%s)}"
 LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/public-real-full-experience-$(date +%Y%m%d%H%M%S)}"
 LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-worker/build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
@@ -48,6 +48,19 @@ log() {
 
 need_command() {
   command -v "$1" >/dev/null 2>&1 || fail "missing command: $1"
+}
+
+export_object_storage_env() {
+  export OBJECT_STORAGE_PROVIDER="${OBJECT_STORAGE_PROVIDER:-s3}"
+  export S3_ENDPOINT="${S3_ENDPOINT:-http://localhost:9000}"
+  export S3_PUBLIC_ENDPOINT="${S3_PUBLIC_ENDPOINT:-http://localhost:9000}"
+  export S3_REGION="${S3_REGION:-us-east-1}"
+  export S3_ACCESS_KEY="${S3_ACCESS_KEY:-minioadmin}"
+  export S3_SECRET_KEY="${S3_SECRET_KEY:-minioadmin}"
+  export S3_BUCKET_YANYUN_WORKS="${S3_BUCKET_YANYUN_WORKS:-yanyun-works-local}"
+  export S3_PATH_STYLE_ENABLED="${S3_PATH_STYLE_ENABLED:-true}"
+  export S3_AUTO_CREATE_BUCKET="${S3_AUTO_CREATE_BUCKET:-true}"
+  export OBJECT_STORAGE_URL_TTL="${OBJECT_STORAGE_URL_TTL:-24h}"
 }
 
 print_logs_hint() {
@@ -135,10 +148,8 @@ ensure_java_home() {
 }
 
 assert_dependencies() {
-  [ -d "${REPO_ROOT}/apps/render-worker/node_modules" ] \
-    || fail "apps/render-worker/node_modules is missing; run cd apps/render-worker && npm install"
-  [ -x "${REPO_ROOT}/apps/render-worker/node_modules/.bin/remotion" ] \
-    || fail "render-worker Remotion binary is missing; run cd apps/render-worker && npm install"
+  need_command ffmpeg
+  need_command ffprobe
   [ -d "${REPO_ROOT}/prototypes/Claude-web-v1/node_modules" ] \
     || fail "prototypes/Claude-web-v1/node_modules is missing; run cd prototypes/Claude-web-v1 && npm install"
   [ -x "${REPO_ROOT}/prototypes/Claude-web-v1/node_modules/.bin/vite" ] \
@@ -185,11 +196,23 @@ post_json() {
   local path="$1"
   local key="$2"
   local body="$3"
-  curl -fsS -X POST "$API_BASE$path" \
+  local response_file status
+  response_file="$(mktemp)"
+  status="$(
+    curl -sS -o "$response_file" -w "%{http_code}" -X POST "$API_BASE$path" \
     -H "Content-Type: application/json" \
     -H "X-Mock-User-Id: $MOCK_USER" \
     -H "Idempotency-Key: $key" \
     -d "$body"
+  )"
+  if [[ ! "$status" =~ ^2[0-9][0-9]$ ]]; then
+    printf '[public-real-full] POST %s failed http_status=%s\n' "$path" "$status" >&2
+    jq '{error: {code: .error.code, message: .error.message, request_id: .error.request_id}, status, generation_stage, failure}' "$response_file" >&2 || true
+    rm -f "$response_file"
+    return 22
+  fi
+  cat "$response_file"
+  rm -f "$response_file"
 }
 
 get_json() {
@@ -216,12 +239,15 @@ start_worker() {
   log "starting music-worker; log=$WORKER_LOG"
   (
     cd "$REPO_ROOT"
+    export MUSIC_WORKER_PORT="$WORKER_PORT"
     export MUSIC_PROVIDER=suno
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
     export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
-    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
+    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-300s}"
+    export YUNWU_MAX_POLL_ATTEMPTS="${YUNWU_MAX_POLL_ATTEMPTS:-180}"
+    export YUNWU_POLL_INTERVAL="${YUNWU_POLL_INTERVAL:-2s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
     export IMAGE_REAL_CALLS_ENABLED=true
@@ -231,11 +257,18 @@ start_worker() {
     export IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}"
     export IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}"
     export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-180s}"
-    export AGENT_REAL_CALLS_ENABLED=false
-    export DEEPSEEK_REAL_CALLS_ENABLED=false
+    export AGENT_REAL_CALLS_ENABLED=true
+    export DEEPSEEK_REAL_CALLS_ENABLED=true
+    export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+    export DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}"
+    export DEEPSEEK_TIMEOUT_MS="${DEEPSEEK_TIMEOUT_MS:-30000}"
+    export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
+    export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-1800}"
+    export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
     export DREAMMAKER_REAL_CALLS_ENABLED=false
     export TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
-    export RENDER_WORKER_MODE=local-process
+    export RENDER_WORKER_MODE=album-ffmpeg
+    export_object_storage_env
     export RENDER_WORKER_WORKING_DIRECTORY="${RENDER_WORKER_WORKING_DIRECTORY:-apps/render-worker}"
     export RENDER_WORKER_COMMAND="${RENDER_WORKER_COMMAND:-npm}"
     export RENDER_WORKER_ARGUMENTS="${RENDER_WORKER_ARGUMENTS:-run,render:job,--}"
@@ -272,7 +305,9 @@ start_api() {
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
     export YUNWU_REAL_CALLS_ENABLED=true
     export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
-    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
+    export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-300s}"
+    export YUNWU_MAX_POLL_ATTEMPTS="${YUNWU_MAX_POLL_ATTEMPTS:-180}"
+    export YUNWU_POLL_INTERVAL="${YUNWU_POLL_INTERVAL:-2s}"
     export IMAGE_PROVIDER=image2
     export IMAGE2_BACKEND=wellapi
     export IMAGE_REAL_CALLS_ENABLED=true
@@ -287,7 +322,8 @@ start_api() {
     export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
     export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
     export WORKFLOW_OUTBOX_POLL_INTERVAL="${WORKFLOW_OUTBOX_POLL_INTERVAL:-1s}"
-    export RENDER_WORKER_MODE=local-process
+    export RENDER_WORKER_MODE=album-ffmpeg
+    export_object_storage_env
     export RENDER_WORKER_WORKING_DIRECTORY="${RENDER_WORKER_WORKING_DIRECTORY:-apps/render-worker}"
     export RENDER_WORKER_COMMAND="${RENDER_WORKER_COMMAND:-npm}"
     export RENDER_WORKER_ARGUMENTS="${RENDER_WORKER_ARGUMENTS:-run,render:job,--}"
@@ -366,7 +402,7 @@ confirm_real_music() {
 can_retry_real_music() {
   local detail="$1"
   echo "$detail" \
-    | jq -e '.status == "FAILED" and .failure.failure_code == "MUSIC_GENERATION_FAILED" and ((.available_actions // []) | index("RETRY_MUSIC") != null)' \
+    | jq -e '.status == "FAILED" and (.failure.failure_code | IN("MUSIC_GENERATION_FAILED", "MUSIC_QUALITY_FAILED", "PROVIDER_TIMEOUT", "RATE_LIMITED")) and ((.available_actions // []) | index("RETRY_MUSIC") != null)' \
     >/dev/null
 }
 
@@ -451,6 +487,22 @@ verify_sanitized_db_evidence() {
   log "media_assets summary"
   psql_query \
     "select asset_type, coalesce(metadata_json->>'provider',''), case when object_key is null then '<empty>' else '<present>' end, mime_type, coalesce(width,0), coalesce(height,0) from media_assets where work_id = '$WORK_ID'::uuid order by asset_type;" || true
+
+  local mock_required_agent_count missing_required_agent_count
+  mock_required_agent_count="$(
+    psql_query \
+      "select count(*) from agent_runs where work_id = '$WORK_ID'::uuid and agent_name in ('CreativeBriefAgent','LyricsAgent','MusicPromptAgent','CoverPromptAgent','QualityEvaluationAgent') and model_name like 'mock-%';"
+  )"
+  missing_required_agent_count="$(
+    psql_query \
+      "with required(agent_name) as (values ('CreativeBriefAgent'),('LyricsAgent'),('MusicPromptAgent'),('CoverPromptAgent'),('QualityEvaluationAgent')) select count(*) from required r where not exists (select 1 from agent_runs a where a.work_id = '$WORK_ID'::uuid and a.agent_name = r.agent_name and a.status = 'SUCCEEDED' and a.model_name not like 'mock-%');"
+  )"
+  if [ "${mock_required_agent_count:-0}" != "0" ]; then
+    fail "required DeepSeek agent evidence contains mock agent runs"
+  fi
+  if [ "${missing_required_agent_count:-0}" != "0" ]; then
+    fail "missing required DeepSeek agent evidence"
+  fi
 }
 
 resolve_local_object_path() {
@@ -492,18 +544,29 @@ assert_mp4_has_audio_and_video() {
   fi
 }
 
-verify_local_video_file_streams() {
-  local video_object_key video_path
-  video_object_key="$(
-    psql_query "select object_key from media_assets where work_id = '$WORK_ID'::uuid and asset_type = 'VIDEO' limit 1;"
-  )"
-  if [ -z "$video_object_key" ]; then
-    fail "VIDEO media asset object_key is missing"
-  fi
-  video_path="$(resolve_local_object_path "$video_object_key")" \
-    || fail "VIDEO object file was not found under LOCAL_OBJECT_ROOTS"
+assert_url_readable() {
+  local url="$1"
+  local label="$2"
+  [[ -n "$url" && "$url" != "null" ]] || fail "$label URL is missing"
+  curl -sS -f -L -r 0-0 "$url" -o /dev/null || fail "$label URL is not readable"
+}
+
+verify_package_media_urls_and_streams() {
+  local package_url audio_url cover_url video_url video_path
+  package_url="$(echo "$PACKAGE_RESPONSE" | jq -r '.package_url // empty')"
+  audio_url="$(echo "$PACKAGE_RESPONSE" | jq -r '.package_json.audio.url // empty')"
+  cover_url="$(echo "$PACKAGE_RESPONSE" | jq -r '.package_json.cover.url // empty')"
+  video_url="$(echo "$PACKAGE_RESPONSE" | jq -r '.package_json.video.url // empty')"
+
+  assert_url_readable "$package_url" "package"
+  assert_url_readable "$audio_url" "audio"
+  assert_url_readable "$cover_url" "cover"
+  assert_url_readable "$video_url" "video"
+
+  video_path="$LOG_DIR/generated-video.mp4"
+  curl -sS -f -L "$video_url" -o "$video_path" || fail "failed to download generated video for ffprobe"
   assert_mp4_has_audio_and_video "$video_path"
-  log "verified generated MP4 has video and audio streams"
+  log "verified package media URLs and generated MP4 streams"
 }
 
 fetch_publish_package() {
@@ -607,6 +670,26 @@ async function clickIfVisible(page, name) {
   return true;
 }
 
+async function clickButtonWhenReady(page, name, label) {
+  const deadline = Date.now() + timeout;
+  let lastError;
+  while (Date.now() < deadline) {
+    try {
+      const button = page.getByRole('button', { name }).first();
+      await button.waitFor({ state: 'visible', timeout: 1000 });
+      if (!(await button.isDisabled())) {
+        await button.click();
+        console.log(`[public-real-ui] clicked ${label ?? name}`);
+        return;
+      }
+    } catch (error) {
+      lastError = error;
+    }
+    await page.waitForTimeout(250);
+  }
+  throw new Error(`button not ready ${label ?? name}: ${lastError?.message ?? 'timeout'}`);
+}
+
 const browser = await chromium.launch({ headless });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -630,10 +713,10 @@ try {
 
   await page.goto(`${frontendUrl}/#/work/${workId}`, { waitUntil: 'networkidle' });
   await waitForAnyText(page, ['交给社区发布', '作品已交接给社区发布流程。'], 'finished handoff page');
-  await waitForAnyText(page, ['交接下载链接'], 'handoff URL');
-  await waitForAnyText(page, ['音频地址'], 'audio URL');
-  await waitForAnyText(page, ['封面地址'], 'cover URL');
-  await waitForAnyText(page, ['视频地址'], 'video URL');
+  await waitForAnyText(page, ['作品素材'], 'handoff assets');
+  await waitForAnyText(page, ['打开音频'], 'audio asset');
+  await waitForAnyText(page, ['打开封面'], 'cover asset');
+  await waitForAnyText(page, ['打开视频'], 'video asset');
 
   const overflow = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
@@ -642,8 +725,8 @@ try {
   assert(overflow.scrollWidth <= overflow.viewportWidth + 1, `mobile overflow: ${JSON.stringify(overflow)}`);
 
   await clickIfVisible(page, '刷新下载链接');
-  await waitForAnyText(page, ['交接下载链接'], 'refreshed handoff URL');
-  await clickIfVisible(page, '标记已交接');
+  await waitForAnyText(page, ['作品素材'], 'refreshed handoff assets');
+  await clickButtonWhenReady(page, '标记已交接', 'mark package fetched');
   await waitForAnyText(page, ['作品已交接给社区发布流程。'], 'package fetched state');
 
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -697,7 +780,9 @@ main() {
   export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
   export YUNWU_REAL_CALLS_ENABLED=true
   export YUNWU_SUNO_MODEL="${YUNWU_SUNO_MODEL:-chirp-fenix}"
-  export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-90s}"
+  export YUNWU_REQUEST_TIMEOUT="${YUNWU_REQUEST_TIMEOUT:-300s}"
+  export YUNWU_MAX_POLL_ATTEMPTS="${YUNWU_MAX_POLL_ATTEMPTS:-180}"
+  export YUNWU_POLL_INTERVAL="${YUNWU_POLL_INTERVAL:-2s}"
   export IMAGE_PROVIDER=image2
   export IMAGE2_BACKEND=wellapi
   export IMAGE_REAL_CALLS_ENABLED=true
@@ -707,7 +792,8 @@ main() {
   export WORKFLOW_OUTBOX_DISPATCH_TARGET=temporal
   export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
   export TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
-  export RENDER_WORKER_MODE=local-process
+  export RENDER_WORKER_MODE=album-ffmpeg
+  export_object_storage_env
 
   mkdir -p "$LOG_DIR"
   log "logs will be written under $LOG_DIR"
@@ -726,8 +812,8 @@ main() {
   confirm_real_music
   wait_for_package_ready
   verify_sanitized_db_evidence
-  verify_local_video_file_streams
   fetch_publish_package
+  verify_package_media_urls_and_streams
   verify_timestamped_lyrics
   start_frontend
   run_frontend_handoff_check

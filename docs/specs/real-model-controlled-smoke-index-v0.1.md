@@ -7,7 +7,7 @@ Reviewers: User
 
 ## Context
 
-The project now has separate controlled smoke scripts and runbooks for Yunwu Suno, DreamMaker Suno/MiniMax, WellAPI Image 2, DeepSeek, and DreamMaker Image 2. It also has one combined public-network full-experience smoke that intentionally opens DeepSeek, Yunwu Suno, WellAPI Image 2, local-process MP4 rendering, and Claude Web v1 together. This is safer than a single always-on integration path, but it is easy for an operator to choose the wrong script, skip preflight, or misread a public-network smoke backend as the production target.
+The project now has separate controlled smoke scripts and runbooks for Yunwu Suno, DreamMaker Suno/MiniMax, WellAPI Image 2, DeepSeek, and DreamMaker Image 2. It also has one combined public-network full-experience smoke that intentionally opens DeepSeek, Yunwu Suno, WellAPI Image 2, album-ffmpeg MP4 rendering, and Claude Web v1 together. This is safer than a single always-on integration path, but it is easy for an operator to choose the wrong script, skip preflight, or misread a public-network smoke backend as the production target.
 
 DreamMaker remains the mandatory production target for music and Image 2. Yunwu and WellAPI are current public-network smoke paths only. A central smoke index is needed so future local testing, user handoff, and company handoff all start from the same target matrix and safety gates.
 

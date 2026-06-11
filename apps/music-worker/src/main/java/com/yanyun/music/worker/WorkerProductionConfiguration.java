@@ -10,6 +10,10 @@ import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.ModerationAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
+import com.yanyun.music.deepseek.DeepSeekProperties;
+import com.yanyun.music.deepseek.RealDeepSeekCoverPromptAgent;
+import com.yanyun.music.deepseek.RealDeepSeekMusicPromptAgent;
+import com.yanyun.music.deepseek.RealDeepSeekQualityEvaluationAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -104,7 +108,19 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
-  MusicPromptAgent musicPromptAgent(AgentRunRecorder agentRunRecorder) {
+  @ConfigurationProperties(prefix = "yanyun.deepseek")
+  DeepSeekProperties deepSeekProperties() {
+    return new DeepSeekProperties();
+  }
+
+  @Bean
+  MusicPromptAgent musicPromptAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekMusicPromptAgent(deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockMusicPromptAgent(agentRunRecorder);
   }
 
@@ -114,12 +130,25 @@ public class WorkerProductionConfiguration {
   }
 
   @Bean
-  CoverPromptAgent coverPromptAgent(AgentRunRecorder agentRunRecorder) {
+  CoverPromptAgent coverPromptAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekCoverPromptAgent(deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockCoverPromptAgent(agentRunRecorder);
   }
 
   @Bean
-  QualityEvaluationAgent qualityEvaluationAgent(AgentRunRecorder agentRunRecorder) {
+  QualityEvaluationAgent qualityEvaluationAgent(
+      DeepSeekProperties deepSeekProperties,
+      ObjectMapper objectMapper,
+      AgentRunRecorder agentRunRecorder) {
+    if (deepSeekProperties.isRealCallsEnabled()) {
+      return new RealDeepSeekQualityEvaluationAgent(
+          deepSeekProperties, objectMapper, agentRunRecorder);
+    }
     return new MockQualityEvaluationAgent(agentRunRecorder);
   }
 

@@ -25,7 +25,7 @@
 - [ ] `docs/handover/company-delivery-package-v0.1.md` 已作为公司开发第一阅读入口，且 `scripts/smoke/company-handoff-package-audit.sh` 通过。
 - [ ] 前端承接口径已按 `docs/adr/0003-frontend-delivery-track.md` 确认：当前验收对象是 `prototypes/Claude-web-v1`，正式 `apps/web` 是否承接需单独决策。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 通过，证明后端本地 Mock 主链路、OpenAPI 契约、公司 Adapter readiness 和发布包审核阻断可组合复验。
-- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 通过，证明后端基线、local-process MP4 和 Claude 前端真实后端模式可组合复验。
+- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 通过，证明后端基线、album-ffmpeg MP4 和 Claude 前端真实后端模式可组合复验。
 - [ ] `docs/specs/public-real-full-experience-smoke-v0.1.md` 与 `scripts/smoke/public-real-full-experience-stack.sh` 已同步当前公网真实完整体验口径，且没有把 Yunwu / WellAPI 写成 DreamMaker 生产替代。
 - [ ] `scripts/smoke/openapi-contract.sh` 通过，证明 `docs/api/openapi-v0.1.yaml` 与当前后端主响应字段、状态、错误和发布包契约一致。
 - [ ] 阶段性验收完成后已更新 `docs/project-progress.md`。
@@ -44,11 +44,11 @@
 - [ ] `./gradlew :apps:music-api:bootJar` 通过。
 - [ ] API `/health` 与 `/actuator/health` 返回健康。
 - [ ] `scripts/smoke/api-main-flow.sh` 在同步 Mock 模式通过。
-- [ ] `scripts/smoke/api-main-flow.sh` 在 `RENDER_WORKER_MODE=local-process` 模式通过，并用 `ffprobe` 验证 MP4。
+- [ ] `scripts/smoke/api-main-flow.sh` 在 `RENDER_WORKER_MODE=album-ffmpeg` 模式通过，并用 `ffprobe` 验证 MP4。
 - [ ] `scripts/smoke/openapi-contract.sh` 在同步 Mock 模式通过。
 - [ ] `MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS=mock_package_block_smoke` 启动 API 后，`scripts/smoke/api-package-blocked-flow.sh` 通过，证明发布包交接前审核阻断会收口到 `PACKAGE_BLOCKED`、`CONTACT_SUPPORT` 和 `RETURN_TO_EDIT`。
 - [ ] `scripts/smoke/local-commercial-backend-acceptance-stack.sh` 在 `8080` 空闲、Docker 基础设施已启动时通过；该脚本必须保持真实 DreamMaker、Yunwu、WellAPI、DeepSeek、Image 2 和公司系统调用关闭。
-- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 在 `8080` 和前端 smoke 端口空闲时通过；该脚本必须覆盖后端组合验收、local-process MP4 和前端真实后端 UI smoke。
+- [ ] `scripts/smoke/local-commercial-full-acceptance-stack.sh` 在 `8080` 和前端 smoke 端口空闲时通过；该脚本必须覆盖后端组合验收、album-ffmpeg MP4 和前端真实后端 UI smoke。
 - [ ] 创建作品、确认出歌、获取发布包、刷新 URL、标记交接、作品列表、失败重试均可复验。
 - [ ] `Idempotency-Key` 成功重放和冲突 409 语义通过复验。
 
@@ -81,7 +81,7 @@
 - [ ] 公司内网或生产环境启用真实供应商前，已使用 `deploy/env.production.example` 或公司配置中心等价变量名，并确认 `SPRING_PROFILES_ACTIVE=prod`、`SUNO_BACKEND=dreammaker`、`IMAGE2_BACKEND=dreammaker`。
 - [ ] Suno 成功路径和 MiniMax 成功路径分别按 `docs/checklists/dreammaker-real-integration-acceptance.md` 验收。
 - [ ] 首次手动真实音乐 smoke 可先按 `docs/checklists/dreammaker-real-music-smoke-10min.md`、`scripts/smoke/dreammaker-real-music-smoke.sh` 或当前公网 `scripts/smoke/yunwu-suno-real-music-stack-smoke.sh` 执行，确认是真的打到供应商而不是仍在 Mock；DreamMaker 仍是正式生产目标。
-- [ ] Yunwu Suno 公网真实音乐成功后，已通过 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh` 或公网完整体验脚本默认子检查验证 `get-timestamped-lyrics`；若供应商路径阻塞，应在 `docs/integrations/real-model-smoke-evidence-log.md` 记录为 `blocked_provider_path`，并明确视频验收改走无硬同步字幕或弱歌词卡方案，不把精确字幕同步作为通过条件。
+- [ ] 如需恢复字幕能力，Yunwu Suno 公网真实音乐成功后，需通过 `scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh` 或显式 `CHECK_YUNWU_TIMESTAMPED_LYRICS=true` 验证 `get-timestamped-lyrics`；若供应商路径阻塞，应在 `docs/integrations/real-model-smoke-evidence-log.md` 记录为 `blocked_provider_path`，并明确默认视频验收继续走无字幕方案。
 - [ ] 首次手动真实封面 smoke 可先按 `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh` 执行公网路径；生产目标 DreamMaker Image 2 按 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 TARGET=dreammaker-image2 MODE=execute scripts/smoke/real-model-controlled-smoke.sh` 执行，确认只打开 Image 2，音乐、DeepSeek、Yunwu、render-worker 和公司 Adapter 仍保持 Mock。
 - [ ] 公网真实完整体验首测前，DeepSeek、Yunwu Suno、WellAPI Image 2 已分别完成 `MODE=plan/preflight`，并已运行 `TARGET=public-real-full-experience MODE=plan/preflight scripts/smoke/real-model-controlled-smoke.sh`；执行完整体验时只使用 `ALLOW_REAL_MODEL_SMOKE=1 ALLOW_PUBLIC_REAL_FULL_EXPERIENCE=1 TARGET=public-real-full-experience MODE=execute scripts/smoke/real-model-controlled-smoke.sh`，并确认 `DEEPSEEK_API_KEY`、`YUNWU_API_KEY`、`WELLAPI_API_KEY` 只来自当前 shell 或交互式静默输入。
 - [ ] 公网真实完整体验若成功，只能记录为 DeepSeek + Yunwu Suno + WellAPI Image 2 的公网样本；若失败，失败码、推荐动作、provider trace 是否存在、对象存储导入和发布素材交接状态需脱敏记录，不记录完整 prompt、歌词、供应商原始响应或媒体 URL。

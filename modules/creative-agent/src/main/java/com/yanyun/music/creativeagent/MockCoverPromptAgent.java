@@ -10,10 +10,10 @@ import java.util.Map;
 public final class MockCoverPromptAgent implements CoverPromptAgent {
 
   private static final String AGENT_NAME = "CoverPromptAgent";
-  private static final String AGENT_VERSION = "v0.1";
+  private static final String AGENT_VERSION = "v0.5";
   private static final String MODEL_NAME = "mock-cover-prompt";
-  private static final String TEMPLATE_KEY = "cover.prompt.v1";
-  private static final int TEMPLATE_VERSION = 1;
+  private static final String TEMPLATE_KEY = "cover.prompt.v5";
+  private static final int TEMPLATE_VERSION = 5;
 
   private final AgentRunRecorder agentRunRecorder;
 
@@ -49,17 +49,21 @@ public final class MockCoverPromptAgent implements CoverPromptAgent {
             request.coverPromptSeed(),
             firstNonBlank(request.songSummary(), firstNonBlank(request.lyricsText(), title)));
     String prompt =
-        "16:9 cinematic key art for song '%s', yanyun-inspired ancient frontier, %s, music mood: %s"
+        "16:9 premium album cover for the Yanyun Sixteen Sounds song '%s', high-quality Chinese title typography integrated into the composition, yanyun-inspired ancient frontier, %s, music mood: %s"
             .formatted(
                 title,
                 trimToLength(seed.replaceAll("[\\r\\n\\t]+", " "), 120),
                 firstNonBlank(request.musicPrompt(), "ancient chinese folk pop"));
     return new CoverPromptResult(
         prompt,
-        "low quality, blurry, watermark, text, logo",
+        "low quality, blurry, watermark, fake singer name, fake label, fake copyright, garbled text, unreadable typography, UI, ranking badge",
         safeSize(request.width(), 1920),
         safeSize(request.height(), 1080),
-        java.util.List.of("16:9 composition", "no text overlay", "cover-safe subject framing"),
+        java.util.List.of(
+            "16:9 composition",
+            "premium album cover",
+            "title typography may be present",
+            "cover-safe subject framing"),
         Map.of(
             "agent",
             AGENT_NAME,
@@ -68,7 +72,13 @@ public final class MockCoverPromptAgent implements CoverPromptAgent {
             "prompt_template_key",
             TEMPLATE_KEY,
             "prompt_template_version",
-            TEMPLATE_VERSION));
+            TEMPLATE_VERSION),
+        "Use the song title only as the main cover title. Do not invent singer, label, copyright, or small credits.",
+        java.util.List.of(
+            "clear readable Chinese title",
+            "premium typography",
+            "no fake singer credits",
+            "no garbled characters"));
   }
 
   private void record(
@@ -118,7 +128,9 @@ public final class MockCoverPromptAgent implements CoverPromptAgent {
         Integer.toString(result.width()),
         Integer.toString(result.height()),
         result.styleConstraints().toString(),
-        result.providerOptions().toString());
+        result.providerOptions().toString(),
+        nullToEmpty(result.textPrompt()),
+        result.typographyRequirements().toString());
   }
 
   private int elapsedMs(long startedAt) {

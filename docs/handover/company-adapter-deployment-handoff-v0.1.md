@@ -16,9 +16,9 @@
 
 进入具体 Adapter 替换前，先阅读 `docs/handover/company-delivery-package-v0.1.md` 和 `docs/handover/local-commercial-delivery-status-v0.1.md`，确认哪些能力已经本地验证、哪些只准备好受控 smoke、哪些必须由公司系统或部署方案补齐。
 
-视频成片当前支持两种模式：默认 `MockVideoRenderService`，以及本地 smoke 用的
-`LocalProcessVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
-`render_worker` 组件；本地进程模式可证明 Remotion MP4 链路可跑通，但生产是否采用进程模式、独立服务或队列化 render worker 需要公司部署方案确认。
+视频成片当前支持两种交付模式：默认 `MockVideoRenderService`，以及真实成片 smoke / 生产默认候选
+`FfmpegAlbumVideoRenderService`。公司部署前应在 `/internal/integration-readiness` 中检查
+`render_worker` 组件；默认视频采用 16:9 专辑封面 + 原曲音频的 FFmpeg 快速封装方案，不再推进 Remotion 高级模板作为产品路径。
 
 真实音乐和 Image 2 供应商边界中，DreamMaker 是必须保留的正式生产目标。Yunwu / WellAPI 只用于当前非公司内网环境下的公网受控联调，不作为删除 DreamMaker 接口的理由。
 生产或公司内网部署应参考 `deploy/env.production.example`，启用 `SPRING_PROFILES_ACTIVE=prod`；
@@ -162,7 +162,7 @@ COMPANY_SHARE_BASE_URL=
 
 ## 8. 部署变量检查
 
-公司部署变量分为三类：基础运行必需项、公司 Adapter 替换必需项、以及真实模型和 render-worker 的部署选型项。当前仓库默认仍可使用 Mock Provider 和 Mock render-worker 做本地验证；生产是否启用真实 Suno / MiniMax、是否采用 `local-process` render-worker，需要公司部署方案和联调窗口确认。
+公司部署变量分为三类：基础运行必需项、公司 Adapter 替换必需项、以及真实模型和 render-worker 的部署选型项。当前仓库默认仍可使用 Mock Provider 和 Mock render-worker 做本地验证；生产是否启用真实 Suno / MiniMax、是否采用 `album-ffmpeg` render-worker，需要公司部署方案和联调窗口确认。
 
 生产变量名样例：
 
@@ -230,11 +230,10 @@ DREAMMAKER_ACCESS_KEY=
 DREAMMAKER_SECRET_KEY=
 SUNO_BACKEND=dreammaker
 IMAGE2_BACKEND=dreammaker
-RENDER_WORKER_MODE=local-process
-RENDER_WORKER_WORKING_DIRECTORY=
-RENDER_WORKER_COMMAND=
-RENDER_WORKER_ARGUMENTS=
+RENDER_WORKER_MODE=album-ffmpeg
 RENDER_WORKER_TIMEOUT=
+RENDER_WORKER_FFMPEG_COMMAND=
+RENDER_WORKER_FFPROBE_COMMAND=
 ```
 
 若公司最终采用独立 render service、队列化 worker 或容器化渲染服务，应保留 `VideoRenderService` 调用边界，但替换具体部署变量和实现方式。
@@ -249,7 +248,7 @@ RENDER_WORKER_TIMEOUT=
 2. 替换公司 Adapter 前，运行 `scripts/smoke/production-provider-defaults-audit.sh`、`scripts/smoke/company-deployment-readiness-audit.sh` 和 `scripts/smoke/stepwise-production-boundary-audit.sh`，确认生产默认仍指向 DreamMaker，部署资产和交接文档齐全，`stepwise-recording` 没有被当成交付生产链路，而 Yunwu / WellAPI 只保留为公网 smoke 后端。
 3. 调用 `/api/v1/me`，确认返回真实公司用户。
 4. 运行 `scripts/smoke/api-main-flow.sh`，确认主链路可创建作品、确认出歌、获取发布包、刷新 URL、标记交接。
-5. 若启用 `RENDER_WORKER_MODE=local-process`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
+5. 若启用 `RENDER_WORKER_MODE=album-ffmpeg`，运行 `EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=album-ffmpeg scripts/smoke/api-main-flow.sh`，确认 MP4 与 timeline 写入对象存储，并用 `ffprobe` 验证视频。
 6. 运行 `cd prototypes/Claude-web-v1 && npm run smoke:real-backend`，确认真实后端模式下前端创作、改词、409 友好提示、成品交接、作品列表和失败重试恢复。
 7. 灵感成歌创建作品，确认作品归属到真实 `user_id`。
 8. 输入一条公司审核应阻断的内容，确认返回可读失败提示。

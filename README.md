@@ -4,7 +4,7 @@
 
 ## Current Stage
 
-当前已完成本地商用级主链路基础：Mock 写词、Mock 音乐 Provider、发布包对象存储、Outbox/Temporal 编排边界、公司 Adapter readiness、render-worker local-process MP4 成片边界均已落地。当前可验收前端位于 `prototypes/Claude-web-v1`，验收缺口已修复，并已完成真实后端模式 UI smoke 脚本化复验。公网真实完整体验已跑通 DeepSeek v4Pro + Yunwu Suno `chirp-fenix` + WellAPI Image 2 + local-process MP4 + Claude Web v1 样本；DreamMaker 音乐和 DreamMaker Image 2 仍是正式生产目标。Yunwu timestamped lyrics 已验证但当前供应商路径阻塞，视频 v3.1 不把硬同步字幕作为默认通过条件。`apps/web` 仍是正式工程 scaffold，是否迁移原型或由公司前端重建需在交付前单独决策。真实模型和公司系统仍默认关闭或 Mock，只有显式 gate + 安全注入凭据时才会外呼。
+当前已完成本地商用级主链路基础：Mock 写词、Mock 音乐 Provider、发布包对象存储、Outbox/Temporal 编排边界、公司 Adapter readiness、render-worker album-ffmpeg MP4 成片边界均已落地。当前可验收前端位于 `prototypes/Claude-web-v1`，验收缺口已修复，并已完成真实后端模式 UI smoke 脚本化复验。公网真实完整体验已跑通 DeepSeek v4Pro + Yunwu Suno `chirp-fenix` + WellAPI Image 2 + album-ffmpeg MP4 + Claude Web v1 样本；DreamMaker 音乐和 DreamMaker Image 2 仍是正式生产目标。Yunwu timestamped lyrics 已验证但当前供应商路径阻塞，视频 v3.1 不把硬同步字幕作为默认通过条件。`apps/web` 仍是正式工程 scaffold，是否迁移原型或由公司前端重建需在交付前单独决策。真实模型和公司系统仍默认关闭或 Mock，只有显式 gate + 安全注入凭据时才会外呼。
 
 ## Stack
 
@@ -146,15 +146,14 @@ DreamMaker Image 2 生产目标 smoke 使用
 `scripts/smoke/public-real-full-experience-stack.sh`，规格见
 `docs/specs/public-real-full-experience-smoke-v0.1.md`。该脚本会启动一次 API、worker 和
 `prototypes/Claude-web-v1`，固定使用 DeepSeek 真实写词、Yunwu Suno 真实音乐、WellAPI Image 2
-真实封面、`RENDER_WORKER_MODE=local-process` MP4 和公司 Adapter Mock。它只用于当前公网环境首测，
+真实封面、`RENDER_WORKER_MODE=album-ffmpeg` MP4 和公司 Adapter Mock。它只用于当前公网环境首测，
 不能作为 DreamMaker 生产验证证据。2026-06-07 已成功跑通一条脱敏样本；2026-06-11 已用
 Yunwu `chirp-fenix` / v5.5 再跑通一条脱敏样本，证据见
 `docs/integrations/real-model-smoke-evidence-log.md`：发布素材包包含 audio / cover / video /
-timeline，Claude Web v1 成品页已完成刷新下载链接和标记交接。当前脚本默认会在包可用后继续检查
+timeline，Claude Web v1 成品页已完成刷新下载链接和标记交接。当前脚本默认不再检查
 Yunwu timestamped lyrics；2026-06-11 实测当前 Yunwu base URL 的默认 SunoAPI 兼容路径返回 404，
-若干 `/suno/*` 探测路径返回 HTML 非 JSON。除非供应商确认正确 JSON 接口，否则视频 v3.1 只允许
-无硬同步字幕或弱歌词卡方案；排查非字幕问题时可临时设置 `CHECK_YUNWU_TIMESTAMPED_LYRICS=false`
-跳过，但这不代表字幕同步已验收。
+若干 `/suno/*` 探测路径返回 HTML 非 JSON。除非供应商确认正确 JSON 接口，否则默认视频只允许
+无字幕方案；如需单独排查字幕能力，可显式设置 `CHECK_YUNWU_TIMESTAMPED_LYRICS=true`。
 
 ```bash
 TARGET=public-real-full-experience MODE=plan scripts/smoke/real-model-controlled-smoke.sh
@@ -222,7 +221,7 @@ scripts/smoke/local-commercial-backend-acceptance-stack.sh
 scripts/smoke/local-commercial-full-acceptance-stack.sh
 ```
 
-该脚本会先跑后端组合验收，再用 `RENDER_WORKER_MODE=local-process` 跑 1 秒 MP4 + `ffprobe` 验证，最后启动 Mock API 给 `prototypes/Claude-web-v1` 执行 `npm run smoke:real-backend`。它要求 `apps/render-worker` 和 `prototypes/Claude-web-v1` 已安装依赖，仍不调用真实模型供应商或公司系统。
+该脚本会先跑后端组合验收，再用 `RENDER_WORKER_MODE=album-ffmpeg` 跑 1 秒 MP4 + `ffprobe` 验证，最后启动 Mock API 给 `prototypes/Claude-web-v1` 执行 `npm run smoke:real-backend`。它要求本机可执行 `ffmpeg` / `ffprobe` 且 `prototypes/Claude-web-v1` 已安装依赖，仍不调用真实模型供应商或公司系统。
 
 如需对拍 OpenAPI v0.1 与当前后端运行时响应：
 
@@ -230,10 +229,10 @@ scripts/smoke/local-commercial-full-acceptance-stack.sh
 scripts/smoke/openapi-contract.sh
 ```
 
-如果 API 以 `RENDER_WORKER_MODE=local-process` 启动，可额外验证真实 MP4：
+如果 API 以 `RENDER_WORKER_MODE=album-ffmpeg` 启动，可额外验证真实 MP4：
 
 ```bash
-EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=local-process scripts/smoke/api-main-flow.sh
+EXPECTED_DURATION_MS=1000 EXPECT_RENDER_WORKER=album-ffmpeg scripts/smoke/api-main-flow.sh
 ```
 
 Claude 前端原型也提供真实后端接口 UI smoke。它验证真实后端接口和 Mock 主链路，不代表真实模型成功出歌。先按上面的同步 Mock 方式启动 API，再执行：
