@@ -19,7 +19,7 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
       : null;
 
   async function handleRetryMusic() {
-    await run('RETRY_MUSIC', () => service.retryMusic(work.work_id, { music_provider: 'mock' }), {
+    await run('RETRY_MUSIC', () => service.retryMusic(work.work_id, {}), {
       successMsg: '已重新开始生成',
     });
   }
@@ -36,9 +36,8 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
     });
   }
 
-  // 失败页支持返回编辑（回到歌词确认）。这里直接刷新，由后端 available_actions 决定后续。
   function handleReturnToEdit() {
-    void refresh();
+    onBackToHome();
   }
 
   // 渲染除主重试外的次级动作。
@@ -96,7 +95,7 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
                 disabled={busyKey !== null}
                 onClick={handleReturnToEdit}
               >
-                返回编辑
+                返回重新创作
               </Button>
             );
           }

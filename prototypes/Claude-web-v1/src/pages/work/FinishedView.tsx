@@ -41,7 +41,6 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const media = work.media_assets;
   const fetched = work.package_status === 'PACKAGE_FETCHED' || pkg?.package_status === 'PACKAGE_FETCHED';
   const blocked = work.package_status === 'PACKAGE_BLOCKED' || pkg?.package_status === 'PACKAGE_BLOCKED';
-  const packageJson = pkg?.package_json;
   const availableActions = pkg?.available_actions ?? work.available_actions;
   const hasAvailableAction = (action: AvailableAction) => availableActions.includes(action);
 
@@ -151,9 +150,9 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
           <>
             {pkg.package_url && (
               <div className="handoff-block">
-                <span className="handoff-block__label">交接下载链接</span>
+                <span className="handoff-block__label">作品素材</span>
                 <a className="handoff-url" href={pkg.package_url} target="_blank" rel="noreferrer">
-                  {pkg.package_url}
+                  打开作品素材
                 </a>
               </div>
             )}
@@ -171,49 +170,53 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
               </p>
             )}
 
-            {packageJson && (
-              <div className="handoff-assets" aria-label="作品交接内容">
-                {packageJson.audio?.url && (
-                  <div className="handoff-block">
-                    <span className="handoff-block__label">音频地址</span>
-                    <a
-                      className="handoff-url"
-                      href={packageJson.audio.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {packageJson.audio.url}
-                    </a>
-                  </div>
-                )}
+            <div className="handoff-assets" aria-label="作品交接内容">
+              {media?.audio_url && (
                 <div className="handoff-block">
-                  <span className="handoff-block__label">视频地址</span>
+                  <span className="handoff-block__label">音频</span>
                   <a
                     className="handoff-url"
-                    href={packageJson.video.url}
+                    href={media.audio_url}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {packageJson.video.url}
+                    打开音频
                   </a>
                 </div>
+              )}
+              {media?.video_url && (
                 <div className="handoff-block">
-                  <span className="handoff-block__label">封面地址</span>
+                  <span className="handoff-block__label">视频</span>
                   <a
                     className="handoff-url"
-                    href={packageJson.cover.url}
+                    href={media.video_url}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {packageJson.cover.url}
+                    打开视频
                   </a>
                 </div>
+              )}
+              {media?.cover_url && (
                 <div className="handoff-block">
-                  <span className="handoff-block__label">歌词正文</span>
-                  <pre className="handoff-lyrics">{packageJson.lyrics.text}</pre>
+                  <span className="handoff-block__label">封面</span>
+                  <a
+                    className="handoff-url"
+                    href={media.cover_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    打开封面
+                  </a>
                 </div>
+              )}
+              {work.song_summary && (
+                <div className="handoff-block">
+                  <span className="handoff-block__label">作品摘要</span>
+                  <p className="handoff-summary">{work.song_summary}</p>
+                </div>
+              )}
               </div>
-            )}
 
             <div className="action-bar action-bar--stack">
               {hasAvailableAction('MARK_PACKAGE_FETCHED') && !fetched && !blocked && (

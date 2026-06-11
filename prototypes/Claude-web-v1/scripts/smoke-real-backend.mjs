@@ -130,7 +130,11 @@ async function runMainFlow(page) {
   const workId = page.url().split('/work/')[1];
   assert(workId, 'work id was not present in route');
   await waitForVisibleText(page, '歌词待确认', 'lyrics confirmation page');
-  await waitForVisibleText(page, '编曲方向', 'music prompt section');
+  await waitForVisibleText(page, '歌词', 'lyrics section');
+  assert(
+    (await page.getByText('编曲方向').count()) === 0,
+    'internal music prompt label should not be shown on confirmation page',
+  );
 
   await page.getByRole('button', { name: 'AI 润色' }).click();
   await page.getByRole('button', { name: '开始润色' }).waitFor({ state: 'visible', timeout: timeoutMs });
@@ -154,12 +158,17 @@ async function runMainFlow(page) {
 
   await page.getByRole('button', { name: '确认出歌' }).click();
   await waitForVisibleText(page, '交给社区发布', 'finished handoff page');
-  await waitForVisibleText(page, '交接下载链接', 'package URL');
-  await waitForVisibleText(page, '视频地址', 'video URL');
-  await waitForVisibleText(page, '歌词正文', 'lyrics text');
+  await waitForVisibleText(page, '作品素材', 'package handoff link');
+  await waitForVisibleText(page, '打开视频', 'video asset link');
+  await waitForVisibleText(page, '打开音频', 'audio asset link');
+  await waitForVisibleText(page, '打开封面', 'cover asset link');
+  assert(
+    (await page.getByText('编曲方向').count()) === 0,
+    'internal music prompt label should not be shown to users',
+  );
 
   await page.getByRole('button', { name: '刷新下载链接' }).click();
-  await waitForVisibleText(page, '交接下载链接', 'refreshed package URL');
+  await waitForVisibleText(page, '作品素材', 'refreshed package handoff link');
   await page.getByRole('button', { name: '标记已交接' }).click();
   await waitForVisibleText(page, '作品已交接给社区发布流程。', 'fetched package status');
   await page.getByRole('button', { name: '标记已交接' }).waitFor({ state: 'hidden', timeout: timeoutMs });

@@ -1,7 +1,7 @@
 # 本地商用交付状态说明 v0.1
 
-更新时间：2026-06-11 03:40 CST
-状态：本地 Mock 闭环与公网真实完整体验均可交付实测；DreamMaker 生产验证和公司系统仍按受控联调 / 外部接入推进。
+更新时间：2026-06-11 22:21 CST
+状态：本地 Mock 闭环与公网真实完整体验均可交付实测；P1 真实测试可信性门禁已强化；DreamMaker 生产验证和公司系统仍按受控联调 / 外部接入推进。
 
 ## 1. 阅读结论
 
@@ -12,6 +12,8 @@
 当前也可以宣称“Yunwu timestamped lyrics 能力已被验证但暂不可用”：`chirp-fenix` 样本已具备 task/audio id，但当前 Yunwu base URL 的默认 SunoAPI 兼容路径返回 404，若干 `/suno/*` 探测路径返回 HTML 非 JSON。供应商确认正确 JSON 接口前，视频 v3.1 不把硬同步字幕作为默认通过条件。
 
 DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两条 DreamMaker Adapter / smoke / runbook 路径。Yunwu / WellAPI 只是当前非公司内网环境下的公网联调后端，不替代 DreamMaker 音乐或 DreamMaker Image 2 路径。公司交付验收、用户实测和生产部署 smoke 必须保持 `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`，直到 `stepwise-production` 有专用 production activity 和独立 smoke 证据；`stepwise-recording` 只允许作为 step audit 受控验证。
+
+2026-06-11 已完成一轮 P1 阻塞修复：Mock 用户头限制到 local/mock 场景，真实 smoke 的 direct/stack 入口均要求全局 gate + 目标 gate，生产 env 示例不再含 localhost/default/mock/local 危险默认，幂等、状态动作、outbox/local、MP4 双轨校验、无精确时间轴字幕策略、发布包刷新和前端真实模式均已收口。本轮未调用真实模型。
 
 ## 2. 状态口径
 
@@ -53,7 +55,8 @@ DreamMaker 是正式生产目标接口，必须持续保留音乐和 Image 2 两
 | Image 2 真实封面 | `READY_LOCAL` | 本项目 + 用户安全注入 WellAPI 或 DreamMaker 凭据 | `scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh`、`scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh`、`docs/runbook/image2-controlled-real-integration.md`、`docs/integrations/real-model-smoke-evidence-log.md` | WellAPI 公网样本已成功；DreamMaker Image 2 是生产目标且尚未成功验证。 |
 | 真实模型联调预检 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-readiness-preflight.sh`、`docs/specs/real-model-readiness-preflight-v0.1.md` | 只检查本地变量和可选 readiness，不证明真实供应商成功。 |
 | 真实模型受控 smoke 总入口 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-controlled-smoke.sh`、`docs/specs/real-model-controlled-smoke-index-v0.1.md` | 默认只列矩阵/计划；`execute` 仍需要双重显式开关，不代表真实模型已成功。 |
-| 真实模型安全门矩阵审计 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-safety-gates-audit.sh`、`docs/specs/real-model-safety-gates-audit-v0.1.md` | 只证明所有真实模型 target 的全局 gate 和目标 `ALLOW_*` gate 未被绕过，不证明真实供应商成功。 |
+| 真实测试可信性 P1 门禁 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-safety-gates-audit.sh`、`scripts/smoke/production-provider-defaults-audit.sh`、`scripts/smoke/company-deployment-readiness-audit.sh`、`./gradlew test`、`npm test -- --run`、`npm run build` | 只证明本轮安全边界、状态一致性、视频产物校验和前端真实模式已强化；本轮不调用真实供应商。 |
+| 真实模型安全门矩阵审计 | `READY_LOCAL` | 本项目 | `scripts/smoke/real-model-safety-gates-audit.sh`、`docs/specs/real-model-safety-gates-audit-v0.1.md` | 只证明所有真实模型 target、direct/stack 脚本的全局 gate 和目标 `ALLOW_*` gate 未被绕过，不证明真实供应商成功。 |
 | 真实模型 smoke 脱敏证据日志 | `READY_LOCAL` | 本项目 | `docs/integrations/real-model-smoke-evidence-log.md`、`scripts/smoke/real-model-evidence-log-audit.sh` | 只证明证据留痕格式、脱敏规则和 DreamMaker 生产保留口径齐全，不证明真实供应商成功。 |
 | 公网真实完整体验 smoke | `READY_LOCAL` | 本项目 + 用户安全注入凭据 | `docs/specs/public-real-full-experience-smoke-v0.1.md`、`scripts/smoke/public-real-full-experience-stack.sh`、`docs/integrations/real-model-smoke-evidence-log.md` | 组合 DeepSeek、Yunwu Suno、WellAPI Image 2、local-process MP4 和 Claude Web v1 已成功一条样本；仅用于公网首测，不能替代 DreamMaker 生产验证。 |
 | 生产 DreamMaker 默认约束 | `READY_LOCAL` | 本项目 | `deploy/env.production.example`、`scripts/smoke/production-provider-defaults-audit.sh`、`docs/specs/production-dreammaker-provider-defaults-v0.1.md` | 只证明生产 profile / fallback / 交接口径默认 DreamMaker；不代表真实 DreamMaker 已在当前公网环境成功调用。 |

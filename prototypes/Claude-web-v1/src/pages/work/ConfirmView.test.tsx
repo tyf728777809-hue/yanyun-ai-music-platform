@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../../api/client';
 import { ToastProvider } from '../../components/Toast';
@@ -93,5 +93,30 @@ describe('ConfirmView', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('改词次数已用完，本次未生效');
     expect(screen.getByRole('alert')).toHaveTextContent('请求编号：req-1');
+  });
+
+  it('confirms work without forcing mock music provider in real mode', async () => {
+    const confirmWork = vi.spyOn(service, 'confirmWork').mockResolvedValue({
+      work_id: 'work-1',
+      status: 'GENERATING',
+      generation_stage: 'QUOTA_LOCKING',
+      job_id: 'job-1',
+      available_actions: [],
+    });
+
+    render(
+      <ToastProvider>
+        <ConfirmView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '确认出歌' }));
+
+    await waitFor(() =>
+      expect(confirmWork).toHaveBeenCalledWith(
+        'work-1',
+        expect.not.objectContaining({ music_provider: 'mock' }),
+      ),
+    );
   });
 });

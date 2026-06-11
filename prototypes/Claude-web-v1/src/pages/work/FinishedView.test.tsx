@@ -44,7 +44,7 @@ describe('FinishedView', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders user-facing handoff links and lyrics from publish package', async () => {
+  it('renders user-facing handoff links without exposing raw package internals', async () => {
     vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
       work_id: 'work-1',
       package_status: 'PACKAGE_READY',
@@ -67,11 +67,26 @@ describe('FinishedView', () => {
       </ToastProvider>,
     );
 
-    expect(await screen.findByText('交接下载链接')).toBeInTheDocument();
-    expect(screen.getByText('音频地址')).toBeInTheDocument();
-    expect(screen.getByText('视频地址')).toBeInTheDocument();
-    expect(screen.getByText('封面地址')).toBeInTheDocument();
-    expect(screen.getByText((_, element) => element?.textContent === '第一句\n第二句')).toBeInTheDocument();
+    expect(await screen.findByText('作品素材')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '打开作品素材' })).toHaveAttribute(
+      'href',
+      'https://cdn.local/package.zip',
+    );
+    expect(screen.getByRole('link', { name: '打开音频' })).toHaveAttribute(
+      'href',
+      'https://cdn.local/audio.mp3',
+    );
+    expect(screen.getByRole('link', { name: '打开视频' })).toHaveAttribute(
+      'href',
+      'https://cdn.local/video.mp4',
+    );
+    expect(screen.getByRole('link', { name: '打开封面' })).toHaveAttribute(
+      'href',
+      'https://cdn.local/cover.png',
+    );
+    expect(screen.queryByText('https://cdn.local/package.zip')).not.toBeInTheDocument();
+    expect(screen.queryByText('https://cdn.local/package-audio.mp3')).not.toBeInTheDocument();
+    expect(screen.queryByText((_, element) => element?.textContent === '第一句\n第二句')).not.toBeInTheDocument();
   });
 
   it('hides mark fetched after package handoff is marked fetched locally', async () => {

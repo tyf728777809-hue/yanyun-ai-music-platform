@@ -59,7 +59,6 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         service.confirmWork(work.work_id, {
           lyrics_draft_id: draft?.lyrics_draft_id,
           user_confirmed_at: new Date().toISOString(),
-          music_provider: 'mock',
         }),
       { successMsg: '已确认，开始出歌' },
     );
@@ -106,8 +105,8 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         <pre className="lyrics-text">{draft?.lyrics_text || '歌词准备中…'}</pre>
       </section>
 
-      {/* 燕云引用 + music prompt */}
-      {draft && (draft.yanyun_references?.length || draft.music_prompt) ? (
+      {/* 创作提示 */}
+      {draft && (draft.yanyun_references?.length || draft.risk_notes?.length) ? (
         <section className="card detail-card">
           {draft.yanyun_references && draft.yanyun_references.length > 0 && (
             <div className="detail-block">
@@ -119,12 +118,6 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
                   </span>
                 ))}
               </div>
-            </div>
-          )}
-          {draft.music_prompt && (
-            <div className="detail-block">
-              <h3 className="detail-block__title">编曲方向</h3>
-              <p className="music-prompt">{draft.music_prompt}</p>
             </div>
           )}
           {draft.risk_notes && draft.risk_notes.length > 0 && (

@@ -50,7 +50,7 @@ describe('FailedView action matrix', () => {
 
     expect(screen.getByRole('button', { name: '重新生成封面' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '重新渲染画面' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '返回编辑' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '返回重新创作' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '联系平台协助' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: '重新生成' })).not.toBeInTheDocument();
   });
@@ -82,5 +82,38 @@ describe('FailedView action matrix', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '重新渲染画面' }));
     await waitFor(() => expect(rerenderVideo).toHaveBeenCalledWith('work-failed-1'));
+  });
+
+  it('retries music without forcing mock provider in real mode', async () => {
+    const retryMusic = vi.spyOn(service, 'retryMusic').mockResolvedValue({
+      work_id: 'work-failed-1',
+      status: 'GENERATING',
+      generation_stage: 'MUSIC_GENERATING',
+      job_id: 'job-retry',
+      available_actions: [],
+    });
+
+    render(
+      <ToastProvider>
+        <FailedView
+          work={failedWork({
+            failure: {
+              failure_code: 'MUSIC_GENERATION_FAILED',
+              failure_message: 'music failed',
+              retryable: true,
+              remaining_retry_count: 1,
+              recommended_action: 'RETRY_MUSIC',
+            },
+            available_actions: ['RETRY_MUSIC', 'RETURN_TO_EDIT'],
+          })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '重新生成' }));
+
+    await waitFor(() => expect(retryMusic).toHaveBeenCalledWith('work-failed-1', {}));
   });
 });
