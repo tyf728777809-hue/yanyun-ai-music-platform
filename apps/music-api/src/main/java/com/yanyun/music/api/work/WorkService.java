@@ -534,6 +534,13 @@ public class WorkService {
 
   private void requireSafeRealMusicDispatch(String selectedMusicProvider) {
     MusicProviderType effectiveProvider = effectiveMusicProvider(selectedMusicProvider);
+    if (workflowDispatchProperties.outboxMode()
+        && workflowDispatchProperties.getOutbox().getDispatchTarget()
+            == WorkflowDispatchProperties.DispatchTarget.LOCAL
+        && effectiveProvider != MusicProviderType.MOCK) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "非 Mock 音乐供应商不能使用 outbox + local 调度，请切换到 outbox + Temporal。");
+    }
     if (effectiveProvider == MusicProviderType.MOCK || !realMusicCallsEnabled(effectiveProvider)) {
       return;
     }

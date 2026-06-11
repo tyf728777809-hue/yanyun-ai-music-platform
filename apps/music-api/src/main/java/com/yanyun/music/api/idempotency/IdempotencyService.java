@@ -9,7 +9,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.HexFormat;
+import java.util.Optional;
 import java.util.function.Supplier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,27 +36,55 @@ public class IdempotencyService {
       Class<T> responseType,
       Supplier<T> operationSupplier) {
     String requestHash = hashJson(requestFingerprint);
+    Optional<IdempotencyRecord> existing =
+        workRepository.findIdempotency(userId, idempotencyKey, operation);
+    if (existing.isPresent()) {
+      return replay(existing.get(), requestHash, responseType);
+    }
+
+    OffsetDateTime expiresAt = OffsetDateTime.now().plusHours(24);
+    boolean inserted =
+        workRepository.insertIdempotencyPlaceholder(
+            userId, idempotencyKey, operation, requestHash, expiresAt);
+    if (!inserted) {
+      return replayOrInProgress(userId, idempotencyKey, operation, requestHash, responseType);
+    }
+
+    try {
+      T response = operationSupplier.get();
+      workRepository.completeIdempotency(
+          userId, idempotencyKey, operation, requestHash, writeJson(response));
+      return response;
+    } catch (RuntimeException exception) {
+      workRepository.deleteIdempotency(userId, idempotencyKey, operation);
+      throw exception;
+    }
+  }
+
+  private <T> T replayOrInProgress(
+      String userId,
+      String idempotencyKey,
+      String operation,
+      String requestHash,
+      Class<T> responseType) {
     return workRepository
         .findIdempotency(userId, idempotencyKey, operation)
         .map(record -> replay(record, requestHash, responseType))
-        .orElseGet(
-            () -> {
-              T response = operationSupplier.get();
-              workRepository.insertIdempotency(
-                  userId,
-                  idempotencyKey,
-                  operation,
-                  requestHash,
-                  writeJson(response),
-                  OffsetDateTime.now().plusHours(24));
-              return response;
-            });
+        .orElseThrow(
+            () ->
+                new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Request with this Idempotency-Key is already processing"));
   }
 
   private <T> T replay(IdempotencyRecord record, String requestHash, Class<T> responseType) {
     if (!requestHash.equals(record.requestHash())) {
       throw new IdempotencyConflictException(
           "Idempotency-Key was already used with a different request");
+    }
+    if (record.responseJson() == null || record.responseJson().isBlank()) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Request with this Idempotency-Key is already processing");
     }
     try {
       return objectMapper.readValue(record.responseJson(), responseType);

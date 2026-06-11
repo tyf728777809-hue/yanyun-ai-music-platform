@@ -120,6 +120,28 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   @Test
+  void confirmWorkRejectsNonMockProviderInOutboxLocalDispatch() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(
+            Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    assertThatThrownBy(
+            () ->
+                service(outboxProperties())
+                    .confirmWork("user-1", workId, new ConfirmWorkRequest(draftId, null, "suno")))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("outbox + Temporal");
+
+    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+    verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
+    verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
   void confirmWorkRejectsRealDreamMakerProviderInSyncDispatch() {
     UUID workId = UUID.randomUUID();
     UUID draftId = UUID.randomUUID();

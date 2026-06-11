@@ -766,6 +766,74 @@ public class WorkRepository {
         expiresAt);
   }
 
+  public boolean insertIdempotencyPlaceholder(
+      String userId,
+      String idempotencyKey,
+      String operation,
+      String requestHash,
+      OffsetDateTime expiresAt) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            INSERT INTO idempotency_keys (
+              user_id,
+              idempotency_key,
+              operation,
+              request_hash,
+              response_json,
+              expires_at
+            )
+            VALUES (?, ?, ?, ?, NULL, ?)
+            ON CONFLICT (user_id, idempotency_key, operation)
+            DO UPDATE SET
+              request_hash = EXCLUDED.request_hash,
+              response_json = NULL,
+              created_at = now(),
+              expires_at = EXCLUDED.expires_at
+            WHERE idempotency_keys.expires_at IS NOT NULL
+              AND idempotency_keys.expires_at <= now()
+            """,
+            userId,
+            idempotencyKey,
+            operation,
+            requestHash,
+            expiresAt);
+    return updated == 1;
+  }
+
+  public void completeIdempotency(
+      String userId,
+      String idempotencyKey,
+      String operation,
+      String requestHash,
+      String responseJson) {
+    jdbcTemplate.update(
+        """
+        UPDATE idempotency_keys
+        SET response_json = ?::jsonb
+        WHERE user_id = ?
+          AND idempotency_key = ?
+          AND operation = ?
+          AND request_hash = ?
+        """,
+        responseJson,
+        userId,
+        idempotencyKey,
+        operation,
+        requestHash);
+  }
+
+  public void deleteIdempotency(String userId, String idempotencyKey, String operation) {
+    jdbcTemplate.update(
+        """
+        DELETE FROM idempotency_keys
+        WHERE user_id = ? AND idempotency_key = ? AND operation = ?
+        """,
+        userId,
+        idempotencyKey,
+        operation);
+  }
+
   private WorkRow mapWork(ResultSet resultSet, int rowNum) throws SQLException {
     String failureCode = resultSet.getString("failure_code");
     return new WorkRow(
