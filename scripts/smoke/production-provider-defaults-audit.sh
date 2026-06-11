@@ -40,6 +40,17 @@ require_pattern() {
   fi
 }
 
+reject_pattern() {
+  local path="$1"
+  local pattern="$2"
+  local label="$3"
+  if rg -q "$pattern" "$path"; then
+    fail_check "$label"
+  else
+    pass "$label"
+  fi
+}
+
 require_multiline_pattern() {
   local path="$1"
   local pattern="$2"
@@ -127,6 +138,15 @@ require_pattern "deploy/env.production.example" '^TEMPORAL_SONG_PRODUCTION_WORKF
 require_pattern "deploy/env.production.example" '^DREAMMAKER_ACCESS_KEY=$' "production env example keeps DreamMaker AccessKey empty"
 require_pattern "deploy/env.production.example" '^DREAMMAKER_SECRET_KEY=$' "production env example keeps DreamMaker SecretKey empty"
 require_pattern "deploy/env.production.example" 'Local `\.env\.example` keeps public-network smoke defaults' "production env example explains local smoke distinction"
+require_pattern "deploy/env.production.example" '^TEMPORAL_TARGET=$' "production env example requires explicit Temporal target"
+require_pattern "deploy/env.production.example" '^TEMPORAL_NAMESPACE=$' "production env example requires explicit Temporal namespace"
+require_pattern "deploy/env.production.example" '^TEMPORAL_TASK_QUEUE=$' "production env example requires explicit Temporal task queue"
+require_pattern "deploy/env.production.example" '^COMPANY_ACCOUNT_ADAPTER_MODE=company$' "production env example uses company account adapter"
+require_pattern "deploy/env.production.example" '^COMPANY_MODERATION_ADAPTER_MODE=company$' "production env example uses company moderation adapter"
+require_pattern "deploy/env.production.example" '^COMPANY_QUOTA_ADAPTER_MODE=company$' "production env example uses company quota adapter"
+require_pattern "deploy/env.production.example" '^COMPANY_PUBLISH_ADAPTER_MODE=company$' "production env example uses company publish adapter"
+require_pattern "deploy/env.production.example" '^COMPANY_SHARE_ADAPTER_MODE=company$' "production env example uses company share adapter"
+reject_pattern "deploy/env.production.example" 'localhost|127\.0\.0\.1|(^|=)default$|song-production-local|=mock$|=local$' "production env example contains no dangerous local/mock defaults"
 
 require_pattern "docs/adr/0004-production-provider-targets.md" "DreamMaker.*正式生产供应商目标" "ADR keeps DreamMaker production target"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "SPRING_PROFILES_ACTIVE=prod" "company handoff references prod profile"

@@ -15,7 +15,7 @@ Decision: Yunwu is a temporary public-network validation backend only. DreamMake
 
 ## Functional Requirements
 
-- FR-1: The stack smoke MUST refuse to run unless `ALLOW_YUNWU_REAL_SMOKE=1`.
+- FR-1: The stack smoke MUST refuse to run unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_YUNWU_REAL_SMOKE=1` are set.
 - FR-2: The stack smoke MUST only test `music_provider=suno` with `SUNO_BACKEND=yunwu`.
 - FR-3: The stack smoke MUST collect `YUNWU_API_KEY` using an existing environment variable or an interactive silent prompt.
 - FR-4: The stack smoke MUST NOT print `YUNWU_API_KEY`, Bearer tokens, full provider payloads, supplier audio URLs, full provider task ids, or platform signed package/media URLs.
@@ -34,13 +34,13 @@ Decision: Yunwu is a temporary public-network validation backend only. DreamMake
 - NFR-1: Scripts MUST pass `bash -n`.
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if worker or API health does not become ready.
-- NFR-4: Automated validation MUST NOT call Yunwu unless `ALLOW_YUNWU_REAL_SMOKE=1` is explicitly set by the operator.
+- NFR-4: Automated validation MUST NOT call Yunwu unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_YUNWU_REAL_SMOKE=1` are explicitly set by the operator.
 - NFR-5: Real audio source import SHOULD rely on the platform remote object importer, which follows redirects and retries transient CDN download failures.
 
 ## Acceptance Criteria
 
-- AC-1: Given `ALLOW_YUNWU_REAL_SMOKE` is not `1`, when either script runs, then it exits before requiring credentials or starting processes. Covers FR-1 and NFR-4.
-- AC-2: Given `YUNWU_API_KEY` is missing and stdin is non-interactive, when the stack script runs with `ALLOW_YUNWU_REAL_SMOKE=1`, then it exits without starting API or worker. Covers FR-3 through FR-5.
+- AC-1: Given either allow gate is missing, when either script runs, then it exits before requiring credentials or starting processes. Covers FR-1 and NFR-4.
+- AC-2: Given `YUNWU_API_KEY` is missing and stdin is non-interactive, when the stack script runs with both allow gates, then it exits without starting API or worker. Covers FR-3 through FR-5.
 - AC-3: Given local port 8080 or 8081 is occupied, when the stack script runs, then it refuses to start a second process and points the operator to the lower-level script. Covers FR-5.
 - AC-4: Given credentials are available and local ports are free, when the stack script runs, then it starts worker/API, waits for health, runs the lower-level smoke, and stops both processes. Covers FR-6 through FR-11.
 - AC-5: Given the provider returns 401 / 403, when the smoke reaches terminal state, then the platform failure code is `PROVIDER_AUTH_FAILED` and the script exits non-zero without printing secrets. Covers FR-4, FR-10, and FR-12.

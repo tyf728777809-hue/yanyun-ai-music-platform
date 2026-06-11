@@ -185,22 +185,22 @@ execute_target() {
 
   case "$target" in
     yunwu-suno)
-      ALLOW_YUNWU_REAL_SMOKE="${ALLOW_YUNWU_REAL_SMOKE:-}" "${SCRIPT_DIR}/yunwu-suno-real-music-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" ALLOW_YUNWU_REAL_SMOKE="${ALLOW_YUNWU_REAL_SMOKE:-}" "${SCRIPT_DIR}/yunwu-suno-real-music-stack-smoke.sh"
       ;;
     dreammaker-suno)
-      REAL_PROVIDER=suno ALLOW_DREAMMAKER_REAL_SMOKE="${ALLOW_DREAMMAKER_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-real-music-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" REAL_PROVIDER=suno ALLOW_DREAMMAKER_REAL_SMOKE="${ALLOW_DREAMMAKER_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-real-music-stack-smoke.sh"
       ;;
     dreammaker-minimax)
-      REAL_PROVIDER=minimax ALLOW_DREAMMAKER_REAL_SMOKE="${ALLOW_DREAMMAKER_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-real-music-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" REAL_PROVIDER=minimax ALLOW_DREAMMAKER_REAL_SMOKE="${ALLOW_DREAMMAKER_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-real-music-stack-smoke.sh"
       ;;
     wellapi-image2)
-      ALLOW_WELLAPI_IMAGE2_REAL_SMOKE="${ALLOW_WELLAPI_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/wellapi-image2-real-cover-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" ALLOW_WELLAPI_IMAGE2_REAL_SMOKE="${ALLOW_WELLAPI_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/wellapi-image2-real-cover-stack-smoke.sh"
       ;;
     deepseek)
-      ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" ALLOW_DEEPSEEK_REAL_SMOKE="${ALLOW_DEEPSEEK_REAL_SMOKE:-}" "${SCRIPT_DIR}/deepseek-real-lyrics-stack-smoke.sh"
       ;;
     dreammaker-image2)
-      ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE="${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-image2-real-cover-stack-smoke.sh"
+      ALLOW_REAL_MODEL_SMOKE="${ALLOW_REAL_MODEL_SMOKE:-}" ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE="${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" "${SCRIPT_DIR}/dreammaker-image2-real-cover-stack-smoke.sh"
       ;;
     public-real-full-experience)
       ALLOW_PUBLIC_REAL_FULL_EXPERIENCE="${ALLOW_PUBLIC_REAL_FULL_EXPERIENCE:-}" "${SCRIPT_DIR}/public-real-full-experience-stack.sh"

@@ -15,7 +15,7 @@ This scope does not change the provider strategy: DreamMaker music and DreamMake
 
 ## Functional Requirements
 
-- FR-1: The smoke MUST require `ALLOW_DEEPSEEK_REAL_SMOKE=1` before creating any work.
+- FR-1: The smoke MUST require both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_DEEPSEEK_REAL_SMOKE=1` before creating any work.
 - FR-2: The smoke MUST require `AGENT_REAL_CALLS_ENABLED=true` and `DEEPSEEK_REAL_CALLS_ENABLED=true` in the operator shell.
 - FR-3: The smoke MUST require `DEEPSEEK_API_KEY` to be present but MUST NOT print its value.
 - FR-4: The smoke MUST require music, image, DreamMaker, and company Adapter real paths to remain mock or disabled.
@@ -35,7 +35,7 @@ This scope does not change the provider strategy: DreamMaker music and DreamMake
 
 ## Acceptance Criteria
 
-- AC-1: Given no allow gate, when the smoke runs, then it exits before calling API work creation. Covers FR-1.
+- AC-1: Given either allow gate is missing, when the smoke runs, then it exits before calling API work creation. Covers FR-1.
 - AC-2: Given allow gate but missing DeepSeek switches or API key, when the smoke runs, then it exits before work creation. Covers FR-2 and FR-3.
 - AC-3: Given API readiness does not report `RealDeepSeekLyricsClient`, when the smoke runs, then it exits before work creation. Covers FR-5 and FR-6.
 - AC-4: Given DeepSeek real call succeeds, when the smoke runs, then it creates one inspiration work and verifies `LYRICS_READY / WAITING_CONFIRM`. Covers FR-7 and FR-8.

@@ -59,6 +59,10 @@ get_json() {
   curl -fsS "$API_BASE$path" -H "X-Mock-User-Id: $MOCK_USER"
 }
 
+if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+  fail "refusing to run. Set ALLOW_REAL_MODEL_SMOKE=1 to confirm any real-model smoke."
+fi
+
 if [ "${ALLOW_DEEPSEEK_REAL_SMOKE:-}" != "1" ]; then
   fail "refusing to run. Set ALLOW_DEEPSEEK_REAL_SMOKE=1 to confirm this real DeepSeek smoke."
 fi

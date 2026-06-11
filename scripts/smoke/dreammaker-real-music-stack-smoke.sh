@@ -51,6 +51,9 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 require_real_confirmation() {
+  if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+    fail "refusing to run real-model smoke; set ALLOW_REAL_MODEL_SMOKE=1"
+  fi
   if [ "${ALLOW_DREAMMAKER_REAL_SMOKE:-}" != "1" ]; then
     fail "refusing to run real provider smoke; set ALLOW_DREAMMAKER_REAL_SMOKE=1"
   fi
@@ -132,6 +135,7 @@ start_api() {
 
 run_smoke() {
   log "running real DreamMaker smoke provider=$REAL_PROVIDER"
+  ALLOW_REAL_MODEL_SMOKE=1 \
   ALLOW_DREAMMAKER_REAL_SMOKE=1 \
   DREAMMAKER_REAL_CALLS_ENABLED=true \
   REAL_PROVIDER="$REAL_PROVIDER" \

@@ -94,13 +94,13 @@ scripts/smoke/real-model-controlled-smoke.sh
 底层一键入口为：
 
 ```bash
-ALLOW_DEEPSEEK_REAL_SMOKE=1 scripts/smoke/deepseek-real-lyrics-stack-smoke.sh
+ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 scripts/smoke/deepseek-real-lyrics-stack-smoke.sh
 ```
 
 如果 API 已按上面方式由操作者手动启动并通过只读预检，也可执行低层入口。低层脚本只调用 DeepSeek 写词链路，不确认出歌，不生成音乐、封面、视频或发布包，也不调用 DreamMaker、Yunwu、WellAPI 或公司系统：
 
 ```bash
-ALLOW_DEEPSEEK_REAL_SMOKE=1 scripts/smoke/deepseek-real-lyrics-smoke.sh
+ALLOW_REAL_MODEL_SMOKE=1 ALLOW_DEEPSEEK_REAL_SMOKE=1 scripts/smoke/deepseek-real-lyrics-smoke.sh
 ```
 
 优先使用统一总入口，因为它会先跑严格只读预检并委托一键栈。所有入口都要求音乐、封面、DreamMaker、Yunwu、WellAPI 和公司 Adapter 保持 Mock 或关闭。DreamMaker 音乐与 DreamMaker Image 2 仍是正式生产目标接口，本 smoke 不替代它们。

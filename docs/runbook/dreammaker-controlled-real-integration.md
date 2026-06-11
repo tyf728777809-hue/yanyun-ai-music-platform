@@ -72,6 +72,7 @@ TARGET=dreammaker-minimax MODE=preflight scripts/smoke/real-model-controlled-smo
 首次只跑 1 个 Suno 作品时，优先使用 stack smoke。脚本会静默读取 AK/SK、拒绝占用的 8080/8081 端口、启动 worker/API、执行单作品真实 Provider smoke，并在成功、失败或中断时停止它自己启动的进程。
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_DREAMMAKER_REAL_SMOKE=1 \
 REAL_PROVIDER=suno \
 scripts/smoke/dreammaker-real-music-stack-smoke.sh
@@ -149,6 +150,7 @@ scripts/smoke/dreammaker-real-guard-smoke.sh
 在完成凭据注入、worker 启动和 API 启动后，可选择执行脚本：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_DREAMMAKER_REAL_SMOKE=1 \
 REAL_PROVIDER=suno \
 DREAMMAKER_REAL_CALLS_ENABLED=true \
@@ -158,6 +160,7 @@ scripts/smoke/dreammaker-real-music-smoke.sh
 或：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_DREAMMAKER_REAL_SMOKE=1 \
 REAL_PROVIDER=minimax \
 DREAMMAKER_REAL_CALLS_ENABLED=true \

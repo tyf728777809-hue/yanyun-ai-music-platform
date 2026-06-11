@@ -54,6 +54,10 @@ require_command curl
 require_command jq
 require_command docker
 
+if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+  fail "refusing to run. Set ALLOW_REAL_MODEL_SMOKE=1 to confirm any real-model smoke."
+fi
+
 if [ "${ALLOW_WELLAPI_IMAGE2_REAL_SMOKE:-}" != "1" ]; then
   fail "refusing to run. Set ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 to confirm this real-provider smoke."
 fi
@@ -109,7 +113,7 @@ CREATE_RESPONSE="$(
 )"
 WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id')"
 if [ -z "$WORK_ID" ] || [ "$WORK_ID" = "null" ]; then
-  echo "$CREATE_RESPONSE" | jq . >&2
+  echo "$CREATE_RESPONSE" | jq '{work_id, status, generation_stage, package_status, failure_code: (.failure.failure_code? // null), request_id: (.error.request_id? // null)}' >&2
   fail "create work did not return work_id"
 fi
 log "work_id=$WORK_ID"
@@ -117,7 +121,7 @@ log "work_id=$WORK_ID"
 DETAIL_RESPONSE="$(get_json "/works/$WORK_ID")"
 LYRICS_DRAFT_ID="$(echo "$DETAIL_RESPONSE" | jq -r '.lyrics_draft.lyrics_draft_id // empty')"
 if [ -z "$LYRICS_DRAFT_ID" ]; then
-  echo "$DETAIL_RESPONSE" | jq . >&2
+  echo "$DETAIL_RESPONSE" | jq '{work_id, status, generation_stage, package_status, failure_code: (.failure.failure_code? // null), request_id: (.error.request_id? // null)}' >&2
   fail "lyrics draft was not ready"
 fi
 

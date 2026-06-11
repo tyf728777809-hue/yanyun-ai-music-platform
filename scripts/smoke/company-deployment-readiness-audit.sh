@@ -40,6 +40,17 @@ require_pattern() {
   fi
 }
 
+reject_pattern() {
+  local path="$1"
+  local pattern="$2"
+  local label="$3"
+  if rg -q "$pattern" "$path"; then
+    fail_check "$label"
+  else
+    pass "$label"
+  fi
+}
+
 check_secret_patterns() {
   local matches
   matches="$(
@@ -129,6 +140,15 @@ require_pattern "deploy/env.production.example" "^IMAGE2_BACKEND=dreammaker$" "p
 require_pattern "deploy/env.production.example" "^TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy$" "production env example pins Temporal workflow mode to legacy"
 require_pattern "deploy/env.production.example" "^DREAMMAKER_ACCESS_KEY=$" "production env example keeps DreamMaker AccessKey empty"
 require_pattern "deploy/env.production.example" "^DREAMMAKER_SECRET_KEY=$" "production env example keeps DreamMaker SecretKey empty"
+require_pattern "deploy/env.production.example" "^TEMPORAL_TARGET=$" "production env example requires explicit Temporal target"
+require_pattern "deploy/env.production.example" "^TEMPORAL_NAMESPACE=$" "production env example requires explicit Temporal namespace"
+require_pattern "deploy/env.production.example" "^TEMPORAL_TASK_QUEUE=$" "production env example requires explicit Temporal task queue"
+require_pattern "deploy/env.production.example" "^COMPANY_ACCOUNT_ADAPTER_MODE=company$" "production env example uses company account adapter"
+require_pattern "deploy/env.production.example" "^COMPANY_MODERATION_ADAPTER_MODE=company$" "production env example uses company moderation adapter"
+require_pattern "deploy/env.production.example" "^COMPANY_QUOTA_ADAPTER_MODE=company$" "production env example uses company quota adapter"
+require_pattern "deploy/env.production.example" "^COMPANY_PUBLISH_ADAPTER_MODE=company$" "production env example uses company publish adapter"
+require_pattern "deploy/env.production.example" "^COMPANY_SHARE_ADAPTER_MODE=company$" "production env example uses company share adapter"
+reject_pattern "deploy/env.production.example" 'localhost|127\.0\.0\.1|(^|=)default$|song-production-local|=mock$|=local$' "production env example contains no dangerous local/mock defaults"
 
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "company-deployment-readiness-audit\\.sh" "Adapter deployment handoff references deployment audit"
 require_pattern "docs/handover/company-adapter-deployment-handoff-v0.1.md" "deploy/docker/music-api\\.Dockerfile" "Adapter deployment handoff references music-api Dockerfile"

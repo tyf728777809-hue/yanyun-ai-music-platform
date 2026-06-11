@@ -21,6 +21,7 @@ The production target has not changed. DreamMaker music and DreamMaker Image 2 m
 - FR-6: Documentation MUST distinguish local public-network smoke defaults from production DreamMaker defaults.
 - FR-7: The audit script MUST verify the production defaults without starting services or calling external providers.
 - FR-8: The production environment example and company deployment handoff MUST explicitly set `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy` until `stepwise-production` has dedicated production activities and smoke evidence.
+- FR-9: The production environment example MUST NOT contain dangerous local defaults such as `localhost`, `127.0.0.1`, `default`, `song-production-local`, `=mock`, or `=local`.
 
 ## Non-Functional Requirements
 
@@ -32,7 +33,7 @@ The production target has not changed. DreamMaker music and DreamMaker Image 2 m
 
 - AC-1: Given the repository checkout, when `scripts/smoke/production-provider-defaults-audit.sh` runs, then it confirms API and worker `prod | production` profile blocks default both music and Image 2 to DreamMaker. Covers FR-1 and FR-2.
 - AC-2: Given the Java sources, when the audit scans provider configuration and readiness defaults, then it finds DreamMaker fallback defaults. Covers FR-3 and FR-4.
-- AC-3: Given the production env example, when the audit scans it, then it finds `SPRING_PROFILES_ACTIVE=prod`, `SUNO_BACKEND=dreammaker`, `IMAGE2_BACKEND=dreammaker`, `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`, and empty DreamMaker credential placeholders only. Covers FR-5, FR-8, and NFR-2.
+- AC-3: Given the production env example, when the audit scans it, then it finds `SPRING_PROFILES_ACTIVE=prod`, `SUNO_BACKEND=dreammaker`, `IMAGE2_BACKEND=dreammaker`, `TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy`, empty DreamMaker credential placeholders only, and no dangerous local/mock defaults. Covers FR-5, FR-8, FR-9, and NFR-2.
 - AC-4: Given the handoff docs and acceptance checklist, when the audit scans them, then it finds the production DreamMaker default rule, public-network smoke distinction, and production Temporal workflow mode boundary. Covers FR-6 and FR-8.
 - AC-5: Given the audit runs, when any required production default is missing or changed back to a public-network smoke backend, then it exits non-zero. Covers FR-7.
 
@@ -41,6 +42,7 @@ The production target has not changed. DreamMaker music and DreamMaker Image 2 m
 - EC-1: If production temporarily uses Yunwu or WellAPI, the exception MUST be documented as temporary and MUST NOT remove DreamMaker code, runbooks, or smoke targets.
 - EC-2: If the final deployment profile name differs from `prod` or `production`, the production env example and audit MUST be updated before handoff.
 - EC-3: If company deployment uses a secret manager instead of env files, `deploy/env.production.example` remains a variable-name reference and MUST NOT contain real values.
+- EC-4: If a required production value must be intentionally blank until deployment, the production example should leave it empty instead of using localhost/default/mock placeholders.
 
 ## API Contracts
 

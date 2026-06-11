@@ -49,6 +49,9 @@ require_command curl
 require_command jq
 require_command docker
 
+if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+  fail "refusing to call timestamped lyrics endpoint; set ALLOW_REAL_MODEL_SMOKE=1"
+fi
 if [ "${ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE:-}" != "1" ]; then
   fail "refusing to call timestamped lyrics endpoint; set ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1"
 fi

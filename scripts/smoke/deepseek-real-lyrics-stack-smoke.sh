@@ -44,6 +44,9 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 require_real_confirmation() {
+  if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+    fail "refusing to run real-model smoke; set ALLOW_REAL_MODEL_SMOKE=1"
+  fi
   if [ "${ALLOW_DEEPSEEK_REAL_SMOKE:-}" != "1" ]; then
     fail "refusing to run real DeepSeek smoke; set ALLOW_DEEPSEEK_REAL_SMOKE=1"
   fi
@@ -124,6 +127,7 @@ start_api() {
 
 run_smoke() {
   log "running real DeepSeek lyrics smoke"
+  ALLOW_REAL_MODEL_SMOKE=1 \
   ALLOW_DEEPSEEK_REAL_SMOKE=1 \
   AGENT_REAL_CALLS_ENABLED=true \
   DEEPSEEK_REAL_CALLS_ENABLED=true \

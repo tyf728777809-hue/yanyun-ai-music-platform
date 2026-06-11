@@ -15,7 +15,7 @@ DreamMaker music and DreamMaker Image 2 remain production-target paths. This smo
 
 ## Functional Requirements
 
-- FR-1: The stack smoke MUST require `ALLOW_DEEPSEEK_REAL_SMOKE=1` before reading secrets, starting API, or creating works.
+- FR-1: The stack smoke MUST require both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_DEEPSEEK_REAL_SMOKE=1` before reading secrets, starting API, or creating works.
 - FR-2: The stack smoke MUST read `DEEPSEEK_API_KEY` only from the current shell or interactive silent prompt and MUST NOT read credential files.
 - FR-3: The stack smoke MUST refuse to start if its managed API port is already occupied.
 - FR-4: The stack smoke MUST start only `music-api` and MUST stop only the API process it owns on success, failure, or interruption.
@@ -32,8 +32,8 @@ DreamMaker music and DreamMaker Image 2 remain production-target paths. This smo
 
 ## Acceptance Criteria
 
-- AC-1: Given no `ALLOW_DEEPSEEK_REAL_SMOKE=1`, when the stack smoke runs, then it exits before reading secrets, starting API, or creating a work. Covers FR-1.
-- AC-2: Given allow gate but missing `DEEPSEEK_API_KEY` in non-interactive execution, when the stack smoke runs, then it exits before starting API and does not print a secret value. Covers FR-2 and FR-7.
+- AC-1: Given either allow gate is missing, when the stack smoke runs, then it exits before reading secrets, starting API, or creating a work. Covers FR-1.
+- AC-2: Given both allow gates but missing `DEEPSEEK_API_KEY` in non-interactive execution, when the stack smoke runs, then it exits before starting API and does not print a secret value. Covers FR-2 and FR-7.
 - AC-3: Given API port is occupied, when the stack smoke runs, then it exits before starting API and suggests using the low-level smoke manually. Covers FR-3.
 - AC-4: Given valid credentials and healthy infrastructure, when the stack smoke runs, then it starts API, delegates to the low-level smoke, and stops the API it owns afterward. Covers FR-4 through FR-6.
 - AC-5: Given `TARGET=deepseek MODE=plan`, when the unified smoke index runs, then it points operators to the DeepSeek stack smoke path and retains the low-level smoke as a manual alternative. Covers FR-8.

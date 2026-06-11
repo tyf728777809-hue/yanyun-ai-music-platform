@@ -15,7 +15,7 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 
 ## Functional Requirements
 
-- FR-1: The stack smoke MUST refuse to run unless `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1`.
+- FR-1: The stack smoke MUST refuse to run unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1` are set.
 - FR-2: The smoke MUST only test `IMAGE_PROVIDER=image2` with `IMAGE2_BACKEND=wellapi`.
 - FR-3: The smoke MUST keep `MUSIC_PROVIDER=mock`, DeepSeek real calls disabled, render worker mocked, and company adapters mocked.
 - FR-4: The stack smoke MUST collect `WELLAPI_API_KEY` using an existing environment variable or an interactive silent prompt.
@@ -32,13 +32,13 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 - NFR-1: Scripts MUST pass `bash -n`.
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if API health does not become ready.
-- NFR-4: Automated validation MUST NOT call WellAPI unless `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1` is explicitly set by the operator.
+- NFR-4: Automated validation MUST NOT call WellAPI unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1` are explicitly set by the operator.
 - NFR-5: The stack smoke SHOULD default `WELLAPI_REQUEST_TIMEOUT` to at least `180s` because public Image 2 generation can exceed the API default `30s` request timeout.
 
 ## Acceptance Criteria
 
-- AC-1: Given `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE` is not `1`, when either script runs, then it exits before requiring credentials or starting processes. Covers FR-1 and NFR-4.
-- AC-2: Given `WELLAPI_API_KEY` is missing and stdin is non-interactive, when the stack script runs with `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1`, then it exits without starting API. Covers FR-4 through FR-7.
+- AC-1: Given either allow gate is missing, when either script runs, then it exits before requiring credentials or starting processes. Covers FR-1 and NFR-4.
+- AC-2: Given `WELLAPI_API_KEY` is missing and stdin is non-interactive, when the stack script runs with both allow gates, then it exits without starting API. Covers FR-4 through FR-7.
 - AC-3: Given local port 8080 is occupied, when the stack script runs, then it refuses to start a second API process and points the operator to the lower-level script. Covers FR-6.
 - AC-4: Given credentials are available and local port 8080 is free, when the stack script runs, then it starts API, waits for health, runs the lower-level smoke, and stops API. Covers FR-7 through FR-9.
 - AC-5: Given WellAPI returns an image URL or `b64_json`, when the workflow completes, then the platform imports the cover into object storage and media metadata does not retain supplier raw URL or base64. Covers FR-10 and FR-11.

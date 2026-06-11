@@ -49,6 +49,7 @@ TARGET=yunwu-suno MODE=preflight scripts/smoke/real-model-controlled-smoke.sh
 如果本地 8080/8081 没有已启动服务，优先使用一键 stack smoke。脚本会静默读取缺失的 `YUNWU_API_KEY`、启动 worker/API、执行 1 个 Suno 作品、结束后自动停止它启动的进程：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_YUNWU_REAL_SMOKE=1 \
 scripts/smoke/yunwu-suno-real-music-stack-smoke.sh
 ```
@@ -56,6 +57,7 @@ scripts/smoke/yunwu-suno-real-music-stack-smoke.sh
 如果 worker/API 已经手动按本 runbook 启动，使用低层单作品 smoke：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_YUNWU_REAL_SMOKE=1 \
 MUSIC_PROVIDER=suno \
 SUNO_BACKEND=yunwu \
@@ -86,6 +88,7 @@ scripts/smoke/yunwu-suno-real-music-smoke.sh
 如果要判断真实歌曲能否做精确字幕，必须在一条 `chirp-fenix` 音乐样本成功后单独验证 timestamped lyrics。优先通过公网完整体验脚本自动执行；如需只测时间轴，可用下面的低层脚本。当前结论是 `blocked_provider_path`，除非供应商给出新的 base URL / path / request body，否则 v3.1 视频验收应采用无硬同步字幕或弱歌词卡方案。
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1 \
 SUNO_BACKEND=yunwu \
 YUNWU_REAL_CALLS_ENABLED=true \
@@ -96,7 +99,7 @@ scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh
 
 安全规则：
 
-- 脚本必须同时满足 `ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1`、`SUNO_BACKEND=yunwu`、`YUNWU_REAL_CALLS_ENABLED=true` 才会外呼。
+- 脚本必须同时满足 `ALLOW_REAL_MODEL_SMOKE=1`、`ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1`、`SUNO_BACKEND=yunwu`、`YUNWU_REAL_CALLS_ENABLED=true` 才会外呼。
 - `YUNWU_API_KEY` 只能来自当前 shell 或交互式安全输入，不写入文件。
 - 脚本不会把 Bearer、原始 provider response、完整时间轴、媒体 URL 或完整 task id 写入 Git 文档。
 - 证据只记录脱敏摘要：HTTP 状态、provider code、aligned word count、waveform 是否存在、timestamp 是否存在。

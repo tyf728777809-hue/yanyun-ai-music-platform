@@ -148,6 +148,50 @@ check_target_execute_gate() {
   done
 }
 
+check_direct_script_gate_patterns() {
+  local spec script target_gate
+  local specs=(
+    "scripts/smoke/yunwu-suno-real-music-smoke.sh|ALLOW_YUNWU_REAL_SMOKE"
+    "scripts/smoke/yunwu-suno-real-music-stack-smoke.sh|ALLOW_YUNWU_REAL_SMOKE"
+    "scripts/smoke/deepseek-real-lyrics-smoke.sh|ALLOW_DEEPSEEK_REAL_SMOKE"
+    "scripts/smoke/deepseek-real-lyrics-stack-smoke.sh|ALLOW_DEEPSEEK_REAL_SMOKE"
+    "scripts/smoke/wellapi-image2-real-cover-smoke.sh|ALLOW_WELLAPI_IMAGE2_REAL_SMOKE"
+    "scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh|ALLOW_WELLAPI_IMAGE2_REAL_SMOKE"
+    "scripts/smoke/dreammaker-image2-real-cover-smoke.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE"
+    "scripts/smoke/dreammaker-image2-real-cover-stack-smoke.sh|ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE"
+    "scripts/smoke/dreammaker-real-music-smoke.sh|ALLOW_DREAMMAKER_REAL_SMOKE"
+    "scripts/smoke/dreammaker-real-music-stack-smoke.sh|ALLOW_DREAMMAKER_REAL_SMOKE"
+    "scripts/smoke/public-real-full-experience-stack.sh|ALLOW_PUBLIC_REAL_FULL_EXPERIENCE"
+    "scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh|ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE"
+  )
+
+  for spec in "${specs[@]}"; do
+    script="${spec%%|*}"
+    target_gate="${spec#*|}"
+    if rg -q "ALLOW_REAL_MODEL_SMOKE" "$script"; then
+      pass "$script has global real-model gate"
+    else
+      fail_check "$script missing ALLOW_REAL_MODEL_SMOKE gate"
+    fi
+    if rg -q "$target_gate" "$script"; then
+      pass "$script has target gate $target_gate"
+    else
+      fail_check "$script missing target gate $target_gate"
+    fi
+  done
+}
+
+check_no_raw_detail_json_prints() {
+  local pattern='echo "\$(CREATE_RESPONSE|DETAIL_RESPONSE)" \| jq \. >&2'
+  if rg -n "$pattern" scripts/smoke/*real*smoke.sh scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh >/tmp/yanyun_raw_detail_hits.$$ 2>/dev/null; then
+    fail_check "real smoke scripts still print raw CREATE_RESPONSE/DETAIL_RESPONSE JSON"
+    sed 's/^/[real-model-gate-audit]   /' "/tmp/yanyun_raw_detail_hits.$$"
+  else
+    pass "real smoke scripts do not print raw CREATE_RESPONSE/DETAIL_RESPONSE JSON"
+  fi
+  rm -f "/tmp/yanyun_raw_detail_hits.$$"
+}
+
 expected_target_gate() {
   case "$1" in
     yunwu-suno) printf '%s\n' "ALLOW_YUNWU_REAL_SMOKE=1" ;;
@@ -288,6 +332,8 @@ check_list_mode
 check_plan_mode
 check_global_execute_gate
 check_target_execute_gate
+check_direct_script_gate_patterns
+check_no_raw_detail_json_prints
 
 if [ "$FAIL_COUNT" -gt 0 ]; then
   log "SUMMARY fail=$FAIL_COUNT pass=$PASS_COUNT"

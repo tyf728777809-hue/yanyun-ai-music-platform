@@ -531,6 +531,7 @@ verify_timestamped_lyrics() {
   log "checking Yunwu/Suno timestamped lyrics availability"
   (
     cd "$REPO_ROOT"
+    ALLOW_REAL_MODEL_SMOKE=1 \
     ALLOW_YUNWU_TIMESTAMPED_LYRICS_SMOKE=1 \
       WORK_ID="$WORK_ID" \
       YUNWU_API_KEY="$YUNWU_API_KEY" \

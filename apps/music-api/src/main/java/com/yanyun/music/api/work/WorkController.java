@@ -1,6 +1,7 @@
 package com.yanyun.music.api.work;
 
 import com.yanyun.music.api.idempotency.IdempotencyService;
+import com.yanyun.music.api.security.MockUserAccessGuard;
 import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
 import com.yanyun.music.api.work.WorkDtos.CreateWorkResponse;
 import com.yanyun.music.api.work.WorkDtos.InspirationCreateRequest;
@@ -34,10 +35,15 @@ public class WorkController {
 
   private final WorkService workService;
   private final IdempotencyService idempotencyService;
+  private final MockUserAccessGuard mockUserAccessGuard;
 
-  public WorkController(WorkService workService, IdempotencyService idempotencyService) {
+  public WorkController(
+      WorkService workService,
+      IdempotencyService idempotencyService,
+      MockUserAccessGuard mockUserAccessGuard) {
     this.workService = workService;
     this.idempotencyService = idempotencyService;
+    this.mockUserAccessGuard = mockUserAccessGuard;
   }
 
   @PostMapping("/works/inspiration")
@@ -49,16 +55,17 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @RequestBody InspirationCreateRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.inspiration.create",
                 request,
                 CreateWorkResponse.class,
-                () -> workService.createFromInspiration(userId, request)));
+                () -> workService.createFromInspiration(safeUserId, request)));
   }
 
   @PostMapping("/works/lyrics")
@@ -70,16 +77,17 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @RequestBody LyricsCreateRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.lyrics.create",
                 request,
                 CreateWorkResponse.class,
-                () -> workService.createFromLyrics(userId, request)));
+                () -> workService.createFromLyrics(safeUserId, request)));
   }
 
   @GetMapping("/works")
@@ -92,7 +100,8 @@ public class WorkController {
       @RequestParam(value = "status", required = false) WorkStatus status,
       @RequestParam(value = "page", required = false, defaultValue = "1") int page,
       @RequestParam(value = "page_size", required = false, defaultValue = "20") int pageSize) {
-    return workService.listWorks(userId, status, page, pageSize);
+    String safeUserId = requireMockUser(userId);
+    return workService.listWorks(safeUserId, status, page, pageSize);
   }
 
   @GetMapping("/works/{work_id}")
@@ -103,7 +112,8 @@ public class WorkController {
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
       @PathVariable("work_id") UUID workId) {
-    return workService.getWork(userId, workId);
+    String safeUserId = requireMockUser(userId);
+    return workService.getWork(safeUserId, workId);
   }
 
   @PostMapping("/works/{work_id}/lyrics/polish")
@@ -116,16 +126,17 @@ public class WorkController {
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody LyricsPolishRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.lyrics.polish",
                 fingerprint(workId, request),
                 JobAcceptedResponse.class,
-                () -> workService.polishLyrics(userId, workId, request)));
+                () -> workService.polishLyrics(safeUserId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/lyrics/continue")
@@ -138,16 +149,17 @@ public class WorkController {
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) LyricsContinueRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.lyrics.continue",
                 fingerprint(workId, request),
                 JobAcceptedResponse.class,
-                () -> workService.continueLyrics(userId, workId, request)));
+                () -> workService.continueLyrics(safeUserId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/confirm")
@@ -160,16 +172,17 @@ public class WorkController {
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) ConfirmWorkRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.confirm",
                 fingerprint(workId, request),
                 JobAcceptedResponse.class,
-                () -> workService.confirmWork(userId, workId, request)));
+                () -> workService.confirmWork(safeUserId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/cover/regenerate")
@@ -181,16 +194,17 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.cover.regenerate",
                 fingerprint(workId, null),
                 JobAcceptedResponse.class,
-                () -> workService.regenerateCover(userId, workId)));
+                () -> workService.regenerateCover(safeUserId, workId)));
   }
 
   @PostMapping("/works/{work_id}/music/retry")
@@ -203,16 +217,17 @@ public class WorkController {
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId,
       @RequestBody(required = false) RetryMusicRequest request) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.music.retry",
                 fingerprint(workId, request),
                 JobAcceptedResponse.class,
-                () -> workService.retryMusic(userId, workId, request)));
+                () -> workService.retryMusic(safeUserId, workId, request)));
   }
 
   @PostMapping("/works/{work_id}/video/rerender")
@@ -224,16 +239,17 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return ResponseEntity.accepted()
         .body(
             idempotencyService.execute(
-                userId,
+                safeUserId,
                 idempotencyKey,
                 "works.video.rerender",
                 fingerprint(workId, null),
                 JobAcceptedResponse.class,
-                () -> workService.rerenderVideo(userId, workId)));
+                () -> workService.rerenderVideo(safeUserId, workId)));
   }
 
   @GetMapping("/works/{work_id}/publish-package")
@@ -244,7 +260,8 @@ public class WorkController {
               defaultValue = DEFAULT_MOCK_USER_ID)
           String userId,
       @PathVariable("work_id") UUID workId) {
-    return workService.getPublishPackage(userId, workId);
+    String safeUserId = requireMockUser(userId);
+    return workService.getPublishPackage(safeUserId, workId);
   }
 
   @PostMapping("/works/{work_id}/publish-package/mark-fetched")
@@ -256,14 +273,15 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return idempotencyService.execute(
-        userId,
+        safeUserId,
         idempotencyKey,
         "works.publish-package.mark-fetched",
         fingerprint(workId, null),
         PublishPackage.class,
-        () -> workService.markPublishPackageFetched(userId, workId));
+        () -> workService.markPublishPackageFetched(safeUserId, workId));
   }
 
   @PostMapping("/works/{work_id}/publish-package/refresh-url")
@@ -275,20 +293,25 @@ public class WorkController {
           String userId,
       @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
       @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
     requireIdempotencyKey(idempotencyKey);
     return idempotencyService.execute(
-        userId,
+        safeUserId,
         idempotencyKey,
         "works.publish-package.refresh-url",
         fingerprint(workId, null),
         PublishPackage.class,
-        () -> workService.refreshPublishPackageUrl(userId, workId));
+        () -> workService.refreshPublishPackageUrl(safeUserId, workId));
   }
 
   private void requireIdempotencyKey(String idempotencyKey) {
     if (idempotencyKey == null || idempotencyKey.isBlank() || idempotencyKey.length() < 8) {
       throw new IllegalArgumentException("Idempotency-Key header must be at least 8 characters");
     }
+  }
+
+  private String requireMockUser(String userId) {
+    return mockUserAccessGuard.requireAllowed(userId);
   }
 
   private Map<String, Object> fingerprint(UUID workId, Object request) {

@@ -50,6 +50,9 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 require_real_confirmation() {
+  if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+    fail "refusing to run real-model smoke; set ALLOW_REAL_MODEL_SMOKE=1"
+  fi
   if [ "${ALLOW_YUNWU_REAL_SMOKE:-}" != "1" ]; then
     fail "refusing to run real provider smoke; set ALLOW_YUNWU_REAL_SMOKE=1"
   fi
@@ -134,6 +137,7 @@ start_api() {
 
 run_smoke() {
   log "running real Yunwu Suno smoke"
+  ALLOW_REAL_MODEL_SMOKE=1 \
   ALLOW_YUNWU_REAL_SMOKE=1 \
   SUNO_BACKEND=yunwu \
   YUNWU_REAL_CALLS_ENABLED=true \

@@ -1,5 +1,6 @@
 package com.yanyun.music.api.me;
 
+import com.yanyun.music.api.security.MockUserAccessGuard;
 import com.yanyun.music.auth.AccountAdapter;
 import com.yanyun.music.auth.UserProfile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +13,11 @@ public class MeController {
   private static final String DEFAULT_MOCK_USER_ID = "mock_user_001";
 
   private final AccountAdapter accountAdapter;
+  private final MockUserAccessGuard mockUserAccessGuard;
 
-  public MeController(AccountAdapter accountAdapter) {
+  public MeController(AccountAdapter accountAdapter, MockUserAccessGuard mockUserAccessGuard) {
     this.accountAdapter = accountAdapter;
+    this.mockUserAccessGuard = mockUserAccessGuard;
   }
 
   @GetMapping("/api/v1/me")
@@ -24,6 +27,6 @@ public class MeController {
               required = false,
               defaultValue = DEFAULT_MOCK_USER_ID)
           String mockUserId) {
-    return accountAdapter.getCurrentUser(mockUserId);
+    return accountAdapter.getCurrentUser(mockUserAccessGuard.requireAllowed(mockUserId));
   }
 }

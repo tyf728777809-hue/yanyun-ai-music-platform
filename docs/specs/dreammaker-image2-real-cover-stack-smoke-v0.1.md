@@ -15,7 +15,7 @@ Decision: DreamMaker Image 2 remains the production-target interface. Yunwu and 
 
 ## Functional Requirements
 
-- FR-1: The stack smoke MUST refuse to run unless `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1`.
+- FR-1: The stack smoke MUST refuse to run unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1` are set.
 - FR-2: The smoke MUST only test `IMAGE_PROVIDER=image2` with `IMAGE2_BACKEND=dreammaker`.
 - FR-3: The smoke MUST require `IMAGE_REAL_CALLS_ENABLED=true` and `DREAMMAKER_REAL_CALLS_ENABLED=true`.
 - FR-4: The smoke MUST keep `MUSIC_PROVIDER=mock`, DeepSeek real calls disabled, Yunwu disabled, render worker mocked, and company Adapters mocked.
@@ -34,12 +34,12 @@ Decision: DreamMaker Image 2 remains the production-target interface. Yunwu and 
 - NFR-1: Scripts MUST pass `bash -n`.
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if API health does not become ready.
-- NFR-4: Automated validation MUST NOT call DreamMaker unless `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1` is explicitly set by the operator.
+- NFR-4: Automated validation MUST NOT call DreamMaker unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1` are explicitly set by the operator.
 
 ## Acceptance Criteria
 
-- AC-1: Given `ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE` is not `1`, when either script runs, then it exits before requiring credentials, starting processes, creating works, or calling DreamMaker. Covers FR-1 and NFR-4.
-- AC-2: Given the allow gate is set but DreamMaker AK/SK are missing and stdin is non-interactive, when the stack script runs, then it exits without starting API. Covers FR-5 through FR-8.
+- AC-1: Given either allow gate is missing, when either script runs, then it exits before requiring credentials, starting processes, creating works, or calling DreamMaker. Covers FR-1 and NFR-4.
+- AC-2: Given both allow gates are set but DreamMaker AK/SK are missing and stdin is non-interactive, when the stack script runs, then it exits without starting API. Covers FR-5 through FR-8.
 - AC-3: Given local port 8080 is occupied, when the stack script runs, then it refuses to start a second API process and points the operator to the lower-level script. Covers FR-7.
 - AC-4: Given credentials are available and local port 8080 is free, when the stack script runs, then it starts API, waits for health, runs the lower-level smoke, and stops API. Covers FR-8 through FR-11.
 - AC-5: Given DreamMaker returns a successful image output, when the workflow completes, then the platform imports the cover into object storage and media metadata does not retain supplier raw URL or base64. Covers FR-12 and FR-13.

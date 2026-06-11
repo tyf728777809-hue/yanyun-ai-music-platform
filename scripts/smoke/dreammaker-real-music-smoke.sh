@@ -29,6 +29,11 @@ require_env() {
 require_command curl
 require_command jq
 
+if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
+  echo "Refusing to run. Set ALLOW_REAL_MODEL_SMOKE=1 to confirm any real-model smoke." >&2
+  exit 1
+fi
+
 if [ "${ALLOW_DREAMMAKER_REAL_SMOKE:-}" != "1" ]; then
   echo "Refusing to run. Set ALLOW_DREAMMAKER_REAL_SMOKE=1 to confirm this real-provider smoke." >&2
   exit 1
@@ -86,7 +91,7 @@ CREATE_RESPONSE="$(
 )"
 WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id')"
 if [ -z "$WORK_ID" ] || [ "$WORK_ID" = "null" ]; then
-  echo "$CREATE_RESPONSE" | jq . >&2
+  echo "$CREATE_RESPONSE" | jq '{work_id, status, generation_stage, package_status, failure_code: (.failure.failure_code? // null), request_id: (.error.request_id? // null)}' >&2
   echo "Create work did not return work_id." >&2
   exit 1
 fi
@@ -102,7 +107,7 @@ for _ in $(seq 1 30); do
     break
   fi
   if [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "LYRICS_FAILED" ]; then
-    echo "$DETAIL_RESPONSE" | jq . >&2
+    echo "$DETAIL_RESPONSE" | jq '{work_id, status, generation_stage, package_status, failure_code: (.failure.failure_code? // null), request_id: (.error.request_id? // null)}' >&2
     exit 1
   fi
   sleep 2

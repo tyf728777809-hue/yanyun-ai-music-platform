@@ -68,6 +68,7 @@ TARGET=dreammaker-image2 MODE=preflight scripts/smoke/real-model-controlled-smok
 如果本地 8080 没有已启动 API，优先使用一键 stack smoke。脚本会静默读取缺失的 `WELLAPI_API_KEY`、启动 API、执行 1 个作品、结束后自动停止它启动的进程：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 \
 scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh
 ```
@@ -75,6 +76,7 @@ scripts/smoke/wellapi-image2-real-cover-stack-smoke.sh
 如果 API 已经手动按本 runbook 启动，使用低层单作品 smoke：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1 \
 IMAGE_PROVIDER=image2 \
 IMAGE2_BACKEND=wellapi \
@@ -117,6 +119,7 @@ scripts/smoke/real-model-controlled-smoke.sh
 API 已手动启动时可使用低层脚本：
 
 ```bash
+ALLOW_REAL_MODEL_SMOKE=1 \
 ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1 \
 IMAGE_PROVIDER=image2 \
 IMAGE2_BACKEND=dreammaker \

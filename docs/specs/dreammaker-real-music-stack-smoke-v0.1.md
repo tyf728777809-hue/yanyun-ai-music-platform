@@ -13,7 +13,7 @@ The next milestone is a controlled Suno smoke, not a broad production integratio
 
 ## Functional Requirements
 
-- FR-1: The stack smoke MUST refuse to run unless `ALLOW_DREAMMAKER_REAL_SMOKE=1`.
+- FR-1: The stack smoke MUST refuse to run unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_DREAMMAKER_REAL_SMOKE=1` are set.
 - FR-2: The stack smoke MUST support `REAL_PROVIDER=suno|minimax` and default to `suno`.
 - FR-3: The stack smoke MUST collect `DREAMMAKER_ACCESS_KEY` and `DREAMMAKER_SECRET_KEY` using existing environment variables or interactive silent prompts.
 - FR-4: The stack smoke MUST NOT print DreamMaker AK/SK, JWT, `X-Access-Token`, full provider payload, full provider task id, supplier media URL, or platform signed package/media URL.
@@ -34,7 +34,7 @@ The next milestone is a controlled Suno smoke, not a broad production integratio
 
 ## Acceptance Criteria
 
-- AC-1: Given `ALLOW_DREAMMAKER_REAL_SMOKE` is not `1`, when the operator runs the script, then it exits before starting API or worker. Covers FR-1.
+- AC-1: Given either allow gate is missing, when the operator runs the script, then it exits before starting API or worker. Covers FR-1.
 - AC-2: Given `REAL_PROVIDER=invalid`, when the operator runs the script, then it exits before starting API or worker. Covers FR-2.
 - AC-3: Given credentials are missing and stdin is non-interactive, when the operator runs the script, then it exits without starting API or worker. Covers FR-3 and FR-4.
 - AC-4: Given credentials are available and local ports are free, when the operator runs the script, then it starts worker/API, waits for health, runs the lower-level smoke, and stops both processes. Covers FR-6 through FR-10.
