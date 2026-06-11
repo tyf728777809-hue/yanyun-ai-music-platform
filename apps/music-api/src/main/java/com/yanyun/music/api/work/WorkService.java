@@ -302,18 +302,24 @@ public class WorkService {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Only lyrics-ready works can be confirmed");
     }
-    LyricsDraftRow draft = getRequiredLyricsDraft(workId);
+    LyricsDraftRow draft = getRequiredCurrentLyricsDraft(workId, request);
 
     String selectedMusicProvider = musicProvider(request == null ? null : request.musicProvider());
     requireSafeRealMusicDispatch(selectedMusicProvider);
 
+    if (!workRepository.reserveSongProduction(work.id(), work.userId(), work.version())) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Song production is already running or work changed");
+    }
     if (workflowDispatchProperties.outboxMode()) {
-      return enqueueSongProduction(work, draft, selectedMusicProvider, true);
+      return enqueueReservedSongProduction(
+          work.id(), work.userId(), draft, selectedMusicProvider, true);
     }
 
+    UUID jobId = insertSongProductionJob(workId);
     SongProductionWorkflowResult workflowResult =
         songProductionWorkflow.produce(
-            workflowInput(workId, userId, draft, selectedMusicProvider, true));
+            workflowInput(workId, userId, draft, selectedMusicProvider, true, jobId));
     if (!workflowResult.packageReady()) {
       throw workflowFailure(workflowResult);
     }
@@ -372,6 +378,15 @@ public class WorkService {
       LyricsDraftRow draft,
       String selectedMusicProvider,
       boolean musicRetryAllowedAfterFailure) {
+    UUID jobId = insertSongProductionJob(workId);
+    workflowOutboxService.enqueueSongProduction(
+        workId,
+        workflowInput(
+            workId, userId, draft, selectedMusicProvider, musicRetryAllowedAfterFailure, jobId));
+    return accepted(getRequiredWork(workId, userId), jobId);
+  }
+
+  private UUID insertSongProductionJob(UUID workId) {
     UUID jobId = UUID.randomUUID();
     workRepository.insertGenerationJob(
         jobId,
@@ -381,11 +396,7 @@ public class WorkService {
         GenerationStage.QUOTA_LOCKING,
         OffsetDateTime.now(),
         null);
-    workflowOutboxService.enqueueSongProduction(
-        workId,
-        workflowInput(
-            workId, userId, draft, selectedMusicProvider, musicRetryAllowedAfterFailure, jobId));
-    return accepted(getRequiredWork(workId, userId), jobId);
+    return jobId;
   }
 
   @Transactional(noRollbackFor = ResponseStatusException.class)
@@ -420,32 +431,8 @@ public class WorkService {
 
   @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse rerenderVideo(String userId, UUID workId) {
-    WorkRow work = getRequiredWork(workId, userId);
-    if (work.status() != WorkStatus.GENERATED) {
-      throw new ResponseStatusException(
-          HttpStatus.CONFLICT, "Only generated works can rerender video");
-    }
-    workRepository.upsertMediaAsset(
-        new MediaAssetRow(
-            workId,
-            "VIDEO",
-            "videos/" + workId + "-rerender.mp4",
-            "video/mp4",
-            12_800_000L,
-            "mock-video-rerender",
-            1080,
-            1920,
-            180_000,
-            "{}"));
-    UUID jobId =
-        workRepository.insertGenerationJob(
-            workId,
-            "VIDEO_RERENDER",
-            "SUCCEEDED",
-            GenerationStage.PACKAGE_READY,
-            OffsetDateTime.now(),
-            OffsetDateTime.now());
-    return accepted(getRequiredWork(workId, userId), jobId);
+    getRequiredWork(workId, userId);
+    throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "视频重渲染暂未开放。");
   }
 
   @Transactional(readOnly = true)
@@ -764,14 +751,19 @@ public class WorkService {
   }
 
   private PublishPackage toPublishPackage(WorkRow work, PublishPackageRow row) {
+    boolean expired =
+        row.packageStatus() == PackageStatus.PACKAGE_READY
+            && row.packageUrlExpiresAt() != null
+            && row.packageUrlExpiresAt().isBefore(OffsetDateTime.now());
+    PackageStatus packageStatus = expired ? PackageStatus.PACKAGE_EXPIRED : row.packageStatus();
     return new PublishPackage(
         work.id(),
-        row.packageStatus(),
-        row.packageUrl(),
+        packageStatus,
+        expired ? null : row.packageUrl(),
         row.packageUrlExpiresAt(),
-        readJsonObject(row.packageJson()),
-        availableActions(work),
-        row.packageStatus() == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
+        expired ? null : readJsonObject(row.packageJson()),
+        availableActions(work, packageStatus),
+        packageStatus == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
   }
 
   private String refreshedPackageJson(UUID workId, PublishPackageRow packageRow) {
@@ -864,6 +856,17 @@ public class WorkService {
     return WorkStateMachine.availableActions(workSnapshot(work));
   }
 
+  private List<AvailableAction> availableActions(WorkRow work, PackageStatus packageStatus) {
+    return WorkStateMachine.availableActions(
+        new WorkSnapshot(
+            work.status(),
+            work.generationStage(),
+            packageStatus,
+            work.failureCode(),
+            Boolean.TRUE.equals(work.retryable()),
+            remainingMusicRetries(work)));
+  }
+
   private WorkSnapshot workSnapshot(WorkRow work) {
     return new WorkSnapshot(
         work.status(),
@@ -925,6 +928,18 @@ public class WorkService {
         .findLatestLyricsDraft(workId)
         .orElseThrow(
             () -> new ResponseStatusException(HttpStatus.CONFLICT, "Lyrics draft not found"));
+  }
+
+  private LyricsDraftRow getRequiredCurrentLyricsDraft(UUID workId, ConfirmWorkRequest request) {
+    if (request == null || request.lyricsDraftId() == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "lyricsDraftId is required");
+    }
+    return workRepository
+        .findCurrentLyricsDraft(workId, request.lyricsDraftId())
+        .orElseThrow(
+            () ->
+                new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Lyrics draft is not the current confirmable draft"));
   }
 
   private void requireAllowed(ModerationDecision decision, FailureCode failureCode) {

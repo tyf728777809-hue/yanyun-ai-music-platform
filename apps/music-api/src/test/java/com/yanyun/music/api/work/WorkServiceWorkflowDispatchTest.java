@@ -68,8 +68,9 @@ class WorkServiceWorkflowDispatchTest {
         .thenReturn(
             Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)))
         .thenReturn(Optional.of(work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY)));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.reserveSongProduction(workId, "user-1", 3)).thenReturn(true);
     when(songProductionWorkflow.produce(any()))
         .thenReturn(SongProductionWorkflowResult.packageReady(jobId.toString(), "PACKAGE_READY"));
 
@@ -82,7 +83,16 @@ class WorkServiceWorkflowDispatchTest {
     assertThat(response.jobId()).isEqualTo(jobId);
     verify(songProductionWorkflow).produce(any());
     verify(workflowOutboxService, never()).enqueueSongProduction(any(), any());
-    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+    verify(workRepository).reserveSongProduction(workId, "user-1", 3);
+    verify(workRepository)
+        .insertGenerationJob(
+            any(UUID.class),
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull());
   }
 
   @Test
@@ -94,7 +104,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(Optional.of(initial))
         .thenReturn(Optional.of(queued));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
     when(workRepository.reserveSongProduction(workId, "user-1", initial.version()))
         .thenReturn(true);
@@ -130,7 +140,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
 
     assertThatThrownBy(
@@ -152,7 +162,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
 
     assertThatThrownBy(
@@ -177,7 +187,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
 
     assertThatThrownBy(
@@ -202,7 +212,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(
             Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
 
     assertThatThrownBy(
@@ -231,7 +241,7 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(Optional.of(initial))
         .thenReturn(Optional.of(queued));
-    when(workRepository.findLatestLyricsDraft(workId))
+    when(workRepository.findCurrentLyricsDraft(workId, draftId))
         .thenReturn(Optional.of(draft(workId, draftId)));
     when(workRepository.reserveSongProduction(workId, "user-1", initial.version()))
         .thenReturn(true);

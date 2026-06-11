@@ -3,6 +3,7 @@ import type { WorkViewProps } from './types';
 import type { AvailableAction, PublishPackage } from '../../api/types';
 import { Button } from '../../components/Button';
 import { Banner } from '../../components/Banner';
+import { Modal } from '../../components/Modal';
 import { Spinner } from '../../components/Spinner';
 import { PackagePill } from '../../components/StatusPill';
 import { useAction } from '../../hooks/useAction';
@@ -17,6 +18,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const [pkg, setPkg] = useState<PublishPackage | null>(null);
   const [pkgError, setPkgError] = useState<{ message: string; requestId?: string | null } | null>(null);
   const [pkgLoading, setPkgLoading] = useState(true);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   const loadPackage = useCallback(async () => {
     setPkgLoading(true);
@@ -41,6 +43,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const media = work.media_assets;
   const fetched = work.package_status === 'PACKAGE_FETCHED' || pkg?.package_status === 'PACKAGE_FETCHED';
   const blocked = work.package_status === 'PACKAGE_BLOCKED' || pkg?.package_status === 'PACKAGE_BLOCKED';
+  const expired = work.package_status === 'PACKAGE_EXPIRED' || pkg?.package_status === 'PACKAGE_EXPIRED';
   const availableActions = pkg?.available_actions ?? work.available_actions;
   const hasAvailableAction = (action: AvailableAction) => availableActions.includes(action);
 
@@ -122,12 +125,14 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
           <h2 className="card__title">交给社区发布</h2>
         </div>
 
-        <Banner tone={blocked ? 'danger' : fetched ? 'gold' : 'success'}>
+        <Banner tone={blocked ? 'danger' : expired ? 'gold' : fetched ? 'gold' : 'success'}>
           {blocked
             ? '作品暂不能交给社区发布。'
-            : fetched
-              ? '作品已交接给社区发布流程。'
-              : '作品已准备好，可交给社区发布。'}
+            : expired
+              ? '作品链接已过期，请先刷新下载链接。'
+              : fetched
+                ? '作品已交接给社区发布流程。'
+                : '作品已准备好，可交给社区发布。'}
         </Banner>
 
         {pkgLoading && !pkg ? (
@@ -219,7 +224,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
               </div>
 
             <div className="action-bar action-bar--stack">
-              {hasAvailableAction('MARK_PACKAGE_FETCHED') && !fetched && !blocked && (
+              {hasAvailableAction('MARK_PACKAGE_FETCHED') && !fetched && !blocked && !expired && (
                 <Button
                   tone="primary"
                   size="lg"
@@ -254,7 +259,12 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
                 </Button>
               )}
               {hasAvailableAction('CONTACT_SUPPORT') && (
-                <Button tone="ghost" block disabled={busyKey !== null} onClick={() => void 0}>
+                <Button
+                  tone="ghost"
+                  block
+                  disabled={busyKey !== null}
+                  onClick={() => setSupportOpen(true)}
+                >
                   联系平台协助
                 </Button>
               )}
@@ -266,6 +276,23 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
       <button className="textlink textlink--center" onClick={onBackToHome}>
         再创作一首
       </button>
+      <Modal
+        open={supportOpen}
+        title="联系平台协助"
+        subtitle="把这些信息发给平台或开发同事，方便定位发布交接问题。"
+        onClose={() => setSupportOpen(false)}
+        footer={
+          <Button tone="primary" onClick={() => setSupportOpen(false)}>
+            我知道了
+          </Button>
+        }
+      >
+        <div className="support-panel">
+          <p>作品编号：{work.work_code}</p>
+          <p>作品 ID：{work.work_id}</p>
+          <p>交接状态：{pkg?.package_status ?? work.package_status}</p>
+        </div>
+      </Modal>
     </div>
   );
 }

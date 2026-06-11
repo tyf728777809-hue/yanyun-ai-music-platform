@@ -160,7 +160,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     }
     workRepository.insertQuotaTransaction(
         workId, input.userId(), lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
-    markStage(workId, jobId, GenerationStage.MUSIC_GENERATING);
+    if (!markStage(workId, jobId, GenerationStage.MUSIC_GENERATING)) {
+      releaseStaleQuota(workId, input.userId(), lock.lockId());
+      return stale(workId, jobId, GenerationStage.MUSIC_GENERATING);
+    }
 
     MusicGenerationResult musicResult;
     MusicProviderSelection selectedProvider = selectedProvider(input);
@@ -288,6 +291,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     GeneratedMediaAssets mediaAssets;
     try {
       mediaAssets = createMediaAssets(workId, jobId, input, musicResult);
+    } catch (StaleWorkflowException exception) {
+      releaseStaleQuota(workId, input.userId(), lock.lockId());
+      return stale(workId, jobId, exception.stage());
     } catch (RuntimeException exception) {
       return fail(
           workId,
@@ -301,7 +307,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     QualityEvaluationResult packageQuality;
     try {
-      markStage(workId, jobId, GenerationStage.PACKAGE_BUILDING);
+      if (!markStage(workId, jobId, GenerationStage.PACKAGE_BUILDING)) {
+        releaseStaleQuota(workId, input.userId(), lock.lockId());
+        return stale(workId, jobId, GenerationStage.PACKAGE_BUILDING);
+      }
       packageQuality = evaluatePackageQuality(input, selectedProvider, mediaAssets);
     } catch (RuntimeException exception) {
       return fail(
@@ -326,7 +335,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     PublishHandoff handoff;
     try {
-      markStage(workId, jobId, GenerationStage.PACKAGE_PRECHECK);
+      if (!markStage(workId, jobId, GenerationStage.PACKAGE_PRECHECK)) {
+        releaseStaleQuota(workId, input.userId(), lock.lockId());
+        return stale(workId, jobId, GenerationStage.PACKAGE_PRECHECK);
+      }
       handoff = publishAdapter.preparePackage(input.workId());
     } catch (RuntimeException exception) {
       return fail(
@@ -399,8 +411,36 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         jobId.toString(), PackageStatus.PACKAGE_READY.name());
   }
 
-  private void markStage(UUID workId, UUID jobId, GenerationStage stage) {
-    workRepository.markGenerationStage(workId, jobId, stage);
+  private boolean markStage(UUID workId, UUID jobId, GenerationStage stage) {
+    return workRepository.markGenerationStage(workId, jobId, stage);
+  }
+
+  private SongProductionWorkflowResult stale(UUID workId, UUID jobId, GenerationStage stage) {
+    workRepository.completeGenerationJob(
+        jobId,
+        "CANCELLED",
+        stage,
+        FailureCode.PROVIDER_TIMEOUT,
+        "Song production stopped because the work changed");
+    return SongProductionWorkflowResult.failed(
+        jobId.toString(),
+        PackageStatus.PACKAGE_NOT_READY.name(),
+        FailureCode.PROVIDER_TIMEOUT.name(),
+        "Song production stopped because the work changed");
+  }
+
+  private void releaseStaleQuota(UUID workId, String userId, String lockId) {
+    if (lockId == null) {
+      return;
+    }
+    QuotaRelease release = quotaAdapter.releaseGenerateQuota(userId, lockId, "WORK_CHANGED");
+    workRepository.insertQuotaTransaction(
+        workId,
+        userId,
+        lockId,
+        "RELEASE_GENERATE",
+        release.released() ? "RELEASED" : "FAILED",
+        release.message());
   }
 
   private SongProductionWorkflowResult fail(
@@ -493,7 +533,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
 
-    markStage(workId, jobId, GenerationStage.COVER_GENERATING);
+    if (!markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
+      throw new StaleWorkflowException(GenerationStage.COVER_GENERATING);
+    }
     CoverPromptResult coverPrompt =
         coverPromptAgent.generate(
             new CoverPromptRequest(
@@ -514,7 +556,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
     workRepository.upsertMediaAsset(coverAsset);
 
-    markStage(workId, jobId, GenerationStage.VIDEO_RENDERING);
+    if (!markStage(workId, jobId, GenerationStage.VIDEO_RENDERING)) {
+      throw new StaleWorkflowException(GenerationStage.VIDEO_RENDERING);
+    }
     VideoRenderResult videoResult =
         videoRenderService.renderVideo(
             new VideoRenderRequest(
@@ -1184,6 +1228,19 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       MediaAssetRow coverAsset,
       MediaAssetRow videoAsset,
       MediaAssetRow timelineAsset) {}
+
+  private static final class StaleWorkflowException extends RuntimeException {
+    private final GenerationStage stage;
+
+    private StaleWorkflowException(GenerationStage stage) {
+      super("Song production stopped because the work changed");
+      this.stage = stage;
+    }
+
+    private GenerationStage stage() {
+      return stage;
+    }
+  }
 
   private record AudioObject(
       String objectKey,

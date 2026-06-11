@@ -59,14 +59,25 @@ export function WorkPage({ workId, onBackToHome }: WorkPageProps) {
   }
 
   const shared = { work, refresh, onBackToHome };
+  const reconnecting = error && work;
 
   switch (phase) {
     case 'LYRICS_GENERATING':
-      return <LyricsGeneratingView {...shared} />;
+      return (
+        <>
+          {reconnecting && <ReconnectingBanner error={error} refresh={refresh} />}
+          <LyricsGeneratingView {...shared} />
+        </>
+      );
     case 'CONFIRM':
       return <ConfirmView {...shared} />;
     case 'GENERATING':
-      return <GeneratingView {...shared} />;
+      return (
+        <>
+          {reconnecting && <ReconnectingBanner error={error} refresh={refresh} />}
+          <GeneratingView {...shared} />
+        </>
+      );
     case 'FAILED':
       return <FailedView {...shared} />;
     case 'FINISHED':
@@ -74,4 +85,27 @@ export function WorkPage({ workId, onBackToHome }: WorkPageProps) {
     default:
       return null;
   }
+}
+
+function ReconnectingBanner({
+  error,
+  refresh,
+}: {
+  error: NonNullable<ReturnType<typeof useWorkDetail>['error']>;
+  refresh: () => Promise<void>;
+}) {
+  return (
+    <Banner
+      tone="gold"
+      title="连接短暂中断，正在重连"
+      action={
+        <Button tone="secondary" size="sm" onClick={() => void refresh()}>
+          立即刷新
+        </Button>
+      }
+    >
+      <span>{error.message}</span>
+      {requestIdLine(error) && <span className="request-id">{requestIdLine(error)}</span>}
+    </Banner>
+  );
 }

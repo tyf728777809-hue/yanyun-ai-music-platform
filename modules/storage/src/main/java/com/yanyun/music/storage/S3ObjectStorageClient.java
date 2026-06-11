@@ -118,9 +118,18 @@ public final class S3ObjectStorageClient implements ObjectStorageClient {
         s3Client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
       } catch (S3Exception exception) {
         if (exception.statusCode() != 404) {
+          bucketChecked.set(false);
           throw exception;
         }
-        s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
+        try {
+          s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
+        } catch (RuntimeException createException) {
+          bucketChecked.set(false);
+          throw createException;
+        }
+      } catch (RuntimeException exception) {
+        bucketChecked.set(false);
+        throw exception;
       }
     }
   }

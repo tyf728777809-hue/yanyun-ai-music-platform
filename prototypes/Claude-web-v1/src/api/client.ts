@@ -2,7 +2,28 @@ import type { ApiErrorBody } from './types';
 
 // 本地请求头约定（见 docs/runbook/local-development.md）。
 export const API_BASE = '/api/v1';
-export const MOCK_USER_ID = 'mock_user_001';
+export const MOCK_USER_ID_STORAGE_KEY = 'yanyun-proto-mock-user-id';
+
+export function getMockUserId(): string {
+  if (typeof window === 'undefined' || import.meta.env.MODE === 'test') {
+    return 'mock_user_001';
+  }
+  try {
+    const saved = window.localStorage?.getItem(MOCK_USER_ID_STORAGE_KEY);
+    if (saved && /^mock_user_[a-z0-9_-]{8,64}$/i.test(saved)) {
+      return saved;
+    }
+    const random =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID().replaceAll('-', '').slice(0, 16)
+        : Math.random().toString(36).slice(2, 18);
+    const userId = `mock_user_${random}`;
+    window.localStorage?.setItem(MOCK_USER_ID_STORAGE_KEY, userId);
+    return userId;
+  } catch {
+    return 'mock_user_' + Math.random().toString(36).slice(2, 18);
+  }
+}
 
 // 把后端错误信封翻译成结构化错误，UI 据此给普通用户展示友好文案。
 export class ApiError extends Error {
@@ -61,7 +82,7 @@ async function parseError(response: Response): Promise<ApiError> {
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', body, idempotencyKey, signal } = options;
   const headers: Record<string, string> = {
-    'X-Mock-User-Id': MOCK_USER_ID,
+    'X-Mock-User-Id': getMockUserId(),
     Accept: 'application/json',
   };
   if (method === 'POST') {

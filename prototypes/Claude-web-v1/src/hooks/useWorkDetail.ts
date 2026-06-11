@@ -64,7 +64,7 @@ export function useWorkDetail(workId: string | null): PollState {
     return () => {
       if (timer.current) window.clearTimeout(timer.current);
     };
-  }, [work, fetchOnce]);
+  }, [work, error, fetchOnce]);
 
   return {
     work,

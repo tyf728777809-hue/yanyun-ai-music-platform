@@ -19,7 +19,6 @@ public final class WorkStateMachine {
         actions.add(AvailableAction.RETURN_TO_EDIT);
       }
       case LYRICS_FAILED -> {
-        actions.add(AvailableAction.RETRY_LYRICS);
         actions.add(AvailableAction.RETURN_TO_EDIT);
       }
       case GENERATED -> appendGeneratedActions(actions, work.packageStatus());
@@ -90,8 +89,6 @@ public final class WorkStateMachine {
 
   private static void appendGeneratedActions(
       List<AvailableAction> actions, PackageStatus packageStatus) {
-    actions.add(AvailableAction.RERENDER_VIDEO);
-
     switch (packageStatus) {
       case PACKAGE_READY -> {
         actions.add(AvailableAction.REFRESH_PACKAGE_URL);
@@ -117,8 +114,9 @@ public final class WorkStateMachine {
     }
 
     switch (failureCode) {
-      case LYRICS_GENERATION_FAILED, LYRICS_PRECHECK_FAILED ->
-          actions.add(AvailableAction.RETRY_LYRICS);
+      case LYRICS_GENERATION_FAILED, LYRICS_PRECHECK_FAILED -> {
+        // No retry endpoint exists in v0.1; users should return to edit/create again.
+      }
       case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED -> {
         if (remainingMusicRetryCount > 0) {
           actions.add(AvailableAction.RETRY_MUSIC);

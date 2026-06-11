@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import type { WorkViewProps } from './types';
 import type { AvailableAction } from '../../api/types';
 import { Button } from '../../components/Button';
 import { Banner } from '../../components/Banner';
+import { Modal } from '../../components/Modal';
 import { useAction } from '../../hooks/useAction';
 import { actionLabel } from '../../api/actions';
 import { FAILURE_COPY, hasAction } from '../../api/workState';
@@ -10,6 +12,7 @@ import { service } from '../../mock/service';
 // 失败页：展示友好失败原因 + 建议动作，按钮全部由 available_actions 驱动。
 export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const { run, busyKey } = useAction(refresh);
+  const [supportOpen, setSupportOpen] = useState(false);
   const failure = work.failure;
   const copy = failure ? FAILURE_COPY[failure.failure_code] : null;
 
@@ -143,7 +146,13 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
           }
           if (action === 'CONTACT_SUPPORT') {
             return (
-              <Button key={action} tone="ghost" block onClick={() => void 0} disabled={busyKey !== null}>
+              <Button
+                key={action}
+                tone="ghost"
+                block
+                onClick={() => setSupportOpen(true)}
+                disabled={busyKey !== null}
+              >
                 联系平台协助
               </Button>
             );
@@ -155,6 +164,24 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
           返回创作首页
         </button>
       </div>
+      <Modal
+        open={supportOpen}
+        title="联系平台协助"
+        subtitle="把这些信息发给平台或开发同事，方便定位问题。"
+        onClose={() => setSupportOpen(false)}
+        footer={
+          <Button tone="primary" onClick={() => setSupportOpen(false)}>
+            我知道了
+          </Button>
+        }
+      >
+        <div className="support-panel">
+          <p>作品编号：{work.work_code}</p>
+          <p>作品 ID：{work.work_id}</p>
+          {failure && <p>失败原因：{failure.failure_code}</p>}
+          {failure?.failure_message && <p>提示：{failure.failure_message}</p>}
+        </div>
+      </Modal>
     </div>
   );
 }

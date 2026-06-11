@@ -5,11 +5,13 @@ import {defineConfig} from 'vitest/config';
 // 浏览器同源访问 `/api/v1`，由 dev proxy 转发到本地 8080，避免后端未配置 CORS 的问题。
 // 需要指向其它后端时设置 VITE_API_PROXY_TARGET。
 const apiTarget = process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8080';
+const tunnelHost = process.env.VITE_ALLOWED_HOST?.trim();
 
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 5273,
+    allowedHosts: tunnelHost ? [tunnelHost] : [],
     proxy: {
       '/api': {
         target: apiTarget,

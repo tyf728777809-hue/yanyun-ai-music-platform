@@ -32,7 +32,7 @@ class HttpRemoteObjectImporterTest {
     CapturingStorageClient storageClient = new CapturingStorageClient();
     HttpRemoteObjectImporter importer =
         new HttpRemoteObjectImporter(
-            storageClient, HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2));
+            storageClient, HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2), true);
 
     StoredObject stored =
         importer.importObject(
@@ -47,7 +47,9 @@ class HttpRemoteObjectImporterTest {
   void followsRedirectsWithDefaultHttpClient() throws Exception {
     server = startRedirectServer();
     CapturingStorageClient storageClient = new CapturingStorageClient();
-    HttpRemoteObjectImporter importer = new HttpRemoteObjectImporter(storageClient);
+    HttpRemoteObjectImporter importer =
+        new HttpRemoteObjectImporter(
+            storageClient, HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2), true);
 
     StoredObject stored =
         importer.importObject(
@@ -66,7 +68,7 @@ class HttpRemoteObjectImporterTest {
     CapturingStorageClient storageClient = new CapturingStorageClient();
     HttpRemoteObjectImporter importer =
         new HttpRemoteObjectImporter(
-            storageClient, HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2));
+            storageClient, HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2), true);
 
     StoredObject stored =
         importer.importObject(
@@ -89,6 +91,21 @@ class HttpRemoteObjectImporterTest {
         () ->
             importer.importObject(
                 new RemoteObjectImportRequest("file:///tmp/a.mp3", "audio/a.mp3", "audio/mpeg")));
+  }
+
+  @Test
+  void rejectsPrivateNetworkSourceUrlByDefault() throws Exception {
+    server =
+        startServer("audio/mpeg", "audio-bytes".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    HttpRemoteObjectImporter importer =
+        new HttpRemoteObjectImporter(
+            new CapturingStorageClient(), HttpClient.newHttpClient(), 1024L, Duration.ofSeconds(2));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            importer.importObject(
+                new RemoteObjectImportRequest(serverUrl(), "audio/private.mp3", "audio/mpeg")));
   }
 
   private HttpServer startServer(String contentType, byte[] body) throws IOException {

@@ -373,6 +373,30 @@ public class WorkRepository {
     }
   }
 
+  public Optional<LyricsDraftRow> findCurrentLyricsDraft(UUID workId, UUID lyricsDraftId) {
+    try {
+      return Optional.of(
+          jdbcTemplate.queryForObject(
+              """
+              SELECT *
+              FROM lyrics_drafts
+              WHERE work_id = ?
+                AND id = ?
+                AND version_no = (
+                  SELECT MAX(version_no)
+                  FROM lyrics_drafts
+                  WHERE work_id = ?
+                )
+              """,
+              this::mapLyricsDraft,
+              workId,
+              lyricsDraftId,
+              workId));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
   public int nextLyricsVersion(UUID workId) {
     Integer version =
         jdbcTemplate.queryForObject(
@@ -423,6 +447,7 @@ public class WorkRepository {
             updated_at = now(),
             version = version + 1
         WHERE id = ?
+          AND status = ?
         """,
         WorkStatus.GENERATED.name(),
         GenerationStage.PACKAGE_READY.name(),
@@ -431,7 +456,8 @@ public class WorkRepository {
         summary,
         quotaLocked,
         quotaCommitted,
-        workId);
+        workId,
+        WorkStatus.GENERATING.name());
   }
 
   public void markFailure(
@@ -449,6 +475,7 @@ public class WorkRepository {
             updated_at = now(),
             version = version + 1
         WHERE id = ?
+          AND status = ?
         """,
         WorkStatus.FAILED.name(),
         GenerationStage.FAILED.name(),
@@ -458,7 +485,8 @@ public class WorkRepository {
         failureCode.name(),
         failureMessage,
         retryable,
-        workId);
+        workId,
+        WorkStatus.GENERATING.name());
   }
 
   public boolean reserveSongProduction(UUID workId, String userId, int expectedVersion) {

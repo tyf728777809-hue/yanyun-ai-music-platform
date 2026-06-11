@@ -109,7 +109,9 @@ public class WorkflowOutboxDispatcher {
     }
     WorkRow row = work.get();
     return row.status() == WorkStatus.GENERATED
+        || row.status() == WorkStatus.FAILED
         || row.packageStatus() == PackageStatus.PACKAGE_READY
+        || row.packageStatus() == PackageStatus.PACKAGE_BLOCKED
         || row.packageStatus() == PackageStatus.PACKAGE_FETCHED;
   }
 

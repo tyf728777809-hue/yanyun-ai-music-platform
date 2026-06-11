@@ -1621,6 +1621,7 @@ class MockSongProductionWorkflowTest {
       QualityEvaluationAgent qualityEvaluationAgent,
       CoverGenerationService coverGenerationService) {
     stubObjectStorageDownloadUrls();
+    when(workRepository.markGenerationStage(any(), any(), any())).thenReturn(true);
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,

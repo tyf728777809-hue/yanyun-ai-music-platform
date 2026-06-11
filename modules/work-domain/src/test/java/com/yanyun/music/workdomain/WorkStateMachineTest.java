@@ -41,7 +41,7 @@ class WorkStateMachineTest {
 
     assertTrue(actions.contains(AvailableAction.REFRESH_PACKAGE_URL));
     assertTrue(actions.contains(AvailableAction.MARK_PACKAGE_FETCHED));
-    assertTrue(actions.contains(AvailableAction.RERENDER_VIDEO));
+    assertFalse(actions.contains(AvailableAction.RERENDER_VIDEO));
   }
 
   @Test
