@@ -81,8 +81,9 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  QuotaAdapter quotaAdapter() {
-    return new MockQuotaAdapter();
+  QuotaAdapter quotaAdapter(
+      @Value("${yanyun.quota.mock-max-generate-locks:999}") int mockMaxGenerateLocks) {
+    return new MockQuotaAdapter(mockMaxGenerateLocks);
   }
 
   @Bean
