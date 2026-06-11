@@ -1,6 +1,7 @@
 package com.yanyun.music.production;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.media.MediaAssetDescriptor;
 import com.yanyun.music.media.VideoRenderRequest;
@@ -32,17 +33,30 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
   private final RenderWorkerProperties properties;
   private final ObjectStorageClient objectStorageClient;
   private final ObjectMapper objectMapper;
+  private final RenderedVideoProbe renderedVideoProbe;
 
   public LocalProcessVideoRenderService(
       RenderWorkerProperties properties,
       ObjectStorageClient objectStorageClient,
       ObjectMapper objectMapper) {
+    this(properties, objectStorageClient, objectMapper, null);
+  }
+
+  public LocalProcessVideoRenderService(
+      RenderWorkerProperties properties,
+      ObjectStorageClient objectStorageClient,
+      ObjectMapper objectMapper,
+      RenderedVideoProbe renderedVideoProbe) {
     this.properties = properties == null ? new RenderWorkerProperties() : properties;
     if (objectStorageClient == null) {
       throw new IllegalArgumentException("objectStorageClient is required");
     }
     this.objectStorageClient = objectStorageClient;
     this.objectMapper = objectMapper == null ? new ObjectMapper() : objectMapper;
+    this.renderedVideoProbe =
+        renderedVideoProbe == null
+            ? new FfprobeRenderedVideoProbe(this.objectMapper)
+            : renderedVideoProbe;
   }
 
   @Override
@@ -95,6 +109,7 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
       int fps = requiredPositive(output.fps(), "fps");
       int durationMs = requiredPositive(output.durationMs(), "duration_ms");
       int durationInFrames = requiredPositive(output.durationInFrames(), "duration_in_frames");
+      validateRenderedMp4(videoPath, width, height, durationMs);
       String renderer = firstNonBlank(output.renderer(), "remotion");
       String compositionId = firstNonBlank(output.compositionId(), properties.getCompositionId());
       byte[] videoBytes = Files.readAllBytes(videoPath);
@@ -152,7 +167,8 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
         stagedCover.toAbsolutePath().toString(),
         request.durationMs(),
         firstNonBlank(properties.getCompositionId(), "LyricVideo16x9V2"),
-        TEMPLATE_ID);
+        TEMPLATE_ID,
+        "estimated");
   }
 
   private String stagedFileName(String baseName, String objectKey, String fallbackExtension) {
@@ -310,6 +326,38 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
     return value;
   }
 
+  private void validateRenderedMp4(
+      Path videoPath, int expectedWidth, int expectedHeight, int expectedDurationMs) {
+    RenderedVideoProbeResult probe = renderedVideoProbe.inspect(videoPath);
+    if (!probe.hasVideo()) {
+      throw new IllegalStateException("Rendered MP4 is missing video stream");
+    }
+    if (!probe.hasAudio()) {
+      throw new IllegalStateException("Rendered MP4 is missing audio stream");
+    }
+    if (!"h264".equalsIgnoreCase(probe.videoCodec())) {
+      throw new IllegalStateException("Rendered MP4 video codec is not h264");
+    }
+    if (!"aac".equalsIgnoreCase(probe.audioCodec())) {
+      throw new IllegalStateException("Rendered MP4 audio codec is not aac");
+    }
+    if (probe.width() != expectedWidth || probe.height() != expectedHeight) {
+      throw new IllegalStateException(
+          "Rendered MP4 dimensions do not match render output: "
+              + probe.width()
+              + "x"
+              + probe.height());
+    }
+    if (probe.width() * 9 != probe.height() * 16) {
+      throw new IllegalStateException("Rendered MP4 is not 16:9");
+    }
+    long durationDriftMs = Math.abs(probe.durationMs() - expectedDurationMs);
+    long allowedDriftMs = Math.max(2_000L, Math.round(expectedDurationMs * 0.05));
+    if (probe.durationMs() <= 0 || durationDriftMs > allowedDriftMs) {
+      throw new IllegalStateException("Rendered MP4 duration is unreasonable");
+    }
+  }
+
   private String logTail(Path logPath) {
     try {
       if (!Files.isRegularFile(logPath)) {
@@ -357,6 +405,87 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
     return value == null || value.isBlank() ? fallback : value.trim();
   }
 
+  @FunctionalInterface
+  public interface RenderedVideoProbe {
+    RenderedVideoProbeResult inspect(Path videoPath);
+  }
+
+  public record RenderedVideoProbeResult(
+      boolean hasVideo,
+      boolean hasAudio,
+      String videoCodec,
+      String audioCodec,
+      int width,
+      int height,
+      long durationMs) {}
+
+  private static final class FfprobeRenderedVideoProbe implements RenderedVideoProbe {
+
+    private final ObjectMapper objectMapper;
+
+    private FfprobeRenderedVideoProbe(ObjectMapper objectMapper) {
+      this.objectMapper = objectMapper;
+    }
+
+    @Override
+    public RenderedVideoProbeResult inspect(Path videoPath) {
+      try {
+        Process process =
+            new ProcessBuilder(
+                    "ffprobe",
+                    "-v",
+                    "error",
+                    "-show_entries",
+                    "stream=codec_type,codec_name,width,height:format=duration",
+                    "-of",
+                    "json",
+                    videoPath.toAbsolutePath().toString())
+                .redirectErrorStream(true)
+                .start();
+        boolean completed = process.waitFor(15, TimeUnit.SECONDS);
+        if (!completed) {
+          process.destroyForcibly();
+          throw new IllegalStateException("ffprobe timed out while validating rendered MP4");
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        if (process.exitValue() != 0) {
+          throw new IllegalStateException(
+              "ffprobe failed while validating rendered MP4: " + output);
+        }
+        JsonNode root = objectMapper.readTree(output);
+        JsonNode streams = root.path("streams");
+        boolean hasVideo = false;
+        boolean hasAudio = false;
+        String videoCodec = null;
+        String audioCodec = null;
+        int width = 0;
+        int height = 0;
+        if (streams.isArray()) {
+          for (JsonNode stream : streams) {
+            String codecType = stream.path("codec_type").asText("");
+            if ("video".equals(codecType) && !hasVideo) {
+              hasVideo = true;
+              videoCodec = stream.path("codec_name").asText("");
+              width = stream.path("width").asInt(0);
+              height = stream.path("height").asInt(0);
+            } else if ("audio".equals(codecType) && !hasAudio) {
+              hasAudio = true;
+              audioCodec = stream.path("codec_name").asText("");
+            }
+          }
+        }
+        long durationMs = Math.round(root.path("format").path("duration").asDouble(0) * 1000);
+        return new RenderedVideoProbeResult(
+            hasVideo, hasAudio, videoCodec, audioCodec, width, height, durationMs);
+      } catch (IOException exception) {
+        throw new IllegalStateException("Failed to run ffprobe for rendered MP4", exception);
+      } catch (InterruptedException exception) {
+        Thread.currentThread().interrupt();
+        throw new IllegalStateException("ffprobe validation was interrupted", exception);
+      }
+    }
+  }
+
   private String trimSlashes(String value) {
     String trimmed = value.trim();
     while (trimmed.startsWith("/")) {
@@ -385,7 +514,8 @@ public final class LocalProcessVideoRenderService implements VideoRenderService 
       @JsonProperty("cover_source_path") String coverSourcePath,
       @JsonProperty("duration_ms") Integer durationMs,
       @JsonProperty("composition_id") String compositionId,
-      @JsonProperty("template_id") String templateId) {}
+      @JsonProperty("template_id") String templateId,
+      @JsonProperty("lyrics_timing_source") String lyricsTimingSource) {}
 
   private record RenderWorkerJobOutput(
       @JsonProperty("work_id") String workId,

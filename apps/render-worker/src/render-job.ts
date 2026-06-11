@@ -123,25 +123,52 @@ function timelineJson(
   };
 }
 
-async function assertPlayableMp4(videoFilePath: string): Promise<void> {
+export async function assertPlayableMp4(videoFilePath: string): Promise<void> {
   const {stdout} = await execFileAsync('ffprobe', [
     '-v',
     'error',
     '-show_entries',
-    'stream=codec_type,codec_name',
+    'stream=codec_type,codec_name,width,height:format=duration',
     '-of',
     'json',
     videoFilePath,
   ]);
-  const parsed = JSON.parse(stdout) as {
-    streams?: Array<{codec_type?: string; codec_name?: string}>;
+  validateMp4ProbeOutput(JSON.parse(stdout));
+}
+
+export function validateMp4ProbeOutput(parsed: unknown): void {
+  const probe = parsed as {
+    streams?: Array<{
+      codec_type?: string;
+      codec_name?: string;
+      width?: number;
+      height?: number;
+    }>;
+    format?: {duration?: string | number};
   };
-  const streams = parsed.streams ?? [];
-  if (!streams.some((stream) => stream.codec_type === 'video')) {
+  const streams = probe.streams ?? [];
+  const video = streams.find((stream) => stream.codec_type === 'video');
+  const audio = streams.find((stream) => stream.codec_type === 'audio');
+  if (!video) {
     throw new Error('Rendered MP4 is missing video stream');
   }
-  if (!streams.some((stream) => stream.codec_type === 'audio')) {
+  if (!audio) {
     throw new Error('Rendered MP4 is missing audio stream');
+  }
+  if (video.codec_name !== 'h264') {
+    throw new Error(`Rendered MP4 video codec is not h264: ${video.codec_name ?? 'unknown'}`);
+  }
+  if (audio.codec_name !== 'aac') {
+    throw new Error(`Rendered MP4 audio codec is not aac: ${audio.codec_name ?? 'unknown'}`);
+  }
+  if (video.width !== VIDEO_WIDTH || video.height !== VIDEO_HEIGHT) {
+    throw new Error(
+      `Rendered MP4 resolution is not ${VIDEO_WIDTH}x${VIDEO_HEIGHT}: ${video.width ?? 0}x${video.height ?? 0}`,
+    );
+  }
+  const durationSeconds = Number(probe.format?.duration ?? 0);
+  if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) {
+    throw new Error('Rendered MP4 duration is missing or invalid');
   }
 }
 

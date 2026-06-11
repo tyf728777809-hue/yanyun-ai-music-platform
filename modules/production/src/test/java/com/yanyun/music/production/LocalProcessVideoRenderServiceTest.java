@@ -44,7 +44,7 @@ class LocalProcessVideoRenderServiceTest {
     CapturingStorageClient storageClient = storageClientWithRenderInputs();
     LocalProcessVideoRenderService service =
         new LocalProcessVideoRenderService(
-            successfulProperties(), storageClient, new ObjectMapper());
+            successfulProperties(), storageClient, new ObjectMapper(), successfulProbe());
 
     VideoRenderResult result = service.renderVideo(videoRenderRequest());
 
@@ -76,7 +76,8 @@ class LocalProcessVideoRenderServiceTest {
     RenderWorkerProperties properties = successfulProperties();
     properties.setWorkingDirectory("apps/render-worker");
     LocalProcessVideoRenderService service =
-        new LocalProcessVideoRenderService(properties, storageClient, new ObjectMapper());
+        new LocalProcessVideoRenderService(
+            properties, storageClient, new ObjectMapper(), successfulProbe());
 
     try {
       System.setProperty("user.dir", apiDirectory.toString());
@@ -97,12 +98,33 @@ class LocalProcessVideoRenderServiceTest {
     properties.setArguments(
         List.of("-cp", System.getProperty("java.class.path"), FailingRenderWorker.class.getName()));
     LocalProcessVideoRenderService service =
-        new LocalProcessVideoRenderService(properties, storageClient, new ObjectMapper());
+        new LocalProcessVideoRenderService(
+            properties, storageClient, new ObjectMapper(), successfulProbe());
 
     IllegalStateException exception =
         assertThrows(IllegalStateException.class, () -> service.renderVideo(videoRenderRequest()));
 
     assertTrue(exception.getMessage().contains("exited with code"));
+    assertTrue(!storageClient.objects.containsKey("videos/work-123.mp4"));
+    assertTrue(!storageClient.objects.containsKey("timelines/work-123.json"));
+  }
+
+  @Test
+  void failsBeforeUploadingWhenRenderedMp4HasNoAudioTrack() {
+    CapturingStorageClient storageClient = storageClientWithRenderInputs();
+    LocalProcessVideoRenderService service =
+        new LocalProcessVideoRenderService(
+            successfulProperties(),
+            storageClient,
+            new ObjectMapper(),
+            path ->
+                new LocalProcessVideoRenderService.RenderedVideoProbeResult(
+                    true, false, "h264", null, 1920, 1080, 180000));
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> service.renderVideo(videoRenderRequest()));
+
+    assertTrue(exception.getMessage().contains("audio stream"));
     assertTrue(!storageClient.objects.containsKey("videos/work-123.mp4"));
     assertTrue(!storageClient.objects.containsKey("timelines/work-123.json"));
   }
@@ -138,6 +160,12 @@ class LocalProcessVideoRenderServiceTest {
 
   private String javaBinary() {
     return Path.of(System.getProperty("java.home"), "bin", "java").toString();
+  }
+
+  private LocalProcessVideoRenderService.RenderedVideoProbe successfulProbe() {
+    return path ->
+        new LocalProcessVideoRenderService.RenderedVideoProbeResult(
+            true, true, "h264", "aac", 1920, 1080, 180000);
   }
 
   private static final class CapturingStorageClient implements ObjectStorageClient {

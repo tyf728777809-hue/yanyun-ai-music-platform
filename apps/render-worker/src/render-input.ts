@@ -50,6 +50,7 @@ export type RenderWorkerJobInput = {
   readonly template_id?: string;
   readonly duration_ms?: number;
   readonly composition_id?: string;
+  readonly lyrics_timing_source?: 'provider_timestamped' | 'estimated' | 'none';
 };
 
 export type RenderWorkerJobOutput = {
@@ -92,6 +93,7 @@ export function durationMsFromFrames(durationInFrames: number): number {
 export function lyricLinesFromText(
   lyricsText: string | undefined,
   durationInFrames: number,
+  options: {readonly hardSync?: boolean} = {},
 ): readonly LyricLine[] {
   const sourceLines = (lyricsText ?? '')
     .split(/\r?\n/)
@@ -100,6 +102,9 @@ export function lyricLinesFromText(
   const textLines =
     sourceLines.length > 0 ? sourceLines : [FALLBACK_LYRIC_LINE];
   const safeDuration = Math.max(1, durationInFrames);
+  if (options.hardSync !== true) {
+    return lyricCardLinesFromText(textLines, safeDuration);
+  }
 
   return textLines.map((text, index) => {
     const startFrame = Math.floor((safeDuration * index) / textLines.length);
@@ -112,6 +117,26 @@ export function lyricLinesFromText(
         index === textLines.length - 1
           ? safeDuration - 1
           : Math.max(startFrame, nextStartFrame - 1),
+      text,
+    };
+  });
+}
+
+function lyricCardLinesFromText(
+  textLines: readonly string[],
+  durationInFrames: number,
+): readonly LyricLine[] {
+  const selectedLines = textLines.slice(0, 2);
+  const safeDuration = Math.max(1, durationInFrames);
+  const cardDuration = Math.max(1, Math.floor(safeDuration * 0.34));
+  return selectedLines.map((text, index) => {
+    const startFrame =
+      selectedLines.length === 1
+        ? Math.floor(safeDuration * 0.33)
+        : Math.floor(safeDuration * (index === 0 ? 0.22 : 0.58));
+    return {
+      startFrame,
+      endFrame: Math.min(safeDuration - 1, startFrame + cardDuration),
       text,
     };
   });
@@ -169,6 +194,7 @@ export function lyricVideoPropsFromJobInput(
   input: RenderWorkerJobInput,
 ): LyricVideoProps {
   const durationInFrames = durationInFramesFromMs(input.duration_ms);
+  const hardSync = input.lyrics_timing_source === 'provider_timestamped';
   return {
     workId: input.work_id,
     songTitle: input.song_title?.trim() || '燕云新曲',
@@ -180,7 +206,7 @@ export function lyricVideoPropsFromJobInput(
     safeArea: videoSafeArea,
     lyricLayout: videoLyricLayout,
     durationInFrames,
-    lyrics: lyricLinesFromText(input.lyrics_text, durationInFrames),
+    lyrics: lyricLinesFromText(input.lyrics_text, durationInFrames, {hardSync}),
   };
 }
 

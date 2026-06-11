@@ -7,6 +7,7 @@ import {
   VIDEO_WIDTH,
 } from './root';
 import {toRemotionMediaSource} from './LyricVideo16x9V2';
+import {validateMp4ProbeOutput} from './render-job';
 import {
   lyricLinesFromText,
   lyricVideoPropsFromJobInput,
@@ -44,11 +45,28 @@ test('render job input creates dynamic duration props', () => {
     audio_mime_type: 'audio/mpeg',
     cover_object_key: 'covers/work-001.png',
     duration_ms: 180000,
+    lyrics_timing_source: 'provider_timestamped',
   });
 
   assert.equal(props.durationInFrames, 5400);
   assert.equal(props.lyrics[0].startFrame, 0);
   assert.equal(props.lyrics[props.lyrics.length - 1].endFrame, 5399);
+});
+
+test('estimated lyrics timing uses weak lyric cards instead of hard-sync subtitles', () => {
+  const props = lyricVideoPropsFromJobInput({
+    work_id: 'work-estimated',
+    song_title: '边城旧梦',
+    lyrics_text: '第一句\n第二句\n第三句\n第四句',
+    audio_object_key: 'audio/work-estimated.mp3',
+    cover_object_key: 'covers/work-estimated.png',
+    duration_ms: 120000,
+    lyrics_timing_source: 'estimated',
+  });
+
+  assert.equal(props.lyrics.length, 2);
+  assert.ok(props.lyrics[0].startFrame > 0);
+  assert.notEqual(props.lyrics[0].endFrame, props.lyrics[1].startFrame - 1);
 });
 
 test('v2 render props include staged media sources and safe area metadata', () => {
@@ -119,8 +137,7 @@ test('blank lyrics still produce a safe renderable timeline', () => {
   const lines = lyricLinesFromText('', 90);
 
   assert.equal(lines.length, 1);
-  assert.equal(lines[0].startFrame, 0);
-  assert.equal(lines[0].endFrame, 89);
+  assert.ok(lines[0].startFrame > 0);
   assert.ok(lines[0].text.length > 0);
 });
 
@@ -131,6 +148,26 @@ test('lyric section labels are not rendered as standalone subtitles', () => {
     lines.map((line) => line.text),
     ['第一句', '第二句'],
   );
-  assert.equal(lines[0].startFrame, 0);
-  assert.equal(lines[1].endFrame, 119);
+  assert.ok(lines[0].startFrame > 0);
+});
+
+test('ffprobe validator requires h264 aac 1080p mp4 with duration', () => {
+  assert.doesNotThrow(() =>
+    validateMp4ProbeOutput({
+      streams: [
+        {codec_type: 'video', codec_name: 'h264', width: 1920, height: 1080},
+        {codec_type: 'audio', codec_name: 'aac'},
+      ],
+      format: {duration: '180.0'},
+    }),
+  );
+
+  assert.throws(
+    () =>
+      validateMp4ProbeOutput({
+        streams: [{codec_type: 'video', codec_name: 'h264', width: 1920, height: 1080}],
+        format: {duration: '180.0'},
+      }),
+    /audio stream/,
+  );
 });

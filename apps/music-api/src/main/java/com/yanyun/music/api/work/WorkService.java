@@ -36,6 +36,7 @@ import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.quota.QuotaDecision;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
+import com.yanyun.music.storage.ObjectStoragePutRequest;
 import com.yanyun.music.suno.YunwuProperties;
 import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
@@ -53,6 +54,7 @@ import com.yanyun.music.workpersistence.WorkRepository.LyricsDraftRow;
 import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -481,9 +483,16 @@ public class WorkService {
     if (packageRow.packageObjectKey() == null || packageRow.packageObjectKey().isBlank()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Publish package not found");
     }
+    String refreshedPackageJson = refreshedPackageJson(workId, packageRow);
+    objectStorageClient.putObject(
+        new ObjectStoragePutRequest(
+            packageRow.packageObjectKey(),
+            "application/json",
+            refreshedPackageJson.getBytes(StandardCharsets.UTF_8)));
     ObjectStorageDownloadUrl downloadUrl =
         objectStorageClient.createDownloadUrl(packageRow.packageObjectKey());
-    workRepository.updatePublishPackageUrl(workId, downloadUrl.url(), downloadUrl.expiresAt());
+    workRepository.updatePublishPackageUrl(
+        workId, refreshedPackageJson, downloadUrl.url(), downloadUrl.expiresAt());
     return getPublishPackage(userId, workId);
   }
 
@@ -763,6 +772,47 @@ public class WorkService {
         readJsonObject(row.packageJson()),
         availableActions(work),
         row.packageStatus() == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
+  }
+
+  private String refreshedPackageJson(UUID workId, PublishPackageRow packageRow) {
+    Map<String, Object> packageJson = new HashMap<>(readJsonObject(packageRow.packageJson()));
+    Map<String, MediaAssetRow> assets = new HashMap<>();
+    for (MediaAssetRow asset : workRepository.findMediaAssets(workId)) {
+      assets.put(asset.assetType(), asset);
+    }
+    replaceMediaUrl(packageJson, "audio", assets.get("AUDIO"));
+    replaceMediaUrl(packageJson, "cover", assets.get("COVER"));
+    replaceMediaUrl(packageJson, "video", assets.get("VIDEO"));
+    replaceLyricsTimelineUrl(packageJson, assets.get("TIMELINE"));
+    return writeJson(packageJson);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void replaceMediaUrl(Map<String, Object> packageJson, String field, MediaAssetRow asset) {
+    if (asset == null) {
+      return;
+    }
+    Object existing = packageJson.get(field);
+    Map<String, Object> media =
+        existing instanceof Map<?, ?> existingMap
+            ? new HashMap<>((Map<String, Object>) existingMap)
+            : new HashMap<>();
+    media.put("url", assetUrl(asset.objectKey()));
+    packageJson.put(field, media);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void replaceLyricsTimelineUrl(Map<String, Object> packageJson, MediaAssetRow asset) {
+    if (asset == null) {
+      return;
+    }
+    Object existing = packageJson.get("lyrics");
+    Map<String, Object> lyrics =
+        existing instanceof Map<?, ?> existingMap
+            ? new HashMap<>((Map<String, Object>) existingMap)
+            : new HashMap<>();
+    lyrics.put("timeline_url", assetUrl(asset.objectKey()));
+    packageJson.put("lyrics", lyrics);
   }
 
   private PublishPackage emptyPackage(WorkRow work) {

@@ -629,11 +629,13 @@ public class WorkRepository {
         workId);
   }
 
-  public void updatePublishPackageUrl(UUID workId, String packageUrl, OffsetDateTime expiresAt) {
+  public void updatePublishPackageUrl(
+      UUID workId, String packageJson, String packageUrl, OffsetDateTime expiresAt) {
     jdbcTemplate.update(
         """
         UPDATE publish_packages
         SET package_status = ?,
+            package_json = ?::jsonb,
             package_url = ?,
             package_url_expires_at = ?,
             last_url_refreshed_at = now(),
@@ -641,6 +643,7 @@ public class WorkRepository {
         WHERE work_id = ?
         """,
         PackageStatus.PACKAGE_READY.name(),
+        packageJson,
         packageUrl,
         expiresAt,
         workId);

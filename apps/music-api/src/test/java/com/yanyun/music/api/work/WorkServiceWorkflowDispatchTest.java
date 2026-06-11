@@ -23,6 +23,7 @@ import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.quota.QuotaAdapter;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
+import com.yanyun.music.storage.ObjectStoragePutRequest;
 import com.yanyun.music.suno.YunwuProperties;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
@@ -34,9 +35,12 @@ import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.LyricsDraftRow;
+import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -275,12 +279,67 @@ class WorkServiceWorkflowDispatchTest {
   void refreshPublishPackageUrlUsesPersistedPackageObjectKey() {
     UUID workId = UUID.randomUUID();
     WorkRow generated = work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY);
+    MediaAssetRow audio =
+        new MediaAssetRow(
+            workId,
+            "AUDIO",
+            "audio/new.mp3",
+            "audio/mpeg",
+            1000L,
+            "audio-checksum",
+            null,
+            null,
+            1000,
+            "{}");
+    MediaAssetRow cover =
+        new MediaAssetRow(
+            workId,
+            "COVER",
+            "cover/new.png",
+            "image/png",
+            2000L,
+            "cover-checksum",
+            1920,
+            1080,
+            null,
+            "{}");
+    MediaAssetRow video =
+        new MediaAssetRow(
+            workId,
+            "VIDEO",
+            "video/new.mp4",
+            "video/mp4",
+            3000L,
+            "video-checksum",
+            1920,
+            1080,
+            1000,
+            "{}");
+    MediaAssetRow timeline =
+        new MediaAssetRow(
+            workId,
+            "TIMELINE",
+            "timeline/new.json",
+            "application/json",
+            400L,
+            "timeline-checksum",
+            null,
+            null,
+            null,
+            "{}");
     PublishPackageRow packageRow =
         new PublishPackageRow(
             UUID.randomUUID(),
             workId,
             PackageStatus.PACKAGE_READY,
-            "{}",
+            """
+            {
+              "audio": {"url": "http://old/audio"},
+              "cover": {"url": "http://old/cover"},
+              "video": {"url": "http://old/video"},
+              "lyrics": {"timeline_url": "http://old/timeline"}
+            }
+            """,
             "yanyun-ai-music/local/2026/06/06/" + workId + "/package/publish-package.json",
             "http://old-url",
             OffsetDateTime.parse("2026-06-06T01:00:00Z"),
@@ -291,20 +350,34 @@ class WorkServiceWorkflowDispatchTest {
         .thenReturn(Optional.of(generated))
         .thenReturn(Optional.of(generated));
     when(workRepository.findPublishPackage(workId)).thenReturn(Optional.of(packageRow));
-    when(objectStorageClient.createDownloadUrl(packageRow.packageObjectKey()))
-        .thenReturn(
-            new ObjectStorageDownloadUrl(
-                packageRow.packageObjectKey(),
-                "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey(),
-                OffsetDateTime.parse("2026-06-07T00:00:00Z")));
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(audio, cover, video, timeline));
+    when(objectStorageClient.createDownloadUrl(any()))
+        .thenAnswer(
+            invocation -> {
+              String objectKey = invocation.getArgument(0);
+              return new ObjectStorageDownloadUrl(
+                  objectKey,
+                  "http://localhost/yanyun-works-local/" + objectKey + "?v=refreshed",
+                  OffsetDateTime.parse("2026-06-07T00:00:00Z"));
+            });
 
     service(syncProperties()).refreshPublishPackageUrl("user-1", workId);
 
     verify(objectStorageClient).createDownloadUrl(packageRow.packageObjectKey());
+    ArgumentCaptor<ObjectStoragePutRequest> putRequest =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient).putObject(putRequest.capture());
+    String refreshedPackageJson =
+        new String(putRequest.getValue().content(), StandardCharsets.UTF_8);
+    assertThat(refreshedPackageJson).contains("audio/new.mp3?v=refreshed");
+    assertThat(refreshedPackageJson).contains("cover/new.png?v=refreshed");
+    assertThat(refreshedPackageJson).contains("video/new.mp4?v=refreshed");
+    assertThat(refreshedPackageJson).contains("timeline/new.json?v=refreshed");
     verify(workRepository)
         .updatePublishPackageUrl(
             workId,
-            "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey(),
+            refreshedPackageJson,
+            "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey() + "?v=refreshed",
             OffsetDateTime.parse("2026-06-07T00:00:00Z"));
   }
 
