@@ -57,9 +57,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class WorkerProductionConfiguration {
 
   @Bean
-  QuotaAdapter quotaAdapter(
-      @Value("${yanyun.quota.mock-max-generate-locks:999}") int mockMaxGenerateLocks) {
-    return new MockQuotaAdapter(mockMaxGenerateLocks);
+  QuotaAdapter quotaAdapter() {
+    return new MockQuotaAdapter();
   }
 
   @Bean
