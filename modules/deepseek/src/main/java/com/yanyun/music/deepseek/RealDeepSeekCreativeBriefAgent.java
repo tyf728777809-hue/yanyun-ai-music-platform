@@ -12,6 +12,7 @@ import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
 import com.yanyun.music.creativeagent.CreativeDomainDecision;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -75,6 +76,14 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
                 && modelDecision == CreativeDomainDecision.PASS
             ? CreativeDomainDecision.REWRITE_TO_YANYUN
             : modelDecision;
+    List<String> yanyunReferences =
+        DeepSeekAgentJson.stringList(
+            root.path("yanyun_references").isMissingNode()
+                ? root.path("yanyunReferences")
+                : root.path("yanyun_references"));
+    if (yanyunReferences.isEmpty()) {
+      yanyunReferences = fallbackYanyunReferences(request);
+    }
     return new CreativeBriefResult(
         decision,
         DeepSeekAgentJson.firstNonBlank(
@@ -93,10 +102,7 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         DeepSeekAgentJson.firstNonBlank(
             DeepSeekAgentJson.text(root, "music_direction", "musicDirection"),
             request.musicStyle()),
-        DeepSeekAgentJson.stringList(
-            root.path("yanyun_references").isMissingNode()
-                ? root.path("yanyunReferences")
-                : root.path("yanyun_references")),
+        yanyunReferences,
         DeepSeekAgentJson.stringList(root.path("constraints")),
         DeepSeekAgentJson.stringList(
             root.path("risk_notes").isMissingNode()
@@ -108,6 +114,39 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
             root.path("freeform_opportunities").isMissingNode()
                 ? root.path("freeformOpportunities")
                 : root.path("freeform_opportunities")));
+  }
+
+  private List<String> fallbackYanyunReferences(CreativeBriefRequest request) {
+    List<String> explicit = request.yanyunReferences();
+    if (explicit != null && !explicit.isEmpty()) {
+      return explicit;
+    }
+    String normalized =
+        (nullToEmpty(request.userInput())
+                + " "
+                + nullToEmpty(request.currentLyrics())
+                + " "
+                + nullToEmpty(request.instruction())
+                + " "
+                + nullToEmpty(request.requestedTitle()))
+            .toLowerCase(Locale.ROOT);
+    List<String> references = new ArrayList<>();
+    if (normalized.contains("雁门")) {
+      references.add("雁门关外风雪");
+    }
+    if (normalized.contains("清河")) {
+      references.add("清河江湖旧事");
+    }
+    if (normalized.contains("十六声") || normalized.contains("燕云")) {
+      references.add("燕云十六声玩家故事");
+    }
+    if (normalized.contains("江湖") || normalized.contains("侠")) {
+      references.add("江湖游侠心境");
+    }
+    if (references.isEmpty()) {
+      references.add("燕云十六声创作域");
+    }
+    return references.stream().distinct().limit(4).toList();
   }
 
   private CreativeDomainDecision deterministicDecision(CreativeBriefRequest request) {

@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 public final class DeepSeekJsonChatClient {
 
+  private static final int CONTENT_SEMANTIC_ATTEMPTS = 3;
   private static final Pattern BEARER_TOKEN_PATTERN =
       Pattern.compile("Bearer\\s+[A-Za-z0-9._~+/=-]+", Pattern.CASE_INSENSITIVE);
   private static final Pattern API_KEY_PATTERN =
@@ -49,20 +50,22 @@ public final class DeepSeekJsonChatClient {
   public JsonNode completeJson(
       String systemPrompt, String userPrompt, BigDecimal temperature, int responseMaxTokens) {
     ensureConfigured();
-    HttpRequest httpRequest =
-        HttpRequest.newBuilder(chatCompletionsUri())
-            .timeout(requestTimeout())
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/json")
-            .header("Authorization", "Bearer " + properties.getApiKey())
-            .POST(
-                HttpRequest.BodyPublishers.ofByteArray(
-                    writeJson(
-                        requestBody(systemPrompt, userPrompt, temperature, responseMaxTokens))))
-            .build();
-    JsonNode root = sendWithRetry(httpRequest);
-    String content = firstChoiceContent(root);
-    return parseContentJson(content);
+    RuntimeException lastFailure = null;
+    for (int attempt = 1; attempt <= CONTENT_SEMANTIC_ATTEMPTS; attempt++) {
+      try {
+        HttpRequest httpRequest =
+            chatRequest(systemPrompt, userPrompt, temperature, responseMaxTokens);
+        JsonNode root = sendWithRetry(httpRequest);
+        String content = firstChoiceContent(root);
+        return parseContentJson(content);
+      } catch (RuntimeException exception) {
+        if (!isRetryableContentFailure(exception) || attempt == CONTENT_SEMANTIC_ATTEMPTS) {
+          throw exception;
+        }
+        lastFailure = exception;
+      }
+    }
+    throw lastFailure == null ? new IllegalStateException("DeepSeek request failed") : lastFailure;
   }
 
   JsonNode parseContentJson(String content) {
@@ -88,6 +91,19 @@ public final class DeepSeekJsonChatClient {
         "max_tokens",
         responseMaxTokens <= 0 ? properties.getResponseMaxTokens() : responseMaxTokens);
     return body;
+  }
+
+  private HttpRequest chatRequest(
+      String systemPrompt, String userPrompt, BigDecimal temperature, int responseMaxTokens) {
+    return HttpRequest.newBuilder(chatCompletionsUri())
+        .timeout(requestTimeout())
+        .header("Accept", "application/json")
+        .header("Content-Type", "application/json")
+        .header("Authorization", "Bearer " + properties.getApiKey())
+        .POST(
+            HttpRequest.BodyPublishers.ofByteArray(
+                writeJson(requestBody(systemPrompt, userPrompt, temperature, responseMaxTokens))))
+        .build();
   }
 
   private JsonNode sendWithRetry(HttpRequest request) {
@@ -147,6 +163,11 @@ public final class DeepSeekJsonChatClient {
       throw new IllegalStateException("DeepSeek response content is empty");
     }
     return content;
+  }
+
+  private boolean isRetryableContentFailure(RuntimeException exception) {
+    String message = exception.getMessage();
+    return message != null && message.startsWith("DeepSeek response content");
   }
 
   private void ensureConfigured() {

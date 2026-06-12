@@ -78,6 +78,58 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
+  void creativeBriefAddsFallbackYanyunReferencesWhenModelLeavesThemEmpty() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "domain_decision",
+                            "PASS",
+                            "creative_intent",
+                            "玩家想写雁门风雪里的江湖归来。",
+                            "theme",
+                            "雁门埋刀",
+                            "mood_tags",
+                            List.of("苍凉", "释然"),
+                            "narrative_viewpoint",
+                            "player-facing",
+                            "music_direction",
+                            "cinematic Chinese folk ballad",
+                            "yanyun_references",
+                            List.of(),
+                            "constraints",
+                            List.of("must remain Yanyun-related"),
+                            "risk_notes",
+                            List.of(),
+                            "freeform_opportunities",
+                            List.of()))));
+    RealDeepSeekCreativeBriefAgent agent =
+        new RealDeepSeekCreativeBriefAgent(client(), new ArrayList<AgentRunRecord>()::add);
+
+    CreativeBriefResult result =
+        agent.generate(
+            new CreativeBriefRequest(
+                "user-1",
+                "work-1",
+                "INSPIRATION",
+                "我是燕云十六声玩家，想写一首雁门风雪里无名游侠埋刀归来的歌。",
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of()));
+
+    assertTrue(result.yanyunReferences().contains("雁门关外风雪"));
+    assertTrue(result.yanyunReferences().contains("燕云十六声玩家故事"));
+    assertTrue(result.yanyunReferences().contains("江湖游侠心境"));
+  }
+
+  @Test
   void musicPromptSanitizesRealSingerReferencesFromModelOutput() throws IOException {
     server =
         startServer(
@@ -141,6 +193,46 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
+  void musicPromptRetriesOnceWhenDeepSeekReturnsEmptyContent() throws IOException {
+    AtomicInteger requestCount = new AtomicInteger();
+    server =
+        startServer(
+            exchange -> {
+              if (requestCount.incrementAndGet() == 1) {
+                respondJson(exchange, 200, chatResponseContent(""));
+                return;
+              }
+              respondJson(
+                  exchange,
+                  200,
+                  chatResponse(
+                      Map.of(
+                          "title",
+                          "燕云行",
+                          "lyrics_with_structure_tags",
+                          "[Verse]\\n燕云路远",
+                          "style_prompt",
+                          "cinematic Chinese folk ballad with warm female vocal",
+                          "exclude_prompt",
+                          "no vocal clone",
+                          "provider_options",
+                          Map.of("provider_profile", "SUNO"))));
+            });
+    RealDeepSeekMusicPromptAgent agent =
+        new RealDeepSeekMusicPromptAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    MusicPromptResult result =
+        agent.generate(
+            new MusicPromptRequest(
+                "work-1", "燕云行", "summary", "[Verse]\n燕云路远", "国风民谣", null, "SUNO"));
+
+    assertEquals(2, requestCount.get());
+    assertEquals("燕云行", result.title());
+    assertTrue(result.musicPrompt().contains("Chinese folk ballad"));
+  }
+
+  @Test
   void jsonChatClientExtractsFirstJsonObjectFromWrappedContent() {
     JsonNode root =
         new DeepSeekJsonChatClient(
@@ -153,7 +245,7 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void coverPromptAllowsTitleTypography() throws IOException {
+  void coverPromptForcesNoTextEvenWhenModelSuggestsTitleTypography() throws IOException {
     server =
         startServer(
             exchange ->
@@ -183,8 +275,11 @@ class RealDeepSeekCreativeAgentsTest {
             new CoverPromptRequest(
                 "work-1", "燕云行", "summary", "lyrics", "style", "seed", 1920, 1080));
 
-    assertTrue(result.visualPrompt().contains("title typography"));
-    assertTrue(result.textPrompt().contains("song title"));
+    assertFalse(result.visualPrompt().contains("with clear Chinese title typography"));
+    assertTrue(result.visualPrompt().contains("No text in the image"));
+    assertTrue(result.negativePrompt().contains("Chinese characters"));
+    assertEquals("NO_TEXT_IN_IMAGE", result.textPrompt());
+    assertEquals("NO_TEXT_IN_IMAGE", result.providerOptions().get("text_policy"));
     assertEquals(1920, result.width());
     assertEquals(1080, result.height());
   }
@@ -268,7 +363,7 @@ class RealDeepSeekCreativeAgentsTest {
                 "work-1",
                 QualityGate.MUSIC,
                 "燕云行",
-                "lyrics",
+                "燕云路远，十六州风雪未歇",
                 "SUNO",
                 null,
                 null,
@@ -286,8 +381,60 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void qualityAgentLocalSafetyAllowsCoverTitleTypographyWithNegativeConstraints()
-      throws IOException {
+  void qualityAgentLocalSafetyRejectsGenericLyricsWithoutYanyunAnchor() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "LYRICS",
+                            "decision",
+                            "PASS",
+                            "score",
+                            92,
+                            "reasons",
+                            List.of(),
+                            "recommended_action",
+                            "PASS",
+                            "retryable",
+                            false))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.LYRICS,
+                "江湖月",
+                "[Verse]\n江湖夜雨十年灯\n孤舟一叶过长风",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "song_summary", "一个游侠在雨夜告别旧梦。",
+                    "music_prompt", "cinematic Chinese folk ballad",
+                    "cover_prompt_seed", "moonlit river and lone boat")));
+
+    assertEquals(QualityDecision.REWRITE, result.decision());
+    assertTrue(result.reasons().contains("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。"));
+  }
+
+  @Test
+  void qualityAgentLocalSafetyRejectsCoverTitleTypographyUntilOcrGateExists() throws IOException {
     server =
         startServer(
             exchange ->
@@ -341,8 +488,179 @@ class RealDeepSeekCreativeAgentsTest {
                     "typography_requirements",
                     List.of("clear readable Chinese title", "no fake singer credits"))));
 
+    assertEquals(QualityDecision.REWRITE, result.decision());
+    assertTrue(result.retryable());
+  }
+
+  @Test
+  void qualityAgentLocalSafetyAllowsNoTextCoverPolicyWhenModelFlagsItAsRewrite()
+      throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "COVER",
+                            "decision",
+                            "REWRITE",
+                            "score",
+                            65,
+                            "reasons",
+                            List.of(
+                                "Cover prompt explicitly disallows any text, signatures, watermarks, or fake artist/label info, matching guidelines."),
+                            "recommended_action",
+                            "REWRITE_AGENT_OUTPUT",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.COVER,
+                "燕云行",
+                "lyrics",
+                null,
+                null,
+                null,
+                null,
+                1920,
+                1080,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "visual_prompt",
+                    "premium 16:9 album cover, no text in the image, no Chinese characters",
+                    "negative_prompt",
+                    "low quality, text, Chinese characters, fake singer name",
+                    "text_policy",
+                    "NO_TEXT_IN_IMAGE")));
+
     assertEquals(QualityDecision.PASS, result.decision());
     assertEquals(80, result.score());
+    assertFalse(result.retryable());
+  }
+
+  @Test
+  void qualityAgentLocalSafetyAllowsChineseNoTextCoverPolicyReason() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "COVER",
+                            "decision",
+                            "REWRITE",
+                            "score",
+                            65,
+                            "reasons",
+                            List.of("封面 prompt 明确禁止任何文字、歌手名、版权信息，无违规元素；画面构图预留了后期文字叠加空间，符合排版设计要求"),
+                            "recommended_action",
+                            "REWRITE_AGENT_OUTPUT",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.COVER,
+                "燕云行",
+                "lyrics",
+                null,
+                null,
+                null,
+                null,
+                1920,
+                1080,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "visual_prompt",
+                    "premium 16:9 album cover, no text in the image, no Chinese characters",
+                    "negative_prompt",
+                    "low quality, text, Chinese characters, fake singer name",
+                    "text_policy",
+                    "NO_TEXT_IN_IMAGE")));
+
+    assertEquals(QualityDecision.PASS, result.decision());
+    assertFalse(result.retryable());
+  }
+
+  @Test
+  void qualityAgentLocalSafetyAllowsNoTextCoverPolicyWithNonStandardModelDecision()
+      throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "COVER",
+                            "decision",
+                            "REWRITE_AGENT_OUTPUT",
+                            "score",
+                            65,
+                            "reasons",
+                            List.of("封面prompt禁止文字，未要求假歌手/版权/水印等违规内容"),
+                            "recommended_action",
+                            "REWRITE_AGENT_OUTPUT",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.COVER,
+                "燕云行",
+                "lyrics",
+                null,
+                null,
+                null,
+                null,
+                1920,
+                1080,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "visual_prompt",
+                    "premium 16:9 album cover, no text in the image, no Chinese characters",
+                    "negative_prompt",
+                    "low quality, text, Chinese characters, fake singer name",
+                    "text_policy",
+                    "NO_TEXT_IN_IMAGE")));
+
+    assertEquals(QualityDecision.PASS, result.decision());
     assertFalse(result.retryable());
   }
 

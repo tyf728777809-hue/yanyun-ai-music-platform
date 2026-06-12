@@ -13,6 +13,7 @@ import com.yanyun.music.creativeagent.QualityEvaluationRequest;
 import com.yanyun.music.creativeagent.QualityEvaluationResult;
 import com.yanyun.music.creativeagent.QualityGate;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -60,12 +61,16 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
   }
 
   private QualityEvaluationResult parse(JsonNode root, QualityEvaluationRequest request) {
-    java.util.List<String> reasons = DeepSeekAgentJson.stringList(root.path("reasons"));
-    QualityDecision decision =
-        localSafetyDecision(
-            request,
-            DeepSeekAgentJson.qualityDecision(DeepSeekAgentJson.text(root, "decision")),
-            reasons);
+    java.util.List<String> reasons =
+        new ArrayList<>(DeepSeekAgentJson.stringList(root.path("reasons")));
+    QualityDecision modelDecision =
+        DeepSeekAgentJson.qualityDecision(DeepSeekAgentJson.text(root, "decision"));
+    QualityDecision decision = localSafetyDecision(request, modelDecision, reasons);
+    if (decision != modelDecision
+        && reasons.isEmpty()
+        && (request.gate() == QualityGate.LYRICS || request.gate() == QualityGate.MUSIC)) {
+      reasons.add("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。");
+    }
     int score = root.path("score").asInt(decision == QualityDecision.PASS ? 90 : 60);
     if (decision == QualityDecision.PASS && score < 80) {
       score = 80;
@@ -109,6 +114,10 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         && (joined.contains("高达") || joined.contains("gundam") || joined.contains("原神"))) {
       return QualityDecision.REWRITE;
     }
+    if ((request.gate() == QualityGate.LYRICS || request.gate() == QualityGate.MUSIC)
+        && !containsYanyunContentAnchor(request)) {
+      return QualityDecision.REWRITE;
+    }
     if (request.gate() == QualityGate.MUSIC
         && (joined.contains("周杰伦") || joined.contains("jay chou") || joined.contains("仿唱"))) {
       return QualityDecision.REWRITE;
@@ -117,50 +126,47 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       if (containsUnsafeCoverInstruction(request.context())) {
         return QualityDecision.BLOCK;
       }
-      if (modelDecision == QualityDecision.REWRITE
-          && isSafeTitleTypographyCover(request)
-          && reasonsOnlyDescribeSafeTitleTypography(modelReasons)) {
+      if (containsPositiveCoverTextInstruction(request.context())) {
+        return QualityDecision.REWRITE;
+      }
+      if (isNoTextCoverPrompt(request.context()) && reasonsOnlyDescribeNoTextPolicy(modelReasons)) {
         return QualityDecision.PASS;
       }
     }
     return modelDecision;
   }
 
-  private boolean isSafeTitleTypographyCover(QualityEvaluationRequest request) {
-    if (!isSixteenByNine(request.coverWidth(), request.coverHeight())) {
-      return false;
-    }
-    String context = normalize(request.context());
-    return context.contains("song title")
-        || context.contains("title typography")
-        || context.contains("main cover title")
-        || context.contains("歌名")
-        || context.contains("主标题")
-        || context.contains("标题字");
+  private boolean containsYanyunContentAnchor(QualityEvaluationRequest request) {
+    String generatedText =
+        normalize(
+            nullToEmpty(request.songTitle())
+                + "\n"
+                + nullToEmpty(request.lyricsText())
+                + "\n"
+                + contextValue(request, "song_summary")
+                + "\n"
+                + contextValue(request, "music_prompt")
+                + "\n"
+                + contextValue(request, "cover_prompt_seed"));
+    return generatedText.contains("燕云")
+        || generatedText.contains("十六声")
+        || generatedText.contains("清河")
+        || generatedText.contains("开封")
+        || generatedText.contains("雁门")
+        || generatedText.contains("神仙渡")
+        || generatedText.contains("不羡仙")
+        || generatedText.contains("寒香寻")
+        || generatedText.contains("寻声")
+        || generatedText.contains("奇术")
+        || generatedText.contains("偷师")
+        || generatedText.contains("百家武学")
+        || generatedText.contains("十六州")
+        || generatedText.contains("更鼓");
   }
 
-  private boolean reasonsOnlyDescribeSafeTitleTypography(java.util.List<String> reasons) {
-    if (reasons == null || reasons.isEmpty()) {
-      return true;
-    }
-    String joined = normalize(reasons);
-    for (String segment : joined.split("[\\n;；。.]")) {
-      if (isNegativeConstraintSegment(segment)) {
-        continue;
-      }
-      if (segment.contains("low quality")
-          || segment.contains("unclear")
-          || segment.contains("not readable")
-          || segment.contains("unreadable")
-          || segment.contains("garbled")
-          || segment.contains("乱码")
-          || segment.contains("低质")
-          || segment.contains("不清晰")
-          || segment.contains("不可读")) {
-        return false;
-      }
-    }
-    return !containsUnsafeCoverInstructionText(joined);
+  private String contextValue(QualityEvaluationRequest request, String key) {
+    Object value = request.context().get(key);
+    return value == null ? "" : value.toString();
   }
 
   private boolean containsUnsafeCoverInstruction(Map<String, Object> context) {
@@ -174,6 +180,73 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
     }
     return false;
+  }
+
+  private boolean containsPositiveCoverTextInstruction(Map<String, Object> context) {
+    for (Map.Entry<String, Object> entry : context.entrySet()) {
+      String key = normalize(entry.getKey());
+      if (isNegativePromptField(key) || key.contains("text_policy")) {
+        continue;
+      }
+      String normalized = normalize(entry.getValue());
+      for (String segment : normalized.split("[\\n;；。.]")) {
+        if (isNegativeConstraintSegment(segment)) {
+          continue;
+        }
+        if (segment.contains("song title")
+            || segment.contains("title typography")
+            || segment.contains("main cover title")
+            || segment.contains("calligraphy lettering")
+            || segment.contains("text on cover")
+            || segment.contains("歌名")
+            || segment.contains("主标题")
+            || segment.contains("标题字")
+            || segment.contains("封面文字")
+            || segment.contains("书法字")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean isNoTextCoverPrompt(Map<String, Object> context) {
+    String joined = normalize(context);
+    return joined.contains("no_text_in_image")
+        || joined.contains("no text")
+        || joined.contains("no chinese characters")
+        || joined.contains("no song title")
+        || joined.contains("无文字")
+        || joined.contains("禁止图片内文字");
+  }
+
+  private boolean reasonsOnlyDescribeNoTextPolicy(java.util.List<String> reasons) {
+    if (reasons == null || reasons.isEmpty()) {
+      return true;
+    }
+    String joined = normalize(reasons);
+    if (joined.contains("low quality")
+        || joined.contains("cheap")
+        || joined.contains("unrelated")
+        || joined.contains("not yanyun")
+        || joined.contains("copyright risk")
+        || joined.contains("低质")
+        || joined.contains("廉价")
+        || joined.contains("跑题")
+        || joined.contains("无关")
+        || joined.contains("版权风险")) {
+      return false;
+    }
+    return joined.contains("no text")
+        || joined.contains("disallow")
+        || joined.contains("without text")
+        || joined.contains("matching guidelines")
+        || joined.contains("符合排版")
+        || joined.contains("禁止文字")
+        || (joined.contains("禁止") && joined.contains("文字"))
+        || (joined.contains("不包含") && joined.contains("文字"))
+        || joined.contains("无文字")
+        || joined.contains("符合规范");
   }
 
   private boolean containsUnsafeCoverInstructionText(String value) {
@@ -217,14 +290,6 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         || segment.matches(".*\\bui\\b.*")
         || segment.contains("排行榜")
         || segment.contains("二维码");
-  }
-
-  private boolean isSixteenByNine(Integer width, Integer height) {
-    if (width == null || height == null || width <= 0 || height <= 0) {
-      return false;
-    }
-    double actual = (double) width / (double) height;
-    return Math.abs(actual - (16.0 / 9.0)) < 0.01;
   }
 
   private boolean isNegativePromptField(String key) {

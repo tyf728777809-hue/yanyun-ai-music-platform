@@ -64,63 +64,54 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
             root.path("provider_options").isMissingNode()
                 ? root.path("providerOptions")
                 : root.path("provider_options"));
+    providerOptions = withNoTextPolicy(providerOptions);
     String visualPrompt =
-        DeepSeekAgentJson.firstNonBlank(
-            DeepSeekAgentJson.text(root, "visual_prompt", "visualPrompt"),
-            request.coverPromptSeed());
-    String textPrompt =
-        DeepSeekAgentJson.firstNonBlank(
-            DeepSeekAgentJson.text(root, "text_prompt", "textPrompt"),
-            "Use only the song title as premium cover title typography.");
+        noTextVisualPrompt(
+            DeepSeekAgentJson.firstNonBlank(
+                DeepSeekAgentJson.text(root, "visual_prompt", "visualPrompt"),
+                DeepSeekAgentJson.firstNonBlank(
+                    request.coverPromptSeed(), defaultVisualPrompt(request))));
     return new CoverPromptResult(
         visualPrompt,
-        DeepSeekAgentJson.firstNonBlank(
-            DeepSeekAgentJson.text(root, "negative_prompt", "negativePrompt"),
-            "low quality, fake singer name, fake label, fake copyright, garbled text, UI, watermark"),
+        noTextNegativePrompt(
+            DeepSeekAgentJson.firstNonBlank(
+                DeepSeekAgentJson.text(root, "negative_prompt", "negativePrompt"),
+                "low quality, fake singer name, fake label, fake copyright, garbled text, UI, watermark")),
         intValue(root, "width", request.width() == null ? 1920 : request.width()),
         intValue(root, "height", request.height() == null ? 1080 : request.height()),
         listOrDefault(
             root.path("style_constraints").isMissingNode()
                 ? root.path("styleConstraints")
                 : root.path("style_constraints"),
-            List.of("16:9 premium album cover", "high-quality title typography")),
-        providerOptions.isEmpty()
-            ? Map.of(
-                "agent",
-                AGENT_NAME,
-                "agent_version",
-                AGENT_VERSION,
-                "prompt_template_key",
-                TEMPLATE_KEY,
-                "prompt_template_version",
-                TEMPLATE_VERSION)
-            : providerOptions,
-        textPrompt,
+            List.of("16:9 premium album cover", "no text in image")),
+        providerOptions,
+        "NO_TEXT_IN_IMAGE",
         listOrDefault(
             root.path("typography_requirements").isMissingNode()
                 ? root.path("typographyRequirements")
                 : root.path("typography_requirements"),
-            List.of("clear readable Chinese title", "no fake singer credits")));
+            List.of("do not render title typography", "no Chinese characters in image")));
   }
 
   private String systemPrompt() {
     return """
         你是燕云十六声 AI 作曲平台的顶级专辑封面视觉 Agent。
-        你的任务是为 Image2 生成完整成品专辑封面 prompt，可以包含高质量标题文字。
+        你的任务是为 Image2 生成完整成品专辑封面 prompt。
 
         规则：
-        1. 允许直接生成歌名主标题，文字必须高级、清晰、像正式音乐发行封面。
-        2. 不允许假歌手名、假版权、假厂牌、乱码、低质小字、UI、水印、排行榜样式。
+        1. 当前版本禁止 Image2 在封面图内生成任何文字，包含中文歌名、英文标题、书法字、Logo、署名、小字、厂牌或水印。
+        2. 歌名由产品 UI 和视频外层展示，不交给图片模型生成，避免错字、错标题和假署名。
         3. 封面必须服务歌曲情绪和燕云十六声气质，但不得编造具体官方剧情。
-        4. 当前默认 16:9，用作视频封面和音乐作品底板。
+        4. 当前默认 16:9，用作视频封面和音乐作品底板；应预留干净留白，方便产品层后续叠加标题。
         5. 生成 prompt 需要完整可执行，但不要长篇解释：visual_prompt 控制在约 1200 字符内，negative_prompt 控制在约 400 字符内。
         6. style_constraints 和 typography_requirements 各不超过 5 条。
-        7. 只输出 JSON object。
+        7. text_prompt 必须输出 "NO_TEXT_IN_IMAGE"。
+        8. 只输出 JSON object。
 
         输出字段：
         {
-          "visual_prompt": "英文 Image2 prompt，描述画面、构图、光线、色彩、专辑感和文字布局",
-          "text_prompt": "文字策略，只允许歌名主标题和极少量非署名装饰文字",
+          "visual_prompt": "英文 Image2 prompt，描述画面、构图、光线、色彩、专辑感、留白和无文字要求",
+          "text_prompt": "NO_TEXT_IN_IMAGE",
           "negative_prompt": "低质、假署名、假版权、乱码、UI、水印等负向约束",
           "width": 1920,
           "height": 1080,
@@ -143,6 +134,50 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
         fieldLine("cover_prompt_seed", request.coverPromptSeed(), 1200),
         "width=" + (request.width() == null ? "" : request.width()),
         "height=" + (request.height() == null ? "" : request.height()));
+  }
+
+  private String defaultVisualPrompt(CoverPromptRequest request) {
+    return "Premium cinematic 16:9 album cover for a Yanyun-inspired original song, "
+        + "restrained composition, strong visual focus, atmospheric Chinese frontier mood, "
+        + "clean negative space for product-layer title overlay";
+  }
+
+  private String noTextVisualPrompt(String visualPrompt) {
+    String prompt = trimToLength(visualPrompt, 1100);
+    prompt =
+        prompt
+            .replaceAll(
+                "(?i)with\\s+clear\\s+(chinese\\s+)?title\\s+typography",
+                "with clean negative space")
+            .replaceAll(
+                "(?i)(song\\s+title|main\\s+cover\\s+title|title\\s+typography)",
+                "clean negative space")
+            .replaceAll("(?i)(calligraphy\\s+lettering|lettering|typographic)", "cinematic")
+            .replaceAll("(歌名|主标题|标题字|封面文字|书法字)", "干净留白");
+    return prompt
+        + ". No text in the image, no Chinese characters, no English letters, no song title, "
+        + "no title typography, no calligraphy lettering, no logo, no watermark; leave title "
+        + "and credits to the product UI overlay.";
+  }
+
+  private String noTextNegativePrompt(String negativePrompt) {
+    String prompt = trimToLength(negativePrompt, 300);
+    return prompt
+        + ", text, Chinese characters, English letters, song title, title typography, "
+        + "calligraphy lettering, logo, watermark, fake singer name, fake label, fake copyright";
+  }
+
+  private Map<String, Object> withNoTextPolicy(Map<String, Object> providerOptions) {
+    java.util.LinkedHashMap<String, Object> merged = new java.util.LinkedHashMap<>();
+    if (providerOptions != null) {
+      merged.putAll(providerOptions);
+    }
+    merged.putIfAbsent("agent", AGENT_NAME);
+    merged.putIfAbsent("agent_version", AGENT_VERSION);
+    merged.putIfAbsent("prompt_template_key", TEMPLATE_KEY);
+    merged.putIfAbsent("prompt_template_version", TEMPLATE_VERSION);
+    merged.put("text_policy", "NO_TEXT_IN_IMAGE");
+    return merged;
   }
 
   private String fieldLine(String fieldName, String value, int maxLength) {
