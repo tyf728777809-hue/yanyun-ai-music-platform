@@ -153,6 +153,44 @@ class WorkStateMachineTest {
   }
 
   @Test
+  void providerAccountLimitNeverAllowsMusicRetryEvenIfMarkedRetryable() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.PROVIDER_ACCOUNT_LIMIT,
+            true,
+            2);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
+    assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
+  void lyricsQualityFailureReturnsToEditWithoutMusicRetry() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.LYRICS_QUALITY_FAILED,
+            true,
+            2);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertFalse(actions.contains(AvailableAction.CONTACT_SUPPORT));
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
   void retryMusicRejectsExhaustedMusicFailure() {
     WorkSnapshot work =
         new WorkSnapshot(

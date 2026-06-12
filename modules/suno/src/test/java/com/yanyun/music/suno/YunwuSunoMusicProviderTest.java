@@ -119,6 +119,18 @@ class YunwuSunoMusicProviderTest {
     assertEquals("PROVIDER_AUTH_FAILED", result.failureCode());
   }
 
+  @Test
+  void mapsHttpFailureBodyAccountLimitToProviderAccountLimit() throws Exception {
+    server = startAccountLimitServer();
+    YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+    MusicGenerationResult result =
+        provider.submit(new MusicGenerationRequest("work-1", "lyrics", "prompt", "AUTO", Map.of()));
+
+    assertEquals(MusicGenerationStatus.FAILED, result.status());
+    assertEquals("PROVIDER_ACCOUNT_LIMIT", result.failureCode());
+  }
+
   private HttpServer startSuccessServer(String audioIdFieldName, String audioId)
       throws IOException {
     HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -188,6 +200,28 @@ class YunwuSunoMusicProviderTest {
                   .getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "application/json");
           exchange.sendResponseHeaders(403, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
+  private HttpServer startAccountLimitServer() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/suno/submit/music",
+        exchange -> {
+          byte[] body =
+              """
+              {
+                "code": 402,
+                "message": "当前有0任务未扣积分，剩下的积分已不够创作"
+              }
+              """
+                  .getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "application/json");
+          exchange.sendResponseHeaders(402, body.length);
           exchange.getResponseBody().write(body);
           exchange.close();
         });

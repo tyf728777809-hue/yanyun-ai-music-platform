@@ -114,7 +114,7 @@ public final class WorkStateMachine {
     }
 
     switch (failureCode) {
-      case LYRICS_GENERATION_FAILED, LYRICS_PRECHECK_FAILED -> {
+      case LYRICS_GENERATION_FAILED, LYRICS_PRECHECK_FAILED, LYRICS_QUALITY_FAILED -> {
         // No retry endpoint exists in v0.1; users should return to edit/create again.
       }
       case MUSIC_GENERATION_FAILED, MUSIC_QUALITY_FAILED, PROVIDER_TIMEOUT, RATE_LIMITED -> {
@@ -129,7 +129,11 @@ public final class WorkStateMachine {
       case USER_INPUT_BLOCKED -> {
         // The common RETURN_TO_EDIT action is appended below.
       }
-      case PACKAGE_BLOCKED, PROVIDER_AUTH_FAILED, QUOTA_LOCK_FAILED, UNKNOWN_ERROR ->
+      case PACKAGE_BLOCKED,
+          PROVIDER_AUTH_FAILED,
+          PROVIDER_ACCOUNT_LIMIT,
+          QUOTA_LOCK_FAILED,
+          UNKNOWN_ERROR ->
           actions.add(AvailableAction.CONTACT_SUPPORT);
     }
 

@@ -179,7 +179,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
       if (response.statusCode() < HttpURLConnection.HTTP_OK
           || response.statusCode() >= HttpURLConnection.HTTP_MULT_CHOICE) {
         throw new YunwuSunoProviderException(
-            DreamMakerFailureMapper.fromHttpStatus(response.statusCode()),
+            responseFailureCode(response.statusCode(), response.body()),
             responseFailureMessage(response.statusCode(), response.body()));
       }
       return objectMapper.readTree(response.body());
@@ -211,6 +211,20 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
     try {
       JsonNode root = objectMapper.readTree(body);
       return DreamMakerFailureMapper.sanitizedMessage("Yunwu Suno", message(root), fallback);
+    } catch (JsonProcessingException exception) {
+      return fallback;
+    }
+  }
+
+  private String responseFailureCode(int statusCode, String body) {
+    String fallback = DreamMakerFailureMapper.fromHttpStatus(statusCode);
+    if (body == null || body.isBlank()) {
+      return fallback;
+    }
+    try {
+      JsonNode root = objectMapper.readTree(body);
+      String mapped = DreamMakerFailureMapper.fromProviderError(code(root), message(root));
+      return DreamMakerFailureMapper.MUSIC_GENERATION_FAILED.equals(mapped) ? fallback : mapped;
     } catch (JsonProcessingException exception) {
       return fallback;
     }

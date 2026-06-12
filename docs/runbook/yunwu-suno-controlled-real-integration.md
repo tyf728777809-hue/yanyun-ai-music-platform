@@ -110,6 +110,7 @@ scripts/smoke/yunwu-suno-timestamped-lyrics-smoke.sh
 ## 失败处理
 
 - HTTP 401 / 403 或权限错误会映射为 `PROVIDER_AUTH_FAILED`，用户侧不可重试，需检查 key、账号权限、模型开通或供应商侧限制。
+- 供应商账号积分、余额、点数不足，或并发任务数到达账号上限，会映射为 `PROVIDER_ACCOUNT_LIMIT`，用户侧不可重试；应先充值、等待供应商队列释放，或更换可用账号后再测。
 - HTTP 429 会映射为 `RATE_LIMITED`，停止继续触发新样本。
 - 超时会映射为 `PROVIDER_TIMEOUT`，可在剩余重试次数内重试。
 - 任何失败都只记录脱敏摘要，不记录完整 provider payload。

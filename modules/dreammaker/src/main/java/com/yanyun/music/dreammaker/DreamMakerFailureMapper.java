@@ -8,6 +8,7 @@ public final class DreamMakerFailureMapper {
   public static final String MUSIC_GENERATION_FAILED = "MUSIC_GENERATION_FAILED";
   public static final String MUSIC_QUALITY_FAILED = "MUSIC_QUALITY_FAILED";
   public static final String PROVIDER_AUTH_FAILED = "PROVIDER_AUTH_FAILED";
+  public static final String PROVIDER_ACCOUNT_LIMIT = "PROVIDER_ACCOUNT_LIMIT";
   public static final String PROVIDER_TIMEOUT = "PROVIDER_TIMEOUT";
   public static final String RATE_LIMITED = "RATE_LIMITED";
   private static final Pattern BEARER_TOKEN_PATTERN =
@@ -36,6 +37,9 @@ public final class DreamMakerFailureMapper {
     String normalized = normalize(message);
     if (code == 401 || code == 403 || isAuthFailure(normalized)) {
       return PROVIDER_AUTH_FAILED;
+    }
+    if (isProviderAccountLimit(normalized)) {
+      return PROVIDER_ACCOUNT_LIMIT;
     }
     if (normalized.contains("timeout") || normalized.contains("timed out")) {
       return PROVIDER_TIMEOUT;
@@ -82,5 +86,19 @@ public final class DreamMakerFailureMapper {
         || normalized.contains("signature")
         || normalized.contains("unsupported model")
         || normalized.contains("app not found");
+  }
+
+  private static boolean isProviderAccountLimit(String normalized) {
+    return normalized.contains("积分")
+        || normalized.contains("余额")
+        || normalized.contains("点数")
+        || normalized.contains("信用")
+        || normalized.contains("额度不足")
+        || normalized.contains("并发")
+        || normalized.contains("credit")
+        || normalized.contains("insufficient funds")
+        || normalized.contains("not enough")
+        || normalized.contains("account limit")
+        || normalized.contains("concurrent");
   }
 }

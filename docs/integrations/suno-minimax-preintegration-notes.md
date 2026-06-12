@@ -155,6 +155,7 @@ Keep mapping conservative until real error-code samples are available:
 | Submit response `code != 0` | `MUSIC_GENERATION_FAILED` initially; refine after concrete codes | Depends on provider error |
 | Poll response `data.status = failed` | `MUSIC_GENERATION_FAILED` or `MUSIC_QUALITY_FAILED` based on provider failure message | Yes, while retry count remains |
 | Auth, signature, project config, unsupported model, 401 / 403 | `PROVIDER_AUTH_FAILED` | No user retry; contact support / fix provider config |
+| Provider account credit, balance, point, or concurrent task limit | `PROVIDER_ACCOUNT_LIMIT` | No user retry; contact support / recharge / wait for provider account capacity |
 
 ## Required Real Provider Details
 
