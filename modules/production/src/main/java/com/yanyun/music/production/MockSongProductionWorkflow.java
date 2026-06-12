@@ -203,12 +203,13 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
     if (musicPromptQuality.decision() != QualityDecision.PASS) {
+      FailureCode failureCode = musicPromptQualityFailureCode(musicPromptQuality);
       return fail(
           workId,
           jobId,
-          FailureCode.MUSIC_QUALITY_FAILED,
+          failureCode,
           qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality),
-          musicPromptQuality.retryable(),
+          failureCode == FailureCode.MUSIC_QUALITY_FAILED && musicPromptQuality.retryable(),
           input.userId(),
           lock.lockId());
     }
@@ -511,6 +512,25 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
               true;
           default -> false;
         };
+  }
+
+  private FailureCode musicPromptQualityFailureCode(QualityEvaluationResult quality) {
+    String joined =
+        (quality.reasons().toString()
+                + " "
+                + firstNonBlank(quality.recommendedAction(), "")
+                + " "
+                + quality.metadata())
+            .toLowerCase();
+    if ((joined.contains("歌词") || joined.contains("lyrics"))
+        && (joined.contains("燕云")
+            || joined.contains("十六声")
+            || joined.contains("泛古风")
+            || joined.contains("ip")
+            || joined.contains("yanyun"))) {
+      return FailureCode.LYRICS_QUALITY_FAILED;
+    }
+    return FailureCode.MUSIC_QUALITY_FAILED;
   }
 
   private GeneratedMediaAssets createMediaAssets(

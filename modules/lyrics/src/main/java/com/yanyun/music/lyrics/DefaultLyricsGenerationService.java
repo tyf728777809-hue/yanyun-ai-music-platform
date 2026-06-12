@@ -116,15 +116,16 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
-    QualityEvaluationResult quality = evaluateLyricsQuality(briefedRequest, response);
+    QualityEvaluationResult quality =
+        evaluateLyricsQuality(briefedRequest, response, creativeBrief);
     if (isLowQuality(response) || shouldRewrite(quality)) {
       LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
-      quality = evaluateLyricsQuality(rewriteRequest, response);
+      quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief);
     }
-    ensureLyricsQualityAllowed(quality);
-    return toResult(response, knowledge, prompt);
+    ensureLyricsQualityAllowed(response, quality);
+    return toResult(response, creativeBrief, knowledge, prompt);
   }
 
   private void ensureCreativeDomainAllowed(CreativeBriefResult creativeBrief) {
@@ -208,7 +209,9 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   }
 
   private QualityEvaluationResult evaluateLyricsQuality(
-      LyricsGenerationRequest request, DeepSeekLyricsResponse response) {
+      LyricsGenerationRequest request,
+      DeepSeekLyricsResponse response,
+      CreativeBriefResult creativeBrief) {
     return qualityEvaluationAgent.evaluate(
         new QualityEvaluationRequest(
             request.workId(),
@@ -226,13 +229,24 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             null,
             null,
             null,
-            Map.of(
-                "operation",
-                request.operation().name(),
-                "music_style",
-                firstNonBlank(request.musicStyle(), ""),
-                "risk_notes",
-                response.riskNotes())));
+            Map.ofEntries(
+                Map.entry("operation", request.operation().name()),
+                Map.entry("user_input", firstNonBlank(request.userInput(), "")),
+                Map.entry("instruction", firstNonBlank(request.instruction(), "")),
+                Map.entry("song_summary", firstNonBlank(response.songSummary(), "")),
+                Map.entry("music_prompt", firstNonBlank(response.musicPrompt(), "")),
+                Map.entry("cover_prompt_seed", firstNonBlank(response.coverPromptSeed(), "")),
+                Map.entry("music_style", firstNonBlank(request.musicStyle(), "")),
+                Map.entry(
+                    "creative_brief_theme",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.theme(), "")),
+                Map.entry(
+                    "creative_brief_yanyun_references",
+                    creativeBrief == null ? List.of() : creativeBrief.yanyunReferences()),
+                Map.entry(
+                    "creative_brief_constraints",
+                    creativeBrief == null ? List.of() : creativeBrief.constraints()),
+                Map.entry("risk_notes", response.riskNotes()))));
   }
 
   private boolean shouldRewrite(QualityEvaluationResult quality) {
@@ -240,14 +254,26 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         || quality.decision() == QualityDecision.RETRY;
   }
 
-  private void ensureLyricsQualityAllowed(QualityEvaluationResult quality) {
+  private void ensureLyricsQualityAllowed(
+      DeepSeekLyricsResponse response, QualityEvaluationResult quality) {
     if (quality.decision() == QualityDecision.BLOCK
-        || quality.decision() == QualityDecision.MANUAL_REVIEW) {
-      throw new IllegalArgumentException(
-          quality.reasons().isEmpty()
-              ? "Lyrics quality gate blocked the result"
-              : String.join("; ", quality.reasons()));
+        || quality.decision() == QualityDecision.MANUAL_REVIEW
+        || quality.decision() == QualityDecision.REWRITE
+        || quality.decision() == QualityDecision.RETRY
+        || isLowQuality(response)) {
+      throw new LyricsQualityException(lyricsQualityMessage(response, quality));
     }
+  }
+
+  private String lyricsQualityMessage(
+      DeepSeekLyricsResponse response, QualityEvaluationResult quality) {
+    if (!quality.reasons().isEmpty()) {
+      return String.join("; ", quality.reasons());
+    }
+    if (isLowQuality(response)) {
+      return "歌词质量分不足，请补充更明确的燕云十六声主题后重试。";
+    }
+    return "歌词不够贴合燕云十六声，请调整灵感后重试。";
   }
 
   private DeepSeekLyricsResponse generateWithDeepSeek(
@@ -342,7 +368,9 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         request.operation(),
         request.userInput(),
         request.currentLyrics(),
-        appendInstruction(request.instruction(), "Improve structure, imagery, and singability."),
+        appendInstruction(
+            request.instruction(),
+            "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion and music preference, but make the final lyrics clearly belong to Yanyun Sixteen Sounds. Add concrete Yanyun player-facing anchors such as Yanyun, Sixteen Sounds, Qinghe, Kaifeng, Yanmen, Xunsheng, Qishu, martial learning, or other suitable in-world cues when they fit naturally. Avoid generic wuxia phrasing."),
         request.requestedTitle(),
         request.musicStyle(),
         request.vocalPreference());
@@ -350,6 +378,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private LyricsGenerationResult toResult(
       DeepSeekLyricsResponse response,
+      CreativeBriefResult creativeBrief,
       KnowledgeRetrievalResult knowledge,
       PromptRenderResult prompt) {
     return new LyricsGenerationResult(
@@ -359,7 +388,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         response.musicPrompt(),
         response.coverPromptSeed(),
         response.riskNotes(),
-        knowledge.references().stream().map(KnowledgeReference::displayName).toList(),
+        yanyunReferences(creativeBrief, knowledge),
         knowledge.kbVersion(),
         Map.of(
             prompt.templateKey(),
@@ -367,6 +396,14 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             CREATIVE_BRIEF_TEMPLATE_KEY,
             CREATIVE_BRIEF_TEMPLATE_VERSION),
         response.qualityScore());
+  }
+
+  private List<String> yanyunReferences(
+      CreativeBriefResult creativeBrief, KnowledgeRetrievalResult knowledge) {
+    if (creativeBrief != null && !creativeBrief.yanyunReferences().isEmpty()) {
+      return creativeBrief.yanyunReferences();
+    }
+    return knowledge.references().stream().map(KnowledgeReference::displayName).toList();
   }
 
   private boolean isLowQuality(DeepSeekLyricsResponse response) {

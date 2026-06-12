@@ -2,6 +2,7 @@ package com.yanyun.music.api.error;
 
 import com.yanyun.music.api.idempotency.IdempotencyConflictException;
 import com.yanyun.music.lyrics.LyricsCreativeDomainException;
+import com.yanyun.music.lyrics.LyricsQualityException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -47,6 +48,13 @@ public class ApiExceptionHandler {
       LyricsCreativeDomainException exception, HttpServletRequest request) {
     return ResponseEntity.badRequest()
         .body(errorResponse("CREATIVE_DOMAIN_REJECTED", exception.getMessage(), request));
+  }
+
+  @ExceptionHandler(LyricsQualityException.class)
+  ResponseEntity<ApiErrorResponse> handleLyricsQuality(
+      LyricsQualityException exception, HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(errorResponse("LYRICS_QUALITY_FAILED", exception.getMessage(), request));
   }
 
   @ExceptionHandler(Exception.class)

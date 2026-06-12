@@ -149,6 +149,10 @@ export const FAILURE_COPY: Record<FailureCode, { title: string; hint: string }> 
     title: '歌词没通过校验',
     hint: '换个表达或调整内容后重试。',
   },
+  LYRICS_QUALITY_FAILED: {
+    title: '歌词不够贴合燕云十六声',
+    hint: '补充更明确的燕云十六声人物心境、地点、江湖经历或玩家故事后再试。',
+  },
   QUOTA_LOCK_FAILED: {
     title: '创作额度暂时锁定失败',
     hint: '稍等片刻再重试一次。',
@@ -180,6 +184,10 @@ export const FAILURE_COPY: Record<FailureCode, { title: string; hint: string }> 
   PROVIDER_AUTH_FAILED: {
     title: '创作服务暂时不可用',
     hint: '这是平台接入配置问题，请联系平台协助处理。',
+  },
+  PROVIDER_ACCOUNT_LIMIT: {
+    title: '创作服务暂时不可用',
+    hint: '平台音乐服务额度或并发已达上限，请联系平台协助处理。',
   },
   PROVIDER_TIMEOUT: {
     title: '创作服务响应超时',

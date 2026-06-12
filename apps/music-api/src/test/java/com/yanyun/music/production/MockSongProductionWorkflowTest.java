@@ -778,6 +778,75 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void mapsYanyunLyricsQualityFailureBeforeProviderToLyricsQualityFailed() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.LYRICS_QUALITY_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+    QualityEvaluationAgent qualityEvaluationAgent =
+        request -> {
+          if (request.gate() == QualityGate.MUSIC) {
+            return new QualityEvaluationResult(
+                request.gate(),
+                QualityDecision.REWRITE,
+                62,
+                List.of("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。"),
+                "rewrite_lyrics",
+                true,
+                Map.of());
+          }
+          return new QualityEvaluationResult(
+              request.gate(), QualityDecision.PASS, 100, List.of(), "PASS", false, Map.of());
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                new MockVideoRenderService(),
+                new MockMusicPromptAgent(),
+                new MockCoverPromptAgent(),
+                qualityEvaluationAgent)
+            .produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.LYRICS_QUALITY_FAILED.name());
+    assertThat(result.failureMessage()).contains("燕云十六声锚点");
+    verify(musicProvider, never()).submit(any());
+    verify(workRepository)
+        .insertQuotaTransaction(
+            workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
+    verify(workRepository)
+        .markFailure(
+            workId,
+            FailureCode.LYRICS_QUALITY_FAILED,
+            "Music prompt quality gate failed: 歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。",
+            false);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.LYRICS_QUALITY_FAILED,
+            "Music prompt quality gate failed: 歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。");
+    verify(workRepository, never()).insertProviderCall(any());
+    verifyNoInteractions(
+        publishAdapter, moderationAdapter, objectStorageClient, remoteObjectImporter);
+  }
+
+  @Test
   void releasesLockedQuotaAndFailsBeforeProviderWhenModerationAgentBlocksMusicPrompt() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();

@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
+import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
+import com.yanyun.music.creativeagent.QualityDecision;
+import com.yanyun.music.creativeagent.QualityEvaluationResult;
 import com.yanyun.music.deepseek.DeepSeekLyricsClient;
 import com.yanyun.music.deepseek.DeepSeekLyricsResponse;
 import com.yanyun.music.knowledge.KnowledgeReference;
@@ -21,6 +24,7 @@ import com.yanyun.music.prompt.PromptTemplateService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -156,7 +160,58 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(1).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(2).status());
     assertEquals(BigDecimal.valueOf(0.91), result.qualityScore());
-    assertTrue(result.lyricsText().contains("Improve structure"));
+    assertTrue(result.lyricsText().contains("quality gate"));
+    assertTrue(result.lyricsText().contains("Yanyun Sixteen Sounds"));
+  }
+
+  @Test
+  void rewriteStillRejectedByQualityGateStopsBeforeReturningLyrics() {
+    AtomicInteger deepSeekCalls = new AtomicInteger();
+    AtomicInteger qualityCalls = new AtomicInteger();
+    List<AgentRunRecord> records = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request -> {
+          deepSeekCalls.incrementAndGet();
+          return new DeepSeekLyricsResponse(
+              "Song",
+              "A generic rivers-and-moon story.",
+              "[Verse]\n泛舟江湖看月明",
+              "cinematic folk",
+              "cover seed",
+              List.of(),
+              BigDecimal.valueOf(0.92));
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            new MockCreativeBriefAgent(records::add),
+            deepSeek,
+            request -> {
+              qualityCalls.incrementAndGet();
+              return new QualityEvaluationResult(
+                  request.gate(),
+                  QualityDecision.REWRITE,
+                  62,
+                  List.of("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。"),
+                  "rewrite_lyrics",
+                  true,
+                  Map.of());
+            },
+            records::add);
+
+    LyricsQualityException exception =
+        assertThrows(
+            LyricsQualityException.class,
+            () -> service.generate(baseRequest(LyricsOperation.INSPIRATION)));
+
+    assertTrue(exception.getMessage().contains("燕云十六声锚点"));
+    assertEquals(2, deepSeekCalls.get());
+    assertEquals(2, qualityCalls.get());
+    assertEquals(3, records.size());
+    assertEquals("CreativeBriefAgent", records.get(0).agentName());
+    assertEquals("LyricsAgent", records.get(1).agentName());
+    assertEquals("LyricsAgent", records.get(2).agentName());
   }
 
   @Test

@@ -8,6 +8,9 @@ export function userFriendlyErrorMessage(error: unknown): string {
     if (error.code === 'NETWORK_ERROR') {
       return `${error.message} 如果只是想体验流程，可以打开右上角「演示模式」。`;
     }
+    if (error.code === 'LYRICS_QUALITY_FAILED') {
+      return error.message || '歌词不够贴合燕云十六声，请调整灵感后重试。';
+    }
     return error.message || '请求失败，请稍后再试。';
   }
 

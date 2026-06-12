@@ -217,7 +217,7 @@ paths:
     post:
       tags: [Generation]
       summary: 重试音乐生成
-      description: 仅当作品处于可重试的音乐失败状态且仍有剩余重试次数时可用。可用 `music_provider` 切换 Provider 后重试，例如从 `suno` / `minimax` 联调失败切回 `mock`。默认 sync 模式会请求内执行；outbox 模式会先返回 `GENERATING / QUOTA_LOCKING`。只有 `legacy` worker 或未来完成独立 smoke 的 `stepwise-production` 模式会异步推进到发布包可用；当前 `stepwise-recording` 只写 step audit，不会生成发布包。若有效 Provider 对应真实调用开关已打开，运行时要求 `outbox + temporal`，否则返回 HTTP 409，不启动真实供应商任务。当前本地阶段音乐重试上限为 2 次；并发重复重试或次数耗尽返回 HTTP 409。`PROVIDER_AUTH_FAILED` 属于不可用户重试失败，只返回联系支持/返回编辑动作。
+      description: 仅当作品处于可重试的音乐失败状态且仍有剩余重试次数时可用。可用 `music_provider` 切换 Provider 后重试，例如从 `suno` / `minimax` 联调失败切回 `mock`。默认 sync 模式会请求内执行；outbox 模式会先返回 `GENERATING / QUOTA_LOCKING`。只有 `legacy` worker 或未来完成独立 smoke 的 `stepwise-production` 模式会异步推进到发布包可用；当前 `stepwise-recording` 只写 step audit，不会生成发布包。若有效 Provider 对应真实调用开关已打开，运行时要求 `outbox + temporal`，否则返回 HTTP 409，不启动真实供应商任务。当前本地阶段音乐重试上限为 2 次；并发重复重试或次数耗尽返回 HTTP 409。`PROVIDER_AUTH_FAILED` 和 `PROVIDER_ACCOUNT_LIMIT` 属于不可用户重试失败，只返回联系支持/返回编辑动作。
       operationId: retryMusic
       parameters:
         - $ref: "#/components/parameters/MockUserId"
@@ -850,6 +850,7 @@ components:
         - USER_INPUT_BLOCKED
         - LYRICS_GENERATION_FAILED
         - LYRICS_PRECHECK_FAILED
+        - LYRICS_QUALITY_FAILED
         - QUOTA_LOCK_FAILED
         - MUSIC_GENERATION_FAILED
         - MUSIC_QUALITY_FAILED
@@ -858,6 +859,7 @@ components:
         - PACKAGE_BUILD_FAILED
         - PACKAGE_BLOCKED
         - PROVIDER_AUTH_FAILED
+        - PROVIDER_ACCOUNT_LIMIT
         - PROVIDER_TIMEOUT
         - RATE_LIMITED
         - UNKNOWN_ERROR
