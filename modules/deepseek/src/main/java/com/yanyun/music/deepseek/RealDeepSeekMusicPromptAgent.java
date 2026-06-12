@@ -46,8 +46,7 @@ public final class RealDeepSeekMusicPromptAgent implements MusicPromptAgent {
       }
       MusicPromptResult result =
           parse(
-              client.completeJson(
-                  systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.35), 1800),
+              client.completeJson(systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.35), 0),
               request);
       record(request, result, startedAt, null);
       return result;
@@ -119,7 +118,8 @@ public final class RealDeepSeekMusicPromptAgent implements MusicPromptAgent {
         2. 用户可以用现实歌手名表达风格偏好，但最终输出不得包含真实歌手名、仿唱、声线模仿、vocal clone。
         3. 不强制短 prompt；style_prompt 可以是中等长度，但必须清晰、可执行、无冲突。
         4. 面向 Suno Custom/Advanced 思路输出 title、lyrics_with_structure_tags、style_prompt、exclude_prompt、advanced_options。
-        5. 只输出 JSON object。
+        5. lyrics_with_structure_tags 保持完整歌词，但 style_prompt、exclude_prompt 和 options 必须克制，不写长篇解释。
+        6. 只输出 JSON object。
 
         输出字段：
         {
@@ -137,13 +137,17 @@ public final class RealDeepSeekMusicPromptAgent implements MusicPromptAgent {
   private String userPrompt(MusicPromptRequest request) {
     return String.join(
         "\n",
-        "work_id=" + nullToEmpty(request.workId()),
-        "song_title=" + nullToEmpty(request.songTitle()),
-        "song_summary=" + nullToEmpty(request.songSummary()),
-        "lyrics_text=" + nullToEmpty(request.lyricsText()),
-        "music_prompt_seed=" + nullToEmpty(request.musicPromptSeed()),
-        "vocal_preference=" + nullToEmpty(request.vocalPreference()),
-        "music_provider=" + nullToEmpty(request.musicProvider()));
+        fieldLine("work_id", request.workId(), 256),
+        fieldLine("song_title", request.songTitle(), 120),
+        fieldLine("song_summary", request.songSummary(), 800),
+        fieldLine("lyrics_text", request.lyricsText(), 8000),
+        fieldLine("music_prompt_seed", request.musicPromptSeed(), 1200),
+        fieldLine("vocal_preference", request.vocalPreference(), 160),
+        fieldLine("music_provider", request.musicProvider(), 80));
+  }
+
+  private String fieldLine(String fieldName, String value, int maxLength) {
+    return fieldName + "=" + trimToLength(value, maxLength);
   }
 
   private String sanitizeSingerReferences(String value) {
@@ -204,5 +208,13 @@ public final class RealDeepSeekMusicPromptAgent implements MusicPromptAgent {
 
   private String nullToEmpty(String value) {
     return value == null ? "" : value;
+  }
+
+  private String trimToLength(String value, int maxLength) {
+    if (value == null) {
+      return "";
+    }
+    String trimmed = value.trim();
+    return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength);
   }
 }

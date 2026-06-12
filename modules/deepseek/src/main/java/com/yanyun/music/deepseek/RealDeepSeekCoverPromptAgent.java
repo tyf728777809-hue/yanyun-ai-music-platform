@@ -47,8 +47,7 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
       }
       CoverPromptResult result =
           parse(
-              client.completeJson(
-                  systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.55), 1800),
+              client.completeJson(systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.55), 0),
               request);
       record(request, result, startedAt, null);
       return result;
@@ -114,7 +113,9 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
         2. 不允许假歌手名、假版权、假厂牌、乱码、低质小字、UI、水印、排行榜样式。
         3. 封面必须服务歌曲情绪和燕云十六声气质，但不得编造具体官方剧情。
         4. 当前默认 16:9，用作视频封面和音乐作品底板。
-        5. 只输出 JSON object。
+        5. 生成 prompt 需要完整可执行，但不要长篇解释：visual_prompt 控制在约 1200 字符内，negative_prompt 控制在约 400 字符内。
+        6. style_constraints 和 typography_requirements 各不超过 5 条。
+        7. 只输出 JSON object。
 
         输出字段：
         {
@@ -134,14 +135,18 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
   private String userPrompt(CoverPromptRequest request) {
     return String.join(
         "\n",
-        "work_id=" + nullToEmpty(request.workId()),
-        "song_title=" + nullToEmpty(request.songTitle()),
-        "song_summary=" + nullToEmpty(request.songSummary()),
-        "lyrics_text=" + nullToEmpty(request.lyricsText()),
-        "music_prompt=" + nullToEmpty(request.musicPrompt()),
-        "cover_prompt_seed=" + nullToEmpty(request.coverPromptSeed()),
+        fieldLine("work_id", request.workId(), 256),
+        fieldLine("song_title", request.songTitle(), 120),
+        fieldLine("song_summary", request.songSummary(), 800),
+        fieldLine("lyrics_excerpt", request.lyricsText(), 1800),
+        fieldLine("music_prompt", request.musicPrompt(), 1200),
+        fieldLine("cover_prompt_seed", request.coverPromptSeed(), 1200),
         "width=" + (request.width() == null ? "" : request.width()),
         "height=" + (request.height() == null ? "" : request.height()));
+  }
+
+  private String fieldLine(String fieldName, String value, int maxLength) {
+    return fieldName + "=" + trimToLength(value, maxLength);
   }
 
   private int intValue(JsonNode root, String fieldName, int fallback) {
@@ -200,5 +205,13 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
 
   private String nullToEmpty(String value) {
     return value == null ? "" : value;
+  }
+
+  private String trimToLength(String value, int maxLength) {
+    if (value == null) {
+      return "";
+    }
+    String trimmed = value.trim();
+    return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength);
   }
 }

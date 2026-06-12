@@ -30,7 +30,7 @@ yanyun:
     model-name: ${DEEPSEEK_MODEL_NAME:deepseek-v4-pro}
     request-timeout: ${DEEPSEEK_TIMEOUT_MS:30000ms}
     max-attempts: ${DEEPSEEK_MAX_ATTEMPTS:1}
-    response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:1800}
+    response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:4096}
     temperature: ${DEEPSEEK_TEMPERATURE:0.7}
   image:
     provider: ${IMAGE_PROVIDER:mock}

@@ -13,7 +13,7 @@ public class DeepSeekProperties {
   private String modelName = "deepseek-v4-pro";
   private Duration requestTimeout = Duration.ofSeconds(30);
   private int maxAttempts = 1;
-  private int responseMaxTokens = 1800;
+  private int responseMaxTokens = 4096;
   private BigDecimal temperature = BigDecimal.valueOf(0.7);
 
   public boolean isAgentRealCallsEnabled() {

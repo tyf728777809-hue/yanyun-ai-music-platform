@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -186,6 +187,53 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(result.textPrompt().contains("song title"));
     assertEquals(1920, result.width());
     assertEquals(1080, result.height());
+  }
+
+  @Test
+  void coverPromptUsesConfiguredMaxTokensAndTrimsLongLyricsInput() throws IOException {
+    AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
+    server =
+        startServer(
+            exchange -> {
+              capturedBody.set(
+                  objectMapper.readTree(
+                      new String(
+                          exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8)));
+              respondJson(
+                  exchange,
+                  200,
+                  chatResponse(
+                      Map.of(
+                          "visual_prompt",
+                          "premium 16:9 album cover with clear Chinese title typography",
+                          "text_prompt",
+                          "Use only the song title as main title",
+                          "negative_prompt",
+                          "fake singer, fake copyright, watermark",
+                          "width",
+                          1920,
+                          "height",
+                          1080)));
+            });
+    DeepSeekProperties properties = properties(serverBaseUri(), true, true);
+    properties.setResponseMaxTokens(4096);
+    RealDeepSeekCoverPromptAgent agent =
+        new RealDeepSeekCoverPromptAgent(
+            new DeepSeekJsonChatClient(properties, objectMapper),
+            objectMapper,
+            new ArrayList<AgentRunRecord>()::add);
+
+    CoverPromptResult result =
+        agent.generate(
+            new CoverPromptRequest(
+                "work-1", "燕云行", "summary", "燕云".repeat(3000), "style", "seed", 1920, 1080));
+
+    String userPrompt = capturedBody.get().path("messages").get(1).path("content").asText();
+    assertEquals(4096, capturedBody.get().path("max_tokens").asInt());
+    assertTrue(userPrompt.contains("lyrics_excerpt="));
+    assertFalse(userPrompt.contains("lyrics_text="));
+    assertTrue(userPrompt.length() < 3800);
+    assertEquals(1920, result.width());
   }
 
   @Test

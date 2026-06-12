@@ -229,29 +229,25 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
   }
 
   private DeepSeekLyricsResponse parseContent(String content, DeepSeekLyricsRequest request) {
-    try {
-      JsonNode root = objectMapper.readTree(content);
-      String lyricsText = firstNonBlank(text(root, "lyrics_text", "lyricsText"), "");
-      if (lyricsText.isBlank()) {
-        throw new IllegalStateException("DeepSeek lyrics_text is empty");
-      }
-      return new DeepSeekLyricsResponse(
-          firstNonBlank(text(root, "song_title", "songTitle"), request.requestedTitle()),
-          firstNonBlank(text(root, "song_summary", "songSummary"), "燕云主题原创歌曲。"),
-          lyricsText,
-          firstNonBlank(text(root, "music_prompt", "musicPrompt"), request.musicStyle()),
-          firstNonBlank(text(root, "cover_prompt_seed", "coverPromptSeed"), "燕云山河国风封面"),
-          stringList(
-              root.path("risk_notes").isMissingNode()
-                  ? root.path("riskNotes")
-                  : root.path("risk_notes")),
-          qualityScore(
-              root.path("quality_score").isMissingNode()
-                  ? root.path("qualityScore")
-                  : root.path("quality_score")));
-    } catch (JsonProcessingException exception) {
-      throw new IllegalStateException("DeepSeek response content JSON is invalid", exception);
+    JsonNode root = DeepSeekAgentJson.parseContentJson(objectMapper, content);
+    String lyricsText = firstNonBlank(text(root, "lyrics_text", "lyricsText"), "");
+    if (lyricsText.isBlank()) {
+      throw new IllegalStateException("DeepSeek lyrics_text is empty");
     }
+    return new DeepSeekLyricsResponse(
+        firstNonBlank(text(root, "song_title", "songTitle"), request.requestedTitle()),
+        firstNonBlank(text(root, "song_summary", "songSummary"), "燕云主题原创歌曲。"),
+        lyricsText,
+        firstNonBlank(text(root, "music_prompt", "musicPrompt"), request.musicStyle()),
+        firstNonBlank(text(root, "cover_prompt_seed", "coverPromptSeed"), "燕云山河国风封面"),
+        stringList(
+            root.path("risk_notes").isMissingNode()
+                ? root.path("riskNotes")
+                : root.path("risk_notes")),
+        qualityScore(
+            root.path("quality_score").isMissingNode()
+                ? root.path("qualityScore")
+                : root.path("quality_score")));
   }
 
   private List<String> stringList(JsonNode node) {

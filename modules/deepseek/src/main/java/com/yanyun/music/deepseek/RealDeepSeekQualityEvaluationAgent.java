@@ -49,8 +49,7 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
       QualityEvaluationResult result =
           parse(
-              client.completeJson(
-                  systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.10), 1400),
+              client.completeJson(systemPrompt(), userPrompt(request), BigDecimal.valueOf(0.10), 0),
               request);
       record(request, result, startedAt, null);
       return result;
@@ -269,7 +268,8 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         3. COVER：封面 prompt 可以要求高质量标题字，但不得要求假歌手、假版权、假厂牌、乱码、UI、水印。
         4. COVER：若 prompt 只允许歌名主标题，且没有要求假歌手、假版权、假厂牌、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为只有标题字而要求重写。
         5. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        6. 不要默认高分；只输出 JSON object。
+        6. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        7. 只输出 JSON object。
 
         输出字段：
         {
@@ -290,9 +290,9 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         "\n",
         "work_id=" + nullToEmpty(request.workId()),
         "gate=" + request.gate().name(),
-        "song_title=" + nullToEmpty(request.songTitle()),
-        "lyrics_text=" + nullToEmpty(request.lyricsText()),
-        "music_provider=" + nullToEmpty(request.musicProvider()),
+        "song_title=" + trimToLength(request.songTitle(), 120),
+        "lyrics_text=" + trimToLength(request.lyricsText(), 5000),
+        "music_provider=" + trimToLength(request.musicProvider(), 80),
         "audio_object_key_present=" + present(request.audioObjectKey()),
         "audio_duration_ms=" + (request.audioDurationMs() == null ? "" : request.audioDurationMs()),
         "cover_object_key_present=" + present(request.coverObjectKey()),
@@ -307,7 +307,7 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
             + nullToEmpty(request.videoHeight()),
         "video_duration_ms=" + (request.videoDurationMs() == null ? "" : request.videoDurationMs()),
         "timeline_object_key_present=" + present(request.timelineObjectKey()),
-        "context=" + request.context());
+        "context=" + trimToLength(request.context(), 5000));
   }
 
   private void record(
@@ -359,5 +359,13 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
 
   private String nullToEmpty(Object value) {
     return value == null ? "" : value.toString();
+  }
+
+  private String trimToLength(Object value, int maxLength) {
+    if (value == null) {
+      return "";
+    }
+    String trimmed = value.toString().trim();
+    return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength);
   }
 }

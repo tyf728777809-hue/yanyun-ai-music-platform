@@ -67,6 +67,37 @@ class RealDeepSeekLyricsClientTest {
   }
 
   @Test
+  void parsesJsonObjectWrappedInMarkdownFence() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponseContent(
+                        """
+                        ```json
+                        {
+                          "song_title": "边城旧梦",
+                          "song_summary": "燕云边城里故人重逢的原创歌曲。",
+                          "lyrics_text": "[Verse]\\n雁门风起过长街",
+                          "music_prompt": "国风民谣，女声",
+                          "cover_prompt_seed": "燕云边城夜色",
+                          "risk_notes": [],
+                          "quality_score": 0.9
+                        }
+                        ```
+                        """)));
+    RealDeepSeekLyricsClient client =
+        new RealDeepSeekLyricsClient(properties(serverBaseUri(), true, true), objectMapper);
+
+    DeepSeekLyricsResponse response = client.generate(request());
+
+    assertEquals("边城旧梦", response.songTitle());
+    assertTrue(response.lyricsText().contains("[Verse]"));
+  }
+
+  @Test
   void refusesToCallHttpWhenRealSwitchIsDisabled() throws IOException {
     AtomicInteger requestCount = new AtomicInteger();
     server =
@@ -187,6 +218,15 @@ class RealDeepSeekLyricsClientTest {
                 List.of("check-originality"),
                 "quality_score",
                 0.91));
+    return objectMapper.writeValueAsString(
+        java.util.Map.of(
+            "id",
+            "chatcmpl-test",
+            "choices",
+            List.of(java.util.Map.of("message", java.util.Map.of("content", content)))));
+  }
+
+  private String chatResponseContent(String content) throws IOException {
     return objectMapper.writeValueAsString(
         java.util.Map.of(
             "id",
