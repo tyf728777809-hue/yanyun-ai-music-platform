@@ -11,7 +11,7 @@
 - 系统内部必须把现实歌手名改写为泛化音乐语言，不向音乐供应商输出仿唱、声线模仿或现实歌手名。
 - `CreativeBriefAgent`、`MusicPromptAgent`、`CoverPromptAgent`、`QualityEvaluationAgent` 均可在真实开关下接入 DeepSeek v4Pro；默认测试仍用 Mock。
 - `QualityEvaluationAgent` 不做图片视觉审核，不 OCR，不判断封面画面是否好看。
-- 2026-06-12 真实样本验证显示图片模型直接写中文封面标题会出现错字/错标题；当前运行策略临时收敛为“无文字封面”，歌名由产品 UI 或后续可控排版层展示。补 OCR/视觉审核前，不再要求 Image2 生成歌名文字。
+- 2026-06-13 用户确认封面可以直接生成作品歌名，不需要 OCR 或人工确认位；当前运行策略为“受控标题文字”：Image2 只允许生成当前作品 `song_title`，禁止任何假歌手、假署名、假厂牌、版权、小字、水印或 UI。
 
 本规格不处理视频模板、封面裁剪、进度条或字幕策略。
 
@@ -23,7 +23,7 @@
 - FR-4：`LyricsAgent` MUST 接收创作域判断和转译建议，并强制歌词内容与燕云相关。
 - FR-5：`MusicPromptAgent` MUST 输出面向 Suno Custom/Advanced 思路的结构化生成规格，包括 title、lyrics、style prompt、exclude prompt 和 advanced options。
 - FR-6：`MusicPromptAgent` MUST 将现实歌手名、仿唱、声线模仿改写为泛化音乐描述。
-- FR-7：`CoverPromptAgent` MUST 输出无文字封面 prompt，不得要求 Image2 生成歌名、标题字、书法字、Logo、署名、小字或厂牌。
+- FR-7：`CoverPromptAgent` MUST 输出受控歌名标题封面 prompt，只允许 Image2 生成当前作品 `song_title` 作为主标题。
 - FR-8：`CoverPromptAgent` MUST NOT 要求假歌手名、假版权、假厂牌、乱码、低质小字、UI、水印或排行榜样式。
 - FR-9：`QualityEvaluationAgent` MUST 审核创作边界、歌词文本、音乐 prompt、封面 prompt 和发布包元数据。
 - FR-10：`QualityEvaluationAgent` MUST NOT 审核图片像素、OCR 图片文字或判断图片美术质量。
@@ -80,8 +80,8 @@ type CoverPromptSpec = {
 
 - AC-1：Given 用户输入“写一首高达歌”，When 创建灵感成歌，Then API 返回 `CREATIVE_DOMAIN_REJECTED`，且不调用 `LyricsAgent`。
 - AC-2：Given 用户输入包含“燕云”和“周杰伦风格”，When 生成音乐 prompt，Then music prompt 保留国风 R&B、轻说唱等泛化风格，但不含现实歌手名和仿唱指令。
-- AC-3：Given `CoverPromptAgent` 输出成品封面 prompt，When 调用 Image2，Then `visual_prompt` 与 `negative_prompt` 都明确禁止图片内文字，provider options 携带 `text_policy=NO_TEXT_IN_IMAGE`。
-- AC-4：Given 封面 prompt 正向要求歌名文字、假歌手、假版权或 UI，When 经过质量门，Then 返回 `REWRITE` 或 `BLOCK`。
+- AC-3：Given `CoverPromptAgent` 输出成品封面 prompt，When 调用 Image2，Then `visual_prompt` 明确只允许作品歌名作为主标题，`negative_prompt` 禁止额外文字和署名风险，provider options 携带 `text_policy=CONTROLLED_TITLE_TEXT` 与 `allowed_title=song_title`。
+- AC-4：Given 封面 prompt 正向要求假歌手、假版权、厂牌、小字、水印或 UI，When 经过质量门，Then 返回 `REWRITE` 或 `BLOCK`；仅要求作品歌名主标题时不得阻断。
 - AC-5：Given 发布包元数据完整，When 经过质量门，Then 不做图片视觉审核，只检查 audio/cover/video/timeline 元数据。
 
 ## 6. Out Of Scope

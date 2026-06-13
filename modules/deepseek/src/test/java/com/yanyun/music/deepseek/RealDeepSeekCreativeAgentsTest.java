@@ -245,7 +245,7 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void coverPromptForcesNoTextEvenWhenModelSuggestsTitleTypography() throws IOException {
+  void coverPromptAllowsOnlyControlledSongTitleText() throws IOException {
     server =
         startServer(
             exchange ->
@@ -275,11 +275,14 @@ class RealDeepSeekCreativeAgentsTest {
             new CoverPromptRequest(
                 "work-1", "燕云行", "summary", "lyrics", "style", "seed", 1920, 1080));
 
-    assertFalse(result.visualPrompt().contains("with clear Chinese title typography"));
-    assertTrue(result.visualPrompt().contains("No text in the image"));
-    assertTrue(result.negativePrompt().contains("Chinese characters"));
-    assertEquals("NO_TEXT_IN_IMAGE", result.textPrompt());
-    assertEquals("NO_TEXT_IN_IMAGE", result.providerOptions().get("text_policy"));
+    assertTrue(result.visualPrompt().contains("燕云行"));
+    assertTrue(result.visualPrompt().contains("exactly one text element"));
+    assertTrue(result.negativePrompt().contains("extra text beyond the exact song title"));
+    assertEquals(
+        "CONTROLLED_TITLE_TEXT: render only the exact song title \"燕云行\". No other text.",
+        result.textPrompt());
+    assertEquals("CONTROLLED_TITLE_TEXT", result.providerOptions().get("text_policy"));
+    assertEquals("燕云行", result.providerOptions().get("allowed_title"));
     assertEquals(1920, result.width());
     assertEquals(1080, result.height());
   }
@@ -381,7 +384,7 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void qualityAgentLocalSafetyRejectsGenericLyricsWithoutYanyunAnchor() throws IOException {
+  void qualityAgentDoesNotRejectLyricsOnlyBecauseTheyLackLiteralYanyunAnchor() throws IOException {
     server =
         startServer(
             exchange ->
@@ -429,12 +432,11 @@ class RealDeepSeekCreativeAgentsTest {
                     "music_prompt", "cinematic Chinese folk ballad",
                     "cover_prompt_seed", "moonlit river and lone boat")));
 
-    assertEquals(QualityDecision.REWRITE, result.decision());
-    assertTrue(result.reasons().contains("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。"));
+    assertEquals(QualityDecision.PASS, result.decision());
   }
 
   @Test
-  void qualityAgentLocalSafetyRejectsCoverTitleTypographyUntilOcrGateExists() throws IOException {
+  void qualityAgentLocalSafetyAllowsControlledCoverTitleTypography() throws IOException {
     server =
         startServer(
             exchange ->
@@ -446,16 +448,16 @@ class RealDeepSeekCreativeAgentsTest {
                             "gate",
                             "COVER",
                             "decision",
-                            "REWRITE",
+                            "BLOCK",
                             "score",
-                            65,
+                            40,
                             "reasons",
                             List.of(
-                                "Cover prompt only contains song title '雁门夜雪' in calligraphy, no fake singer, copyright, label, UI, watermarks, or garbled text."),
+                                "Model noticed title typography and conservative policy marked it risky."),
                             "recommended_action",
                             "REWRITE_AGENT_OUTPUT",
                             "retryable",
-                            true))));
+                            false))));
     RealDeepSeekQualityEvaluationAgent agent =
         new RealDeepSeekQualityEvaluationAgent(
             client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
@@ -480,16 +482,18 @@ class RealDeepSeekCreativeAgentsTest {
                 null,
                 Map.of(
                     "visual_prompt",
-                    "premium 16:9 album cover with clear Chinese song title typography",
+                    "premium 16:9 album cover with exactly one text element: only the exact song title 燕云行 as clear Chinese title typography",
                     "text_prompt",
-                    "Use only the song title as the main cover title. Do not invent singer, label, copyright, or small credits.",
+                    "CONTROLLED_TITLE_TEXT: render only the exact song title \"燕云行\". No other text.",
                     "negative_prompt",
                     "low quality, fake singer name, fake label, fake copyright, watermark, UI, garbled text",
+                    "provider_options",
+                    Map.of("text_policy", "CONTROLLED_TITLE_TEXT", "allowed_title", "燕云行"),
                     "typography_requirements",
                     List.of("clear readable Chinese title", "no fake singer credits"))));
 
-    assertEquals(QualityDecision.REWRITE, result.decision());
-    assertTrue(result.retryable());
+    assertEquals(QualityDecision.PASS, result.decision());
+    assertFalse(result.retryable());
   }
 
   @Test

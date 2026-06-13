@@ -64,16 +64,17 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
             root.path("provider_options").isMissingNode()
                 ? root.path("providerOptions")
                 : root.path("provider_options"));
-    providerOptions = withNoTextPolicy(providerOptions);
+    providerOptions = withControlledTitlePolicy(providerOptions, request.songTitle());
     String visualPrompt =
-        noTextVisualPrompt(
+        controlledTitleVisualPrompt(
             DeepSeekAgentJson.firstNonBlank(
                 DeepSeekAgentJson.text(root, "visual_prompt", "visualPrompt"),
                 DeepSeekAgentJson.firstNonBlank(
-                    request.coverPromptSeed(), defaultVisualPrompt(request))));
+                    request.coverPromptSeed(), defaultVisualPrompt(request))),
+            request.songTitle());
     return new CoverPromptResult(
         visualPrompt,
-        noTextNegativePrompt(
+        controlledTitleNegativePrompt(
             DeepSeekAgentJson.firstNonBlank(
                 DeepSeekAgentJson.text(root, "negative_prompt", "negativePrompt"),
                 "low quality, fake singer name, fake label, fake copyright, garbled text, UI, watermark")),
@@ -83,14 +84,16 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
             root.path("style_constraints").isMissingNode()
                 ? root.path("styleConstraints")
                 : root.path("style_constraints"),
-            List.of("16:9 premium album cover", "no text in image")),
+            List.of("16:9 premium album cover", "controlled song title typography")),
         providerOptions,
-        "NO_TEXT_IN_IMAGE",
+        controlledTitleTextPrompt(request.songTitle()),
         listOrDefault(
             root.path("typography_requirements").isMissingNode()
                 ? root.path("typographyRequirements")
                 : root.path("typography_requirements"),
-            List.of("do not render title typography", "no Chinese characters in image")));
+            List.of(
+                "render only the exact song title as the main title",
+                "no singer, credits, label, copyright, watermark, or small text")));
   }
 
   private String systemPrompt() {
@@ -99,20 +102,20 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
         你的任务是为 Image2 生成完整成品专辑封面 prompt。
 
         规则：
-        1. 当前版本禁止 Image2 在封面图内生成任何文字，包含中文歌名、英文标题、书法字、Logo、署名、小字、厂牌或水印。
-        2. 歌名由产品 UI 和视频外层展示，不交给图片模型生成，避免错字、错标题和假署名。
+        1. 当前版本允许 Image2 在封面图内生成作品歌名，但只允许一个文字元素：song_title 的精确标题。
+        2. 禁止生成任何其他文字，包含歌手名、演唱、作词、作曲、制作人、厂牌、版权、小字、Logo、水印、二维码或随机英文。
         3. 封面必须服务歌曲情绪和燕云十六声气质，但不得编造具体官方剧情。
-        4. 当前默认 16:9，用作视频封面和音乐作品底板；应预留干净留白，方便产品层后续叠加标题。
+        4. 当前默认 16:9，用作视频封面和音乐作品底板；歌名必须成为高级、克制、可读的封面主标题，而不是廉价海报字。
         5. 生成 prompt 需要完整可执行，但不要长篇解释：visual_prompt 控制在约 1200 字符内，negative_prompt 控制在约 400 字符内。
         6. style_constraints 和 typography_requirements 各不超过 5 条。
-        7. text_prompt 必须输出 "NO_TEXT_IN_IMAGE"。
+        7. text_prompt 必须输出 "CONTROLLED_TITLE_TEXT" 策略，只允许 song_title。
         8. 只输出 JSON object。
 
         输出字段：
         {
-          "visual_prompt": "英文 Image2 prompt，描述画面、构图、光线、色彩、专辑感、留白和无文字要求",
-          "text_prompt": "NO_TEXT_IN_IMAGE",
-          "negative_prompt": "低质、假署名、假版权、乱码、UI、水印等负向约束",
+          "visual_prompt": "英文 Image2 prompt，描述画面、构图、光线、色彩、专辑感和受控歌名标题要求",
+          "text_prompt": "CONTROLLED_TITLE_TEXT: only the exact song_title may appear",
+          "negative_prompt": "低质、假署名、假版权、随机小字、乱码、UI、水印等负向约束",
           "width": 1920,
           "height": 1080,
           "style_constraints": [],
@@ -139,35 +142,43 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
   private String defaultVisualPrompt(CoverPromptRequest request) {
     return "Premium cinematic 16:9 album cover for a Yanyun-inspired original song, "
         + "restrained composition, strong visual focus, atmospheric Chinese frontier mood, "
-        + "clean negative space for product-layer title overlay";
+        + "high-quality controlled title typography integrated into the composition";
   }
 
-  private String noTextVisualPrompt(String visualPrompt) {
+  private String controlledTitleVisualPrompt(String visualPrompt, String songTitle) {
     String prompt = trimToLength(visualPrompt, 1100);
     prompt =
         prompt
             .replaceAll(
-                "(?i)with\\s+clear\\s+(chinese\\s+)?title\\s+typography",
-                "with clean negative space")
+                "(?i)no\\s+text\\s+in\\s+(the\\s+)?image",
+                "single controlled song title typography")
             .replaceAll(
-                "(?i)(song\\s+title|main\\s+cover\\s+title|title\\s+typography)",
-                "clean negative space")
-            .replaceAll("(?i)(calligraphy\\s+lettering|lettering|typographic)", "cinematic")
-            .replaceAll("(歌名|主标题|标题字|封面文字|书法字)", "干净留白");
+                "(?i)no\\s+(chinese\\s+characters|english\\s+letters|song\\s+title|title\\s+typography)",
+                "controlled exact song title only")
+            .replaceAll("(无文字|禁止图片内文字|不要文字|无歌名|不要歌名)", "只保留受控歌名标题");
     return prompt
-        + ". No text in the image, no Chinese characters, no English letters, no song title, "
-        + "no title typography, no calligraphy lettering, no logo, no watermark; leave title "
-        + "and credits to the product UI overlay.";
+        + ". Include exactly one text element: the song title \""
+        + safeTitle(songTitle)
+        + "\" as the main cover title. Do not add any artist name, singer credit, lyrics by, "
+        + "composed by, label, copyright, logo, watermark, subtitle, slogan, QR code, or small text.";
   }
 
-  private String noTextNegativePrompt(String negativePrompt) {
+  private String controlledTitleNegativePrompt(String negativePrompt) {
     String prompt = trimToLength(negativePrompt, 300);
     return prompt
-        + ", text, Chinese characters, English letters, song title, title typography, "
-        + "calligraphy lettering, logo, watermark, fake singer name, fake label, fake copyright";
+        + ", extra text beyond the exact song title, random text, garbled text, misspelled title, "
+        + "artist name, singer name, performer credit, lyrics by, composed by, fake label, "
+        + "fake copyright, record label, logo, watermark, UI, QR code, ranking chart, small credits";
   }
 
-  private Map<String, Object> withNoTextPolicy(Map<String, Object> providerOptions) {
+  private String controlledTitleTextPrompt(String songTitle) {
+    return "CONTROLLED_TITLE_TEXT: render only the exact song title \""
+        + safeTitle(songTitle)
+        + "\". No other text.";
+  }
+
+  private Map<String, Object> withControlledTitlePolicy(
+      Map<String, Object> providerOptions, String songTitle) {
     java.util.LinkedHashMap<String, Object> merged = new java.util.LinkedHashMap<>();
     if (providerOptions != null) {
       merged.putAll(providerOptions);
@@ -176,8 +187,13 @@ public final class RealDeepSeekCoverPromptAgent implements CoverPromptAgent {
     merged.putIfAbsent("agent_version", AGENT_VERSION);
     merged.putIfAbsent("prompt_template_key", TEMPLATE_KEY);
     merged.putIfAbsent("prompt_template_version", TEMPLATE_VERSION);
-    merged.put("text_policy", "NO_TEXT_IN_IMAGE");
+    merged.put("text_policy", "CONTROLLED_TITLE_TEXT");
+    merged.put("allowed_title", safeTitle(songTitle));
     return merged;
+  }
+
+  private String safeTitle(String songTitle) {
+    return trimToLength(songTitle, 40).replace("\"", "").replace("\n", " ").trim();
   }
 
   private String fieldLine(String fieldName, String value, int maxLength) {

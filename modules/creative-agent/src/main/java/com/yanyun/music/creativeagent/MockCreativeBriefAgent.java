@@ -66,9 +66,10 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
         musicDirection,
         request.yanyunReferences(),
         List.of(
-            "lyrics content must belong to Yanyun Sixteen Sounds",
+            "lyrics content must feel like it belongs inside the Yanyun Sixteen Sounds world",
             "keep lyrics singable",
-            "preserve yanyun tone",
+            "preserve the user's story core",
+            "do not force official names or IP keywords",
             "do not use other IP names or lore in lyrics"),
         domainDecision == CreativeDomainDecision.PASS
             ? List.of()
@@ -77,7 +78,7 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
             ? "当前只支持燕云十六声相关创作。可以改成燕云里的江湖、武学、奇术、乱世同行或寻声记忆方向。"
             : null,
         domainDecision == CreativeDomainDecision.REWRITE_TO_YANYUN
-            ? "保留用户想要的情绪和音乐风格，但把歌词内容转成燕云十六声语境，删除其他 IP 专属名词。"
+            ? "保留用户想要的情绪、故事核心和音乐风格，但把歌词内容转成燕云十六声大世界语境，删除其他 IP 专属名词。"
             : null,
         List.of("keep player-specific story details when they fit Yanyun"));
   }

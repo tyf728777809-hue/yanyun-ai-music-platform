@@ -69,7 +69,7 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
     if (decision != modelDecision
         && reasons.isEmpty()
         && (request.gate() == QualityGate.LYRICS || request.gate() == QualityGate.MUSIC)) {
-      reasons.add("歌词缺少明确的燕云十六声锚点，容易变成泛古风武侠。");
+      reasons.add("内容存在非燕云题材、其他 IP 混入或仿唱风险，需要重写。");
     }
     int score = root.path("score").asInt(decision == QualityDecision.PASS ? 90 : 60);
     if (decision == QualityDecision.PASS && score < 80) {
@@ -114,10 +114,6 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         && (joined.contains("高达") || joined.contains("gundam") || joined.contains("原神"))) {
       return QualityDecision.REWRITE;
     }
-    if ((request.gate() == QualityGate.LYRICS || request.gate() == QualityGate.MUSIC)
-        && !containsYanyunContentAnchor(request)) {
-      return QualityDecision.REWRITE;
-    }
     if (request.gate() == QualityGate.MUSIC
         && (joined.contains("周杰伦") || joined.contains("jay chou") || joined.contains("仿唱"))) {
       return QualityDecision.REWRITE;
@@ -125,6 +121,9 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
     if (request.gate() == QualityGate.COVER) {
       if (containsUnsafeCoverInstruction(request.context())) {
         return QualityDecision.BLOCK;
+      }
+      if (isControlledTitleCoverPrompt(request.context())) {
+        return QualityDecision.PASS;
       }
       if (containsPositiveCoverTextInstruction(request.context())) {
         return QualityDecision.REWRITE;
@@ -134,39 +133,6 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
     }
     return modelDecision;
-  }
-
-  private boolean containsYanyunContentAnchor(QualityEvaluationRequest request) {
-    String generatedText =
-        normalize(
-            nullToEmpty(request.songTitle())
-                + "\n"
-                + nullToEmpty(request.lyricsText())
-                + "\n"
-                + contextValue(request, "song_summary")
-                + "\n"
-                + contextValue(request, "music_prompt")
-                + "\n"
-                + contextValue(request, "cover_prompt_seed"));
-    return generatedText.contains("燕云")
-        || generatedText.contains("十六声")
-        || generatedText.contains("清河")
-        || generatedText.contains("开封")
-        || generatedText.contains("雁门")
-        || generatedText.contains("神仙渡")
-        || generatedText.contains("不羡仙")
-        || generatedText.contains("寒香寻")
-        || generatedText.contains("寻声")
-        || generatedText.contains("奇术")
-        || generatedText.contains("偷师")
-        || generatedText.contains("百家武学")
-        || generatedText.contains("十六州")
-        || generatedText.contains("更鼓");
-  }
-
-  private String contextValue(QualityEvaluationRequest request, String key) {
-    Object value = request.context().get(key);
-    return value == null ? "" : value.toString();
   }
 
   private boolean containsUnsafeCoverInstruction(Map<String, Object> context) {
@@ -218,6 +184,19 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         || joined.contains("no song title")
         || joined.contains("无文字")
         || joined.contains("禁止图片内文字");
+  }
+
+  private boolean isControlledTitleCoverPrompt(Map<String, Object> context) {
+    String joined = normalize(context);
+    return joined.contains("controlled_title_text")
+        || joined.contains("only the exact song title")
+        || joined.contains("exact song title")
+        || joined.contains("only the song title")
+        || joined.contains("single controlled song title")
+        || joined.contains("唯一文本")
+        || joined.contains("只允许")
+            && (joined.contains("歌名") || joined.contains("标题"))
+            && !joined.contains("no_text_in_image");
   }
 
   private boolean reasonsOnlyDescribeNoTextPolicy(java.util.List<String> reasons) {
@@ -328,13 +307,14 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         你只审核文本、prompt、创作边界和发布包元数据。
 
         重点规则：
-        1. LYRICS：歌词必须和燕云十六声相关，不得写其他 IP，不能只是泛古风。
+        1. LYRICS：歌词必须有《燕云十六声》大世界归属感，不得写其他 IP，不能只是泛古风；但不要求出现“燕云”“十六声”等字面关键词。
         2. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
-        3. COVER：封面 prompt 可以要求高质量标题字，但不得要求假歌手、假版权、假厂牌、乱码、UI、水印。
-        4. COVER：若 prompt 只允许歌名主标题，且没有要求假歌手、假版权、假厂牌、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为只有标题字而要求重写。
+        3. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
+        4. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
         5. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        6. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
-        7. 只输出 JSON object。
+        6. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
+        7. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        8. 只输出 JSON object。
 
         输出字段：
         {

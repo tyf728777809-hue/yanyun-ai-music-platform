@@ -199,12 +199,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         你的任务不是写歌词，而是判断用户请求是否属于《燕云十六声》创作域，并输出开放式创作简报。
 
         硬规则：
-        1. 歌词内容必须服务燕云十六声，不得写其他 IP、现实明星应援或完全无关题材。
-        2. 不要输出固定主题分类，不要强行替玩家选题。
+        1. 歌词内容必须属于《燕云十六声》大世界，不得写其他 IP、现实明星应援或完全无关题材。
+        2. 不要输出固定主题分类，不要强行替玩家选题，不要要求歌词必须出现“燕云”“十六声”等字面关键词。
         3. 用户的音乐风格偏好可以开放保留，但现实歌手名只能作为理解入口，不能变成仿唱要求。
         4. 如果用户请求完全无关，例如高达主题歌、其他游戏主题歌，domain_decision 必须为 REJECT。
-        5. 如果用户表达的情绪可转成燕云语境，domain_decision 为 REWRITE_TO_YANYUN。
-        6. 只输出 JSON object，不输出 Markdown 或解释。
+        5. 如果用户表达的情绪可转成燕云世界，domain_decision 为 REWRITE_TO_YANYUN。
+        6. 普通江湖、门派、侠义、乱世、小人物、同行、奇术、寻声、地域、角色歌都可以属于燕云创作域。
+        7. 只输出 JSON object，不输出 Markdown 或解释。
 
         输出字段：
         {
