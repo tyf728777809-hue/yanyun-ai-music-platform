@@ -10,6 +10,7 @@
 - v0.2 专门修复人物漏项风险：新增外部候选人物池、程序化差集审计、普通 NPC 群像归类和未来预告人物边界。
 - 第一批正式补库已回写状态：赵光义/晋中原、张彦霖、周蔷、薛丑、洪肆、魏仁浦、冯继昇、燕/应宁、蓬山四海豪客、四猫三鹅伙伴群像和部分普通 NPC 群像已标为 `已有`。
 - 第二批正式补库已回写状态：姚药药、慧药、柴荣、王清、李祚、盈盈/温无缺、沈义伦、麻布袋、郭昕、张议潮、唐新词已转入正式人物库；鬼市子和天不收已补边界卡，不再标为 `需拆分` / `偏薄`。
+- 第三批正式补库已回写状态：画睛兄、兰澳、贺然、黎蓁蓁、柳青衣、柏楚玉、福禄寿三姐妹、赵大哥、龟奶奶、史鸩、石守信、慕容延钊已转入正式人物库。
 - 人物覆盖口径：只收对歌词创作有价值的主线/支线/势力代表/历史锚点/伙伴/强记忆 NPC；低叙事普通 NPC 按地域或市井群像纳入 P3。
 - `pending_clues` 可以进入创作素材层，但只能写成暗线、传闻、旧事、情绪或意象，不得写成官方定论。
 - 江南/杭州、陈子奚、玉山君、文津馆十相等截至 2026-06-13 属于未来/预告资料，不进当前 live 主库事实层。
@@ -18,7 +19,7 @@
 
 | 类型 | 总行数 | 已有 | 缺失 | 偏薄 | 需拆分 | 仅待核线索 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| 人物 | 130 | 48 | 60 | 0 | 0 | 22 |
+| 人物 | 130 | 60 | 48 | 0 | 0 | 22 |
 | 剧情/任务线 | 30 | 6 | 13 | 1 | 10 | 0 |
 | 地域/场景 | 41 | 10 | 22 | 0 | 9 | 0 |
 | 势力/门派/组织 | 29 | 10 | 6 | 0 | 11 | 2 |
@@ -30,7 +31,7 @@
 
 - 本轮新增人物/群像缺口：`54` 条，当前人物盘点共 `130` 行。
 - 已补入的核心漏项包括：赵光义/晋中原、张彦霖、周蔷、画睛兄、兰澳、薛丑、洪肆、魏仁浦、冯继昇、燕/应宁、蓬山四海豪客、四猫三鹅伙伴群像和墨山道代号人物。
-- 第一批已转入正式人物库：`19` 条；第二批又转入/增厚 `13` 条，当前人物盘点 `已有` 为 `48` 条；这些条目仍可继续用实录和公司资料增厚。
+- 第一批已转入正式人物库：`19` 条；第二批又转入/增厚 `13` 条；第三批转入 `12` 条，当前人物盘点 `已有` 为 `60` 条；这些条目仍可继续用实录和公司资料增厚。
 - 四猫三鹅：官方确认首期伙伴群和系统上线；七个个体名多来自社区实机/攻略，先标 `pending_clues_only`，不写成官方命名定论。
 - 普通 NPC：清河、开封、河西/凉州、青州/蓬山优先做群像卡；只有乡德美、宋五、方旭、靳春娘这类个人议题明显的普通 NPC 先列为 P3 单卡样本。
 - 未来预告：陈子奚、玉山君、陈氏、钱王/杭州传说、文津馆十相只进 future/watchlist 或预告层，不作为当前已上线人物事实。
@@ -63,24 +64,24 @@
 | `character-zhao-guangyi-jinzhongyuan` | 赵光义/晋中原 | 已有 | P0 | accepted_story_synthesis, current_kb | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。 风险：当前主要来自百科/攻略综合；具体人格、剧情走向和结局需用游戏内实录或公司资料复核。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-zhou-qiang` | 周蔷 | 已有 | P0 | accepted_story_synthesis, current_kb | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。 风险：需区分游戏设定与历史借影，不写成官方已确认历史原型。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-an-liuli` | 安琉璃 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 凉州/河西人物，补异域与身份线但需防猎奇。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-bai-chuyu` | 柏楚玉 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 势力/门派代表人物，适合补组织内人物关系。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
+| `character-bai-chuyu` | 柏楚玉 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 势力/门派代表人物，适合补组织内人物关系。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-bailangzhu` | 白狼主 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 官方/社区高频人物或伙伴线索，需确认实体属性。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-baoyin` | 宝音 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 河西人物补足，适合故乡、声音、童年意象。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-fang-bai` | 方白 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 青州/文津馆人物，补同窗和求学关系。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-feng-yi` | 冯夷 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封/河道/怪异线索人物，适合水与旧事意象。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-fubao` | 福宝 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 伙伴/人物线索，适合陪伴与福气意象。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-fulushou-sisters` | 福禄寿三姐妹 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封市井/任务线群像，可补热闹与荒诞感。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-gui-nainai` | 龟奶奶 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封记忆点 NPC，补民间奇人和温情/怪诞。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-heran` | 贺然 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 清河支线与旧人关系素材，适合写江湖旧识和身份转折。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-huajing-xiong` | 画睛兄 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 文津馆人物，名字自带点睛、书画、题卷和真假成像的歌词意象。 风险：公开资料以名单级信息为主，经历与关系需后续实录补齐。 |
+| `character-fulushou-sisters` | 福禄寿三姐妹 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 开封市井/任务线群像，可补热闹与荒诞感。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-gui-nainai` | 龟奶奶 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 开封记忆点 NPC，补民间奇人和温情/怪诞。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-heran` | 贺然 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 清河支线与旧人关系素材，适合写江湖旧识和身份转折。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-huajing-xiong` | 画睛兄 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 文津馆人物，名字自带点睛、书画、题卷和真假成像的歌词意象。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-huakui` | 花魁 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 青州/开封审美人物线索，需防泛化。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-lan-ao` | 兰澳 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 无心谷/太行山人物，可承接隐谷、断念、避世、山风与旧信等情绪。 风险：公开资料仅能支撑门派/地域归属，关系线不要硬写。 |
+| `character-lan-ao` | 兰澳 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 无心谷/太行山人物，可承接隐谷、断念、避世、山风与旧信等情绪。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-lian-daozi` | 廉道子 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 河西/边地人物，补道义与荒漠行路。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-liu-qingyi` | 柳青衣 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 势力代表人物，补江湖组织人物层。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-lizhenzhen` | 黎蓁蓁 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 清河/开封女性人物线索，补情感关系和市井人物厚度。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-murong-yanzhao` | 慕容延钊 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封/庙堂线关键历史人物素材。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-shi-jiu` | 史鸩 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封暗线/人物冲突素材，适合阴谋与代价。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-shi-shouxin` | 石守信 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 庙堂/开封权力场人物，补朝野线。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
+| `character-liu-qingyi` | 柳青衣 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 势力代表人物，补江湖组织人物层。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-lizhenzhen` | 黎蓁蓁 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 清河/开封女性人物线索，补情感关系和市井人物厚度。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-murong-yanzhao` | 慕容延钊 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 开封/庙堂线关键历史人物素材。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-shi-jiu` | 史鸩 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 开封暗线/人物冲突素材，适合阴谋与代价。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
+| `character-shi-shouxin` | 石守信 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 庙堂/开封权力场人物，补朝野线。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-shi-yimo` | 时一墨 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 墨山道/机关或门派代表人物，补不见山线。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-song-jiuwei` | 宋九薇 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 青州/伙伴或人物线，高频官方公告出现。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-wangyue-chanyuan` | 望月婵媛 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 河西/凉州女性人物与月意象素材。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
@@ -90,7 +91,7 @@
 | `character-yingling` | 鹰铃 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 河西/伙伴或人物线，高频创作意象。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-zhang-huaishen` | 张淮深 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 归义军后续历史人物，补家族/守土延续感。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `character-zhao-chengzong` | 赵承宗 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 宫城/庙堂人物，补皇城权力线。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
-| `character-zhao-dage` | 赵大哥 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封普通人/市井关系线，适合玩家故事和日常烟火。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
+| `character-zhao-dage` | 赵大哥 | 已有 | P1 | accepted_story_synthesis, current_kb | 已补 4 张正式人物卡 | 开封普通人/市井关系线，适合玩家故事和日常烟火。 风险：正式库第三批仅做创作可用卡片，不代表人物传已完全终局。 |
 | `character-zhu-yu` | 朱鱼 | 缺失 | P1 | accepted_story_synthesis | 人物基础身份卡；人生时间线卡；关系网络卡；情绪弧线卡；... | 开封/九流关联人物，补市井暗线。 风险：多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 |
 | `current-character-017` | 天不收 | 已有 | P1 | current_kb | 已追加旧友边界与歌曲结构卡 | 已在第二批正式人物库中增厚，可被检索和用于写词；后续仍可按实录继续增厚。 风险：accepted_story_synthesis 不应对外宣称官方定论。 |
 | `current-character-011` | 鬼市子 | 已有 | P1 | current_kb | 已追加身份壳边界与歌曲结构卡 | 已在第二批正式人物库中增厚，可被检索和用于写词；后续仍可按实录继续增厚。 风险：accepted_story_synthesis 不应对外宣称官方定论。 |

@@ -1298,6 +1298,111 @@
         "region-kaifeng"
       ],
       "expected_behavior": "命中鬼市子身份壳和开封鬼市，不写成稳定单人传记。"
+    },
+    {
+      "id": "eval-character-huajing-xiong-001",
+      "input": "写画睛兄和文津馆，书画点睛的感觉",
+      "expected_entities": [
+        "character-huajing-xiong",
+        "faction-wenjinguan"
+      ],
+      "expected_behavior": "命中画睛兄、文津馆和书画点睛意象，不编造完整师承。"
+    },
+    {
+      "id": "eval-character-lan-ao-001",
+      "input": "写兰澳和无心谷，要隐谷、旧信、山风",
+      "expected_entities": [
+        "character-lan-ao",
+        "faction-wuxingu"
+      ],
+      "expected_behavior": "命中兰澳、无心谷和隐谷情绪，不把无心谷写成修仙门派。"
+    },
+    {
+      "id": "eval-character-heran-001",
+      "input": "写贺然，清河旧识重逢后已经变了",
+      "expected_entities": [
+        "character-heran",
+        "region-qinghe"
+      ],
+      "expected_behavior": "命中清河旧识和身份转折，不写死未确认身世。"
+    },
+    {
+      "id": "eval-character-lizhenzhen-001",
+      "input": "写黎蓁蓁的女声歌，要有市井里的自我选择",
+      "expected_entities": [
+        "character-lizhenzhen"
+      ],
+      "expected_behavior": "命中市井女性主体性，不写成单纯恋爱对象。"
+    },
+    {
+      "id": "eval-character-liu-qingyi-001",
+      "input": "写柳青衣，一身青衣在组织命令和自己心声之间",
+      "expected_entities": [
+        "character-liu-qingyi"
+      ],
+      "expected_behavior": "命中青衣、组织身份和个人心声，不编造具体门派职位。"
+    },
+    {
+      "id": "eval-character-bai-chuyu-001",
+      "input": "写柏楚玉，玉也会有裂纹那种克制角色歌",
+      "expected_entities": [
+        "character-bai-chuyu"
+      ],
+      "expected_behavior": "命中玉意象和克制裂缝，不写成贵公子模板。"
+    },
+    {
+      "id": "eval-character-fulushou-sisters-001",
+      "input": "写福禄寿三姐妹，开封街头热闹又有点辛酸",
+      "expected_entities": [
+        "character-fulushou-sisters",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中开封市井群像和祝愿反差，不低俗化姐妹关系。"
+    },
+    {
+      "id": "eval-character-zhao-dage-001",
+      "input": "写赵大哥这种开封街坊，普通人也很有江湖味",
+      "expected_entities": [
+        "character-zhao-dage",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中开封普通人和邻里烟火，不强行主线化。"
+    },
+    {
+      "id": "eval-character-gui-nainai-001",
+      "input": "写龟奶奶，像开封民间奇人但要温情",
+      "expected_entities": [
+        "character-gui-nainai",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中民间奇人与温情怪诞，不宣称神怪身份。"
+    },
+    {
+      "id": "eval-character-shi-jiu-001",
+      "input": "写史鸩，开封暗线，危险但别血腥",
+      "expected_entities": [
+        "character-shi-jiu",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中史鸩和开封暗线代价，不血腥猎奇。"
+    },
+    {
+      "id": "eval-character-shi-shouxin-001",
+      "input": "写石守信，杯酒、兵权、旧将退场",
+      "expected_entities": [
+        "character-shi-shouxin",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中石守信庙堂权力和旧将进退，不写成历史课。"
+    },
+    {
+      "id": "eval-character-murong-yanzhao-001",
+      "input": "写慕容延钊，旧甲还冷，朝门已深",
+      "expected_entities": [
+        "character-murong-yanzhao",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中慕容延钊、旧将和开封权力场，不单纯战歌化。"
     }
   ]
 }
