@@ -1,0 +1,16 @@
+{
+  "audit_version": "yanyun-commercial-kb-pollution-audit-v0.1",
+  "generated_at": "2026-06-14T04:20:00+08:00",
+  "kb_version": "yanyun-commercial-kb-2026-06-13-v1",
+  "summary": {
+    "entity_findings": 0,
+    "chunk_findings": 0,
+    "eval_findings": 0,
+    "sensitive_findings": 0,
+    "inventory_remaining": 0
+  },
+  "entity_findings": [],
+  "chunk_findings": [],
+  "eval_findings": [],
+  "sensitive_findings": []
+}

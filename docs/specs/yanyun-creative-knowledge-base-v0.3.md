@@ -44,7 +44,7 @@
 - `creative-boundaries.json`：创作禁区、版权和商业边界。
 - `eval-cases.json`：商用回归题库。
 
-当前商用包包含 68 个实体、231 个创作 chunk 和 131 条 eval case，已完成 P0-P4 的重型百科创作版补齐：高频人物、核心剧情线、地域场景、势力门派、玩法体验和回归题库均有多卡支撑。它仍不是对外官方剧情百科：公司内部禁写边界、版本级剧透口径、实录逐字证据和 P5 A/B 评测证据包仍需后续补齐。
+当前商用包包含 280 个实体、917 个创作 chunk 和 336 条 eval case，缺口盘点表已全部回写为 present，并已生成 P5 离线证据包：A/B 评测协议、chunk/entity 级 provenance manifest 和污染审计报告。它仍不是对外官方剧情百科：公司内部禁写边界、版本级剧透口径、实录逐字证据和真实模型 A/B 人工评分仍需后续补齐。
 
 旧 `knowledge-base/yanyun-official-kb-v1.json` 仅作为历史单文件工程种子保留。
 
