@@ -2627,6 +2627,1331 @@
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
         }
       ]
+    },
+    {
+      "key": "character-zhao-guangyi-jinzhongyuan",
+      "entity_type": "character",
+      "canonical_name": "赵光义/晋中原",
+      "aliases": [
+        "赵光义/晋中原",
+        "赵光义",
+        "晋中原"
+      ],
+      "summary": "开封宫城与庙堂线高价值人物。创作层重点不在历史复述，而在双重身份、权力私心、城中化名和朝野棋局。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "double-name",
+          "heading_path": "人物/赵光义与晋中原/双名身份",
+          "theme_tags": [
+            "开封",
+            "庙堂",
+            "双名",
+            "权力"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名赵光义或晋中原时，可写一个人在皇权、化名和私人心念之间分裂：城里相逢的是晋中原，史书和权力场里站着赵光义。",
+          "usable_imagery": [
+            "宫城灯影",
+            "化名入城",
+            "半掩的车帘",
+            "金瓦冷雨",
+            "不能认出的旧人"
+          ],
+          "emotional_arc": "从藏名入局，到被权力和私心推向不可回头。",
+          "avoid_claims": [
+            "不要写成纯历史科普",
+            "不要替官方补完结局或真实心理",
+            "不要把歌词写成帝王传记"
+          ],
+          "content": "赵光义/晋中原双名身份用于开封庙堂歌。"
+        },
+        {
+          "id": "kaifeng-palace",
+          "heading_path": "人物/赵光义与晋中原/开封宫城",
+          "theme_tags": [
+            "开封",
+            "宫城",
+            "朝局",
+            "局中人"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "这类角色歌应让开封繁华与宫城冷意同时存在：街上有烟火，宫中有棋局，名字越尊贵越不能随意开口。",
+          "usable_imagery": [
+            "开封夜雨",
+            "宫门铜钉",
+            "御街人声",
+            "烛火棋局",
+            "压低的称呼"
+          ],
+          "emotional_arc": "从人间烟火走入权力深处，温度逐渐变冷。",
+          "avoid_claims": [
+            "不要把开封写成空泛古都",
+            "不要使用现实政治影射",
+            "不要把权谋写成爽文口号"
+          ],
+          "content": "赵光义/晋中原宫城创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/赵光义与晋中原/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "权力",
+            "名字",
+            "孤独"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合男声叙事、低沉国风流行或史诗抒情：副歌可围绕“真名不能说”“入局的人也想回头”构建记忆点。",
+          "usable_imagery": [
+            "封口的真名",
+            "雪落宫墙",
+            "旧袍换龙纹",
+            "无人处叹息"
+          ],
+          "emotional_arc": "从隐忍到失去退路，最后只剩名字背后的空旷。",
+          "avoid_claims": [
+            "不要把人物洗成无瑕英雄",
+            "不要写成现代霸总",
+            "不要脱离燕云开封语境"
+          ],
+          "content": "赵光义/晋中原歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhang-yanlin",
+      "entity_type": "character",
+      "canonical_name": "张彦霖",
+      "aliases": [
+        "张彦霖"
+      ],
+      "summary": "开封/河神祠相关高情绪人物候选。创作重点是牌位、河伯、龙门、残躯、故人之约和黄河宿命感。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "he-shrine",
+          "heading_path": "人物/张彦霖/河神祠与牌位",
+          "theme_tags": [
+            "开封",
+            "河神祠",
+            "黄河",
+            "悼亡"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张彦霖适合写悼亡与未竟之志：河神祠、牌位、河伯、龙门和残缺身体都是歌词可用意象，但要写成情绪，不要讲攻略。",
+          "usable_imagery": [
+            "河神祠",
+            "旧牌位",
+            "浑黄河水",
+            "龙门残影",
+            "湿冷香灰"
+          ],
+          "emotional_arc": "从故人之约到无法赴约，命运像河水一样把人冲散。",
+          "avoid_claims": [
+            "不要把资料薄弱处写成官方定论",
+            "不要写成恐怖猎奇",
+            "不要复述任务步骤"
+          ],
+          "content": "张彦霖河神祠创作卡。"
+        },
+        {
+          "id": "unfinished-oath",
+          "heading_path": "人物/张彦霖/未竟之约",
+          "theme_tags": [
+            "故人",
+            "承诺",
+            "残躯",
+            "宿命"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "如果用户想写悲歌，可把张彦霖转成“答应过要渡过某条河的人，最后只剩名字留在岸边”的叙事。",
+          "usable_imagery": [
+            "没送出的信",
+            "岸边旧约",
+            "残破衣甲",
+            "雨夜渡口"
+          ],
+          "emotional_arc": "希望、拖延、破碎、仍被记住。",
+          "avoid_claims": [
+            "不要编造具体亲缘关系",
+            "不要和其他河西/黄河人物混写",
+            "不要把悲剧写成狗血对白"
+          ],
+          "content": "张彦霖未竟之约卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/张彦霖/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "黄河",
+            "悼亡",
+            "命运"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合慢板叙事民谣或国风摇滚，副歌可围绕“河水替我记得你”这类意象展开，情绪要克制。",
+          "usable_imagery": [
+            "河风",
+            "旧誓",
+            "岸灯",
+            "龙门浪声"
+          ],
+          "emotional_arc": "由低声追忆推向命运质问，再落回安静悼念。",
+          "avoid_claims": [
+            "不要过度煽情",
+            "不要写成现代殉情歌",
+            "不要脱离开封/河神祠线索"
+          ],
+          "content": "张彦霖歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhou-qiang",
+      "entity_type": "character",
+      "canonical_name": "周蔷",
+      "aliases": [
+        "周蔷",
+        "周薔"
+      ],
+      "summary": "醉花阴、樊楼、风月与江南意象交汇的人物候选。创作层适合女声叙事、盛景将尽、宴饮歌舞和个人命运。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "fanlou-flower",
+          "heading_path": "人物/周蔷/樊楼与醉花阴",
+          "theme_tags": [
+            "醉花阴",
+            "樊楼",
+            "风月",
+            "歌舞"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "周蔷不要写成泛泛花魁或风月标签；她更适合承接樊楼灯火、歌舞、宴饮、盛景将尽和人在局中的自持。",
+          "usable_imagery": [
+            "樊楼灯海",
+            "酒盏倒影",
+            "花影压窗",
+            "绣鞋停步",
+            "曲终人散"
+          ],
+          "emotional_arc": "从盛景中心到看清盛景会散，华丽里有清醒和孤独。",
+          "avoid_claims": [
+            "不要写成低俗风月",
+            "不要把历史原型联想写成官方事实",
+            "不要让人物只剩美貌"
+          ],
+          "content": "周蔷樊楼与醉花阴创作卡。"
+        },
+        {
+          "id": "jiangnan-shadow",
+          "heading_path": "人物/周蔷/江南影子",
+          "theme_tags": [
+            "江南",
+            "旧地",
+            "盛景",
+            "离散"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "如果用户写江南气质，当前截至 2026-06-13 只能把江南当远影和旧梦，不要写成已上线实地经历；周蔷可作为风物与旧事之间的人。",
+          "usable_imagery": [
+            "未到的江南",
+            "水边花枝",
+            "旧曲南来",
+            "未寄出的帖子"
+          ],
+          "emotional_arc": "从繁华到远方旧梦，像一支曲子还没唱完。",
+          "avoid_claims": [
+            "不要把江南/杭州写成已上线 live 内容",
+            "不要补全未公开剧情",
+            "不要把角色和现实人物绑定"
+          ],
+          "content": "周蔷江南影子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/周蔷/歌曲角度",
+          "theme_tags": [
+            "女声",
+            "宴饮",
+            "清醒",
+            "华丽哀感"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合高质感女声国风流行或华丽慢摇，主歌写灯火与宴席，副歌落在“满城都听见我的曲，却没人知道我想走”。",
+          "usable_imagery": [
+            "红烛",
+            "停杯",
+            "压低的笑",
+            "帘后风声"
+          ],
+          "emotional_arc": "外部越热闹，内心越清醒，最后不靠哭喊而靠余韵收束。",
+          "avoid_claims": [
+            "不要堆红尘宿命",
+            "不要仿现实歌手",
+            "不要写成青楼奇情模板"
+          ],
+          "content": "周蔷歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-wei-renpu",
+      "entity_type": "character",
+      "canonical_name": "魏仁浦",
+      "aliases": [
+        "魏仁浦",
+        "魏道济"
+      ],
+      "summary": "文津馆与开封庙堂之间的重要文臣型候选。适合承接学馆出身、谋局、文脉和朝堂代价。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "scholar-official",
+          "heading_path": "人物/魏仁浦/文臣与学馆",
+          "theme_tags": [
+            "文津馆",
+            "庙堂",
+            "文臣",
+            "谋局"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "魏仁浦适合写“从书卷走到朝堂”的张力：文字不是装饰，而是能决定人命、粮仓、边关与名声的工具。",
+          "usable_imagery": [
+            "案上奏疏",
+            "冷墨未干",
+            "学馆旧窗",
+            "朝堂钟声"
+          ],
+          "emotional_arc": "从求学到入仕，理想被事务和权衡磨得更沉。",
+          "avoid_claims": [
+            "不要写成纯儒生符号",
+            "不要编造具体政令",
+            "不要把庙堂写成现代职场"
+          ],
+          "content": "魏仁浦文臣学馆卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/魏仁浦/歌曲角度",
+          "theme_tags": [
+            "书卷",
+            "朝堂",
+            "文脉",
+            "克制"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合克制、低调、叙事感强的歌曲；副歌不必宏大，可写“墨一干，故人就远了”。",
+          "usable_imagery": [
+            "灯下批卷",
+            "旧馆雪声",
+            "折好的文书",
+            "远处鼓角"
+          ],
+          "emotional_arc": "理想、判断、牺牲和迟来的孤独。",
+          "avoid_claims": [
+            "不要写成权谋爽歌",
+            "不要把人物神化",
+            "不要用空泛家国词堆砌"
+          ],
+          "content": "魏仁浦歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-xue-chou",
+      "entity_type": "character",
+      "canonical_name": "薛丑",
+      "aliases": [
+        "薛丑",
+        "薛醜"
+      ],
+      "summary": "九流门和开封地下秩序人物候选。适合市井、鬼市、杂耍、幻术和底层江湖叙事。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "jiuliu-street",
+          "heading_path": "人物/薛丑/九流市井",
+          "theme_tags": [
+            "九流门",
+            "开封",
+            "鬼市",
+            "市井"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "薛丑主题要写下九流的生命力：笑声、骗术、杂耍、脏街和地下规矩可以并存，不要只写阴谋。",
+          "usable_imagery": [
+            "勾栏瓦肆",
+            "鬼市灯笼",
+            "破鼓点",
+            "旧戏台",
+            "藏在袖里的把戏"
+          ],
+          "emotional_arc": "从被看低的市井人，到在暗处撑起自己的规矩。",
+          "avoid_claims": [
+            "不要把九流门写成单纯邪教",
+            "不要写成滑稽小丑",
+            "不要编造官方身份结论"
+          ],
+          "content": "薛丑九流市井卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/薛丑/歌曲角度",
+          "theme_tags": [
+            "说唱",
+            "市井",
+            "草根",
+            "诡谲"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合国风说唱、戏谑副歌或带市井节奏的歌，重点是“低处也有江湖”，不是黑暗堆砌。",
+          "usable_imagery": [
+            "铜钱落碗",
+            "笑里藏刀",
+            "叫卖声",
+            "地底回音"
+          ],
+          "emotional_arc": "戏谑开场，逐步露出底层的倔强和伤口。",
+          "avoid_claims": [
+            "不要过度阴森",
+            "不要离开开封地下语境",
+            "不要让歌词变成帮派口号"
+          ],
+          "content": "薛丑歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-hong-si",
+      "entity_type": "character",
+      "canonical_name": "洪肆",
+      "aliases": [
+        "洪肆"
+      ],
+      "summary": "九流门人物候选。当前公开资料较薄，创作上作为九流门刀法、鬼市暗线和底层险恶的补充锚点。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "jiuliu-blade",
+          "heading_path": "人物/洪肆/九流刀影",
+          "theme_tags": [
+            "九流门",
+            "开封",
+            "刀",
+            "鬼市"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "洪肆资料薄，写词时应作为九流门群像中的刀影和暗线，不要把他硬写成完整主角传。",
+          "usable_imagery": [
+            "巷口刀光",
+            "地下风声",
+            "旧刀谱",
+            "鬼市窄路"
+          ],
+          "emotional_arc": "从边缘人物的危险感，转向九流门群像的复杂秩序。",
+          "avoid_claims": [
+            "不要编造完整人生经历",
+            "不要把名单级人物写成官方主角",
+            "不要和道主/薛丑混同"
+          ],
+          "content": "洪肆九流刀影卡. "
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/洪肆/歌曲角度",
+          "theme_tags": [
+            "群像",
+            "危险",
+            "地下开封"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合在九流门或无忧洞群像歌里作为一笔，不适合单独承载长篇角色歌，除非用户明确点名。",
+          "usable_imagery": [
+            "暗巷脚步",
+            "刀鞘磕墙",
+            "不亮的灯"
+          ],
+          "emotional_arc": "危险、短促、像副歌前一声冷笑。",
+          "avoid_claims": [
+            "不要过度扩写",
+            "不要把薄资料写成定论",
+            "不要用现代黑帮词"
+          ],
+          "content": "洪肆歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-feng-jisheng",
+      "entity_type": "character",
+      "canonical_name": "冯继昇",
+      "aliases": [
+        "冯继昇",
+        "冯继升"
+      ],
+      "summary": "文津馆与墨山道之间的桥接人物候选。适合写从书卷走向机关山门、从文脉转向格物实践。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "wenjin-to-moshan",
+          "heading_path": "人物/冯继昇/文津到墨山",
+          "theme_tags": [
+            "文津馆",
+            "墨山道",
+            "转向",
+            "格物"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "冯继昇最适合写“从书斋走进机关山”的转向：同样追问世界，只是从文字转到木石、齿轮和山中规矩。",
+          "usable_imagery": [
+            "书页夹着齿轮",
+            "山门机关",
+            "墨线木尺",
+            "离馆的背影"
+          ],
+          "emotional_arc": "求知、转身、沉入更冷的山中技艺。",
+          "avoid_claims": [
+            "不要把转向写成背叛定论",
+            "不要编造具体师承结局",
+            "不要混同容鸢"
+          ],
+          "content": "冯继昇文津到墨山卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/冯继昇/歌曲角度",
+          "theme_tags": [
+            "机关",
+            "书卷",
+            "选择",
+            "冷色"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合冷色调、电子国风或克制摇滚；核心是“我把答案拆成零件”，而不是炫技机关描写。",
+          "usable_imagery": [
+            "纸上墨线",
+            "木屑",
+            "夜里试机关",
+            "山雾"
+          ],
+          "emotional_arc": "从文气到工匠感，最后落在选择的孤独。",
+          "avoid_claims": [
+            "不要堆技术名词",
+            "不要写成科幻机甲",
+            "不要脱离燕云墨山道语境"
+          ],
+          "content": "冯继昇歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-yan-yingning",
+      "entity_type": "character",
+      "canonical_name": "燕/应宁",
+      "aliases": [
+        "燕/应宁",
+        "应宁",
+        "墨山道燕"
+      ],
+      "summary": "墨山道当代巨子/不见山高价值人物候选。为避免单字误召，别名不用裸“燕”，使用“墨山道燕”。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "moshan-leader",
+          "heading_path": "人物/燕应宁/墨山道巨子",
+          "theme_tags": [
+            "墨山道",
+            "不见山",
+            "机关",
+            "巨子"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "燕/应宁可作为墨山道当代核心：冷静、格物、机关、山中秩序和人的情感彼此拉扯。",
+          "usable_imagery": [
+            "不见山雾",
+            "机关鸟影",
+            "冷墨木尺",
+            "封住的山门"
+          ],
+          "emotional_arc": "理性压住情绪，越冷静越显出山中旧事的重量。",
+          "avoid_claims": [
+            "不要使用裸“燕”导致误召",
+            "不要写成科幻工程师",
+            "不要把机关写成玄幻法术"
+          ],
+          "content": "燕/应宁墨山道巨子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/燕应宁/歌曲角度",
+          "theme_tags": [
+            "冷理性",
+            "山门",
+            "机关",
+            "隐痛"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合低温、空间感强的歌曲：主歌写机关与秩序，副歌突然落到“人心不是能校准的齿轮”。",
+          "usable_imagery": [
+            "齿轮停摆",
+            "雾中灯",
+            "手背墨痕",
+            "山石回声"
+          ],
+          "emotional_arc": "从克制到裂缝，再回到不能说破的隐痛。",
+          "avoid_claims": [
+            "不要写成无情机器",
+            "不要编造未确认关系",
+            "不要和墨门/墨山道概念混乱"
+          ],
+          "content": "燕/应宁歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhu-yinghan",
+      "entity_type": "character",
+      "canonical_name": "祝英晗",
+      "aliases": [
+        "祝英晗",
+        "花毽魁主"
+      ],
+      "summary": "蓬山新增人物。争魁、不服输、火苗般的热烈和花毽动作，适合少年气与竞技感。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/祝英晗/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "祝英晗适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增人物。争魁、不服输、火苗般的热烈和花毽动作，适合少年气与竞技感。",
+          "usable_imagery": [
+            "花毽飞起",
+            "火苗眼神",
+            "蓬山海风",
+            "不肯认输的笑"
+          ],
+          "emotional_arc": "热烈、争胜、摔倒后又站起来。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "祝英晗公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/祝英晗/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名祝英晗，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "花毽飞起",
+            "火苗眼神",
+            "蓬山海风",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "热烈、争胜、摔倒后又站起来。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "祝英晗歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-lin-xingyi",
+      "entity_type": "character",
+      "canonical_name": "林行逸",
+      "aliases": [
+        "林行逸",
+        "傲诗"
+      ],
+      "summary": "蓬山新增人物。傲骨、身法飘逸如诗，适合清俊、文武兼修和不肯低头。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/林行逸/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "林行逸适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增人物。傲骨、身法飘逸如诗，适合清俊、文武兼修和不肯低头。",
+          "usable_imagery": [
+            "诗页翻飞",
+            "轻身掠石",
+            "海天白衣",
+            "冷傲回身"
+          ],
+          "emotional_arc": "自负、孤高、被真正的对手照见。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "林行逸公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/林行逸/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名林行逸，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "诗页翻飞",
+            "轻身掠石",
+            "海天白衣",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "自负、孤高、被真正的对手照见。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "林行逸歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-liu-yanru",
+      "entity_type": "character",
+      "canonical_name": "柳晏如",
+      "aliases": [
+        "柳晏如",
+        "飒词"
+      ],
+      "summary": "蓬山新增人物。热烈直白、双剑快巧，适合爽利女声和明快群像。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/柳晏如/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "柳晏如适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增人物。热烈直白、双剑快巧，适合爽利女声和明快群像。",
+          "usable_imagery": [
+            "双剑出鞘",
+            "快步踏浪",
+            "明亮笑声",
+            "直白一句"
+          ],
+          "emotional_arc": "干脆、明亮、像风里突然劈开的光。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "柳晏如公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/柳晏如/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名柳晏如，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "双剑出鞘",
+            "快步踏浪",
+            "明亮笑声",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "干脆、明亮、像风里突然劈开的光。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "柳晏如歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-ji-fuzhen",
+      "entity_type": "character",
+      "canonical_name": "季浮真",
+      "aliases": [
+        "季浮真",
+        "狂歌"
+      ],
+      "summary": "蓬山新增人物。醉意、狂性和真假难分，适合放歌、醉剑和失真感。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/季浮真/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "季浮真适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增人物。醉意、狂性和真假难分，适合放歌、醉剑和失真感。",
+          "usable_imagery": [
+            "酒壶",
+            "狂歌",
+            "摇晃月影",
+            "真假脚步"
+          ],
+          "emotional_arc": "醉意遮住清醒，狂放里有试探。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "季浮真公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/季浮真/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名季浮真，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "酒壶",
+            "狂歌",
+            "摇晃月影",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "醉意遮住清醒，狂放里有试探。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "季浮真歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-xie-changgeng",
+      "entity_type": "character",
+      "canonical_name": "谢长庚",
+      "aliases": [
+        "谢长庚",
+        "华赋"
+      ],
+      "summary": "蓬山新增人物。贵气、铺陈、锦绣文章，适合华丽辞藻和世家气象。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/谢长庚/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "谢长庚适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增人物。贵气、铺陈、锦绣文章，适合华丽辞藻和世家气象。",
+          "usable_imagery": [
+            "华丽辞章",
+            "锦衣照水",
+            "长案铺纸",
+            "金色灯影"
+          ],
+          "emotional_arc": "铺陈繁华后露出人的孤独。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "谢长庚公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/谢长庚/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名谢长庚，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "华丽辞章",
+            "锦衣照水",
+            "长案铺纸",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "铺陈繁华后露出人的孤独。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "谢长庚歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-saodi-mentong",
+      "entity_type": "character",
+      "canonical_name": "扫地门童",
+      "aliases": [
+        "扫地门童",
+        "双元居前扫地门童"
+      ],
+      "summary": "蓬山新增反差人物。貌不惊人却深藏不露，适合隐士、扮拙和反差叙事。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260529/37780_1302237.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "public-hook",
+          "heading_path": "人物/扫地门童/公开人物钩子",
+          "theme_tags": [
+            "蓬山",
+            "四海豪客",
+            "新增人物"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "扫地门童适合在蓬山/文津馆相关创作中作为人物钩子：蓬山新增反差人物。貌不惊人却深藏不露，适合隐士、扮拙和反差叙事。",
+          "usable_imagery": [
+            "扫帚划地",
+            "门前落叶",
+            "低头让路",
+            "忽然一眼"
+          ],
+          "emotional_arc": "低调、藏锋、在最不起眼处显出重量。",
+          "avoid_claims": [
+            "不要误写成伙伴系统角色",
+            "不要扩写未公开结局",
+            "不要脱离蓬山语境"
+          ],
+          "content": "扫地门童公开人物钩子卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/扫地门童/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "蓬山",
+            "群像"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "如果用户点名扫地门童，可以写成短篇角色歌或蓬山群像中的一束光，重在动作、气质和情绪，不做长篇传记。",
+          "usable_imagery": [
+            "扫帚划地",
+            "门前落叶",
+            "低头让路",
+            "蓬山潮声"
+          ],
+          "emotional_arc": "低调、藏锋、在最不起眼处显出重量。",
+          "avoid_claims": [
+            "不要写成百科条目",
+            "不要编造关系网",
+            "不要使用现实歌手仿唱"
+          ],
+          "content": "扫地门童歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-four-cats-three-geese",
+      "entity_type": "character",
+      "canonical_name": "四猫三鹅伙伴群像",
+      "aliases": [
+        "四猫三鹅伙伴群像",
+        "四猫三鹅",
+        "首期伙伴",
+        "伙伴群像"
+      ],
+      "summary": "伙伴系统首期群像。官方确认伙伴系统和四猫三鹅作为群体上线，但七个个体名公开来源不稳定，先作为陪伴群像入库。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20260522/37780_1301224.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "companion-group",
+          "heading_path": "人物/四猫三鹅/伙伴群像",
+          "theme_tags": [
+            "伙伴系统",
+            "同行",
+            "陪伴",
+            "青州蓬山"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "四猫三鹅用于写同行和陪伴，不是主宠关系炫耀。它们适合承接旅途中有人回应、共看山水、共饮共游的温暖日常。",
+          "usable_imagery": [
+            "爪印和鹅掌印",
+            "同看海风",
+            "小饭碗",
+            "路边打盹",
+            "并肩影子"
+          ],
+          "emotional_arc": "从一个人赶路，到身边多了会回应的陪伴。",
+          "avoid_claims": [
+            "不要擅自写七个正式名字",
+            "不要把伙伴等同既有人物写成事实",
+            "不要宠物化贬低"
+          ],
+          "content": "四猫三鹅伙伴群像卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/四猫三鹅/歌曲角度",
+          "theme_tags": [
+            "治愈",
+            "轻喜剧",
+            "同行",
+            "玩家故事"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "适合轻松、治愈、可分享的玩家故事歌：写江湖很大，但路上有小小伙伴把孤独踩碎。",
+          "usable_imagery": [
+            "小爪印",
+            "鹅叫声",
+            "包袱旁打盹",
+            "山路同行"
+          ],
+          "emotional_arc": "孤独行路转向轻松陪伴，副歌可以有很强分享感。",
+          "avoid_claims": [
+            "不要写成卖萌广告",
+            "不要离开燕云旅途语境",
+            "不要编造未公开身份映射"
+          ],
+          "content": "四猫三鹅歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-qinghe-rural-livelihood",
+      "entity_type": "character",
+      "canonical_name": "清河乡野营生群像",
+      "aliases": [
+        "清河乡野营生群像",
+        "清河乡野 NPC",
+        "清河营生群像"
+      ],
+      "summary": "清河普通 NPC 群像，承接村镇、捕鱼、砍柴、行船、饭食和朴实乡野日常。",
+      "source_type": "community",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "group-overview",
+          "heading_path": "人物/清河乡野营生群像/群像定位",
+          "theme_tags": [
+            "群像",
+            "普通人",
+            "玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "清河乡野营生群像用于承接普通玩家故事和区域烟火，不逐个拆低叙事 NPC；歌词应写出人群中的生活感，而不是点名清单。",
+          "usable_imagery": [
+            "鱼篓",
+            "柴担",
+            "渡船",
+            "热饭",
+            "田埂"
+          ],
+          "emotional_arc": "普通人日常成为燕云世界的质地，让玩家故事不必强绑主线角色。",
+          "avoid_claims": [
+            "不要逐个捏造普通 NPC 人生",
+            "不要把群像写成名单",
+            "不要强行宏大叙事"
+          ],
+          "content": "清河乡野营生群像群像定位卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/清河乡野营生群像/歌曲角度",
+          "theme_tags": [
+            "普通玩家故事",
+            "烟火",
+            "群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "当用户写自己的日常、路边小事、朋友同行或城市记忆时，可用清河乡野营生群像提供燕云底色，保留用户原故事。",
+          "usable_imagery": [
+            "鱼篓",
+            "柴担",
+            "渡船",
+            "人声远近"
+          ],
+          "emotional_arc": "从小事里听见一个区域的声音。",
+          "avoid_claims": [
+            "不要吞掉用户原始情绪",
+            "不要写成攻略说明",
+            "不要把群像升级成官方大事件"
+          ],
+          "content": "清河乡野营生群像歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-kaifeng-baijie",
+      "entity_type": "character",
+      "canonical_name": "开封坊巷百业群像",
+      "aliases": [
+        "开封坊巷百业群像",
+        "开封百业 NPC",
+        "开封坊巷群像"
+      ],
+      "summary": "开封普通 NPC 群像，承接商贩、茶酒、街巷、人声和城市烟火。",
+      "source_type": "community",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "group-overview",
+          "heading_path": "人物/开封坊巷百业群像/群像定位",
+          "theme_tags": [
+            "群像",
+            "普通人",
+            "玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封坊巷百业群像用于承接普通玩家故事和区域烟火，不逐个拆低叙事 NPC；歌词应写出人群中的生活感，而不是点名清单。",
+          "usable_imagery": [
+            "叫卖声",
+            "茶汤热气",
+            "街巷灯火",
+            "算盘声",
+            "旧招牌"
+          ],
+          "emotional_arc": "普通人日常成为燕云世界的质地，让玩家故事不必强绑主线角色。",
+          "avoid_claims": [
+            "不要逐个捏造普通 NPC 人生",
+            "不要把群像写成名单",
+            "不要强行宏大叙事"
+          ],
+          "content": "开封坊巷百业群像群像定位卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/开封坊巷百业群像/歌曲角度",
+          "theme_tags": [
+            "普通玩家故事",
+            "烟火",
+            "群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "当用户写自己的日常、路边小事、朋友同行或城市记忆时，可用开封坊巷百业群像提供燕云底色，保留用户原故事。",
+          "usable_imagery": [
+            "叫卖声",
+            "茶汤热气",
+            "街巷灯火",
+            "人声远近"
+          ],
+          "emotional_arc": "从小事里听见一个区域的声音。",
+          "avoid_claims": [
+            "不要吞掉用户原始情绪",
+            "不要写成攻略说明",
+            "不要把群像升级成官方大事件"
+          ],
+          "content": "开封坊巷百业群像歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-hexi-liangzhou-travelers",
+      "entity_type": "character",
+      "canonical_name": "河西/凉州边塞行旅群像",
+      "aliases": [
+        "河西/凉州边塞行旅群像",
+        "玉门行旅",
+        "凉州市井",
+        "边民众生"
+      ],
+      "summary": "河西和凉州普通人群像，承接旅人、商贩、边民、玉门关和塞外市集。",
+      "source_type": "community",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "group-overview",
+          "heading_path": "人物/河西/凉州边塞行旅群像/群像定位",
+          "theme_tags": [
+            "群像",
+            "普通人",
+            "玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "河西/凉州边塞行旅群像用于承接普通玩家故事和区域烟火，不逐个拆低叙事 NPC；歌词应写出人群中的生活感，而不是点名清单。",
+          "usable_imagery": [
+            "驼铃",
+            "黄沙脚印",
+            "市集葡萄",
+            "客栈灯",
+            "边关风"
+          ],
+          "emotional_arc": "普通人日常成为燕云世界的质地，让玩家故事不必强绑主线角色。",
+          "avoid_claims": [
+            "不要逐个捏造普通 NPC 人生",
+            "不要把群像写成名单",
+            "不要强行宏大叙事"
+          ],
+          "content": "河西/凉州边塞行旅群像群像定位卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/河西/凉州边塞行旅群像/歌曲角度",
+          "theme_tags": [
+            "普通玩家故事",
+            "烟火",
+            "群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "当用户写自己的日常、路边小事、朋友同行或城市记忆时，可用河西/凉州边塞行旅群像提供燕云底色，保留用户原故事。",
+          "usable_imagery": [
+            "驼铃",
+            "黄沙脚印",
+            "市集葡萄",
+            "人声远近"
+          ],
+          "emotional_arc": "从小事里听见一个区域的声音。",
+          "avoid_claims": [
+            "不要吞掉用户原始情绪",
+            "不要写成攻略说明",
+            "不要把群像升级成官方大事件"
+          ],
+          "content": "河西/凉州边塞行旅群像歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-pengshan-wenjinguan-students",
+      "entity_type": "character",
+      "canonical_name": "蓬山文津馆学子/舍友群像",
+      "aliases": [
+        "蓬山文津馆学子/舍友群像",
+        "文津馆学子",
+        "蓬山同窗",
+        "文津馆舍友"
+      ],
+      "summary": "蓬山文津馆普通学子群像，承接同窗、舍友、共修课业、晨读夜归和书院生活。",
+      "source_type": "community",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "group-overview",
+          "heading_path": "人物/蓬山文津馆学子/舍友群像/群像定位",
+          "theme_tags": [
+            "群像",
+            "普通人",
+            "玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "蓬山文津馆学子/舍友群像用于承接普通玩家故事和区域烟火，不逐个拆低叙事 NPC；歌词应写出人群中的生活感，而不是点名清单。",
+          "usable_imagery": [
+            "晨读声",
+            "书案",
+            "海边学馆",
+            "舍友笑声",
+            "墨迹未干"
+          ],
+          "emotional_arc": "普通人日常成为燕云世界的质地，让玩家故事不必强绑主线角色。",
+          "avoid_claims": [
+            "不要逐个捏造普通 NPC 人生",
+            "不要把群像写成名单",
+            "不要强行宏大叙事"
+          ],
+          "content": "蓬山文津馆学子/舍友群像群像定位卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/蓬山文津馆学子/舍友群像/歌曲角度",
+          "theme_tags": [
+            "普通玩家故事",
+            "烟火",
+            "群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "当用户写自己的日常、路边小事、朋友同行或城市记忆时，可用蓬山文津馆学子/舍友群像提供燕云底色，保留用户原故事。",
+          "usable_imagery": [
+            "晨读声",
+            "书案",
+            "海边学馆",
+            "人声远近"
+          ],
+          "emotional_arc": "从小事里听见一个区域的声音。",
+          "avoid_claims": [
+            "不要吞掉用户原始情绪",
+            "不要写成攻略说明",
+            "不要把群像升级成官方大事件"
+          ],
+          "content": "蓬山文津馆学子/舍友群像歌曲角度卡。"
+        }
+      ]
     }
   ]
 }

@@ -340,9 +340,9 @@
   "coverage_summary": {
     "character": {
       "total": 130,
-      "missing": 90,
+      "missing": 71,
       "thin": 1,
-      "present": 16,
+      "present": 35,
       "needs_fact_split": 1,
       "pending_clues_only": 22
     },
@@ -818,71 +818,16 @@
         "赵光义",
         "晋中原"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
-        "wiki-characters",
-        "guide-gamekee-yanyun"
-      ],
-      "recommended_cards": [
-        "人物基础身份卡",
-        "人生时间线卡",
-        "关系网络卡",
-        "情绪弧线卡",
-        "可唱视角卡",
-        "禁写误区卡"
-      ],
-      "writing_impact": "开封宫城/庙堂线高价值人物，双名身份天然适合权力、化名、帝王私心与城中相逢的歌词张力。",
-      "risk_notes": "当前主要来自百科/攻略综合；具体人格、剧情走向和结局需用游戏内实录或公司资料复核。",
-      "target_domain_file": "characters.json"
-    },
-    {
-      "gap_id": "character-zhang-yanlin",
-      "category": "character",
-      "canonical_name": "张彦霖",
-      "aliases": [
-        "张彦霖"
-      ],
-      "current_status": "missing",
-      "priority": "P0",
-      "live_status": "live_confirmed",
-      "recommended_fact_level": [
-        "accepted_story_synthesis"
-      ],
-      "source_candidates": [
-        "guide-gamekee-yanyun"
-      ],
-      "recommended_cards": [
-        "人物基础身份卡",
-        "人生时间线卡",
-        "关系网络卡",
-        "情绪弧线卡",
-        "可唱视角卡",
-        "禁写误区卡"
-      ],
-      "writing_impact": "河神祠、牌位、残躯、故人之约等意象强，适合悼亡、黄河宿命和未竟之志。",
-      "risk_notes": "所属势力和完整经历仍薄，避免把玩家整理扩写成官方定论。",
-      "target_domain_file": "characters.json"
-    },
-    {
-      "gap_id": "character-zhou-qiang",
-      "category": "character",
-      "canonical_name": "周蔷",
-      "aliases": [
-        "周蔷",
-        "周薔"
-      ],
-      "current_status": "missing",
-      "priority": "P0",
-      "live_status": "live_confirmed",
-      "recommended_fact_level": [
-        "accepted_story_synthesis"
-      ],
-      "source_candidates": [
+        "current-kb",
+        "guide-gamekee-yanyun",
         "wiki-characters"
       ],
       "recommended_cards": [
@@ -893,8 +838,69 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "醉花阴/樊楼/江南风月语义密度高，是女声叙事、歌舞宴饮和盛景将尽的强素材。",
-      "risk_notes": "需区分游戏设定与历史借影，不写成官方已确认历史原型。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "当前主要来自百科/攻略综合；具体人格、剧情走向和结局需用游戏内实录或公司资料复核。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
+      "target_domain_file": "characters.json"
+    },
+    {
+      "gap_id": "character-zhang-yanlin",
+      "category": "character",
+      "canonical_name": "张彦霖",
+      "aliases": [
+        "张彦霖"
+      ],
+      "current_status": "present",
+      "priority": "P0",
+      "live_status": "live_confirmed",
+      "recommended_fact_level": [
+        "accepted_story_synthesis",
+        "current_kb"
+      ],
+      "source_candidates": [
+        "current-kb",
+        "guide-gamekee-yanyun"
+      ],
+      "recommended_cards": [
+        "人物基础身份卡",
+        "人生时间线卡",
+        "关系网络卡",
+        "情绪弧线卡",
+        "可唱视角卡",
+        "禁写误区卡"
+      ],
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "所属势力和完整经历仍薄，避免把玩家整理扩写成官方定论。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
+      "target_domain_file": "characters.json"
+    },
+    {
+      "gap_id": "character-zhou-qiang",
+      "category": "character",
+      "canonical_name": "周蔷",
+      "aliases": [
+        "周蔷",
+        "周薔"
+      ],
+      "current_status": "present",
+      "priority": "P0",
+      "live_status": "live_confirmed",
+      "recommended_fact_level": [
+        "accepted_story_synthesis",
+        "current_kb"
+      ],
+      "source_candidates": [
+        "current-kb",
+        "wiki-characters"
+      ],
+      "recommended_cards": [
+        "人物基础身份卡",
+        "人生时间线卡",
+        "关系网络卡",
+        "情绪弧线卡",
+        "可唱视角卡",
+        "禁写误区卡"
+      ],
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "需区分游戏设定与历史借影，不写成官方已确认历史原型。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -905,13 +911,15 @@
         "魏仁浦",
         "魏道济"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
+        "current-kb",
         "guide-huiji-yanyun"
       ],
       "recommended_cards": [
@@ -922,8 +930,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "文津馆、庙堂、文臣与谋局线索，可补学馆到朝堂的创作跨度。",
-      "risk_notes": "公开资料多来自维基/玩家整理，入库需标 accepted_story_synthesis。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "公开资料多来自维基/玩家整理，入库需标 accepted_story_synthesis。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -993,14 +1001,47 @@
         "薛丑",
         "薛醜"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
+        "current-kb",
+        "guide-gamekee-yanyun",
         "guide-huiji-yanyun",
+        "wiki-characters"
+      ],
+      "recommended_cards": [
+        "人物基础身份卡",
+        "人生时间线卡",
+        "关系网络卡",
+        "情绪弧线卡",
+        "可唱视角卡",
+        "禁写误区卡"
+      ],
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "部分信息来自搜索摘要和攻略整合，正式人物传需二次核对。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
+      "target_domain_file": "characters.json"
+    },
+    {
+      "gap_id": "character-hong-si",
+      "category": "character",
+      "canonical_name": "洪肆",
+      "aliases": [
+        "洪肆"
+      ],
+      "current_status": "present",
+      "priority": "P1",
+      "live_status": "live_confirmed",
+      "recommended_fact_level": [
+        "accepted_story_synthesis",
+        "current_kb"
+      ],
+      "source_candidates": [
+        "current-kb",
         "guide-gamekee-yanyun",
         "wiki-characters"
       ],
@@ -1012,37 +1053,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "九流门和开封地下秩序人物，适合鬼市、杂耍、幻术、市井诡谲与底层江湖。",
-      "risk_notes": "部分信息来自搜索摘要和攻略整合，正式人物传需二次核对。",
-      "target_domain_file": "characters.json"
-    },
-    {
-      "gap_id": "character-hong-si",
-      "category": "character",
-      "canonical_name": "洪肆",
-      "aliases": [
-        "洪肆"
-      ],
-      "current_status": "missing",
-      "priority": "P1",
-      "live_status": "live_confirmed",
-      "recommended_fact_level": [
-        "accepted_story_synthesis"
-      ],
-      "source_candidates": [
-        "wiki-characters",
-        "guide-gamekee-yanyun"
-      ],
-      "recommended_cards": [
-        "人物基础身份卡",
-        "人生时间线卡",
-        "关系网络卡",
-        "情绪弧线卡",
-        "可唱视角卡",
-        "禁写误区卡"
-      ],
-      "writing_impact": "九流门人物，可补下九流、无忧洞、鬼市险恶和江湖刀法线索。",
-      "risk_notes": "目前主要是名单级信息，不能过度扩写具体经历。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "目前主要是名单级信息，不能过度扩写具体经历。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1053,15 +1065,17 @@
         "冯继昇",
         "冯继升"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
-        "wiki-characters",
-        "guide-huiji-yanyun"
+        "current-kb",
+        "guide-huiji-yanyun",
+        "wiki-characters"
       ],
       "recommended_cards": [
         "人物基础身份卡",
@@ -1071,8 +1085,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "文津馆与墨山道之间的桥接人物，适合写书生入山、格物、师承转向。",
-      "risk_notes": "名字存在简化写法，完整剧情位置需后续补实录。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "名字存在简化写法，完整剧情位置需后续补实录。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1083,13 +1097,15 @@
         "燕",
         "应宁"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
+        "current-kb",
         "guide-gamekee-yanyun",
         "wiki-characters"
       ],
@@ -1101,8 +1117,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "墨山道当代巨子/不见山锚点，适合机巧、格物、冷理性和山中隐工主题。",
-      "risk_notes": "“燕”同时是普通字，检索和别名匹配需避免误召。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "“燕”同时是普通字，检索和别名匹配需避免误召。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1113,13 +1129,15 @@
         "祝英晗",
         "花毽魁主"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1130,8 +1148,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增人物，争魁、不服输、火苗般热烈，适合少年气和竞技感歌词。",
-      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1142,13 +1160,15 @@
         "林行逸",
         "傲诗"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1159,8 +1179,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增人物，傲骨、身法、诗性与文武兼修气质明显。",
-      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1171,13 +1191,15 @@
         "柳晏如",
         "飒词"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1188,8 +1210,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增人物，爽利、直白、双剑快巧，适合明快女声或少年群像。",
-      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1200,13 +1222,15 @@
         "季浮真",
         "狂歌"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1217,8 +1241,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增人物，醉意、狂性、真假难分，适合放歌、醉剑和失真感。",
-      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1229,13 +1253,15 @@
         "谢长庚",
         "华赋"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1246,8 +1272,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增人物，贵气、铺陈、锦绣文章，适合华丽辞藻和世家感。",
-      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方公开为四海豪客/首领线，不要误写成伙伴。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1343,13 +1369,15 @@
         "扫地门童",
         "双元居前扫地门童"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
+        "current_kb",
         "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-heroes"
       ],
       "recommended_cards": [
@@ -1360,8 +1388,8 @@
         "可唱视角卡",
         "禁写误区卡"
       ],
-      "writing_impact": "蓬山新增反差人物，貌不惊人却深藏不露，适合隐士和扮拙主题。",
-      "risk_notes": "官方未给正式姓名，先按描述性名称记录。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方未给正式姓名，先按描述性名称记录。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1772,14 +1800,16 @@
         "首期伙伴",
         "伙伴群像"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb",
+        "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-companion",
         "official-pengshan-live"
       ],
@@ -1789,8 +1819,8 @@
         "首期伙伴群像卡",
         "禁写误区卡"
       ],
-      "writing_impact": "首期伙伴群最适合承接同行、陪伴、玩闹、共游江湖和轻松治愈类歌词。",
-      "risk_notes": "官方确认群体和系统上线，但未在公开稿中逐一给出七个正式名字。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "官方确认群体和系统上线，但未在公开稿中逐一给出七个正式名字。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2091,16 +2121,18 @@
         "清河乡野 NPC",
         "清河营生群像"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb",
+        "official_public_seed"
       ],
       "source_candidates": [
-        "official-qinghe-theme",
-        "guide-ali213-npc-list"
+        "current-kb",
+        "guide-ali213-npc-list",
+        "official-qinghe-theme"
       ],
       "recommended_cards": [
         "群像定位卡",
@@ -2108,8 +2140,8 @@
         "可唱视角卡",
         "不拆单卡边界"
       ],
-      "writing_impact": "承接清河村镇、捕鱼、砍柴、行船、饭食和朴实乡野日常。",
-      "risk_notes": "不要逐个拆朱八碗、王多鲈等低叙事 NPC；后续有独立长支线再升级。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "不要逐个拆朱八碗、王多鲈等低叙事 NPC；后续有独立长支线再升级。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2148,17 +2180,19 @@
         "开封百业 NPC",
         "开封坊巷群像"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb",
+        "official_public_seed"
       ],
       "source_candidates": [
-        "official-kaifeng-population",
+        "current-kb",
+        "guide-ali213-npc-list",
         "official-kaifeng-overview",
-        "guide-ali213-npc-list"
+        "official-kaifeng-population"
       ],
       "recommended_cards": [
         "群像定位卡",
@@ -2166,8 +2200,8 @@
         "可唱视角卡",
         "不拆单卡边界"
       ],
-      "writing_impact": "承接开封万民、商贩、茶酒、街巷和城市烟火，不让开封只剩庙堂与鬼市。",
-      "risk_notes": "开封 NPC 量极大，默认群像，不按人头铺卡。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "开封 NPC 量极大，默认群像，不按人头铺卡。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2240,17 +2274,19 @@
         "凉州市井",
         "边民众生"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb",
+        "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
+        "guide-ali213-npc-list",
         "official-hexi-live",
-        "official-liangzhou",
-        "guide-ali213-npc-list"
+        "official-liangzhou"
       ],
       "recommended_cards": [
         "群像定位卡",
@@ -2258,8 +2294,8 @@
         "可唱视角卡",
         "不拆单卡边界"
       ],
-      "writing_impact": "承接玉门关、凉州市集、旅人、商贩、边民与最普通凡人的塞外诗梦。",
-      "risk_notes": "河西普通 NPC 摘要偏零散，先群像后升卡。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "河西普通 NPC 摘要偏零散，先群像后升卡。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2300,14 +2336,16 @@
         "文津馆舍友",
         "蓬山同窗"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb",
+        "official_public_seed"
       ],
       "source_candidates": [
+        "current-kb",
         "official-pengshan-live",
         "official-wenjinguan"
       ],
@@ -2317,8 +2355,8 @@
         "可唱视角卡",
         "不拆单卡边界"
       ],
-      "writing_impact": "承接学子、同窗、舍友、共修课业、晨读夜归和书院生活。",
-      "risk_notes": "公开具名普通 NPC 少，不宜大规模建单卡。",
+      "writing_impact": "已在正式人物库第一批补入，可被检索和用于写词；后续仍可按实录继续增厚。",
+      "risk_notes": "公开具名普通 NPC 少，不宜大规模建单卡。 正式库第一批仅做创作可用卡片，不代表人物传已完全终局。",
       "target_domain_file": "characters.json"
     },
     {
@@ -8111,5 +8149,31 @@
         "reason": "除伙伴系统具名对象外，不作为人物缺口。"
       }
     ]
+  },
+  "formal_kb_first_batch_coverage": {
+    "completed_at": "2026-06-14T00:40:00+08:00",
+    "purpose": "记录第一批从缺口盘点表转入正式人物知识库正文的条目。",
+    "covered_character_rows": [
+      "冯继昇",
+      "周蔷",
+      "四猫三鹅伙伴群像",
+      "季浮真",
+      "开封坊巷百业群像",
+      "张彦霖",
+      "扫地门童",
+      "林行逸",
+      "柳晏如",
+      "河西/凉州边塞行旅群像",
+      "洪肆",
+      "清河乡野营生群像",
+      "燕/应宁",
+      "祝英晗",
+      "蓬山文津馆学子/舍友群像",
+      "薛丑",
+      "谢长庚",
+      "赵光义/晋中原",
+      "魏仁浦"
+    ],
+    "notes": "这些条目已具备正式库可检索卡片；仍可用公司资料包、游戏内实录或后续版本继续增厚。"
   }
 }

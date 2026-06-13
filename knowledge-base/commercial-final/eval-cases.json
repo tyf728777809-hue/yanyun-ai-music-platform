@@ -1111,6 +1111,90 @@
         "character-void-king"
       ],
       "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-character-zhao-guangyi-001",
+      "input": "写一首晋中原的歌，想要开封宫城和双重身份的感觉",
+      "expected_entities": [
+        "character-zhao-guangyi-jinzhongyuan",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中赵光义/晋中原双名身份和开封宫城，不写成纯历史科普。"
+    },
+    {
+      "id": "eval-character-zhang-yanlin-001",
+      "input": "以张彦霖和河神祠写一首悼亡感的歌",
+      "expected_entities": [
+        "character-zhang-yanlin",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中河神祠、黄河、牌位和未竟之约，不编造完整结局。"
+    },
+    {
+      "id": "eval-character-zhou-qiang-001",
+      "input": "写周蔷的女声角色歌，华丽但要有哀感",
+      "expected_entities": [
+        "character-zhou-qiang",
+        "faction-zuihuayin"
+      ],
+      "expected_behavior": "命中醉花阴/樊楼/风月清醒，不低俗化、不写历史原型定论。"
+    },
+    {
+      "id": "eval-character-jiuliu-xuechou-001",
+      "input": "写一首薛丑和九流门的市井说唱",
+      "expected_entities": [
+        "character-xue-chou",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "命中九流市井和鬼市感，不把九流门写成单纯邪教。"
+    },
+    {
+      "id": "eval-character-moshan-yan-001",
+      "input": "写墨山道燕应宁的歌，要冷一点，有机关和山雾",
+      "expected_entities": [
+        "character-yan-yingning",
+        "faction-moshandao"
+      ],
+      "expected_behavior": "命中墨山道巨子、机关、冷理性，不误召普通“燕”字或科幻化。"
+    },
+    {
+      "id": "eval-character-pengshan-heroes-001",
+      "input": "写一首蓬山四海豪客群像歌，祝英晗林行逸柳晏如都要有一点",
+      "expected_entities": [
+        "character-zhu-yinghan",
+        "character-lin-xingyi",
+        "character-liu-yanru"
+      ],
+      "expected_behavior": "命中蓬山四海豪客公开气质，不误写为伙伴系统。"
+    },
+    {
+      "id": "eval-character-companion-001",
+      "input": "写一首四猫三鹅陪我跑江湖的轻松歌",
+      "expected_entities": [
+        "character-companion-four-cats-three-geese",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "命中伙伴陪伴和玩家故事，不编造七个官方名字或身份映射。"
+    },
+    {
+      "id": "eval-character-kaifeng-group-001",
+      "input": "写我在开封街头摆摊认识很多普通人的歌",
+      "expected_entities": [
+        "character-group-kaifeng-baijie",
+        "region-kaifeng",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "用开封坊巷百业群像承接普通玩家故事，不强行绑定主线人物。"
+    },
+    {
+      "id": "eval-character-wenjinguan-students-001",
+      "input": "写一首在文津馆和舍友一起读书的歌",
+      "expected_entities": [
+        "character-group-pengshan-wenjinguan-students",
+        "faction-wenjinguan",
+        "place-pengshan"
+      ],
+      "expected_behavior": "命中文津馆学子/舍友群像和蓬山书院生活，不伪造具名 NPC。"
     }
   ]
 }
