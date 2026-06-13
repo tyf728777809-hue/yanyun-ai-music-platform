@@ -317,35 +317,35 @@
     {
       "key": "character-murong-yuan",
       "entity_type": "character",
-      "canonical_name": "慕容源",
-      "aliases": ["慕容源", "Murong Yuan"],
-      "summary": "全球官网公开人物名。适合写世家、身份、旧账和江湖选择；具体设定待补。",
-      "source_type": "official_public",
-      "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
-      "fact_level": "official_public_seed",
+      "canonical_name": "容鸢",
+      "aliases": ["容鸢", "慕容源", "Murong Yuan", "墨门叛徒", "五牙大舰"],
+      "summary": "机关与墨门相关高频人物线。当前按官方中文名容鸢优先，保留慕容源/Murong Yuan 作为别名；适合写墨门遗孤、机关术、复仇、造舰和叛离旧门规。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
       "spoiler_level": "open",
       "cards": [
         {
-          "id": "lineage",
-          "heading_path": "人物/慕容源/身份与旧账",
-          "theme_tags": ["身份", "旧账", "世家感"],
-          "story_phase": "global_public_seed",
-          "summary_for_prompt": "慕容源可承载家世、旧账、名姓带来的压力；歌词要写选择，不要写百科式门第介绍。",
-          "usable_imagery": ["旧族谱", "折扇", "雨中长街", "压着的姓氏"],
-          "emotional_arc": "被姓氏定义到自己给名字重新写注脚。",
-          "avoid_claims": ["不要编造家族史", "不要编造亲属关系", "不要套用其他武侠世家设定"],
-          "content": "慕容源身份歌方向。"
+          "id": "momen-revenge",
+          "heading_path": "人物/容鸢/墨门机关与复仇",
+          "theme_tags": ["机关", "墨门", "复仇", "叛离"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "容鸢可写成机关术与复仇驱动的人物：出身旧门或旧案阴影，叛离墨门规训，以图纸、木鸢、战船和机关计算自己的回路。重点写匠心变成执念，而不是现代科技感。",
+          "usable_imagery": ["木鸢", "五牙大舰", "机关图纸", "墨线", "冷木齿轮", "不见山"],
+          "emotional_arc": "遗孤旧恨到叛离门规，再到把复仇装进机关。",
+          "avoid_claims": ["不要把容鸢和慕容源拆成两个确定人物", "不要写成蒸汽朋克", "不要套用修仙炼器"],
+          "content": "容鸢/慕容源命名采用创作叙事层合并口径。"
         },
         {
-          "id": "choice",
-          "heading_path": "人物/慕容源/选择",
-          "theme_tags": ["抉择", "江湖", "自我"],
-          "story_phase": "global_public_seed",
-          "summary_for_prompt": "适合写‘我不是家族的影子’这类主题，但不要让歌词脱离燕云世界。",
-          "usable_imagery": ["门第匾额", "一纸旧约", "街灯"],
-          "emotional_arc": "克制、挣扎、清醒地选择。",
-          "avoid_claims": ["不要写成现代豪门剧", "不要断言官方立场", "不要泛古风空话"],
-          "content": "慕容源选择主题卡。"
+          "id": "song-angle",
+          "heading_path": "人物/容鸢/歌曲角度",
+          "theme_tags": ["角色歌", "机关美学", "旧恨"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "容鸢角色歌适合冷峻、理性、带金属与木质敲击感的编曲；歌词可写‘算尽机关仍算不回旧人’，不要写成单纯反派炫技。",
+          "usable_imagery": ["雨中图纸", "舱底灯", "机关鸟", "断尺", "沉船木"],
+          "emotional_arc": "克制计算到情绪失控，再回到冰冷决断。",
+          "avoid_claims": ["不要现代化", "不要把机关写成魔法", "不要编造未确认亲属关系"],
+          "content": "容鸢歌曲角度卡。"
         }
       ]
     },
@@ -385,37 +385,37 @@
       ]
     },
     {
-      "key": "character-guishizi",
-      "entity_type": "character",
+      "key": "story-kaifeng-guishizi-underworld",
+      "entity_type": "story",
       "canonical_name": "鬼市子",
-      "aliases": ["鬼市子", "鬼市相关人"],
-      "summary": "无名剑谱和鬼市线索中可用的人物/身份名。适合写市井暗面、交易、旧谱和江湖传闻。",
-      "source_type": "official_public",
+      "aliases": ["鬼市子", "鬼市相关人", "开封鬼市", "地下鬼市", "鬼市身份壳"],
+      "summary": "鬼市子当前按开封鬼市身份壳/地下场景线处理，不作为稳定单一 NPC 传记。适合写开封繁华背面、棺材铺入口、面具交易、旧谱传闻和地下人间。",
+      "source_type": "guide_wiki_synthesis",
       "source_ref": "https://www.yysls.cn/news/official/20250529/37780_1236417.html",
-      "fact_level": "official_public_seed",
+      "fact_level": "accepted_story_synthesis",
       "spoiler_level": "open",
       "cards": [
         {
-          "id": "market",
-          "heading_path": "人物/鬼市子/鬼市传闻",
-          "theme_tags": ["鬼市", "无名剑谱", "传闻"],
-          "story_phase": "public_seed",
-          "summary_for_prompt": "鬼市子适合写夜市暗面、真假难辨的交易、失落剑谱和江湖传闻。",
-          "usable_imagery": ["鬼市灯", "旧剑谱", "黑布摊", "低声叫卖"],
-          "emotional_arc": "好奇踏入、被真相牵住、带着疑问离开。",
-          "avoid_claims": ["不要编造真实鬼怪", "不要写成恐怖片", "不要断言剑谱归属"],
-          "content": "鬼市子创作资料卡。"
+          "id": "underworld",
+          "heading_path": "剧情/开封鬼市/鬼市子身份壳",
+          "theme_tags": ["鬼市", "无名剑谱", "开封暗面", "身份壳"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市子相关创作不要先当人物小传，而应写成开封地下鬼市的入口和身份壳：白日繁华，夜里戴面具交易，棺材铺、鬼面、绿灯、旧谱和低声叫卖组成地下人间。",
+          "usable_imagery": ["棺材为舟", "鬼面开市", "绿灯照路", "卯时闭市", "旧剑谱", "地底花海"],
+          "emotional_arc": "从好奇入市，到真假难辨，再发现地下比地上更像人间。",
+          "avoid_claims": ["不要硬写成单一 NPC 传记", "不要写成恐怖片", "不要把鬼市写成现实违法交易"],
+          "content": "鬼市子按开封鬼市故事/场景线处理。"
         },
         {
           "id": "song-angle",
-          "heading_path": "人物/鬼市子/歌曲角度",
+          "heading_path": "剧情/开封鬼市/歌曲角度",
           "theme_tags": ["暗线", "市井", "悬疑"],
-          "story_phase": "public_seed",
-          "summary_for_prompt": "适合悬疑叙事歌或带戏腔的暗色段落，但要克制，不要变成怪谈百科。",
-          "usable_imagery": ["半张面具", "铜钱声", "烛火摇晃"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合悬疑叙事歌或带戏腔的暗色段落：戴上面具才敢活，地下人守着地下城。重点是市井暗面和小人物，不是怪谈猎奇。",
+          "usable_imagery": ["半张面具", "铜钱声", "烛火摇晃", "棺材铺门缝", "地下市声"],
           "emotional_arc": "迷离、试探、余味未尽。",
           "avoid_claims": ["不要给出未确认身份", "不要把鬼市写成现实违法交易", "不要血腥化"],
-          "content": "鬼市子歌曲角度卡。"
+          "content": "开封鬼市歌曲角度卡。"
         }
       ]
     },
@@ -423,34 +423,209 @@
       "key": "character-zheng-e",
       "entity_type": "character",
       "canonical_name": "郑鄂",
-      "aliases": ["郑鄂", "十六声记录者", "故事记录者"],
-      "summary": "作为寻声、记录、故事传承的创作抽象锚点使用；具体史实和剧情需实录或官方设定确认。",
-      "source_type": "official_public_curated",
+      "aliases": ["郑鄂", "常平使", "白衣折扇", "霜枪", "常平一炬"],
+      "summary": "高频悲剧角色线。按当前创作叙事层，郑鄂应写成本欲救世、终成厌世执刃者的真实角色：常平使身份、白衣折扇、霜枪、常平火与故人旧事共同构成其歌曲底色。",
+      "source_type": "guide_wiki_synthesis",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
-      "fact_level": "creative_guidance",
+      "fact_level": "accepted_story_synthesis",
       "spoiler_level": "open",
       "cards": [
         {
-          "id": "recorder",
-          "heading_path": "人物/郑鄂/记录与寻声",
-          "theme_tags": ["寻声", "记录", "故事传承"],
-          "story_phase": "creative_guidance",
-          "summary_for_prompt": "郑鄂可作为‘记录声音的人’的创作锚点，帮助歌词写出记住无名者、拾回故事的感觉。",
-          "usable_imagery": ["旧册", "墨迹", "十六段回声", "无名者的名字"],
-          "emotional_arc": "旁观记录到被故事改变。",
-          "avoid_claims": ["不要编造官方身份履历", "不要把他写成全知旁白", "不要替官方解释标题全部含义"],
-          "content": "郑鄂记录者意象卡。"
+          "id": "changping-fall",
+          "heading_path": "人物/郑鄂/常平一炬",
+          "theme_tags": ["常平使", "救世", "厌世", "悲剧角色"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "郑鄂角色歌应写从救世初心到厌世执刃的坠落：白衣折扇下压着悲恸身世，常平一炬烧掉的不只是旧地，也是他相信过的人间。",
+          "usable_imagery": ["白衣", "折扇", "霜枪", "常平火", "灰烬里的旧愿", "孤灯照雪"],
+          "emotional_arc": "救世、失望、挥刃、余生寻道。",
+          "avoid_claims": ["不要再写成抽象记录者", "不要把黑化写成爽文", "不要编造未确认结局"],
+          "content": "郑鄂按常平使悲剧人物线处理。"
         },
         {
           "id": "song-angle",
           "heading_path": "人物/郑鄂/歌曲角度",
-          "theme_tags": ["叙事", "无名者", "历史感"],
-          "story_phase": "creative_guidance",
-          "summary_for_prompt": "适合写成旁白式叙事：我听见、我记下、我不让名字被风吹散。",
-          "usable_imagery": ["风翻旧页", "灯下笔", "城门回声"],
-          "emotional_arc": "安静见证到悲悯承担。",
-          "avoid_claims": ["不要长篇讲设定", "不要堆历史名词", "不要写成官方宣言"],
+          "theme_tags": ["角色歌", "霜雪", "旧愿"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合冷峻、慢热、最后爆发的悲剧叙事歌；副歌可落在‘我曾想救人间，后来只剩灰烬认得我’这类方向。",
+          "usable_imagery": ["雪中白衣", "折扇合拢", "枪尖霜色", "烧尽的城门"],
+          "emotional_arc": "克制叙述逐步烧成不可回头的决绝。",
+          "avoid_claims": ["不要写成纯反派", "不要堆历史名词", "不要让歌词变成剧情解说"],
           "content": "郑鄂歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-jiangwulang",
+      "entity_type": "character",
+      "canonical_name": "江无浪",
+      "aliases": ["江无浪", "江晏", "江叔", "养父", "竹林旧居"],
+      "summary": "清河与少东家童年线高频人物。按当前创作叙事层，江无浪/江晏是带着婴儿逃亡、在竹林抚养主角长大、后来忽然远去的江叔，是不羡仙家庭感的另一根柱子。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "fosterfather-arc",
+          "heading_path": "人物/江无浪/养父与远行",
+          "theme_tags": ["江叔", "养父", "清河", "少东家", "远行"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "江无浪/江晏可写成少东家童年的庇护者：带着婴儿逃亡，在竹林和不羡仙附近撑起一个临时的家，又在某个时刻远行，把牵挂留在旧居、头坛酒和背影里。",
+          "usable_imagery": ["竹林旧居", "头坛饮", "远行背影", "旧木门", "江叔的叮嘱", "雨夜抱婴"],
+          "emotional_arc": "逃亡庇护到安稳日常，再到忽然离去后的牵念。",
+          "avoid_claims": ["不要把江叔写成褚清泉替代品", "不要编造完整身世结论", "不要写成现代父爱模板"],
+          "content": "江无浪/江晏用于少东家童年、养育和归家线。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/江无浪/歌曲角度",
+          "theme_tags": ["亲情", "旧居", "不羡仙", "守护"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "江叔主题适合低声叙事、民谣或温暖后劲的男声歌；歌词可写‘他从不说自己救过谁，只把门留给后来回家的人’。",
+          "usable_imagery": ["灶火", "竹影", "旧刀挂墙", "半壶酒", "门闩"],
+          "emotional_arc": "平淡守护到多年后才懂的沉重。",
+          "avoid_claims": ["不要宏大化成救世英雄", "不要把家庭关系写成狗血三角", "不要脱离清河生活感"],
+          "content": "江无浪歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-chuqingquan",
+      "entity_type": "character",
+      "canonical_name": "褚清泉",
+      "aliases": ["褚清泉", "褚大侠", "寒姨旧情", "黑水城故人"],
+      "summary": "寒香寻人物传高频共现角色。按当前创作叙事层，褚清泉是家国大义与私情撕裂的边关故人，毁容、换脸请求、边塞潜伏和死讯共同构成寒香寻旧痛。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "border-farewell",
+          "heading_path": "人物/褚清泉/边塞永别",
+          "theme_tags": ["褚清泉", "寒香寻", "边塞", "换脸", "家国私情"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "褚清泉线可写家国大义与私情撕裂：他曾被寒香寻所救，与她相知相爱，却为了边塞和潜伏任务请求换脸；寒香寻拒绝的不是大义，而是不忍他连名字、脸和归路都失去。",
+          "usable_imagery": ["边塞风雪", "旧脸新脸", "封存的酒", "黑水城死讯", "战袍旧痕"],
+          "emotional_arc": "被救、相爱、请求换脸、离去、成永别。",
+          "avoid_claims": ["不要写成甜宠爱情", "不要把家国大义写成口号", "不要让寒香寻只成为等待者"],
+          "content": "褚清泉作为寒香寻旧情与边塞悲剧支点。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/褚清泉/歌曲角度",
+          "theme_tags": ["角色歌", "旧情", "家国", "永别"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合写成男声/对唱/叙事摇滚：副歌可落在‘若换了脸还能不能被你认出’这类身份与归途母题。",
+          "usable_imagery": ["风雪关城", "未饮的酒", "灯下旧面", "断甲", "远信"],
+          "emotional_arc": "温柔开场，逐步被战火推向不可回头。",
+          "avoid_claims": ["不要写现实军旅歌", "不要补官方未确认战役细节", "不要血腥化"],
+          "content": "褚清泉歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-hongxian",
+      "entity_type": "character",
+      "canonical_name": "红线",
+      "aliases": ["红线", "寒香寻相关红线", "清河红线", "少年同行"],
+      "summary": "清河少年同行与不羡仙家庭感相关人物。按当前创作叙事层，红线适合承接少年感、旧日同游、互相打闹和乱世将至前的明亮底色。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "youth-companion",
+          "heading_path": "人物/红线/少年同行",
+          "theme_tags": ["红线", "少年感", "同行", "清河", "不羡仙"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "红线适合写清河早期的明亮少年感：屋檐下躲雨、偷学一招半式、一起跑过神仙渡，明知道乱世会来，却在当下偷得半日闲。",
+          "usable_imagery": ["屋檐雨", "桃花渡口", "半卷残谱", "少年脚步", "旧签筒"],
+          "emotional_arc": "轻快相逢到旧日回望，再到明亮记忆被乱世照出裂痕。",
+          "avoid_claims": ["不要强行写成爱情", "不要吞掉玩家自己的同行故事", "不要把红线写成单纯工具人"],
+          "content": "红线用于少年同行和清河明亮底色。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/红线/歌曲角度",
+          "theme_tags": ["角色歌", "少年游", "伙伴"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "红线相关歌曲适合轻快开场、后段变酸的结构；可以写‘那时我们还不知道江湖会把玩笑都兑现’。",
+          "usable_imagery": ["短笛", "雨棚", "跑过泥路", "笑声", "半盏甜酒"],
+          "emotional_arc": "笑着开始，唱到最后忽然发酸。",
+          "avoid_claims": ["不要写成校园青春歌", "不要现代化", "不要编造亲缘/结局"],
+          "content": "红线歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-yidao",
+      "entity_type": "character",
+      "canonical_name": "伊刀",
+      "aliases": ["伊刀", "寒姨故人", "寒香寻故人"],
+      "summary": "寒香寻清河主线高频共现人物。按当前创作叙事层，伊刀是旧案与旧人重新浮现的触发者之一，适合写故人相逢、刀口旧事和被时间压住的秘密。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "old-acquaintance",
+          "heading_path": "人物/伊刀/寒姨故人",
+          "theme_tags": ["伊刀", "寒香寻", "故人", "旧案"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "伊刀线适合写旧人突然回到门前，把寒香寻压在酒、梨花和笑意下的过去重新撬开；不要急着定义关系，重点写故人一眼认出的沉默。",
+          "usable_imagery": ["旧刀", "门前风", "半句旧称", "灯下沉默", "梨花落肩"],
+          "emotional_arc": "平静生活被旧人敲门，旧案回潮，沉默比刀更响。",
+          "avoid_claims": ["不要写死具体关系性质", "不要把伊刀脸谱化成反派", "不要用武侠套话堆砌"],
+          "content": "伊刀作为寒香寻旧事触发点。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/伊刀/歌曲角度",
+          "theme_tags": ["旧人", "刀", "清河主线"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合冷色、短句、低鼓点的旧案歌；歌词可以围绕‘你一来，寒姨的旧名就藏不住了’。",
+          "usable_imagery": ["刀鞘", "雨夜脚印", "旧称呼", "酒盏微颤"],
+          "emotional_arc": "克制、试探、旧伤被点开。",
+          "avoid_claims": ["不要写成纯打斗歌", "不要编完整旧案", "不要血腥化"],
+          "content": "伊刀歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-tianbushou",
+      "entity_type": "character",
+      "canonical_name": "天不收",
+      "aliases": ["天不收", "旧信相关人", "寒香寻旧友"],
+      "summary": "寒香寻旧信与清河探索相关高频线索人物。按当前创作叙事层，天不收适合承接旧信、未寄出的过去、知道却不能说破的旧友感。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "old-letter",
+          "heading_path": "人物/天不收/旧信与旧友",
+          "theme_tags": ["天不收", "旧信", "寒香寻", "清河探索"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天不收线可写寒香寻房间里的陈年旧信和旧友关系：有些人知道她的过去，却只能把真相折进信纸里，等少东家长大后自己去看。",
+          "usable_imagery": ["陈年旧信", "折痕", "墨迹发黄", "门外等候", "旧友沉默"],
+          "emotional_arc": "知情、守口、递出旧信，让过去自己开口。",
+          "avoid_claims": ["不要写成明确恋情", "不要替官方补完整秘密", "不要把旧信写成现代悬疑道具"],
+          "content": "天不收用于旧信、旧友和寒香寻过去线。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/天不收/歌曲角度",
+          "theme_tags": ["旧友", "秘密", "信"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合旁观者视角或低声叙事：我替她收着一封信，等有一天你能读懂她为什么不让你入江湖。",
+          "usable_imagery": ["信封", "封泥", "旧灯", "门槛", "静坐的人"],
+          "emotional_arc": "沉默守护到把秘密交还。",
+          "avoid_claims": ["不要过度解谜", "不要写成全知旁白", "不要弱化寒香寻主体性"],
+          "content": "天不收歌曲角度卡。"
         }
       ]
     },
