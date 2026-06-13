@@ -59,15 +59,16 @@ KNOWLEDGE_RETRIEVAL_MODE=disabled
 
 ```bash
 KNOWLEDGE_RETRIEVAL_MODE=pgvector
-KNOWLEDGE_KB_VERSION=yanyun-official-kb-2026-06-13-v1
-python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/yanyun-official-kb-v1.json
+KNOWLEDGE_KB_VERSION=yanyun-commercial-kb-2026-06-13-v1
+STRICT_COMMERCIAL=1 python3 scripts/knowledge/validate-yanyun-knowledge.py knowledge-base/commercial-final
+python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/commercial-final
 ```
 
 导入脚本会优先使用本机 `psql`；如果未安装，会自动使用 `docker exec -i yanyun-postgres psql`。
 
 知识库资料只使用受控文件导入，不联网搜索，不自由采集网页。当前种子资料位于
-`knowledge-base/yanyun-official-kb-v1.json`，只用于打通实体优先 + pgvector 辅助检索；
-后续需要公司/官方资料包和游戏内实录继续补齐角色、剧情、地域、门派和玩法体验。
+`knowledge-base/commercial-final/`，按人物、剧情、地域、势力、玩法和创作禁区分域维护；
+旧 `knowledge-base/yanyun-official-kb-v1.json` 仅作为历史工程种子保留。
 
 ## Backend Commands
 

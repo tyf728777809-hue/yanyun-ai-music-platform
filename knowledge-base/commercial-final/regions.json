@@ -1,0 +1,225 @@
+{
+  "domain": "regions",
+  "entities": [
+    {
+      "key": "region-qinghe",
+      "entity_type": "region",
+      "canonical_name": "清河",
+      "aliases": ["清河", "Qinghe"],
+      "summary": "初入江湖和山水村镇感区域，可承接新手、田野、神仙渡、不羡仙等温暖起点。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "home-start",
+        "heading_path": "地域/清河/初入江湖",
+        "theme_tags": ["清河", "初入江湖", "山水", "烟火"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "清河适合写初入江湖、村镇烟火、山水清亮和普通人的温柔起点。",
+        "usable_imagery": ["河岸", "草桥", "晨雾", "茶摊", "不羡仙灯火"],
+        "emotional_arc": "新鲜、轻快、第一次被江湖打动。",
+        "avoid_claims": ["不要把清河写成纯仙侠仙境", "不要编造具体任务结局", "不要堆砌地名"],
+        "content": "清河地域创作卡。"
+      }]
+    },
+    {
+      "key": "region-kaifeng",
+      "entity_type": "region",
+      "canonical_name": "开封",
+      "aliases": ["开封", "Kaifeng", "开封城"],
+      "summary": "城市、市井、夜市、樊楼和鬼市等繁华暗面并存的核心地域。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20241017/37780_1189576.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "city-night",
+        "heading_path": "地域/开封/繁华与暗面",
+        "theme_tags": ["开封", "夜市", "鬼市", "市井"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "开封适合写繁华市井、夜市灯火、樊楼喧声和鬼市暗面；可以承接热闹里藏孤独的情绪。",
+        "usable_imagery": ["樊楼灯", "夜市叫卖", "鬼市暗巷", "雨后青石路"],
+        "emotional_arc": "被繁华吸引，到看见繁华背后的暗涌。",
+        "avoid_claims": ["不要把开封写成现代都市", "不要编造具体历史事件", "不要过度恐怖化鬼市"],
+        "content": "开封地域创作卡。"
+      }]
+    },
+    {
+      "key": "region-yanmen",
+      "entity_type": "region",
+      "canonical_name": "雁门",
+      "aliases": ["雁门", "Yanmen", "雁门关"],
+      "summary": "边塞、风雪、守望和家国感的核心地域，可用于大气悲壮主题。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "frontier",
+        "heading_path": "地域/雁门/边塞风雪",
+        "theme_tags": ["雁门", "边塞", "风雪", "守望"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "雁门适合写边塞风雪、守城、归雁和普通人守护身后灯火；适合史诗但要避免空喊口号。",
+        "usable_imagery": ["雪中关楼", "南飞雁", "残旗", "冻裂的弓弦"],
+        "emotional_arc": "孤寒、坚守、悲壮但不夸张。",
+        "avoid_claims": ["不要编造具体战役", "不要现实政治影射", "不要把个人故事写成宏大宣传"],
+        "content": "雁门地域创作卡。"
+      }]
+    },
+    {
+      "key": "region-liangzhou",
+      "entity_type": "region",
+      "canonical_name": "凉州",
+      "aliases": ["凉州", "Liangzhou"],
+      "summary": "官方公开凉州主线相关地域，适合风沙、身份追问、玉露为乡和远方归属主题。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250718/37780_1247023.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "sand-home",
+        "heading_path": "地域/凉州/风沙与归属",
+        "theme_tags": ["凉州", "风沙", "身份", "玉露为乡"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "凉州适合写风沙、远行、故乡和身份追问；情绪可以比清河更苍凉、更辽阔。",
+        "usable_imagery": ["风沙", "驼铃", "远山", "玉露", "荒路灯火"],
+        "emotional_arc": "漂泊、追问、在荒凉中确认归属。",
+        "avoid_claims": ["不要异域刻板化", "不要编造主线结局", "不要堆砌沙漠标签"],
+        "content": "凉州地域创作卡。"
+      }]
+    },
+    {
+      "key": "region-changan",
+      "entity_type": "region",
+      "canonical_name": "长安",
+      "aliases": ["长安", "Changan", "Chang'an"],
+      "summary": "远方目标、历史回声和大城想象的地域锚点；具体开放内容需后续实录。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250718/37780_1247023.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "far-city",
+        "heading_path": "地域/长安/远方与旧梦",
+        "theme_tags": ["长安", "远方", "历史感"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "长安可作为远方、旧梦、大城与历史回声的方向，不要写成已确认完整地图体验。",
+        "usable_imagery": ["远城灯", "旧梦", "车马声", "城门"],
+        "emotional_arc": "向往、迟疑、向远方迈步。",
+        "avoid_claims": ["不要编造长安开放细节", "不要历史百科化", "不要把长安写成固定结局"],
+        "content": "长安地域创作卡。"
+      }]
+    },
+    {
+      "key": "region-qingzhou",
+      "entity_type": "region",
+      "canonical_name": "青州",
+      "aliases": ["青州", "Qingzhou"],
+      "summary": "官方公开青州、蓬山和文津馆相关地域，书卷、山水、求索和情感线索并重。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250823/37780_1254195.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "mountain-books",
+        "heading_path": "地域/青州/蓬山文津",
+        "theme_tags": ["青州", "蓬山", "文津馆", "书卷"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "青州适合写山中书卷、文津馆求索、雨雾与情感线索；气质清冷而有文气。",
+        "usable_imagery": ["蓬山云雾", "文津书卷", "山雨", "墨香"],
+        "emotional_arc": "求知、靠近真相、被情感牵动。",
+        "avoid_claims": ["不要编造学派定论", "不要写成现代学院", "不要断言关系结局"],
+        "content": "青州地域创作卡。"
+      }]
+    },
+    {
+      "key": "place-pengshan",
+      "entity_type": "region",
+      "canonical_name": "蓬山",
+      "aliases": ["蓬山", "Pengshan"],
+      "summary": "青州相关山地场景，适合云雾、求索、登山和清冷情绪。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250823/37780_1254195.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "mist",
+        "heading_path": "地域/蓬山/云雾与求索",
+        "theme_tags": ["蓬山", "云雾", "求索"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "蓬山可写山雾、石阶、书声与寻找答案，适合慢歌和空灵视觉。",
+        "usable_imagery": ["山雾", "石阶", "远钟", "湿竹"],
+        "emotional_arc": "迷雾、追问、山顶一点明亮。",
+        "avoid_claims": ["不要写成仙山飞升", "不要编造地理细节", "不要空泛古风"],
+        "content": "蓬山场景卡。"
+      }]
+    },
+    {
+      "key": "place-shenxiandu",
+      "entity_type": "region",
+      "canonical_name": "神仙渡",
+      "aliases": ["神仙渡", "不羡仙渡口"],
+      "summary": "清河/不羡仙相关起点场景，适合少年游、相逢、渡口和短暂快乐。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20241227/37780_1202836.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "ferry",
+        "heading_path": "地域/神仙渡/相逢起点",
+        "theme_tags": ["神仙渡", "相逢", "少年游"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "神仙渡适合写相逢、渡口、少年玩笑和明知会分别仍珍惜当下的轻盈。",
+        "usable_imagery": ["渡口", "桃花", "小舟", "雨棚"],
+        "emotional_arc": "轻松相逢到多年后回望。",
+        "avoid_claims": ["不要编造具体剧情结局", "不要只写桃花红尘", "不要写成仙界渡口"],
+        "content": "神仙渡场景创作卡。"
+      }]
+    },
+    {
+      "key": "place-ruoshui-an",
+      "entity_type": "region",
+      "canonical_name": "弱水岸",
+      "aliases": ["弱水岸", "弱水"],
+      "summary": "寻心相关水岸场景，适合记忆、回声、自我追问和悬疑感。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20241227/37780_1202836.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "waterside",
+        "heading_path": "地域/弱水岸/记忆水岸",
+        "theme_tags": ["弱水岸", "记忆", "寻心"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "弱水岸适合写水面回声、记忆碎片、旧名和看不清的过去。",
+        "usable_imagery": ["水面", "芦苇", "倒影", "旧名"],
+        "emotional_arc": "困惑、靠近真相、仍保留谜团。",
+        "avoid_claims": ["不要编造真相", "不要写成神话弱水", "不要恐怖化"],
+        "content": "弱水岸场景卡。"
+      }]
+    },
+    {
+      "key": "place-buxianxian",
+      "entity_type": "place",
+      "canonical_name": "不羡仙",
+      "aliases": ["不羡仙", "不羡仙酒馆", "不羡仙客栈"],
+      "summary": "清河/神仙渡相关江湖烟火场景，适合归家、灯火、酒馆、玩家回忆和寒香寻主题。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20241227/37780_1202836.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "tavern",
+        "heading_path": "场景/不羡仙/酒馆灯火",
+        "theme_tags": ["不羡仙", "酒馆", "归家", "江湖烟火"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "不羡仙适合写归家感、酒馆灯火、屋檐雨声和江湖里短暂安稳的一隅。",
+        "usable_imagery": ["酒馆灯", "木桌", "檐下雨", "半碗热汤"],
+        "emotional_arc": "疲惫归来、被灯火接住、又要出门。",
+        "avoid_claims": ["不要写成现代酒吧", "不要编造固定经营者设定", "不要用醉酒低俗化"],
+        "content": "不羡仙场景创作卡。"
+      }]
+    }
+  ]
+}

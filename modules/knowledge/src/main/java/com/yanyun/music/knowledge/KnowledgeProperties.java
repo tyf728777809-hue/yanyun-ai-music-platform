@@ -2,8 +2,10 @@ package com.yanyun.music.knowledge;
 
 public class KnowledgeProperties {
 
+  private static final String DEFAULT_KB_VERSION = "yanyun-commercial-kb-2026-06-13-v1";
+
   private String retrievalMode = "disabled";
-  private String kbVersion = "yanyun-official-kb-2026-06-13-v1";
+  private String kbVersion = DEFAULT_KB_VERSION;
   private int maxReferences = 6;
   private int entityLimit = 4;
   private int semanticLimit = 6;
@@ -26,9 +28,7 @@ public class KnowledgeProperties {
 
   public void setKbVersion(String kbVersion) {
     this.kbVersion =
-        kbVersion == null || kbVersion.isBlank()
-            ? "yanyun-official-kb-2026-06-13-v1"
-            : kbVersion.trim();
+        kbVersion == null || kbVersion.isBlank() ? DEFAULT_KB_VERSION : kbVersion.trim();
   }
 
   public int getMaxReferences() {

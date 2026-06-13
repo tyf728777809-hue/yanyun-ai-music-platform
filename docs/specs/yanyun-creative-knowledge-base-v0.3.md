@@ -6,11 +6,22 @@
 
 ## Source Policy
 
-- 首版资料来源优先级：公司/官方资料包、公开官方资料、游戏内实录整理。
-- 社区资料只可作为发现线索，不直接进入事实层。
+- 首版资料来源优先级：公司/官方资料包、公开官方资料、游戏内实录整理、攻略站/玩家维基/剧情整理综合资料。
+- 本知识库服务 AI 作词与创作，不是对外剧情百科。攻略站、玩家维基、剧情实录整理和自问自答结果可以进入“创作叙事层”，用于串联人物传、剧情线和可写意象。
+- 未经整理的原始社区散帖不直接入库；经过交叉整理后的资料使用 `source_type=guide_wiki_synthesis` 或 `community` + `fact_level=accepted_story_synthesis`。
 - 公开来源登记见 `docs/integrations/yanyun-knowledge-source-registry.md`。
 - 每个知识版本必须记录 `kb_version`、`content_as_of`、来源策略和导入时间。
 - 每条资料分事实层与创作层：事实层防止角色/剧情写错；创作层提供情绪、意象、歌词角度和禁写误区。
+
+## Self-QA Collection
+
+允许使用自问自答作为资料扩充方法。标准流程：
+
+1. 先模拟玩家真实提问，例如“以寒香寻的一生写一首歌”“写千夜的孤独和夜行”“写九流门局中局”。
+2. 让模型输出该问题需要的资料结构：人物经历、关系、剧情阶段、地域、情绪弧线、可用意象、禁写误区。
+3. 再让模型按知识库字段直接输出候选卡片：`summary_for_prompt`、`usable_imagery`、`emotional_arc`、`avoid_claims`。
+4. 主 Agent 负责收敛和去重，标记来源等级为 `accepted_story_synthesis`，并避免写成百科复述。
+5. 如果后续公司需要对外剧情准确性，再把对应卡片回查官方/实录来源；作词链路可以先使用创作叙事层。
 
 ## Runtime Behavior
 
@@ -20,25 +31,29 @@
 - 每次注入 3-6 条短上下文，只包含摘要、情绪弧线、可用意象和禁写项，不塞官方原文大段文本。
 - 检索失败降级为空知识上下文，不阻断创作。
 
-## First Seed
+## Commercial Knowledge Package
 
-首版种子文件为 `knowledge-base/yanyun-official-kb-v1.json`，覆盖：
+商用默认入口为 `knowledge-base/commercial-final/`，导入时合并为 `yanyun-commercial-kb-2026-06-13-v1`。当前已按 7 个文件分域维护：
 
-- 人物样例：寒香寻、寻心。
-- 地域样例：清河、开封、雁门、凉州、长安、青州 / 蓬山 / 文津馆。
-- 场景样例：不羡仙 / 神仙渡、开封夜色。
-- 剧情/线索样例：玉露为乡、弱水岸寻心、九流线索、无名剑谱。
-- 主题样例：小人物侠义、门派倾覆。
-- 玩法样例：奇术、偷师百家、寻声、中式解谜、武学自由搭配、营生与不平事。
+- `characters.json`：角色、玩家游侠承接位。
+- `storylines.json`：剧情/任务线和普通玩家故事模板。
+- `regions.json`：地域、场景、城市气质。
+- `factions.json`：势力/门派/江湖组织。
+- `gameplay.json`：玩法体验与玩家行为素材。
+- `creative-boundaries.json`：创作禁区、版权和商业边界。
+- `eval-cases.json`：商用回归题库。
 
-该种子只是工程打通和检索行为验证样本，不代表完整官方知识库。后续需要公司/官方资料包和游戏内实录继续补齐高频角色、剧情/任务线、地域、势力/门派和玩法体验。
+当前商用包包含 63 个实体、79 个创作 chunk 和 30 条 eval case，适合作为核心 80% 覆盖的第一版。它仍不代表对外官方剧情百科：高频角色完整人生经历、支线结局、人物关系和品牌禁区会通过自问自答、攻略/维基综合和后续实录持续补齐。
+
+旧 `knowledge-base/yanyun-official-kb-v1.json` 仅作为历史单文件工程种子保留。
 
 ## Import
 
 本地导入：
 
 ```bash
-python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/yanyun-official-kb-v1.json
+STRICT_COMMERCIAL=1 python3 scripts/knowledge/validate-yanyun-knowledge.py knowledge-base/commercial-final
+python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/commercial-final
 ```
 
 需要 PostgreSQL 已支持 `vector` 扩展。Docker Compose 已将本地 PostgreSQL 镜像切到 `pgvector/pgvector:pg16`；已有容器如未重建，需重建 postgres 服务后再执行 migration 和导入。
@@ -53,7 +68,7 @@ docker exec -i ${POSTGRES_CONTAINER:-yanyun-postgres} psql -U ${POSTGRES_USER:-p
 
 ```bash
 KNOWLEDGE_RETRIEVAL_MODE=pgvector \
-KNOWLEDGE_KB_VERSION=yanyun-official-kb-2026-06-13-v1 \
+KNOWLEDGE_KB_VERSION=yanyun-commercial-kb-2026-06-13-v1 \
 java -jar apps/music-api/build/libs/music-api-0.1.0-SNAPSHOT.jar
 ```
 
@@ -68,7 +83,7 @@ java -jar apps/music-api/build/libs/music-api-0.1.0-SNAPSHOT.jar
 
 ## Acceptance
 
-- “以寒香寻的人生经历写歌”命中寒香寻和不羡仙相关资料。
+- “以寒香寻的人生经历写歌”命中寒香寻剧情整合人物传、不羡仙、神仙渡和洛神/寻心相关创作意象。
 - “天赋平平的善良剑客，门派覆灭”命中小人物侠义和门派倾覆资料，不强行绑定官方角色。
 - “高达主题歌”仍拒绝；“高达那种孤独热血感但改成燕云”可转译但不能保留其他 IP 专有名词。
 - 检索耗时目标：P50 < 500ms，P95 < 1.5s。

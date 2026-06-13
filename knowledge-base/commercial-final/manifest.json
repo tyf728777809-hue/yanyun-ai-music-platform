@@ -1,0 +1,68 @@
+{
+  "kb_version": "yanyun-commercial-kb-2026-06-13-v1",
+  "title": "燕云十六声商用创作知识库 v1",
+  "content_as_of": "2026-06-13",
+  "source_policy": "official_public_plus_guide_wiki_story_synthesis",
+  "notes": "商用版按全量百科方向组织，当前使用官方公开资料、攻略站、玩家维基、剧情实录整理和自问自答综合人物传。官方/实录资料优先，但创作叙事层允许采用 guide_wiki_synthesis / accepted_story_synthesis 口径，用于提升歌词世界归属感和角色厚度。",
+  "source_registry": "docs/integrations/yanyun-knowledge-source-registry.md",
+  "documents": [
+    {
+      "id": "commercial-final-seed",
+      "file_path": "knowledge-base/commercial-final",
+      "title": "商用分域知识库整理种子",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
+      "source_updated_at": "2026-06-13",
+      "verified_by": "codex"
+    },
+    {
+      "id": "official-global-site",
+      "file_path": "external/wherewindsmeetgame.com",
+      "title": "Where Winds Meet Global Official Site",
+      "source_type": "official_public",
+      "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
+      "source_updated_at": "2026-06-13",
+      "verified_by": "codex"
+    },
+    {
+      "id": "official-mainland-site",
+      "file_path": "external/yysls.cn",
+      "title": "燕云十六声官网",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "source_updated_at": "2026-06-13",
+      "verified_by": "codex"
+    },
+    {
+      "id": "official-store-google-play",
+      "file_path": "external/google-play",
+      "title": "Where Winds Meet Google Play Listing",
+      "source_type": "official_public",
+      "source_ref": "https://play.google.com/store/apps/details?hl=zh&id=com.netease.yysls",
+      "source_updated_at": "2026-06-13",
+      "verified_by": "codex"
+    }
+  ],
+  "domains": [
+    "characters.json",
+    "storylines.json",
+    "regions.json",
+    "factions.json",
+    "gameplay.json",
+    "creative-boundaries.json",
+    "eval-cases.json"
+  ],
+  "quality_targets": {
+    "min_entities": 60,
+    "min_chunks": 70,
+    "min_eval_cases": 30,
+    "min_entity_types": {
+      "character": 12,
+      "story": 8,
+      "region": 8,
+      "faction": 10,
+      "gameplay": 8,
+      "boundary": 4
+    }
+  }
+}

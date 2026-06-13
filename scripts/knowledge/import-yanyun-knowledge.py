@@ -10,6 +10,8 @@ import unicodedata
 import uuid
 from pathlib import Path
 
+from yanyun_kb_loader import load_payload
+
 
 VECTOR_DIMENSIONS = 64
 NAMESPACE = uuid.UUID("5b1a51f3-5932-4a39-8d0d-5e91f6c9e5d7")
@@ -208,8 +210,8 @@ def psql_command():
 
 
 def main():
-    input_path = Path(sys.argv[1] if len(sys.argv) > 1 else "knowledge-base/yanyun-official-kb-v1.json")
-    payload = json.loads(input_path.read_text(encoding="utf-8"))
+    input_path = Path(sys.argv[1] if len(sys.argv) > 1 else "knowledge-base/commercial-final")
+    payload = load_payload(input_path)
     sql = sql_for_payload(payload)
     env = os.environ.copy()
     if os.environ.get("POSTGRES_PASSWORD"):

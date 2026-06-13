@@ -1,0 +1,225 @@
+{
+  "domain": "gameplay",
+  "entities": [
+    {
+      "key": "gameplay-qishu",
+      "entity_type": "gameplay",
+      "canonical_name": "奇术",
+      "aliases": ["奇术", "点穴", "摄星拿月", "狮吼功"],
+      "summary": "燕云玩法气质的重要来源，可把武侠动作写成可唱意象，而不是技能说明。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20251022/37780_1264523.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "wonder",
+        "heading_path": "玩法/奇术/武侠想象",
+        "theme_tags": ["奇术", "点穴", "摄星拿月", "武侠"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "奇术适合写成出手一瞬、气息、山河回应和少年偷学到的惊喜；不要写成技能说明书。",
+        "usable_imagery": ["一指定风", "袖中星光", "狮吼震瓦", "掌心风声"],
+        "emotional_arc": "惊奇、练习、第一次用来帮人。",
+        "avoid_claims": ["不要编造数值效果", "不要写成法术修仙", "不要堆技能名"],
+        "content": "奇术玩法创作卡。"
+      }]
+    },
+    {
+      "key": "gameplay-steal-learning",
+      "entity_type": "gameplay",
+      "canonical_name": "偷师百家",
+      "aliases": ["偷师", "偷师百家", "学艺", "百家武学"],
+      "summary": "玩家成长体验：从模仿到自成一派，适合普通玩家故事和热血成长歌。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "growth",
+        "heading_path": "玩法/偷师百家/成长",
+        "theme_tags": ["偷师", "成长", "百家武学"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "偷师百家可写一个人从笨拙模仿到有自己的招式，强调江湖学习和自我成长。",
+        "usable_imagery": ["半卷残谱", "墙外偷看", "磨破的手", "第一次接住一招"],
+        "emotional_arc": "笨拙、坚持、终于走出自己的路。",
+        "avoid_claims": ["不要鼓励现实偷盗", "不要编造技能获取步骤", "不要写成攻略"],
+        "content": "偷师百家玩法创作卡。"
+      }]
+    },
+    {
+      "key": "gameplay-xunsheng",
+      "entity_type": "gameplay",
+      "canonical_name": "寻声",
+      "aliases": ["寻声", "声音", "回声", "十六声"],
+      "summary": "标题和叙事核心方向之一，可用于记忆、故事、无名者和心声主题。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
+      "fact_level": "creative_guidance",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "voice",
+        "heading_path": "玩法/寻声/记忆与故事",
+        "theme_tags": ["寻声", "记忆", "故事", "心声"],
+        "story_phase": "creative_guidance",
+        "summary_for_prompt": "寻声可写听见过去、记住无名者、寻找心里的声音；适合有艺术感的歌词主题。",
+        "usable_imagery": ["回声", "旧铃", "风里名字", "未唱完的曲"],
+        "emotional_arc": "聆听、追寻、把别人的故事变成自己的选择。",
+        "avoid_claims": ["不要解释标题全部官方含义", "不要写成声波科技", "不要强行每句都写声音"],
+        "content": "寻声玩法/主题卡。"
+      }]
+    },
+    {
+      "key": "gameplay-puzzle",
+      "entity_type": "gameplay",
+      "canonical_name": "中式解谜",
+      "aliases": ["中式解谜", "解谜", "机关", "叶子戏"],
+      "summary": "官方公开玩法方向，适合机关、民俗、观察、推理和小队协作。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20251022/37780_1264523.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "puzzle",
+        "heading_path": "玩法/中式解谜/机关与民俗",
+        "theme_tags": ["解谜", "机关", "民俗", "观察"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "中式解谜可写机关鸟、叶子戏、点穴、观察细节和慢慢读懂一个地方的规矩。",
+        "usable_imagery": ["机关鸟", "叶子戏", "暗格", "门环声"],
+        "emotional_arc": "困惑、发现线索、豁然开朗。",
+        "avoid_claims": ["不要泄露具体谜题答案", "不要把玩法写成教程", "不要现代密室化"],
+        "content": "中式解谜玩法卡。"
+      }]
+    },
+    {
+      "key": "gameplay-martial-mix",
+      "entity_type": "gameplay",
+      "canonical_name": "武学自由搭配",
+      "aliases": ["武学自由搭配", "任意武器", "心法", "易武技", "守势技", "特殊技"],
+      "summary": "官方公开武学架构方向，适合自成一派、自由选择和战斗节奏主题。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20251014/37780_1262963.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "freedom",
+        "heading_path": "玩法/武学自由搭配/自成一派",
+        "theme_tags": ["武学", "自由搭配", "自成一派"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "武学自由搭配可写‘我不是谁的传人，我把每次失败都练成一式’，强调自由和成长。",
+        "usable_imagery": ["换手一招", "旧刀新剑", "心法如潮", "脚下尘土"],
+        "emotional_arc": "被套路限制到找到自己的打法。",
+        "avoid_claims": ["不要写具体数值强度", "不要写攻略推荐", "不要夸大官方承诺"],
+        "content": "武学自由搭配玩法卡。"
+      }]
+    },
+    {
+      "key": "gameplay-livelihood",
+      "entity_type": "gameplay",
+      "canonical_name": "营生",
+      "aliases": ["营生", "生活玩法", "市井营生"],
+      "summary": "官方公开生活/营生方向，适合市井、烟火、普通人和慢节奏用户故事。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250520/37780_1233919.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "daily-life",
+        "heading_path": "玩法/营生/市井烟火",
+        "theme_tags": ["营生", "生活", "市井", "烟火"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "营生适合写江湖不只有打斗，也有饭香、叫卖、手艺和普通一天。",
+        "usable_imagery": ["茶烟", "摊位", "柴米", "旧算盘"],
+        "emotional_arc": "疲惫、安稳、从小日子里获得力量。",
+        "avoid_claims": ["不要写成经营模拟说明", "不要承诺收益", "不要现代商业化"],
+        "content": "营生玩法创作卡。"
+      }]
+    },
+    {
+      "key": "gameplay-injustice",
+      "entity_type": "gameplay",
+      "canonical_name": "不平事",
+      "aliases": ["不平事", "路见不平", "侠义任务"],
+      "summary": "官方公开玩法方向，适合小人物侠义、街巷选择和玩家道德瞬间。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/news/official/20250520/37780_1233919.html",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "small-justice",
+        "heading_path": "玩法/不平事/小侠义",
+        "theme_tags": ["不平事", "侠义", "小人物"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "不平事适合写玩家为一个路人、一盏灯、一句话做选择；小而真实比宏大口号更好。",
+        "usable_imagery": ["小巷", "药碗", "雨伞", "一枚铜钱"],
+        "emotional_arc": "犹豫、出手、知道自己为什么学武。",
+        "avoid_claims": ["不要写成官方主线救世", "不要暴力崇拜", "不要忽略用户动机"],
+        "content": "不平事玩法卡。"
+      }]
+    },
+    {
+      "key": "gameplay-companion",
+      "entity_type": "gameplay",
+      "canonical_name": "伙伴同行",
+      "aliases": ["伙伴同行", "伙伴系统", "知己", "同游"],
+      "summary": "伙伴/同行体验方向，适合友情、知己、队友和共同冒险的歌曲。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "together",
+        "heading_path": "玩法/伙伴同行/知己同游",
+        "theme_tags": ["伙伴", "同行", "知己", "友情"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "伙伴同行适合写和朋友或角色一起走过山河、互相救场、一起听风和分别后的回响。",
+        "usable_imagery": ["并肩脚印", "同一盏灯", "互相递药", "山顶合影感"],
+        "emotional_arc": "相遇、并肩、分别或继续同行。",
+        "avoid_claims": ["不要强行写爱情", "不要指定官方关系", "不要写成功能介绍"],
+        "content": "伙伴同行玩法卡。"
+      }]
+    },
+    {
+      "key": "gameplay-boss",
+      "entity_type": "gameplay",
+      "canonical_name": "镇守首领",
+      "aliases": ["镇守首领", "镇守", "首领", "野外首领", "Boss"],
+      "summary": "战斗挑战方向，适合失败、磨合、组队和战胜强敌后的成就感。",
+      "source_type": "official_public",
+      "source_ref": "https://www.yysls.cn/",
+      "fact_level": "official_public_seed",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "challenge",
+        "heading_path": "玩法/镇守首领/挑战与失败",
+        "theme_tags": ["镇守", "首领", "失败", "成长"],
+        "story_phase": "public_seed",
+        "summary_for_prompt": "镇守首领适合写一次次失败、队友磨合、终于读懂招式；不要写成数值攻略。",
+        "usable_imagery": ["倒地又起", "破盾声", "队友呼喊", "最后一击前的风"],
+        "emotional_arc": "挫败、学习、共同完成。",
+        "avoid_claims": ["不要写机制攻略", "不要承诺掉落", "不要暴力血腥"],
+        "content": "镇守首领玩法卡。"
+      }]
+    },
+    {
+      "key": "gameplay-xiaji",
+      "entity_type": "gameplay",
+      "canonical_name": "侠迹残章",
+      "aliases": ["侠迹残章", "侠迹", "残章", "侠迹任务", "江湖故事"],
+      "summary": "江湖故事与支线体验方向，适合小段人生、旧事、残章和无名人物。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
+      "fact_level": "creative_guidance",
+      "spoiler_level": "open",
+      "cards": [{
+        "id": "fragments",
+        "heading_path": "玩法/侠迹残章/无名人生",
+        "theme_tags": ["侠迹", "残章", "无名者", "支线"],
+        "story_phase": "creative_guidance",
+        "summary_for_prompt": "侠迹残章适合写一个路人、一封信、一件没被史书记下的小事；歌词要有余味。",
+        "usable_imagery": ["残页", "旧信", "无名碑", "窗下灯"],
+        "emotional_arc": "偶遇、理解、替他记住。",
+        "avoid_claims": ["不要编造成官方主线", "不要写流水账", "不要过度拔高"],
+        "content": "侠迹残章玩法卡。"
+      }]
+    }
+  ]
+}
