@@ -1,36 +1,43 @@
-# ADR 0005: 取消独立燕云知识库
+# ADR 0005: 燕云创作知识库边界
 
 日期：2026-06-11
+更新：2026-06-13
 
 ## 状态
 
-已决策
+已更新
 
 ## 背景
 
 项目早期设计中预留了 Markdown 燕云语料库、OpenSearch 检索、知识库版本和检索引用字段，用于辅助 DeepSeek 写词。但当前仓库并没有真实燕云知识库内容，也没有真实 OpenSearch 检索链路；主链路只有 `MockKnowledgeService` 返回少量假引用。
 
-用户已明确确认：燕云知识库取消，不再建设独立语料库/RAG 检索能力。
+2026-06-11 用户曾确认取消独立燕云知识库，主链路切换为 no-op knowledge。2026-06-13 在真实写词体验中确认：DeepSeek / Codex 的内置知识无法覆盖《燕云十六声》公测后的角色、剧情、地域、玩法和玩家语境，仅靠 Prompt 容易写成泛古风或关键词堆砌。
+
+用户现确认：不要联网搜索，但需要建设受控的燕云创作知识库；知识库不限制玩家创意，服务于世界观归属、角色剧情准确性和创作素材增强。
 
 ## 决策
 
-- 不再把独立燕云知识库、Markdown 语料索引或 OpenSearch 检索作为产品能力和交付目标。
-- 写词链路继续保留燕云风格，但风格约束来自 Prompt 模板、CreativeBriefAgent、产品文案和模型指令，不来自独立知识库检索。
-- 主链路默认使用 no-op knowledge service，返回空引用与 `disabled` 版本标记。
-- OpenAPI 中已有 `yanyun_references`、`knowledge_base_version` 等字段暂时保留兼容，默认为空或 `disabled`；后续如要做破坏性接口清理，需要另起版本。
-- 早期数据库中的 knowledge 表和 `lyrics_drafts.knowledge_base_version` 暂不做破坏性 migration；后续集中清理历史兼容字段。
-- OpenSearch 不再是当前必需核心组件；如后续没有其它搜索用途，应从 Docker Compose、部署文档和验收清单中移除。
+- 不做开放联网搜索，不做自由网页采集，不把社区资料直接作为事实层。
+- 建设受控、版本化、官方资料优先的燕云创作知识库。
+- 知识库资料来源优先级：公司/官方资料包、公开官方资料、游戏内实录整理；社区资料只作为发现线索。
+- 知识库覆盖世界观、人物、剧情/任务线、地域、势力/门派、玩法体验和创作禁区。
+- 检索策略采用实体优先、pgvector 语义辅助：点名角色/地域/门派/任务线先走别名表和实体卡；模糊主题再走向量检索。
+- 主链路保留 `KnowledgeService` 边界，默认 `KNOWLEDGE_RETRIEVAL_MODE=disabled`；本地真实体验可显式开启 `pgvector`。
+- OpenAPI 中 `yanyun_references`、`knowledge_base_version` 字段继续保留，作为内部审计和兼容输出；普通用户侧不强制展示。
+- OpenSearch 不恢复为主路径；本地 PostgreSQL 使用 pgvector 扩展。
 
 ## 影响
 
-- `LyricsAgent` 不再依赖燕云知识库检索才能写词。
-- 真实 DeepSeek 写词联调不需要准备知识库、索引任务或 OpenSearch。
-- 前端不应把“燕云引用”作为必须展示的信息；为空时应隐藏相关区域。
-- 文档中“DeepSeek + 燕云知识库 / 语料库 / RAG / OpenSearch 检索”的表述需要逐步替换为“DeepSeek + Prompt 风格约束”。
-- 后续工程清理可以删除 `knowledge-indexer` 规划、OpenSearch 基础设施、knowledge tables 和相关验收项。
+- `CreativeBriefAgent` 用知识上下文判断创作类型和世界观归属，但不替玩家选题。
+- `LyricsAgent` 使用知识库作为创作素材，不照抄资料，不把歌词写成剧情百科。
+- `QualityEvaluationAgent` 检查角色/剧情是否写错、是否保留用户故事核心、是否泛古风套词和关键词堆砌。
+- 知识库不会要求歌词必须出现“燕云”“十六声”等字面关键词。
+- 自动化测试不得依赖真实外部 embedding API；首版使用可复现 fake embedding。
 
 ## 不做
 
-- 本次不删除历史 migration，避免破坏已有本地数据库。
-- 本次不直接删除 OpenAPI 字段，避免前端原型和公司接入方契约突然断裂。
-- 本次不删除所有旧版 v0.1/v0.2 文档中的历史描述，只在最新 Source of Truth 和进度中标注新决策优先生效。
+- 不做联网搜索。
+- 不做知识库管理后台。
+- 不把玩家社区二创直接写入事实层。
+- 不恢复 OpenSearch 主路径。
+- 不因知识库限制普通玩家故事，不强行绑定官方角色或剧情。

@@ -10,7 +10,7 @@
 
 - Backend: Java 21, Spring Boot 3, Gradle Kotlin DSL。
 - Workflow: Temporal。
-- Storage and data: PostgreSQL 16, Redis 7, MinIO/S3。OpenSearch 属于已取消知识库路径的遗留本地组件。
+- Storage and data: PostgreSQL 16 + pgvector, Redis 7, MinIO/S3。OpenSearch 属于旧知识库路径的遗留本地组件，当前写词知识检索不依赖。
 - Web: React, Vite, TypeScript，移动端优先，兼容 PC Web。
 - Render worker: Node.js 22, TypeScript, Remotion，后续接 FFmpeg/FFprobe。
 - Observability: Spring Actuator, Prometheus, Grafana。
@@ -46,6 +46,28 @@ docker compose -f deploy/docker-compose.yml ps
 - OpenSearch: `http://localhost:9200`（遗留可选；当前写词链路不依赖）
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
+
+## Yanyun Creative Knowledge Base
+
+默认不启用知识库检索：
+
+```bash
+KNOWLEDGE_RETRIEVAL_MODE=disabled
+```
+
+本地真实写词体验可启用受控知识库：
+
+```bash
+KNOWLEDGE_RETRIEVAL_MODE=pgvector
+KNOWLEDGE_KB_VERSION=yanyun-official-kb-2026-06-13-v1
+python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/yanyun-official-kb-v1.json
+```
+
+导入脚本会优先使用本机 `psql`；如果未安装，会自动使用 `docker exec -i yanyun-postgres psql`。
+
+知识库资料只使用受控文件导入，不联网搜索，不自由采集网页。当前种子资料位于
+`knowledge-base/yanyun-official-kb-v1.json`，只用于打通实体优先 + pgvector 辅助检索；
+后续需要公司/官方资料包和游戏内实录继续补齐角色、剧情、地域、门派和玩法体验。
 
 ## Backend Commands
 
