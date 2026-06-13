@@ -1403,6 +1403,117 @@
         "region-kaifeng"
       ],
       "expected_behavior": "命中慕容延钊、旧将和开封权力场，不单纯战歌化。"
+    },
+    {
+      "id": "eval-character-zhu-yu-001",
+      "input": "写朱鱼的歌，要有开封/九流暗线的感觉",
+      "expected_entities": [
+        "character-zhu-yu",
+        "region-kaifeng",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "命中朱鱼和开封/九流暗线素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-feng-yi-001",
+      "input": "写冯夷的歌，要有开封河道/怪异线索的感觉",
+      "expected_entities": [
+        "character-feng-yi",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中冯夷和开封河道/怪异线索素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-zhao-chengzong-001",
+      "input": "写赵承宗的歌，要有宫城/庙堂的感觉",
+      "expected_entities": [
+        "character-zhao-chengzong",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中赵承宗和宫城/庙堂素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-lian-daozi-001",
+      "input": "写廉道子的歌，要有河西/边地的感觉",
+      "expected_entities": [
+        "character-lian-daozi",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中廉道子和河西/边地素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-zhang-huaishen-001",
+      "input": "写张淮深的歌，要有归义军后续历史的感觉",
+      "expected_entities": [
+        "character-zhang-huaishen",
+        "region-liangzhou",
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "命中张淮深和归义军后续历史素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-wangyue-chanyuan-001",
+      "input": "写望月婵媛的歌，要有河西/凉州月意象的感觉",
+      "expected_entities": [
+        "character-wangyue-chanyuan",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中望月婵媛和河西/凉州月意象素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-an-liuli-001",
+      "input": "写安琉璃的歌，要有凉州/河西身份线的感觉",
+      "expected_entities": [
+        "character-an-liuli",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中安琉璃和凉州/河西身份线素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-yingling-001",
+      "input": "写鹰铃的歌，要有河西/伙伴线索的感觉",
+      "expected_entities": [
+        "character-yingling",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中鹰铃和河西/伙伴线索素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-baoyin-001",
+      "input": "写宝音的歌，要有河西/声音与故乡的感觉",
+      "expected_entities": [
+        "character-baoyin",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中宝音和河西/声音与故乡素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-fang-bai-001",
+      "input": "写方白的歌，要有青州/文津馆同窗的感觉",
+      "expected_entities": [
+        "character-fang-bai",
+        "region-qingzhou",
+        "faction-wenjinguan"
+      ],
+      "expected_behavior": "命中方白和青州/文津馆同窗素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-song-jiuwei-001",
+      "input": "写宋九薇的歌，要有青州/伙伴人物线的感觉",
+      "expected_entities": [
+        "character-song-jiuwei",
+        "region-qingzhou"
+      ],
+      "expected_behavior": "命中宋九薇和青州/伙伴人物线素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-yan-shiqi-001",
+      "input": "写燕十七的歌，要有青州/伙伴人物线的感觉",
+      "expected_entities": [
+        "character-yan-shiqi",
+        "region-qingzhou"
+      ],
+      "expected_behavior": "命中燕十七和青州/伙伴人物线素材，不把 accepted_story_synthesis 写成官方定论。"
     }
   ]
 }
