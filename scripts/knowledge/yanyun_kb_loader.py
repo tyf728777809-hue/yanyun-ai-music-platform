@@ -60,6 +60,8 @@ def card_to_chunk(entity, card):
         "emotional_arc": card.get("emotional_arc", ""),
         "avoid_claims": card.get("avoid_claims", []),
         "content": card.get("content", f"{entity['canonical_name']}创作资料卡。"),
+        "fact_level": card.get("fact_level", entity.get("fact_level")),
+        "source_ref": card.get("source_ref", entity.get("source_ref")),
     }
 
 

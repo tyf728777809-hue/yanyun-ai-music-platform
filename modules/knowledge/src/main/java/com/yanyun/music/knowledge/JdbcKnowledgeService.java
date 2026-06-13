@@ -97,7 +97,8 @@ public final class JdbcKnowledgeService implements KnowledgeService {
                c.usable_imagery_json::text AS usable_imagery_json,
                c.avoid_claims_json::text AS avoid_claims_json,
                c.content,
-               c.chunk_index
+               c.chunk_index,
+               c.fact_level
         FROM knowledge_chunks c
         JOIN knowledge_documents d ON d.id = c.document_id
         LEFT JOIN knowledge_entities e ON e.id = c.entity_id
@@ -132,7 +133,8 @@ public final class JdbcKnowledgeService implements KnowledgeService {
                c.usable_imagery_json::text AS usable_imagery_json,
                c.avoid_claims_json::text AS avoid_claims_json,
                c.content,
-               c.chunk_index
+               c.chunk_index,
+               c.fact_level
         FROM knowledge_chunks c
         JOIN knowledge_documents d ON d.id = c.document_id
         WHERE c.kb_version = ?
@@ -158,11 +160,14 @@ public final class JdbcKnowledgeService implements KnowledgeService {
             rs.getString("title"),
             rs.getString("file_path"),
             rs.getString("heading_path"),
-            promptContent(rs));
+            promptContent(rs),
+            rs.getString("fact_level"),
+            KnowledgeSourceClass.fromFactLevel(rs.getString("fact_level")));
   }
 
   private String promptContent(ResultSet rs) throws SQLException {
     List<String> sections = new ArrayList<>();
+    addSourceClassGuidance(sections, rs.getString("fact_level"));
     addSection(sections, "创作摘要", rs.getString("summary_for_prompt"));
     addSection(sections, "情绪弧线", rs.getString("emotional_arc"));
     addSection(sections, "可用意象", compactJson(rs.getString("usable_imagery_json")));
@@ -171,6 +176,12 @@ public final class JdbcKnowledgeService implements KnowledgeService {
       addSection(sections, "资料摘要", rs.getString("content"));
     }
     return String.join("\n", sections);
+  }
+
+  private void addSourceClassGuidance(List<String> sections, String factLevel) {
+    if (KnowledgeSourceClass.fromFactLevel(factLevel) == KnowledgeSourceClass.PENDING_CLUES) {
+      sections.add("资料口径: 待核创作线索，可作为暗线、传闻、情绪或意象使用，不要写成官方定论。");
+    }
   }
 
   private void addSection(List<String> sections, String label, String value) {

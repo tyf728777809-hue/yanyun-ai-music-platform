@@ -139,6 +139,8 @@ def sql_for_payload(payload):
         document_id = document_ids[chunk.get("document_id")]
         entity_id = entity_ids.get(chunk.get("entity_key"))
         entity = next((item for item in payload.get("entities", []) if item.get("key") == chunk.get("entity_key")), {})
+        chunk_fact_level = chunk.get("fact_level") or entity.get("fact_level")
+        chunk_source_ref = chunk.get("source_ref") or entity.get("source_ref")
         chunk_id = stable_uuid(kb_version, "chunk", chunk.get("id", index))
         text_for_embedding = "\n".join(
             str(chunk.get(field, ""))
@@ -156,10 +158,10 @@ def sql_for_payload(payload):
             f"{quote_json(chunk.get('theme_tags'))}::jsonb, {token_count}, "
             f"{quote(entity_id)}, {quote(entity.get('entity_type'))}, {quote(entity.get('canonical_name'))}, "
             f"{quote_json(entity.get('aliases'))}::jsonb, {quote_json(chunk.get('theme_tags'))}::jsonb, "
-            f"{quote(entity.get('fact_level'))}, {quote(entity.get('spoiler_level'))}, "
+            f"{quote(chunk_fact_level)}, {quote(entity.get('spoiler_level'))}, "
             f"{quote(chunk.get('story_phase'))}, {quote(chunk.get('summary_for_prompt'))}, "
             f"{quote_json(chunk.get('usable_imagery'))}::jsonb, {quote(chunk.get('emotional_arc'))}, "
-            f"{quote_json(chunk.get('avoid_claims'))}::jsonb, {quote(entity.get('source_ref'))}, "
+            f"{quote_json(chunk.get('avoid_claims'))}::jsonb, {quote(chunk_source_ref)}, "
             f"{quote(vector_literal(embedding(text_for_embedding)))}::vector) "
             "ON CONFLICT (document_id, chunk_index) DO UPDATE SET "
             "heading_path = EXCLUDED.heading_path, content = EXCLUDED.content, "
