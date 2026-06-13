@@ -5,287 +5,1242 @@
       "key": "faction-jiuliumen",
       "entity_type": "faction",
       "canonical_name": "九流门",
-      "aliases": ["九流门", "九流", "九流线索"],
+      "aliases": [
+        "九流门",
+        "九流",
+        "九流线索"
+      ],
       "summary": "官方公开线索中的江湖组织/势力方向，适合暗线、局中局、奇谋和众生流动感。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250627/37780_1242827.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "faction-song",
-        "heading_path": "势力/九流门/暗线与奇谋",
-        "theme_tags": ["势力", "暗线", "奇谋", "逐鹿中原"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "九流门相关创作可写市井暗线、身份混杂、局中局和普通人被卷入大势；不要把它写成单薄邪教或现实帮派。",
-        "usable_imagery": ["暗巷传信", "旧牌匾", "杂色衣冠", "夜半脚步"],
-        "emotional_arc": "从旁观风声到发现自己也在局中。",
-        "avoid_claims": ["不要编造官方阵营结论", "不要现实黑帮化", "不要血腥猎奇"],
-        "content": "九流门势力创作卡。"
-      }]
+      "cards": [
+        {
+          "id": "faction-song",
+          "heading_path": "势力/九流门/暗线与奇谋",
+          "theme_tags": [
+            "势力",
+            "暗线",
+            "奇谋",
+            "逐鹿中原"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "九流门相关创作可写市井暗线、身份混杂、局中局和普通人被卷入大势；不要把它写成单薄邪教或现实帮派。",
+          "usable_imagery": [
+            "暗巷传信",
+            "旧牌匾",
+            "杂色衣冠",
+            "夜半脚步"
+          ],
+          "emotional_arc": "从旁观风声到发现自己也在局中。",
+          "avoid_claims": [
+            "不要编造官方阵营结论",
+            "不要现实黑帮化",
+            "不要血腥猎奇"
+          ],
+          "content": "九流门势力创作卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/九流门/歌词气质",
+          "theme_tags": [
+            "九流门",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "九流门不是单纯骗术门派，适合写市井智慧、暗线规矩和弱者在缝隙里求活。",
+          "usable_imagery": [
+            "暗巷灯",
+            "门规",
+            "假名",
+            "旧铜钱"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要现实黑帮化",
+            "不要邪教化",
+            "不要把普通人写成棋子"
+          ],
+          "content": "九流门歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/九流门/冲突角度",
+          "theme_tags": [
+            "九流门",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "九流门可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "暗巷灯",
+            "门规",
+            "假名",
+            "旧铜钱",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要现实黑帮化",
+            "不要邪教化",
+            "不要把普通人写成棋子",
+            "不要百科复述"
+          ],
+          "content": "九流门冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-bulaoxian",
       "entity_type": "faction",
       "canonical_name": "不老仙",
-      "aliases": ["不老仙", "不老仙势力"],
+      "aliases": [
+        "不老仙",
+        "不老仙势力"
+      ],
       "summary": "高频江湖势力名。资料不足时只作为长生执念、江湖迷局和代价主题的受控创作素材。",
       "source_type": "official_public_curated",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
       "fact_level": "needs_ingame_recording",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "obsession",
-        "heading_path": "势力/不老仙/长生执念",
-        "theme_tags": ["势力", "长生", "执念"],
-        "story_phase": "needs_recording",
-        "summary_for_prompt": "不老仙可用于写长生欲望、代价、骗局和人心贪念；若无实录，不写具体成员和剧情定论。",
-        "usable_imagery": ["旧丹炉", "青烟", "不肯老去的手", "空院"],
-        "emotional_arc": "向往不朽到看清不朽背后的空。",
-        "avoid_claims": ["不要编造组织教义", "不要断言正邪", "不要写现实迷信宣传"],
-        "content": "不老仙资料缺口卡。"
-      }]
+      "cards": [
+        {
+          "id": "obsession",
+          "heading_path": "势力/不老仙/长生执念",
+          "theme_tags": [
+            "势力",
+            "长生",
+            "执念"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "不老仙可用于写长生欲望、代价、骗局和人心贪念；若无实录，不写具体成员和剧情定论。",
+          "usable_imagery": [
+            "旧丹炉",
+            "青烟",
+            "不肯老去的手",
+            "空院"
+          ],
+          "emotional_arc": "向往不朽到看清不朽背后的空。",
+          "avoid_claims": [
+            "不要编造组织教义",
+            "不要断言正邪",
+            "不要写现实迷信宣传"
+          ],
+          "content": "不老仙资料缺口卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/不老仙/歌词气质",
+          "theme_tags": [
+            "不老仙",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "不老仙适合写长生执念的代价：越想留下，越可能失去作为人的温度。",
+          "usable_imagery": [
+            "丹炉灰",
+            "枯手",
+            "青烟",
+            "空院"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要宣扬迷信",
+            "不要写教义",
+            "不要断言组织设定"
+          ],
+          "content": "不老仙歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/不老仙/冲突角度",
+          "theme_tags": [
+            "不老仙",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "不老仙可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "丹炉灰",
+            "枯手",
+            "青烟",
+            "空院",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要宣扬迷信",
+            "不要写教义",
+            "不要断言组织设定",
+            "不要百科复述"
+          ],
+          "content": "不老仙冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-zuihuayin",
       "entity_type": "faction",
       "canonical_name": "醉花阴",
-      "aliases": ["醉花阴", "醉花阴门派"],
+      "aliases": [
+        "醉花阴",
+        "醉花阴门派"
+      ],
       "summary": "高频门派/势力名。当前用作风雅、迷离、花影与情报感的创作占位，待实录补事实。",
       "source_type": "official_public_curated",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
       "fact_level": "needs_ingame_recording",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "elegance",
-        "heading_path": "势力/醉花阴/风雅与暗涌",
-        "theme_tags": ["势力", "风雅", "暗涌"],
-        "story_phase": "needs_recording",
-        "summary_for_prompt": "醉花阴可承接花影、酒意、风雅外壳下的暗涌；无实录时不写门规、人物和结局。",
-        "usable_imagery": ["半盏花酒", "屏风影", "落花不语", "暗香"],
-        "emotional_arc": "柔美外表到危险真相。",
-        "avoid_claims": ["不要编造门派设定", "不要写成单纯青楼风", "不要低俗化"],
-        "content": "醉花阴资料缺口卡。"
-      }]
+      "cards": [
+        {
+          "id": "elegance",
+          "heading_path": "势力/醉花阴/风雅与暗涌",
+          "theme_tags": [
+            "势力",
+            "风雅",
+            "暗涌"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "醉花阴可承接花影、酒意、风雅外壳下的暗涌；无实录时不写门规、人物和结局。",
+          "usable_imagery": [
+            "半盏花酒",
+            "屏风影",
+            "落花不语",
+            "暗香"
+          ],
+          "emotional_arc": "柔美外表到危险真相。",
+          "avoid_claims": [
+            "不要编造门派设定",
+            "不要写成单纯青楼风",
+            "不要低俗化"
+          ],
+          "content": "醉花阴资料缺口卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/醉花阴/歌词气质",
+          "theme_tags": [
+            "醉花阴",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "醉花阴适合写风雅外壳下的试探：花、酒、屏风和笑语都可能藏着不说破的锋。",
+          "usable_imagery": [
+            "花影",
+            "酒盏",
+            "屏风",
+            "暗香"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要低俗化",
+            "不要青楼化",
+            "不要写成纯艳俗门派"
+          ],
+          "content": "醉花阴歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/醉花阴/冲突角度",
+          "theme_tags": [
+            "醉花阴",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "醉花阴可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "花影",
+            "酒盏",
+            "屏风",
+            "暗香",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要低俗化",
+            "不要青楼化",
+            "不要写成纯艳俗门派",
+            "不要百科复述"
+          ],
+          "content": "醉花阴冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-wenjinguan",
       "entity_type": "faction",
       "canonical_name": "文津馆",
-      "aliases": ["文津馆", "蓬山文津馆", "青州文津馆"],
+      "aliases": [
+        "文津馆",
+        "蓬山文津馆",
+        "青州文津馆"
+      ],
       "summary": "青州/蓬山公开资料中的书卷气与求索场景，可作为书院、求学、旧案和情感线索的创作素材。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250823/37780_1254195.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "scholarship",
-        "heading_path": "势力/文津馆/书卷与求索",
-        "theme_tags": ["文津馆", "青州", "书院", "求索"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "文津馆可写书卷、旧案、山中求索、理性与情感的拉扯；适合清冷文气和低饱和叙事。",
-        "usable_imagery": ["书卷", "山中灯", "墨香", "雨打窗棂"],
-        "emotional_arc": "求知、疑惑、被真相触动。",
-        "avoid_claims": ["不要编造馆规", "不要写成现代校园", "不要断言角色关系"],
-        "content": "文津馆势力场景卡。"
-      }]
+      "cards": [
+        {
+          "id": "scholarship",
+          "heading_path": "势力/文津馆/书卷与求索",
+          "theme_tags": [
+            "文津馆",
+            "青州",
+            "书院",
+            "求索"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "文津馆可写书卷、旧案、山中求索、理性与情感的拉扯；适合清冷文气和低饱和叙事。",
+          "usable_imagery": [
+            "书卷",
+            "山中灯",
+            "墨香",
+            "雨打窗棂"
+          ],
+          "emotional_arc": "求知、疑惑、被真相触动。",
+          "avoid_claims": [
+            "不要编造馆规",
+            "不要写成现代校园",
+            "不要断言角色关系"
+          ],
+          "content": "文津馆势力场景卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/文津馆/歌词气质",
+          "theme_tags": [
+            "文津馆",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "文津馆适合写书卷与经世：读书不是逃离江湖，而是换一把尺子量人间。",
+          "usable_imagery": [
+            "书案",
+            "墨香",
+            "山雨",
+            "同窗灯"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要现代校园化",
+            "不要书呆子化",
+            "不要官场定论"
+          ],
+          "content": "文津馆歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/文津馆/冲突角度",
+          "theme_tags": [
+            "文津馆",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "文津馆可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "书案",
+            "墨香",
+            "山雨",
+            "同窗灯",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要现代校园化",
+            "不要书呆子化",
+            "不要官场定论",
+            "不要百科复述"
+          ],
+          "content": "文津馆冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-wuxingu",
       "entity_type": "faction",
       "canonical_name": "无心谷",
-      "aliases": ["无心谷", "无心谷势力"],
+      "aliases": [
+        "无心谷",
+        "无心谷势力"
+      ],
       "summary": "全球官网公开势力名。当前用于无心、隔绝、谷地、旧伤等创作方向，细节待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "valley",
-        "heading_path": "势力/无心谷/隔绝与旧伤",
-        "theme_tags": ["势力", "谷地", "旧伤"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "无心谷可写隔绝、心防、旧伤和不愿回头的人；不要把名称字面化为没有感情。",
-        "usable_imagery": ["谷风", "断桥", "草木遮路", "不回头的人"],
-        "emotional_arc": "封闭、被触动、重新有心。",
-        "avoid_claims": ["不要编造门派历史", "不要把角色写成无情机器", "不要断言阵营"],
-        "content": "无心谷创作资料卡。"
-      }]
+      "cards": [
+        {
+          "id": "valley",
+          "heading_path": "势力/无心谷/隔绝与旧伤",
+          "theme_tags": [
+            "势力",
+            "谷地",
+            "旧伤"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "无心谷可写隔绝、心防、旧伤和不愿回头的人；不要把名称字面化为没有感情。",
+          "usable_imagery": [
+            "谷风",
+            "断桥",
+            "草木遮路",
+            "不回头的人"
+          ],
+          "emotional_arc": "封闭、被触动、重新有心。",
+          "avoid_claims": [
+            "不要编造门派历史",
+            "不要把角色写成无情机器",
+            "不要断言阵营"
+          ],
+          "content": "无心谷创作资料卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/无心谷/歌词气质",
+          "theme_tags": [
+            "无心谷",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "无心谷适合写隔绝与旧伤：所谓无心更像把心藏起来，不是没有情感。",
+          "usable_imagery": [
+            "谷风",
+            "断桥",
+            "草木遮路",
+            "空铃"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要写成机械无情",
+            "不要编完整门规",
+            "不要玄学化"
+          ],
+          "content": "无心谷歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/无心谷/冲突角度",
+          "theme_tags": [
+            "无心谷",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "无心谷可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "谷风",
+            "断桥",
+            "草木遮路",
+            "空铃",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要写成机械无情",
+            "不要编完整门规",
+            "不要玄学化",
+            "不要百科复述"
+          ],
+          "content": "无心谷冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-sangengtian",
       "entity_type": "faction",
       "canonical_name": "三更天",
-      "aliases": ["三更天", "三更天势力"],
+      "aliases": [
+        "三更天",
+        "三更天势力"
+      ],
       "summary": "全球官网公开势力名。适合夜行、三更、暗线、秘密行动；具体剧情待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "midnight",
-        "heading_path": "势力/三更天/夜行暗线",
-        "theme_tags": ["势力", "夜行", "暗线"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "三更天适合写夜半行动、秘密、心跳和见不得光的选择；歌词要克制悬疑，不要恐怖化。",
-        "usable_imagery": ["三更鼓", "黑瓦", "烛灭", "门缝风"],
-        "emotional_arc": "潜行紧张到做出抉择。",
-        "avoid_claims": ["不要编造暗杀细节", "不要血腥化", "不要断言组织目标"],
-        "content": "三更天势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "midnight",
+          "heading_path": "势力/三更天/夜行暗线",
+          "theme_tags": [
+            "势力",
+            "夜行",
+            "暗线"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "三更天适合写夜半行动、秘密、心跳和见不得光的选择；歌词要克制悬疑，不要恐怖化。",
+          "usable_imagery": [
+            "三更鼓",
+            "黑瓦",
+            "烛灭",
+            "门缝风"
+          ],
+          "emotional_arc": "潜行紧张到做出抉择。",
+          "avoid_claims": [
+            "不要编造暗杀细节",
+            "不要血腥化",
+            "不要断言组织目标"
+          ],
+          "content": "三更天势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/三更天/歌词气质",
+          "theme_tags": [
+            "三更天",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "三更天适合写夜里不能说的选择：行动发生在暗处，但情绪不等于嗜血。",
+          "usable_imagery": [
+            "三更鼓",
+            "灭烛",
+            "屋脊",
+            "门缝风"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要血腥猎奇",
+            "不要现代杀手化",
+            "不要断言组织目标"
+          ],
+          "content": "三更天歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/三更天/冲突角度",
+          "theme_tags": [
+            "三更天",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "三更天可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "三更鼓",
+            "灭烛",
+            "屋脊",
+            "门缝风",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要血腥猎奇",
+            "不要现代杀手化",
+            "不要断言组织目标",
+            "不要百科复述"
+          ],
+          "content": "三更天冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-chilongtang",
       "entity_type": "faction",
       "canonical_name": "赤龙堂",
-      "aliases": ["赤龙堂", "赤龙"],
+      "aliases": [
+        "赤龙堂",
+        "赤龙"
+      ],
       "summary": "全球官网公开势力名。适合热血、火色、帮派义气和强烈冲突；细节待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "fire",
-        "heading_path": "势力/赤龙堂/热血与冲突",
-        "theme_tags": ["势力", "热血", "火色"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "赤龙堂可写火、义气、强硬选择和冲突爆发；不要写成现实帮派崇拜。",
-        "usable_imagery": ["赤旗", "火把", "鼓声", "旧伤"],
-        "emotional_arc": "热血冲动到明白义气也有代价。",
-        "avoid_claims": ["不要现实帮派化", "不要暴力崇拜", "不要编造堂规"],
-        "content": "赤龙堂势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "fire",
+          "heading_path": "势力/赤龙堂/热血与冲突",
+          "theme_tags": [
+            "势力",
+            "热血",
+            "火色"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "赤龙堂可写火、义气、强硬选择和冲突爆发；不要写成现实帮派崇拜。",
+          "usable_imagery": [
+            "赤旗",
+            "火把",
+            "鼓声",
+            "旧伤"
+          ],
+          "emotional_arc": "热血冲动到明白义气也有代价。",
+          "avoid_claims": [
+            "不要现实帮派化",
+            "不要暴力崇拜",
+            "不要编造堂规"
+          ],
+          "content": "赤龙堂势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/赤龙堂/歌词气质",
+          "theme_tags": [
+            "赤龙堂",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "赤龙堂适合写热血、义气和冲动代价：火不只照亮，也会烧伤自己人。",
+          "usable_imagery": [
+            "赤旗",
+            "火把",
+            "鼓声",
+            "旧伤"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要帮派崇拜",
+            "不要暴力口号化",
+            "不要写现实组织影射"
+          ],
+          "content": "赤龙堂歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/赤龙堂/冲突角度",
+          "theme_tags": [
+            "赤龙堂",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "赤龙堂可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "赤旗",
+            "火把",
+            "鼓声",
+            "旧伤",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要帮派崇拜",
+            "不要暴力口号化",
+            "不要写现实组织影射",
+            "不要百科复述"
+          ],
+          "content": "赤龙堂冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-tianquan",
       "entity_type": "faction",
       "canonical_name": "天泉",
-      "aliases": ["天泉", "天泉势力"],
+      "aliases": [
+        "天泉",
+        "天泉势力"
+      ],
       "summary": "全球官网公开势力名。适合清泉、疗愈、隐秘门庭或清冷秩序的创作方向；具体资料待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "spring",
-        "heading_path": "势力/天泉/清泉与秩序",
-        "theme_tags": ["势力", "清泉", "秩序"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "天泉可写清冷、水声、疗愈与秩序，不要未经确认写成医派或宗教组织。",
-        "usable_imagery": ["泉水", "白石", "冷月", "湿衣袖"],
-        "emotional_arc": "冷静压抑到被一滴水唤醒。",
-        "avoid_claims": ["不要编造门派功能", "不要断言医术设定", "不要堆仙侠词"],
-        "content": "天泉势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "spring",
+          "heading_path": "势力/天泉/清泉与秩序",
+          "theme_tags": [
+            "势力",
+            "清泉",
+            "秩序"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "天泉可写清冷、水声、疗愈与秩序，不要未经确认写成医派或宗教组织。",
+          "usable_imagery": [
+            "泉水",
+            "白石",
+            "冷月",
+            "湿衣袖"
+          ],
+          "emotional_arc": "冷静压抑到被一滴水唤醒。",
+          "avoid_claims": [
+            "不要编造门派功能",
+            "不要断言医术设定",
+            "不要堆仙侠词"
+          ],
+          "content": "天泉势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/天泉/歌词气质",
+          "theme_tags": [
+            "天泉",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "天泉适合写清冷秩序和被压住的情绪：泉水意象可服务自省与克制。",
+          "usable_imagery": [
+            "泉水",
+            "白石",
+            "冷月",
+            "湿袖"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要擅自写成医派",
+            "不要宗教化",
+            "不要补组织结论"
+          ],
+          "content": "天泉歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/天泉/冲突角度",
+          "theme_tags": [
+            "天泉",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "天泉可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "泉水",
+            "白石",
+            "冷月",
+            "湿袖",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要擅自写成医派",
+            "不要宗教化",
+            "不要补组织结论",
+            "不要百科复述"
+          ],
+          "content": "天泉冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-liyuan",
       "entity_type": "faction",
       "canonical_name": "梨园",
-      "aliases": ["梨园", "梨园势力"],
+      "aliases": [
+        "梨园",
+        "梨园势力"
+      ],
       "summary": "全球官网公开势力名。适合戏曲、台前台后、面具、唱腔与身份隐藏主题。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "opera",
-        "heading_path": "势力/梨园/戏台与面具",
-        "theme_tags": ["势力", "戏台", "面具", "唱腔"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "梨园可写台上唱词、台下真心、面具和身份错位；音乐可用戏曲元素但不仿具体名家。",
-        "usable_imagery": ["戏台", "水袖", "粉墨", "空座"],
-        "emotional_arc": "扮演别人到终于唱出自己。",
-        "avoid_claims": ["不要编造具体剧目", "不要低俗化梨园", "不要指定现实戏曲名家仿唱"],
-        "content": "梨园势力创作卡。"
-      }]
+      "cards": [
+        {
+          "id": "opera",
+          "heading_path": "势力/梨园/戏台与面具",
+          "theme_tags": [
+            "势力",
+            "戏台",
+            "面具",
+            "唱腔"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "梨园可写台上唱词、台下真心、面具和身份错位；音乐可用戏曲元素但不仿具体名家。",
+          "usable_imagery": [
+            "戏台",
+            "水袖",
+            "粉墨",
+            "空座"
+          ],
+          "emotional_arc": "扮演别人到终于唱出自己。",
+          "avoid_claims": [
+            "不要编造具体剧目",
+            "不要低俗化梨园",
+            "不要指定现实戏曲名家仿唱"
+          ],
+          "content": "梨园势力创作卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/梨园/歌词气质",
+          "theme_tags": [
+            "梨园",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "梨园适合写台前台后和身份错位：台上唱别人，台下才露出自己的伤。",
+          "usable_imagery": [
+            "戏台",
+            "水袖",
+            "粉墨",
+            "空座"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要指定现实戏曲名家",
+            "不要低俗戏班化",
+            "不要假署名"
+          ],
+          "content": "梨园歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/梨园/冲突角度",
+          "theme_tags": [
+            "梨园",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "梨园可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "戏台",
+            "水袖",
+            "粉墨",
+            "空座",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要指定现实戏曲名家",
+            "不要低俗戏班化",
+            "不要假署名",
+            "不要百科复述"
+          ],
+          "content": "梨园冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-qingxi",
       "entity_type": "faction",
       "canonical_name": "青溪",
-      "aliases": ["青溪", "青溪势力"],
+      "aliases": [
+        "青溪",
+        "青溪势力"
+      ],
       "summary": "全球官网公开势力名。适合溪水、山林、清逸和隐居江湖感；具体资料待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "stream",
-        "heading_path": "势力/青溪/山水清逸",
-        "theme_tags": ["势力", "山水", "隐居"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "青溪可写溪水、山林、隐居和清逸江湖，不要把它写成普通地名或现代组织。",
-        "usable_imagery": ["溪声", "竹影", "湿石", "青苔"],
-        "emotional_arc": "避世、听见外界、再次入世。",
-        "avoid_claims": ["不要编造门规", "不要误写为现实地点", "不要空泛山水堆砌"],
-        "content": "青溪势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "stream",
+          "heading_path": "势力/青溪/山水清逸",
+          "theme_tags": [
+            "势力",
+            "山水",
+            "隐居"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "青溪可写溪水、山林、隐居和清逸江湖，不要把它写成普通地名或现代组织。",
+          "usable_imagery": [
+            "溪声",
+            "竹影",
+            "湿石",
+            "青苔"
+          ],
+          "emotional_arc": "避世、听见外界、再次入世。",
+          "avoid_claims": [
+            "不要编造门规",
+            "不要误写为现实地点",
+            "不要空泛山水堆砌"
+          ],
+          "content": "青溪势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/青溪/歌词气质",
+          "theme_tags": [
+            "青溪",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "青溪适合写清逸避世和被江湖叫回：水声越静，人心越难藏。",
+          "usable_imagery": [
+            "溪声",
+            "竹影",
+            "湿石",
+            "青苔"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要当普通地名混写",
+            "不要仙门化",
+            "不要补门规"
+          ],
+          "content": "青溪歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/青溪/冲突角度",
+          "theme_tags": [
+            "青溪",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "青溪可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "溪声",
+            "竹影",
+            "湿石",
+            "青苔",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要当普通地名混写",
+            "不要仙门化",
+            "不要补门规",
+            "不要百科复述"
+          ],
+          "content": "青溪冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-kuanglan",
       "entity_type": "faction",
       "canonical_name": "狂澜",
-      "aliases": ["狂澜", "狂澜势力"],
+      "aliases": [
+        "狂澜",
+        "狂澜势力"
+      ],
       "summary": "全球官网公开势力名。适合浪潮、逆势、激烈抗争和不服输主题；细节待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "wave",
-        "heading_path": "势力/狂澜/逆势浪潮",
-        "theme_tags": ["势力", "浪潮", "抗争"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "狂澜适合写逆流、浪潮、不服输和掀翻旧局；不写具体组织目标。",
-        "usable_imagery": ["江潮", "破船", "黑浪", "湿旗"],
-        "emotional_arc": "被浪卷入到学会逆流。",
-        "avoid_claims": ["不要断言阵营", "不要写成现代革命口号", "不要编造领袖"],
-        "content": "狂澜势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "wave",
+          "heading_path": "势力/狂澜/逆势浪潮",
+          "theme_tags": [
+            "势力",
+            "浪潮",
+            "抗争"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "狂澜适合写逆流、浪潮、不服输和掀翻旧局；不写具体组织目标。",
+          "usable_imagery": [
+            "江潮",
+            "破船",
+            "黑浪",
+            "湿旗"
+          ],
+          "emotional_arc": "被浪卷入到学会逆流。",
+          "avoid_claims": [
+            "不要断言阵营",
+            "不要写成现代革命口号",
+            "不要编造领袖"
+          ],
+          "content": "狂澜势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/狂澜/歌词气质",
+          "theme_tags": [
+            "狂澜",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "狂澜适合写逆流和浪潮：人物不是喊口号，而是在被卷走前学会站住。",
+          "usable_imagery": [
+            "江潮",
+            "破船",
+            "湿旗",
+            "浪声"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要现代运动口号化",
+            "不要编势力结局",
+            "不要过度燃爽"
+          ],
+          "content": "狂澜歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/狂澜/冲突角度",
+          "theme_tags": [
+            "狂澜",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "狂澜可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "江潮",
+            "破船",
+            "湿旗",
+            "浪声",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要现代运动口号化",
+            "不要编势力结局",
+            "不要过度燃爽",
+            "不要百科复述"
+          ],
+          "content": "狂澜冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-moshandao",
       "entity_type": "faction",
       "canonical_name": "墨山道",
-      "aliases": ["墨山道", "墨山"],
+      "aliases": [
+        "墨山道",
+        "墨山"
+      ],
       "summary": "全球官网公开势力名。适合墨色山道、机关、理性、沉默修行等创作方向；细节待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "ink-mountain",
-        "heading_path": "势力/墨山道/墨色与修行",
-        "theme_tags": ["势力", "墨色", "修行"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "墨山道可写墨色山路、理性克制、机关与沉默修行；不要写成现实道观。",
-        "usable_imagery": ["墨雨", "山道", "竹简", "机关声"],
-        "emotional_arc": "沉默求道到发现人心比机关复杂。",
-        "avoid_claims": ["不要编造宗教设定", "不要断言武学体系", "不要过度玄学化"],
-        "content": "墨山道势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "ink-mountain",
+          "heading_path": "势力/墨山道/墨色与修行",
+          "theme_tags": [
+            "势力",
+            "墨色",
+            "修行"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "墨山道可写墨色山路、理性克制、机关与沉默修行；不要写成现实道观。",
+          "usable_imagery": [
+            "墨雨",
+            "山道",
+            "竹简",
+            "机关声"
+          ],
+          "emotional_arc": "沉默求道到发现人心比机关复杂。",
+          "avoid_claims": [
+            "不要编造宗教设定",
+            "不要断言武学体系",
+            "不要过度玄学化"
+          ],
+          "content": "墨山道势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/墨山道/歌词气质",
+          "theme_tags": [
+            "墨山道",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "墨山道适合写理性克制、机关与山道：越精密的规矩，越照出人心难解。",
+          "usable_imagery": [
+            "墨雨",
+            "山道",
+            "竹简",
+            "机关声"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要现实道观化",
+            "不要玄学化",
+            "不要混入墨门事实"
+          ],
+          "content": "墨山道歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/墨山道/冲突角度",
+          "theme_tags": [
+            "墨山道",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "墨山道可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "墨雨",
+            "山道",
+            "竹简",
+            "机关声",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要现实道观化",
+            "不要玄学化",
+            "不要混入墨门事实",
+            "不要百科复述"
+          ],
+          "content": "墨山道冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "faction-guiyijun",
       "entity_type": "faction",
       "canonical_name": "归义军",
-      "aliases": ["归义军", "归义"],
+      "aliases": [
+        "归义军",
+        "归义"
+      ],
       "summary": "全球官网公开势力名。适合边地军旅、守护、旗帜和家国主题；具体战事待实录。",
       "source_type": "official_public",
       "source_ref": "https://www.wherewindsmeetgame.com/m/hmt/index.html?from=nav",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "frontier",
-        "heading_path": "势力/归义军/边地守护",
-        "theme_tags": ["势力", "边地", "守护", "家国"],
-        "story_phase": "global_public_seed",
-        "summary_for_prompt": "归义军适合写边地、军旗、守护和普通士卒；不要编造具体历史战役或现实政治映射。",
-        "usable_imagery": ["边地军旗", "夜巡火把", "风沙甲衣", "家书"],
-        "emotional_arc": "守土、失去、仍不退。",
-        "avoid_claims": ["不要编造战役结论", "不要现实政治影射", "不要把个人故事写成官方史诗定论"],
-        "content": "归义军势力卡。"
-      }]
+      "cards": [
+        {
+          "id": "frontier",
+          "heading_path": "势力/归义军/边地守护",
+          "theme_tags": [
+            "势力",
+            "边地",
+            "守护",
+            "家国"
+          ],
+          "story_phase": "global_public_seed",
+          "summary_for_prompt": "归义军适合写边地、军旗、守护和普通士卒；不要编造具体历史战役或现实政治映射。",
+          "usable_imagery": [
+            "边地军旗",
+            "夜巡火把",
+            "风沙甲衣",
+            "家书"
+          ],
+          "emotional_arc": "守土、失去、仍不退。",
+          "avoid_claims": [
+            "不要编造战役结论",
+            "不要现实政治影射",
+            "不要把个人故事写成官方史诗定论"
+          ],
+          "content": "归义军势力卡。"
+        },
+        {
+          "id": "lyric-brief",
+          "heading_path": "势力/归义军/歌词气质",
+          "theme_tags": [
+            "归义军",
+            "势力气质",
+            "歌词素材"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "归义军适合写边地守护和普通军士：军旗之后仍是会冷、会怕、会想家的人。",
+          "usable_imagery": [
+            "军旗",
+            "火盆",
+            "甲衣",
+            "家书"
+          ],
+          "emotional_arc": "从名号进入气质，再落到人的选择。",
+          "avoid_claims": [
+            "不要编真实战役",
+            "不要政治影射",
+            "不要口号化"
+          ],
+          "content": "归义军歌词气质卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "conflict-angle",
+          "heading_path": "势力/归义军/冲突角度",
+          "theme_tags": [
+            "归义军",
+            "冲突",
+            "关系",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "归义军可用来承接组织与个人的冲突：写人在规矩、旧债、同伴和自我之间如何选择，而不是讲门派百科。",
+          "usable_imagery": [
+            "军旗",
+            "火盆",
+            "甲衣",
+            "家书",
+            "旧规矩"
+          ],
+          "emotional_arc": "被卷入规矩，最后选择自己的位置。",
+          "avoid_claims": [
+            "不要编真实战役",
+            "不要政治影射",
+            "不要口号化",
+            "不要百科复述"
+          ],
+          "content": "归义军冲突角度卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     }
   ]
 }
