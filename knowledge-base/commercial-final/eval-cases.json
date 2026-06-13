@@ -1195,6 +1195,109 @@
         "place-pengshan"
       ],
       "expected_behavior": "命中文津馆学子/舍友群像和蓬山书院生活，不伪造具名 NPC。"
+    },
+    {
+      "id": "eval-character-yaoyaoyao-001",
+      "input": "写一首姚药药的歌，要有清河医药和普通人守护感",
+      "expected_entities": [
+        "character-yaoyaoyao"
+      ],
+      "expected_behavior": "命中姚药药医药/普通人守护素材，不编造亲缘和结局。"
+    },
+    {
+      "id": "eval-character-huiyao-001",
+      "input": "以慧药和善妙洲写一首信仰崩塌的歌",
+      "expected_entities": [
+        "character-huiyao"
+      ],
+      "expected_behavior": "命中慧药破戒佛门与信仰裂缝，不攻击现实宗教。"
+    },
+    {
+      "id": "eval-character-chai-rong-001",
+      "input": "写一首柴荣旧朝理想的家国歌，不要历史课",
+      "expected_entities": [
+        "character-chai-rong"
+      ],
+      "expected_behavior": "命中柴荣/后周世宗旧朝理想和未竟山河，不写成历史百科。"
+    },
+    {
+      "id": "eval-character-wang-qing-001",
+      "input": "写王清和燕北盟，北地守望那种感觉",
+      "expected_entities": [
+        "character-wang-qing"
+      ],
+      "expected_behavior": "命中王清、燕北盟、北地守望，不写死未确认阵营职位。"
+    },
+    {
+      "id": "eval-character-li-zuo-001",
+      "input": "写李祚和绣金楼暗线，要危险但不要像黑帮片",
+      "expected_entities": [
+        "character-li-zuo"
+      ],
+      "expected_behavior": "命中李祚、绣金楼、开封暗线，不现代黑帮化。"
+    },
+    {
+      "id": "eval-character-yingying-wenwuque-001",
+      "input": "写盈盈温无缺的双名身份歌，开封灯市感",
+      "expected_entities": [
+        "character-yingying-wenwuque",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中双名身份与开封灯市，不低俗化身份。"
+    },
+    {
+      "id": "eval-character-shen-yilun-001",
+      "input": "写沈义伦和九流暗涌，市井说唱一点",
+      "expected_entities": [
+        "character-shen-yilun",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "命中沈义伦、九流暗涌和市井谋局，不把九流门写成单纯邪教。"
+    },
+    {
+      "id": "eval-character-ma-budai-001",
+      "input": "写麻布袋和河西长路，名字轻松但歌要有重量",
+      "expected_entities": [
+        "character-ma-budai",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中麻布袋、河西行旅和轻重反差，不把名字当笑话。"
+    },
+    {
+      "id": "eval-character-guo-xin-001",
+      "input": "写郭昕归义军孤城守土，边塞大歌",
+      "expected_entities": [
+        "character-guo-xin",
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "命中郭昕、归义军和边关守土，不混淆历史与游戏事实。"
+    },
+    {
+      "id": "eval-character-zhang-yichao-001",
+      "input": "写张议潮归唐，长安月和河西风",
+      "expected_entities": [
+        "character-zhang-yichao",
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "命中张议潮、归义军、归唐和河西，不写成史书背诵。"
+    },
+    {
+      "id": "eval-character-tang-xinci-001",
+      "input": "写唐新词和文津馆，新词、海风、同窗",
+      "expected_entities": [
+        "character-tang-xinci",
+        "faction-wenjinguan"
+      ],
+      "expected_behavior": "命中唐新词、文津馆和书院气质，不强塞爱情结局。"
+    },
+    {
+      "id": "eval-character-guishizi-split-001",
+      "input": "写鬼市子，不要写成确定的人，就写开封地下鬼市的名字壳",
+      "expected_entities": [
+        "story-kaifeng-guishizi-underworld",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中鬼市子身份壳和开封鬼市，不写成稳定单人传记。"
     }
   ]
 }

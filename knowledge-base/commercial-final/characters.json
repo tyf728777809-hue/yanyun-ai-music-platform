@@ -1617,6 +1617,54 @@
           "content": "鬼市子旧谱传闻卡。",
           "fact_level": "pending_clues",
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "fact-split-boundary",
+          "heading_path": "人物/鬼市子/事实拆分边界",
+          "theme_tags": [
+            "鬼市子",
+            "开封鬼市",
+            "拆分边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市子在检索中应优先理解为“开封鬼市/身份壳/传闻入口”，不是稳定单人传记；如果用户点名角色歌，也要保留面具和地下市声的模糊感。",
+          "usable_imagery": [
+            "半张鬼面",
+            "官财坊门缝",
+            "地下灯火",
+            "旧谱传闻"
+          ],
+          "emotional_arc": "从追问一个人，到听见整座鬼市在说话。",
+          "avoid_claims": [
+            "不要把鬼市子写成已确认单一 NPC",
+            "不要写死身份真相",
+            "不要把地下鬼市恐怖片化"
+          ],
+          "content": "事实拆分边界创作卡。"
+        },
+        {
+          "id": "song-structure",
+          "heading_path": "人物/鬼市子/歌曲结构建议",
+          "theme_tags": [
+            "歌曲角度",
+            "悬疑",
+            "市井"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市子相关歌适合三段式：白日开封繁华、夜入鬼市戴面具、最后发现名号只是众人求生的壳。",
+          "usable_imagery": [
+            "白日樊楼",
+            "夜市灯灭",
+            "面具人潮",
+            "卯时风"
+          ],
+          "emotional_arc": "明亮转暗，悬疑转人情。",
+          "avoid_claims": [
+            "不要解释攻略路线",
+            "不要用血腥刺激代替高级感",
+            "不要暴露用户侧技术词"
+          ],
+          "content": "歌曲结构建议创作卡。"
         }
       ]
     },
@@ -2503,6 +2551,54 @@
           "content": "天不收情感暗线卡。",
           "fact_level": "pending_clues",
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "old-friend-boundary",
+          "heading_path": "人物/天不收/旧友边界",
+          "theme_tags": [
+            "旧友",
+            "寒香寻",
+            "边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天不收可写成寒香寻旧事旁边的知情旧友：他承接信、沉默和迟来的提醒，但不负责揭开全部真相。",
+          "usable_imagery": [
+            "旧木匣",
+            "半封信",
+            "雨里等候",
+            "门槛"
+          ],
+          "emotional_arc": "知情却守口，最终只递出一盏微光。",
+          "avoid_claims": [
+            "不要写成寒香寻确定恋人",
+            "不要替官方补全秘密",
+            "不要让他变成全知旁白"
+          ],
+          "content": "旧友边界创作卡。"
+        },
+        {
+          "id": "song-structure",
+          "heading_path": "人物/天不收/歌曲结构建议",
+          "theme_tags": [
+            "歌曲角度",
+            "旁观者",
+            "秘密"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天不收适合旁观者独白型歌曲：主歌写旧信，副歌写“我不能替她回答你”，桥段再把秘密交还给少东家。",
+          "usable_imagery": [
+            "信纸折痕",
+            "旧灯",
+            "封泥",
+            "一声叹息"
+          ],
+          "emotional_arc": "从旁观到交还，从沉默到放手。",
+          "avoid_claims": [
+            "不要让解释太多",
+            "不要喧宾夺主",
+            "不要弱化用户想写的主角"
+          ],
+          "content": "歌曲结构建议创作卡。"
         }
       ]
     },
@@ -3950,6 +4046,1508 @@
             "不要把群像升级成官方大事件"
           ],
           "content": "蓬山文津馆学子/舍友群像歌曲角度卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-chai-rong",
+      "entity_type": "character",
+      "canonical_name": "柴荣",
+      "aliases": [
+        "柴荣",
+        "后周世宗"
+      ],
+      "summary": "历史锚点与游戏家国线素材，可承接旧朝理想、悬剑、春秋别馆、未竟山河和王朝更替。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/柴荣/后周世宗与旧朝理想",
+          "theme_tags": [
+            "历史锚点",
+            "家国",
+            "旧朝",
+            "悬剑"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "柴荣可作为后周世宗和旧朝理想的历史锚点使用：歌词应写未竟山河、短暂雄心和时代余响，而不是照搬历史课。",
+          "usable_imagery": [
+            "悬剑",
+            "旧朝旗影",
+            "未竟地图",
+            "宫墙风",
+            "残照"
+          ],
+          "emotional_arc": "雄心、病短、未竟、后人仍在回望。",
+          "avoid_claims": [
+            "不要写成历史百科",
+            "不要断言游戏内未确认剧情细节",
+            "不要把历史人物娱乐化"
+          ],
+          "content": "后周世宗与旧朝理想创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/柴荣/历史与游戏线交界",
+          "theme_tags": [
+            "时间线",
+            "五代十国",
+            "王朝更替"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "在创作中，柴荣更像背景时代的高压天空：五代末的统一理想、短命帝业和继承后的变局，可为庙堂歌提供重量。",
+          "usable_imagery": [
+            "短命星火",
+            "北望山河",
+            "旧诏",
+            "风中旌旗"
+          ],
+          "emotional_arc": "从将成未成，到理想留给后来者承担。",
+          "avoid_claims": [
+            "不要把真实历史和游戏剧情混成确定同一事件",
+            "不要写现代政治隐喻",
+            "不要篡改基本历史常识"
+          ],
+          "content": "历史与游戏线交界创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/柴荣/关系网络",
+          "theme_tags": [
+            "赵光义",
+            "庙堂",
+            "旧朝遗民"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与赵光义/晋中原、开封宫城、旧朝遗民和江湖势力形成庙堂压迫感；重点是旧理想如何变成新局。",
+          "usable_imagery": [
+            "宫门",
+            "旧臣影子",
+            "玉阶",
+            "不熄的炉火"
+          ],
+          "emotional_arc": "旧人退场，新人入局，理想和权力互相磨损。",
+          "avoid_claims": [
+            "不要把人物关系写成未确认私怨",
+            "不要替官方补暗杀结论",
+            "不要让庙堂线吞掉用户故事"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/柴荣/歌曲角度",
+          "theme_tags": [
+            "家国歌",
+            "庙堂",
+            "史诗"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合大气国风摇滚、交响民乐或慢板史诗；副歌可写“我把未竟山河悬在剑上”一类意象。",
+          "usable_imagery": [
+            "山河图",
+            "悬剑",
+            "宫漏",
+            "风雪边关"
+          ],
+          "emotional_arc": "从宏大愿景推向生命有限，再落到后世回声。",
+          "avoid_claims": [
+            "不要喊口号",
+            "不要堆史书名词",
+            "不要写成帝王赞歌"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/柴荣/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "历史边界",
+            "剧情边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "柴荣可以提供时代重量，但不能让歌词变成真实历史人物传；需要保持燕云世界语境和创作性。",
+          "usable_imagery": [
+            "旧卷合上",
+            "空殿回声",
+            "未落款的诏"
+          ],
+          "emotional_arc": "历史只作骨架，情绪才是歌。",
+          "avoid_claims": [
+            "不要编造游戏官方结论",
+            "不要写现实敏感影射",
+            "不要让历史事实压过音乐表达"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-guo-xin",
+      "entity_type": "character",
+      "canonical_name": "郭昕",
+      "aliases": [
+        "郭昕"
+      ],
+      "summary": "归义军/边关家国线核心历史锚点，适合写守土、孤城、归唐和边地忠义。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/郭昕/归义军与边关守土",
+          "theme_tags": [
+            "归义军",
+            "凉州",
+            "边关",
+            "历史锚点"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "郭昕可作为归义军和边关守土的历史/剧情锚点：歌词写孤城、旌旗、沙州凉州旧梦和把名字交给边关的人。",
+          "usable_imagery": [
+            "孤城旗影",
+            "边塞烽火",
+            "旧甲",
+            "黄沙",
+            "归唐书信"
+          ],
+          "emotional_arc": "从守城到守名，再到让后人听见边关回声。",
+          "avoid_claims": [
+            "不要写成完整史书传记",
+            "不要编造游戏未确认战役",
+            "不要把家国线喊口号化"
+          ],
+          "content": "归义军与边关守土创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/郭昕/人生时间线留白",
+          "theme_tags": [
+            "时间线",
+            "归义军",
+            "守土"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "郭昕在创作中应承担归义军守土与边关余烬，不补具体游戏任务步骤；历史和游戏叙事要保持边界。",
+          "usable_imagery": [
+            "城头夜火",
+            "风沙军帖",
+            "磨旧的旗",
+            "未归马蹄"
+          ],
+          "emotional_arc": "长期守望、孤绝、仍不肯撤下旗。",
+          "avoid_claims": [
+            "不要混淆郭昕与张议潮职责",
+            "不要替官方确认游戏内全部历史线",
+            "不要现实政治影射"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/郭昕/关系网络",
+          "theme_tags": [
+            "张议潮",
+            "归义军",
+            "边民"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与张议潮、归义军旧事、凉州边民和河西主章相互支撑；重点是守土精神的延续。",
+          "usable_imagery": [
+            "同袍名字",
+            "城墙裂缝",
+            "家书",
+            "边民灯火"
+          ],
+          "emotional_arc": "个人被时代放大，也被时代磨损。",
+          "avoid_claims": [
+            "不要编造亲缘",
+            "不要把归义军人物合并成一个模板",
+            "不要忽略普通边民"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/郭昕/歌曲角度",
+          "theme_tags": [
+            "家国歌",
+            "边塞",
+            "史诗"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合边塞摇滚、交响民乐或厚重男声；副歌应有“孤城仍有人举旗”的记忆点。",
+          "usable_imagery": [
+            "烽火",
+            "孤旗",
+            "黄沙月",
+            "旧甲声"
+          ],
+          "emotional_arc": "从低声守夜到副歌开阔，再收回孤城灯火。",
+          "avoid_claims": [
+            "不要军事口号化",
+            "不要过度宏大空泛",
+            "不要脱离燕云世界"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/郭昕/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "历史边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "郭昕可用作历史锚点和家国情绪，不应被写成完全等同游戏内某个未确认 NPC 传记。",
+          "usable_imagery": [
+            "史书残页",
+            "被风磨白的旗",
+            "城上空灯"
+          ],
+          "emotional_arc": "尊重历史重量，也保留游戏创作空间。",
+          "avoid_claims": [
+            "不要断言未确认剧情",
+            "不要乱改历史基本事实",
+            "不要让家国线压扁用户故事"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-huiyao",
+      "entity_type": "character",
+      "canonical_name": "慧药",
+      "aliases": [
+        "慧药",
+        "破戒佛爷"
+      ],
+      "summary": "善妙洲/佛门失序线高价值人物，支撑信仰崩塌、慈悲与罪、破戒和求救失败的歌词主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/慧药/破戒佛爷与佛门失序",
+          "theme_tags": [
+            "佛门",
+            "善妙洲",
+            "破戒",
+            "信仰"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "慧药适合作为佛门失序和破戒主题人物：歌词可写佛号、病相、苦海、钟声和人心崩坏，但核心不是宗教说教，而是人在慈悲名义下如何失守。",
+          "usable_imagery": [
+            "残钟",
+            "佛灯",
+            "苦海",
+            "破戒衣袖",
+            "病香"
+          ],
+          "emotional_arc": "从慈悲外壳到信仰裂缝，再到不敢面对自己的救赎欲。",
+          "avoid_claims": [
+            "不要攻击现实宗教",
+            "不要写成邪僧脸谱",
+            "不要把佛门术语堆成空话"
+          ],
+          "content": "破戒佛爷与佛门失序创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/慧药/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "怪病",
+            "旧案"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "慧药的完整线索当前多来自剧情整理：可写其与善妙洲、怪病或佛门旧案相关，不要写死所有作案链条和结局。",
+          "usable_imagery": [
+            "潮湿佛殿",
+            "药烟",
+            "跪痕",
+            "被遮住的病人"
+          ],
+          "emotional_arc": "想救人、救错人、被信念反噬。",
+          "avoid_claims": [
+            "不要编造官方未确认作恶细节",
+            "不要写成恐怖猎奇",
+            "不要把结局写死"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/慧药/关系网络",
+          "theme_tags": [
+            "门派",
+            "病人",
+            "信众"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系网络可写佛门众人、求医者和被安慰的人群；慧药像一面镜子，照出乱世里人们愿意相信什么。",
+          "usable_imagery": [
+            "求签队伍",
+            "药碗",
+            "香灰",
+            "低声诵念"
+          ],
+          "emotional_arc": "被众人寄望，最终也被众人的恐惧吞没。",
+          "avoid_claims": [
+            "不要把普通信众写成愚昧群体",
+            "不要现实化敏感宗教争议",
+            "不要擅自绑定其他角色亲缘"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/慧药/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "信仰崩塌",
+            "压抑"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合低沉男声、暗色民乐或压抑摇滚；副歌可围绕“我念的是慈悲，回声却像罪”展开。",
+          "usable_imagery": [
+            "木鱼声",
+            "雨水入殿",
+            "烛泪",
+            "黑色莲影"
+          ],
+          "emotional_arc": "由低声忏悔推向失控，再落回空殿回声。",
+          "avoid_claims": [
+            "不要过度血腥",
+            "不要写成鬼怪传说",
+            "不要让设定解释压过可唱性"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/慧药/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "宗教边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "慧药素材只能服务燕云剧情与人物情绪，不应映射现实宗教、现实群体或现实医学。",
+          "usable_imagery": [
+            "遮住的佛像",
+            "未燃尽的香",
+            "空药钵"
+          ],
+          "emotional_arc": "克制处理，保留灰度。",
+          "avoid_claims": [
+            "不要现实宗教攻击",
+            "不要医学误导",
+            "不要宣称争议剧情已完全确认"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-li-zuo",
+      "entity_type": "character",
+      "canonical_name": "李祚",
+      "aliases": [
+        "李祚"
+      ],
+      "summary": "绣金楼、寒香寻、开封暗线常见关联人物，需要为写词提供权势、旧怨、追索和危险交易的边界化素材。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/李祚/绣金楼与开封暗线",
+          "theme_tags": [
+            "绣金楼",
+            "开封",
+            "权势",
+            "旧怨"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "李祚适合承接绣金楼和开封暗线：写权势伸进江湖、旧秘密被追索、温柔人间被暗线拖回局中。",
+          "usable_imagery": [
+            "绣金暗纹",
+            "朱门夜雨",
+            "旧名单",
+            "暗室灯火",
+            "未拆的信"
+          ],
+          "emotional_arc": "从高处布局，到逼近他人旧伤，再被局势反噬。",
+          "avoid_claims": [
+            "不要写成现实权贵影射",
+            "不要写死未核实动机",
+            "不要把绣金楼写成现代黑帮"
+          ],
+          "content": "绣金楼与开封暗线创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/李祚/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "开封",
+            "旧局"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "李祚的具体经历当前按攻略/剧情整理综合使用：可写其与开封局、绣金楼、寒香寻旧事相关，不直接补完整传记。",
+          "usable_imagery": [
+            "宫灯背影",
+            "绣线",
+            "暗门",
+            "旧案卷"
+          ],
+          "emotional_arc": "登场时像局外人，越写越像局本身的一部分。",
+          "avoid_claims": [
+            "不要编造完整官职履历",
+            "不要写成单纯反派",
+            "不要确认未复核结局"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/李祚/关系网络",
+          "theme_tags": [
+            "寒香寻",
+            "千夜",
+            "绣金楼",
+            "开封"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系网络可写寒香寻旧怨、千夜暗线和开封权力场；重点是每个人都被旧身份牵扯，而不是揭谜。",
+          "usable_imagery": [
+            "被盯上的旧名",
+            "火光后的门楣",
+            "夜客",
+            "案卷边角"
+          ],
+          "emotional_arc": "追索他人秘密，也暴露自己的执念。",
+          "avoid_claims": [
+            "不要写死千夜亲缘",
+            "不要让李祚成为全知幕后黑手",
+            "不要替官方补完整因果"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/李祚/歌曲角度",
+          "theme_tags": [
+            "暗线歌",
+            "权谋",
+            "旧怨"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合暗色国风、低音弦乐或悬疑流行；副歌要写“旧名被谁收藏”这类记忆点，而不是讲阴谋说明书。",
+          "usable_imagery": [
+            "暗纹",
+            "杯中影",
+            "夜雨檐声",
+            "纸上旧名"
+          ],
+          "emotional_arc": "冷静铺陈到压迫感爆发，再落回无人承认的旧账。",
+          "avoid_claims": [
+            "不要太像谍战口号",
+            "不要过度血腥",
+            "不要剧情解释过多"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/李祚/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "旧怨",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "李祚素材争议和暗线多，必须保持“创作叙事层”口径：可写追索、权势、旧怨，不写成官方已确认全部真相。",
+          "usable_imagery": [
+            "未盖章的案卷",
+            "暗纹消失",
+            "不肯落款"
+          ],
+          "emotional_arc": "让危险感服务歌曲，不服务猜谜。",
+          "avoid_claims": [
+            "不要宣称完整真相",
+            "不要编造现实对应",
+            "不要把人物脸谱化"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-ma-budai",
+      "entity_type": "character",
+      "canonical_name": "麻布袋",
+      "aliases": [
+        "麻布袋"
+      ],
+      "summary": "河西主章高频人物，适合承接问月长安、边地行旅、荒漠生存、故乡与月色等创作主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/麻布袋/河西行旅人物",
+          "theme_tags": [
+            "河西",
+            "凉州",
+            "问月长安",
+            "行旅"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "麻布袋适合作为河西旅程中的高记忆人物：名字朴拙，气质偏边地行旅、荒漠求生和一路相伴的烟火感。",
+          "usable_imagery": [
+            "麻布袋子",
+            "沙尘",
+            "驼铃",
+            "边关月",
+            "破旧水囊"
+          ],
+          "emotional_arc": "从看似滑稽的相遇，到长路上真正可靠的陪伴。",
+          "avoid_claims": [
+            "不要写成纯搞笑角色",
+            "不要编造完整身世",
+            "不要把河西写成异域猎奇"
+          ],
+          "content": "河西行旅人物创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/麻布袋/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "河西主章",
+            "旅程"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "麻布袋完整经历需依赖河西主章实录；当前可写其与问月长安、河西行路和边地普通人命运相关。",
+          "usable_imagery": [
+            "关外长路",
+            "风沙脚印",
+            "月下歇脚",
+            "布袋里的旧物"
+          ],
+          "emotional_arc": "相遇、同行、风沙试炼、把轻松名字唱出重量。",
+          "avoid_claims": [
+            "不要写死牺牲或团圆",
+            "不要当作攻略 NPC",
+            "不要让名字噱头盖过人物"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/麻布袋/关系网络",
+          "theme_tags": [
+            "阿依努尔",
+            "河西行旅",
+            "边民"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与阿依努尔、河西行旅群像、归义军旧事和凉州边民相连，提供长路中的人情。",
+          "usable_imagery": [
+            "同饮一口水",
+            "篝火边话",
+            "月下背影",
+            "驼铃远去"
+          ],
+          "emotional_arc": "旅伴关系从陌生到相托。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘",
+            "不要替代主角情绪",
+            "不要把河西群像写成单一民俗符号"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/麻布袋/歌曲角度",
+          "theme_tags": [
+            "旅歌",
+            "边塞",
+            "轻重反差"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合边塞民谣、轻摇滚或带驼铃节奏的流行；可用轻松开场，副歌转向“袋里装着回不去的故乡”。",
+          "usable_imagery": [
+            "驼铃",
+            "布袋",
+            "月光沙丘",
+            "关门"
+          ],
+          "emotional_arc": "从轻巧到沉重，再把沉重唱成路还要走。",
+          "avoid_claims": [
+            "不要写成儿歌",
+            "不要过度异域化",
+            "不要堆风沙月亮套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/麻布袋/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "河西边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "麻布袋当前是河西创作增强素材，不应承担官方主线真相；事实不足处写成行旅见闻。",
+          "usable_imagery": [
+            "布袋系紧",
+            "月下不说话",
+            "沙里脚印"
+          ],
+          "emotional_arc": "用小人物托住大地方。",
+          "avoid_claims": [
+            "不要宣称官方完整经历",
+            "不要把名字当笑话消费",
+            "不要编造结局"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-shen-yilun",
+      "entity_type": "character",
+      "canonical_name": "沈义伦",
+      "aliases": [
+        "沈义伦"
+      ],
+      "summary": "九流暗涌/开封鬼市线关键人物，用于补足九流门、鬼市、局中局和市井权术的准确创作素材。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/沈义伦/九流暗涌人物锚点",
+          "theme_tags": [
+            "九流门",
+            "开封",
+            "鬼市",
+            "暗涌"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "沈义伦适合作为九流暗涌和开封鬼市相关人物锚点：歌词可写市井里的谋局、笑面后的算盘和江湖底层的求生法。",
+          "usable_imagery": [
+            "算盘声",
+            "鬼市灯",
+            "旧账本",
+            "窄巷",
+            "九流牌匾"
+          ],
+          "emotional_arc": "从市井算计到局中失控，露出小人物也会下大棋的锋利。",
+          "avoid_claims": [
+            "不要把九流门写成单纯邪教",
+            "不要写成现代商业阴谋",
+            "不要编造完整职位"
+          ],
+          "content": "九流暗涌人物锚点创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/沈义伦/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "九流",
+            "开封暗面"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "沈义伦完整经历需后续实录支撑；当前可写他在九流线、开封暗面或鬼市纷争中发挥作用，不补所有因果链。",
+          "usable_imagery": [
+            "雨夜账本",
+            "暗处商谈",
+            "破旧灯笼",
+            "闭门声"
+          ],
+          "emotional_arc": "混迹、布局、被反噬、仍要活下去。",
+          "avoid_claims": [
+            "不要写死结局",
+            "不要过度阴谋化",
+            "不要替官方解释九流全部真相"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/沈义伦/关系网络",
+          "theme_tags": [
+            "九流门",
+            "鬼市子",
+            "开封市井"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与九流门众生、鬼市子身份壳和开封小人物连接；重点是组织和市井相互借力。",
+          "usable_imagery": [
+            "同桌不同心",
+            "半截暗号",
+            "夜市铜钱",
+            "门派暗语"
+          ],
+          "emotional_arc": "每个人都在借别人的名字过河。",
+          "avoid_claims": [
+            "不要把所有九流人物混成一人",
+            "不要乱绑历史人物",
+            "不要把鬼市写成恐怖乐园"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/沈义伦/歌曲角度",
+          "theme_tags": [
+            "市井说唱",
+            "暗线",
+            "九流"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合市井说唱、暗色 funk 或国风 hip-hop：节奏可带算盘、铜钱和叫卖感，但歌词要有江湖底层的辛辣。",
+          "usable_imagery": [
+            "算盘",
+            "铜钱",
+            "叫卖声",
+            "雨巷脚步"
+          ],
+          "emotional_arc": "从嘻笑入局到副歌变冷，再以一句市井狠话收束。",
+          "avoid_claims": [
+            "不要油腻搞笑化",
+            "不要过度口号",
+            "不要丢掉燕云时代感"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/沈义伦/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "九流边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "沈义伦素材用于九流创作增强，不可替代官方九流门全貌；事实不足处必须写成传闻、局中影或市井暗线。",
+          "usable_imagery": [
+            "账本合上",
+            "灯影错位",
+            "未说完的暗号"
+          ],
+          "emotional_arc": "保留模糊处，避免硬解释。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要让他成为全局幕后黑手",
+            "不要把九流门单一化"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-tang-xinci",
+      "entity_type": "character",
+      "canonical_name": "唐新词",
+      "aliases": [
+        "唐新词"
+      ],
+      "summary": "青州/文津馆核心人物，支撑书院、文字、求学、海风与文脉主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/唐新词/文津馆与文字气质",
+          "theme_tags": [
+            "青州",
+            "蓬山",
+            "文津馆",
+            "文字"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "唐新词适合作为青州/文津馆的文字与求学人物：歌词可写书案、海风、旧卷、新词和求索之心。",
+          "usable_imagery": [
+            "书案",
+            "新词残页",
+            "海风",
+            "墨香",
+            "藏书楼灯"
+          ],
+          "emotional_arc": "从求学入门到文字照见自己，再到把心事写成新词。",
+          "avoid_claims": [
+            "不要编造完整师承",
+            "不要把文津馆写成现代学校",
+            "不要写成单纯才子佳人"
+          ],
+          "content": "文津馆与文字气质创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/唐新词/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "书院",
+            "求学"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "唐新词完整经历需游戏内实录补齐；当前可写其与文津馆、蓬山、文字和同窗关系有关。",
+          "usable_imagery": [
+            "晨读",
+            "风翻书页",
+            "未署名诗句",
+            "石阶海雾"
+          ],
+          "emotional_arc": "初见书院、被卷入人事、仍相信文字能留下人。",
+          "avoid_claims": [
+            "不要写死结局",
+            "不要擅自确定家族关系",
+            "不要把人物变成作文题"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/唐新词/关系网络",
+          "theme_tags": [
+            "文津馆",
+            "同窗",
+            "蓬山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与文津馆学子、蓬山四海豪客和青州地域相互召回；重点是学问、友情和年轻人的心事。",
+          "usable_imagery": [
+            "同窗笑声",
+            "借来的书",
+            "海边台阶",
+            "夜读灯"
+          ],
+          "emotional_arc": "从同窗日常到各自背负不同秘密。",
+          "avoid_claims": [
+            "不要强绑爱情",
+            "不要乱写门派结论",
+            "不要替用户故事强塞官方人物"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/唐新词/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "书院",
+            "抒情"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合清亮女/男声、国风流行或书卷气民谣；副歌可写“我把旧事改成新词”这类记忆点。",
+          "usable_imagery": [
+            "新词",
+            "海风",
+            "灯下墨迹",
+            "书页声"
+          ],
+          "emotional_arc": "轻盈开篇，副歌有少年求索的明亮和一点怅惘。",
+          "avoid_claims": [
+            "不要过雅导致不可唱",
+            "不要堆典故",
+            "不要写成考试作文"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/唐新词/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "文津馆边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "唐新词素材用于文津馆创作增强；未确认经历保持留白，允许写书卷气和情绪，不写完整官方传记。",
+          "usable_imagery": [
+            "空白书页",
+            "未题完的词",
+            "远处潮声"
+          ],
+          "emotional_arc": "留一点空白给用户自己的故事。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要硬写爱情结局",
+            "不要把文津馆人物混成一个模板"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-wang-qing",
+      "entity_type": "character",
+      "canonical_name": "王清",
+      "aliases": [
+        "王清"
+      ],
+      "summary": "燕北盟、天泉和北地遗民情绪相关高价值人物，适合承接北地守望、身份隐忍和旧盟誓。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/王清/燕北盟与北地遗民",
+          "theme_tags": [
+            "燕北盟",
+            "天泉",
+            "北地",
+            "遗民"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "王清适合作为燕北盟和北地遗民情绪的创作锚点：写北望、旧盟、守土和被时代压住的名字。",
+          "usable_imagery": [
+            "北风",
+            "旧盟旗",
+            "雪地足印",
+            "寒铁",
+            "长夜灯"
+          ],
+          "emotional_arc": "从守望到隐忍，再到把个人名字交给大地。",
+          "avoid_claims": [
+            "不要编造完整阵营职位",
+            "不要写死所有结局",
+            "不要把北地情绪写成口号"
+          ],
+          "content": "燕北盟与北地遗民创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/王清/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "旧盟",
+            "边地"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "王清的完整经历需依赖剧情整理与后续实录；当前可写他与燕北、天泉、旧盟誓相关，不补具体战役细节。",
+          "usable_imagery": [
+            "旧甲",
+            "夜渡",
+            "风雪信号",
+            "城外荒草"
+          ],
+          "emotional_arc": "曾经相信盟约，后来学会在沉默里守住它。",
+          "avoid_claims": [
+            "不要虚构关键战役",
+            "不要写死亲缘或师承",
+            "不要把他写成单一复仇者"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/王清/关系网络",
+          "theme_tags": [
+            "天泉",
+            "燕北盟",
+            "旧人"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可写同盟、旧部、天泉和北地乡民，重点是“人还在，旗已旧”的历史感。",
+          "usable_imagery": [
+            "磨旧的刀鞘",
+            "同袍名字",
+            "雪夜酒盏"
+          ],
+          "emotional_arc": "人与组织互相成全，也互相欠债。",
+          "avoid_claims": [
+            "不要乱绑寒香寻线",
+            "不要替官方确定阵营结论",
+            "不要把群体写成脸谱"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/王清/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "北地",
+            "守望"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合粗粝男声、边塞摇滚或低沉民谣；副歌应有北地开阔感和守望感，不要变成单纯战歌。",
+          "usable_imagery": [
+            "边风",
+            "火盆",
+            "远山",
+            "旧盟旗"
+          ],
+          "emotional_arc": "低声守夜到副歌展开，再回到雪地脚印。",
+          "avoid_claims": [
+            "不要过度英雄化",
+            "不要喊口号",
+            "不要用泛古风边塞套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/王清/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "待核",
+            "阵营边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "王清可作为创作叙事层人物使用；未实录确认的身份细节只写成旧盟线索，不写成官方定论。",
+          "usable_imagery": [
+            "被风吹暗的旗",
+            "未盖印的信",
+            "雪里人影"
+          ],
+          "emotional_arc": "允许留白，留白本身就是北地感。",
+          "avoid_claims": [
+            "不要宣称官方完整身份已确认",
+            "不要补完结局",
+            "不要把线索写成百科答案"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-yaoyaoyao",
+      "entity_type": "character",
+      "canonical_name": "姚药药",
+      "aliases": [
+        "姚药药"
+      ],
+      "summary": "清河/开封早期玩家记忆人物，适合承接医药、陪伴、成长和普通人被江湖卷入的创作主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/姚药药/基础身份与医药气质",
+          "theme_tags": [
+            "医药",
+            "清河",
+            "普通人",
+            "成长"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "姚药药适合作为医药与陪伴线人物使用：写作时把她放在清河/早期开封的烟火语境中，强调治病、照看、成长和普通人被江湖风波擦过的感觉。",
+          "usable_imagery": [
+            "药罐",
+            "草药香",
+            "小院灯火",
+            "手心药粉",
+            "湿布包扎"
+          ],
+          "emotional_arc": "从单纯照看他人，到发现乱世里救人也要承担代价。",
+          "avoid_claims": [
+            "不要编造确定亲缘或结局",
+            "不要写成现代医生模板",
+            "不要把医药线写成玄幻炼丹"
+          ],
+          "content": "基础身份与医药气质创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/姚药药/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "陪伴",
+            "早期记忆"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "姚药药的完整经历当前按攻略/剧情整理综合处理：可写她在早期江湖生活里留下的医药记忆，但不要补成官方长篇传记。",
+          "usable_imagery": [
+            "早晨煎药",
+            "门口等人",
+            "旧药方",
+            "被雨打湿的草袋"
+          ],
+          "emotional_arc": "日常、牵挂、风波逼近、仍想把人留在人间。",
+          "avoid_claims": [
+            "不要写死死亡或团圆",
+            "不要把薄资料扩写成官方事实",
+            "不要让她替代主角故事"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/姚药药/关系网络",
+          "theme_tags": [
+            "清河人物",
+            "市井",
+            "照看"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可把姚药药写成玩家早期遇见的照看者、同路人或小人物镜面，用她衬托江湖不是只有高手，也有给伤口换药的人。",
+          "usable_imagery": [
+            "递来的药碗",
+            "压低的叮嘱",
+            "乡路脚印",
+            "屋檐雨声"
+          ],
+          "emotional_arc": "亲近但不宏大，温柔但不脆弱。",
+          "avoid_claims": [
+            "不要硬绑寒香寻/不羡仙核心线",
+            "不要编造门派归属",
+            "不要把关系写成恋爱定论"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/姚药药/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "温柔",
+            "普通人"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合女声叙事、温柔民谣或国风流行：副歌可从“谁替我留一盏药火”这类意象展开，重点是普通人也在乱世里守护他人。",
+          "usable_imagery": [
+            "药火",
+            "白瓷碗",
+            "细雨",
+            "窗纸",
+            "袖中草叶"
+          ],
+          "emotional_arc": "由轻声照料推向“救不了天下也要救眼前人”的坚持。",
+          "avoid_claims": [
+            "不要过度苦情",
+            "不要写成医学科普",
+            "不要堆古风药名"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/姚药药/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "资料薄弱",
+            "创作边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "姚药药当前应作为创作叙事层人物使用：可以承接医药与普通人情绪，不适合作为剧情真相、阵营结论或关键反转的事实依据。",
+          "usable_imagery": [
+            "药方空白",
+            "没说出口的病名",
+            "门外风声"
+          ],
+          "emotional_arc": "把留白当成情绪，不把留白补成定论。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传已确认",
+            "不要擅自写关键反转",
+            "不要把她写成救世医仙"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-yingying-wenwuque",
+      "entity_type": "character",
+      "canonical_name": "盈盈/温无缺",
+      "aliases": [
+        "盈盈",
+        "温无缺",
+        "盈盈/温无缺"
+      ],
+      "summary": "开封高频人物线，适合承接身份伪装、双名、情感错位和市井繁华背后的秘密。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/盈盈/温无缺/双名与身份",
+          "theme_tags": [
+            "开封",
+            "身份",
+            "伪装",
+            "双名"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "盈盈/温无缺应作为双名与身份错位素材：歌词可写一个人在两个名字之间生活，白日市井热闹，夜里只剩不能说的真名。",
+          "usable_imagery": [
+            "两张名帖",
+            "半面妆",
+            "开封灯市",
+            "镜中人",
+            "未说出的称呼"
+          ],
+          "emotional_arc": "从明亮身份到暗处真名，再到选择如何被记住。",
+          "avoid_claims": [
+            "不要把双名写成简单女扮男装/男扮女装笑料",
+            "不要编造确定身份结局",
+            "不要低俗化"
+          ],
+          "content": "双名与身份创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/盈盈/温无缺/人生时间线留白",
+          "theme_tags": [
+            "人物传",
+            "开封",
+            "情感"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "完整经历当前按剧情整理综合处理：可写开封相遇、身份遮掩和关系错位，不补未确认的具体身世。",
+          "usable_imagery": [
+            "灯市相遇",
+            "错认的名字",
+            "屏风后影",
+            "雨夜巷口"
+          ],
+          "emotional_arc": "相遇、隐瞒、暴露边缘、仍想被认真看见。",
+          "avoid_claims": [
+            "不要写死最终归宿",
+            "不要把人物当作反转工具",
+            "不要吞掉用户指定情绪"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/盈盈/温无缺/关系网络",
+          "theme_tags": [
+            "市井",
+            "旧识",
+            "情感张力"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可写与开封市井、旧识和玩家视角的相认/错认；重点是“你叫我哪个名字，我就成为什么人”。",
+          "usable_imagery": [
+            "递错的伞",
+            "未拆的信",
+            "街角灯影",
+            "一声旧名"
+          ],
+          "emotional_arc": "被别人命名，也试图夺回自己的名字。",
+          "avoid_claims": [
+            "不要擅自绑定主线大阴谋",
+            "不要硬写爱情定论",
+            "不要戏谑身份困境"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/盈盈/温无缺/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "双声部",
+            "开封"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合男女/双声部、R&B 国风或戏剧化流行；可以把两个名字写成副歌对唱，但必须清晰可唱。",
+          "usable_imagery": [
+            "灯市鼓点",
+            "镜前一句旧名",
+            "花笺",
+            "街声"
+          ],
+          "emotional_arc": "一段唱给白日，一段唱给夜里，最后两个名字合成一个人。",
+          "avoid_claims": [
+            "不要把结构弄得太复杂",
+            "不要写成纯设定解谜",
+            "不要堆砌性别/身份标签"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/盈盈/温无缺/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "身份边界",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "盈盈/温无缺当前适合写身份和情绪，不适合被用来给出官方未确认的性别、身世、结局定论。",
+          "usable_imagery": [
+            "镜子蒙尘",
+            "未落款的名帖",
+            "灯灭后的街"
+          ],
+          "emotional_arc": "尊重人物困境，不拿身份做噱头。",
+          "avoid_claims": [
+            "不要低俗化身份",
+            "不要写死身世反转",
+            "不要宣称社区推断为官方事实"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhang-yichao",
+      "entity_type": "character",
+      "canonical_name": "张议潮",
+      "aliases": [
+        "张议潮"
+      ],
+      "summary": "归义军与归唐情绪核心历史人物，适合写河西归心、烽火余年、孤臣与山河重归。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/张议潮/归义军与归唐理想",
+          "theme_tags": [
+            "张议潮",
+            "归义军",
+            "归唐",
+            "河西"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张议潮是归义军与归唐情绪的强历史锚点：歌词可写河西从断裂中找回归属，写旗帜、沙州、长安月和旧唐回声。",
+          "usable_imagery": [
+            "归义军旗",
+            "沙州风",
+            "长安月",
+            "旧唐钟声",
+            "归路"
+          ],
+          "emotional_arc": "从边地孤立到举旗归心，再到理想被时间留下回声。",
+          "avoid_claims": [
+            "不要写成史书背诵",
+            "不要编造游戏内具体台词",
+            "不要把归唐情绪写成空泛口号"
+          ],
+          "content": "归义军与归唐理想创作卡。"
+        },
+        {
+          "id": "timeline",
+          "heading_path": "人物/张议潮/人生时间线留白",
+          "theme_tags": [
+            "时间线",
+            "河西",
+            "历史锚点"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张议潮创作应关注归义军精神和河西历史重量；具体游戏任务中的出场、对话和结局需实录确认。",
+          "usable_imagery": [
+            "烽烟散尽",
+            "旧驿道",
+            "归书",
+            "边城鼓"
+          ],
+          "emotional_arc": "从不甘失地，到遥望长安，再到后人以歌记住。",
+          "avoid_claims": [
+            "不要混淆历史与游戏事件",
+            "不要断言未核实主线细节",
+            "不要现实化敏感议题"
+          ],
+          "content": "人生时间线留白创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/张议潮/关系网络",
+          "theme_tags": [
+            "郭昕",
+            "归义军",
+            "凉州",
+            "长安"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与郭昕、归义军旧事、凉州、长安和边民群像共同构成家国线，不要只写帝王将相。",
+          "usable_imagery": [
+            "同袍旧名",
+            "城门回声",
+            "边民灯火",
+            "书信北上"
+          ],
+          "emotional_arc": "宏大历史里要看见普通人为什么愿意跟随。",
+          "avoid_claims": [
+            "不要把归义军写成单一军队口号",
+            "不要忽略百姓视角",
+            "不要编造亲缘"
+          ],
+          "content": "关系网络创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/张议潮/歌曲角度",
+          "theme_tags": [
+            "家国歌",
+            "河西",
+            "归唐"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合大气国风、边塞摇滚或厚重合唱；副歌可围绕“月照长安，也照河西归路”展开。",
+          "usable_imagery": [
+            "长安月",
+            "沙州风",
+            "归旗",
+            "马蹄尘"
+          ],
+          "emotional_arc": "由荒凉独唱扩展成群声，再落回一封归书。",
+          "avoid_claims": [
+            "不要过度煽动",
+            "不要堆砌历史名词",
+            "不要让歌词不可唱"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/张议潮/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "历史边界",
+            "创作边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张议潮是强历史锚点，但平台写的是燕云创作歌，不是历史论文；事实不足处只做情绪和意象，不补官方剧情。",
+          "usable_imagery": [
+            "合上的史册",
+            "风沙里未干的墨",
+            "远处城楼"
+          ],
+          "emotional_arc": "把历史变成歌里的重量，不把歌变成注释。",
+          "avoid_claims": [
+            "不要宣称游戏完整官方剧情",
+            "不要把历史人物神化",
+            "不要现实政治影射"
+          ],
+          "content": "禁写边界创作卡。"
         }
       ]
     }

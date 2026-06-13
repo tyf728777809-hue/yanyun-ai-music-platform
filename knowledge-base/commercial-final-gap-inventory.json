@@ -340,10 +340,10 @@
   "coverage_summary": {
     "character": {
       "total": 130,
-      "missing": 71,
-      "thin": 1,
-      "present": 35,
-      "needs_fact_split": 1,
+      "missing": 60,
+      "thin": 0,
+      "present": 48,
+      "needs_fact_split": 0,
       "pending_clues_only": 22
     },
     "storyline": {
@@ -633,7 +633,7 @@
       "aliases": [
         "鬼市子"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -645,8 +645,8 @@
       "recommended_cards": [
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
-      "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -771,7 +771,7 @@
       "aliases": [
         "天不收"
       ],
-      "current_status": "thin",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -783,8 +783,8 @@
       "recommended_cards": [
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
-      "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3516,11 +3516,12 @@
       "aliases": [
         "姚药药"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -3534,8 +3535,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "清河/开封早期玩家记忆人物，适合补普通人、医药、陪伴和成长线。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3603,11 +3604,12 @@
       "aliases": [
         "慧药"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -3621,8 +3623,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "破戒佛爷/善妙洲/佛门失序线关键人物，支撑信仰崩塌类歌词。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3633,11 +3635,12 @@
         "柴荣",
         "后周世宗"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-overview",
@@ -3651,8 +3654,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "历史人物与悬剑/春秋别馆/旧朝理想相关，是家国线的重要锚点。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3662,11 +3665,12 @@
       "aliases": [
         "王清"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-yuebei-wangqing",
@@ -3679,8 +3683,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "燕北盟、天泉和北地遗民情绪的高价值人物。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3690,11 +3694,12 @@
       "aliases": [
         "李祚"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -3708,8 +3713,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "绣金楼/寒香寻/开封暗线常见关联人物，需要边界化。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -3776,11 +3781,12 @@
         "盈盈",
         "温无缺"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -3794,8 +3800,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "开封高频人物线，可承接身份、伪装、情感与市井张力。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4002,11 +4008,12 @@
       "aliases": [
         "沈义伦"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-jiuliu",
@@ -4019,8 +4026,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "九流暗涌/开封鬼市线关键人物，影响九流门歌准确性。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4226,11 +4233,12 @@
       "aliases": [
         "麻布袋"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -4244,8 +4252,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "河西主章高频人物，关系到问月长安和河西旅程。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4283,11 +4291,12 @@
       "aliases": [
         "郭昕"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -4300,8 +4309,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "归义军/边关家国线核心历史锚点。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4311,11 +4320,12 @@
       "aliases": [
         "张议潮"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -4328,8 +4338,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "归义军与归唐情绪核心人物，适合家国大歌。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4563,11 +4573,12 @@
       "aliases": [
         "唐新词"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-wenjinguan",
@@ -4580,8 +4591,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "青州/文津馆核心人物，支撑书院与文字主题。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第二批补入或增厚，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第二批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -8175,5 +8186,29 @@
       "魏仁浦"
     ],
     "notes": "这些条目已具备正式库可检索卡片；仍可用公司资料包、游戏内实录或后续版本继续增厚。"
+  },
+  "formal_kb_second_batch_coverage": {
+    "completed_at": "2026-06-14T01:25:00+08:00",
+    "purpose": "正式人物知识库第二批补库，优先清空 P0 人物缺口并增厚鬼市子/天不收边界卡。",
+    "covered_character_rows": [
+      "character-chai-rong",
+      "character-guo-xin",
+      "character-huiyao",
+      "character-li-zuo",
+      "character-ma-budai",
+      "character-shen-yilun",
+      "character-tang-xinci",
+      "character-wang-qing",
+      "character-yaoyaoyao",
+      "character-yingying-wenwuque",
+      "character-zhang-yichao",
+      "current-character-011",
+      "current-character-017"
+    ],
+    "notes": [
+      "新增 11 个 P0 人物实体，每个实体 5 张创作卡。",
+      "鬼市子和天不收保留原实体并追加边界/歌曲结构卡，状态从 needs_fact_split/thin 回写为 present。",
+      "新增 13 条角色检索 eval case，用于后续 A/B 和召回 smoke。"
+    ]
   }
 }
