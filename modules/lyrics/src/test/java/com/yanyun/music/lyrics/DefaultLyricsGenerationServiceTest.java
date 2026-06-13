@@ -74,8 +74,15 @@ class DefaultLyricsGenerationServiceTest {
 
     service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
-    assertEquals(3, records.size());
-    AgentRunRecord briefRecord = records.get(0);
+    assertEquals(4, records.size());
+    AgentRunRecord knowledgeRecord = records.get(0);
+    assertEquals("KnowledgeRetrieve", knowledgeRecord.agentName());
+    assertEquals("v0.3", knowledgeRecord.agentVersion());
+    assertEquals("mock-kb-v1", knowledgeRecord.modelName());
+    assertEquals("knowledge.retrieve.v1", knowledgeRecord.promptTemplateKey());
+    assertEquals(AgentRunStatus.SUCCEEDED, knowledgeRecord.status());
+
+    AgentRunRecord briefRecord = records.get(1);
     assertEquals("work-1", briefRecord.workId());
     assertEquals("CreativeBriefAgent", briefRecord.agentName());
     assertEquals("v0.5", briefRecord.agentVersion());
@@ -88,11 +95,11 @@ class DefaultLyricsGenerationServiceTest {
     assertNotNull(briefRecord.outputHash());
     assertTrue(briefRecord.latencyMs() >= 0);
 
-    AgentRunRecord lyricsRecord = records.get(1);
+    AgentRunRecord lyricsRecord = records.get(2);
     assertEquals("LyricsAgent", lyricsRecord.agentName());
     assertEquals("lyrics.inspiration.v1", lyricsRecord.promptTemplateKey());
     assertEquals(AgentRunStatus.SUCCEEDED, lyricsRecord.status());
-    assertEquals("QualityEvaluationAgent", records.get(2).agentName());
+    assertEquals("QualityEvaluationAgent", records.get(3).agentName());
   }
 
   @Test
@@ -150,12 +157,13 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.POLISH));
 
     assertEquals(2, calls.get());
-    assertEquals(5, records.size());
-    assertEquals("CreativeBriefAgent", records.get(0).agentName());
-    assertEquals("LyricsAgent", records.get(1).agentName());
-    assertEquals("QualityEvaluationAgent", records.get(2).agentName());
-    assertEquals("LyricsAgent", records.get(3).agentName());
-    assertEquals("QualityEvaluationAgent", records.get(4).agentName());
+    assertEquals(6, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("CreativeBriefAgent", records.get(1).agentName());
+    assertEquals("LyricsAgent", records.get(2).agentName());
+    assertEquals("QualityEvaluationAgent", records.get(3).agentName());
+    assertEquals("LyricsAgent", records.get(4).agentName());
+    assertEquals("QualityEvaluationAgent", records.get(5).agentName());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(0).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(1).status());
     assertEquals(AgentRunStatus.SUCCEEDED, records.get(2).status());
@@ -208,10 +216,11 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(exception.getMessage().contains("燕云十六声锚点"));
     assertEquals(2, deepSeekCalls.get());
     assertEquals(2, qualityCalls.get());
-    assertEquals(3, records.size());
-    assertEquals("CreativeBriefAgent", records.get(0).agentName());
-    assertEquals("LyricsAgent", records.get(1).agentName());
+    assertEquals(4, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("CreativeBriefAgent", records.get(1).agentName());
     assertEquals("LyricsAgent", records.get(2).agentName());
+    assertEquals("LyricsAgent", records.get(3).agentName());
   }
 
   @Test
@@ -228,9 +237,10 @@ class DefaultLyricsGenerationServiceTest {
     assertThrows(
         IllegalStateException.class, () -> service.generate(baseRequest(LyricsOperation.LYRICS)));
 
-    assertEquals(2, records.size());
-    assertEquals("CreativeBriefAgent", records.get(0).agentName());
-    AgentRunRecord record = records.get(1);
+    assertEquals(3, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("CreativeBriefAgent", records.get(1).agentName());
+    AgentRunRecord record = records.get(2);
     assertEquals(AgentRunStatus.FAILED, record.status());
     assertEquals("DEEPSEEK_LYRICS_FAILED", record.failureCode());
     assertTrue(record.failureMessage().contains("Bearer [REDACTED]"));
@@ -286,8 +296,9 @@ class DefaultLyricsGenerationServiceTest {
         () -> service.generate(baseRequest(LyricsOperation.INSPIRATION)));
 
     assertEquals(0, deepSeekCalls.get());
-    assertEquals(1, records.size());
-    AgentRunRecord record = records.getFirst();
+    assertEquals(2, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    AgentRunRecord record = records.get(1);
     assertEquals("CreativeBriefAgent", record.agentName());
     assertEquals(AgentRunStatus.FAILED, record.status());
     assertEquals("CREATIVE_BRIEF_AGENT_FAILED", record.failureCode());

@@ -1,2 +1,2 @@
-/** Deprecated knowledge-base boundary; active lyrics generation uses NoopKnowledgeService. */
+/** Controlled Yanyun creative knowledge retrieval boundary. */
 package com.yanyun.music.knowledge;

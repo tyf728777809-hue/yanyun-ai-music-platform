@@ -27,7 +27,13 @@ import com.yanyun.music.deepseek.RealDeepSeekQualityEvaluationAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
 import com.yanyun.music.dreammaker.DreamMakerHttpClient;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
+import com.yanyun.music.knowledge.DeterministicKnowledgeEmbeddingService;
+import com.yanyun.music.knowledge.JdbcKnowledgeService;
+import com.yanyun.music.knowledge.KnowledgeEmbeddingService;
+import com.yanyun.music.knowledge.KnowledgeProperties;
+import com.yanyun.music.knowledge.KnowledgeRetrievalMode;
 import com.yanyun.music.knowledge.KnowledgeService;
+import com.yanyun.music.knowledge.MockKnowledgeService;
 import com.yanyun.music.knowledge.NoopKnowledgeService;
 import com.yanyun.music.lyrics.DefaultLyricsGenerationService;
 import com.yanyun.music.lyrics.LyricsGenerationService;
@@ -111,7 +117,27 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  KnowledgeService knowledgeService() {
+  @ConfigurationProperties(prefix = "yanyun.knowledge")
+  KnowledgeProperties knowledgeProperties() {
+    return new KnowledgeProperties();
+  }
+
+  @Bean
+  KnowledgeEmbeddingService knowledgeEmbeddingService() {
+    return new DeterministicKnowledgeEmbeddingService();
+  }
+
+  @Bean
+  KnowledgeService knowledgeService(
+      JdbcTemplate jdbcTemplate,
+      KnowledgeProperties knowledgeProperties,
+      KnowledgeEmbeddingService knowledgeEmbeddingService) {
+    if (knowledgeProperties.mode() == KnowledgeRetrievalMode.PGVECTOR) {
+      return new JdbcKnowledgeService(jdbcTemplate, knowledgeProperties, knowledgeEmbeddingService);
+    }
+    if (knowledgeProperties.mode() == KnowledgeRetrievalMode.MOCK) {
+      return new MockKnowledgeService();
+    }
     return new NoopKnowledgeService();
   }
 

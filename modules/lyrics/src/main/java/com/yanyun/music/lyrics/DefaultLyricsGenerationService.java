@@ -108,21 +108,19 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   @Override
   public LyricsGenerationResult generate(LyricsGenerationRequest request) {
-    KnowledgeRetrievalResult knowledge =
-        knowledgeService.retrieve(
-            new KnowledgeRetrievalRequest(query(request), List.of("yanyun", "lyrics"), 3));
+    KnowledgeRetrievalResult knowledge = retrieveKnowledge(request);
     CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
     ensureCreativeDomainAllowed(creativeBrief);
     LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
     QualityEvaluationResult quality =
-        evaluateLyricsQuality(briefedRequest, response, creativeBrief);
+        evaluateLyricsQuality(briefedRequest, response, creativeBrief, knowledge);
     if (isLowQuality(response) || shouldRewrite(quality)) {
       LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
-      quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief);
+      quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief, knowledge);
     }
     ensureLyricsQualityAllowed(response, quality);
     return toResult(response, creativeBrief, knowledge, prompt);
@@ -192,6 +190,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         music_direction=%s
         yanyun_references=%s
         constraints=%s
+        knowledge_policy=Knowledge references are optional creative material. Preserve the user's story core. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally. Do not turn lyrics into plot summary.
         """
         .formatted(
             creativeBrief.domainDecision(),
@@ -211,7 +210,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private QualityEvaluationResult evaluateLyricsQuality(
       LyricsGenerationRequest request,
       DeepSeekLyricsResponse response,
-      CreativeBriefResult creativeBrief) {
+      CreativeBriefResult creativeBrief,
+      KnowledgeRetrievalResult knowledge) {
     return qualityEvaluationAgent.evaluate(
         new QualityEvaluationRequest(
             request.workId(),
@@ -246,6 +246,14 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "creative_brief_constraints",
                     creativeBrief == null ? List.of() : creativeBrief.constraints()),
+                Map.entry("knowledge_base_version", knowledge == null ? "" : knowledge.kbVersion()),
+                Map.entry(
+                    "knowledge_reference_ids",
+                    knowledge == null
+                        ? List.of()
+                        : knowledge.references().stream()
+                            .map(KnowledgeReference::chunkId)
+                            .toList()),
                 Map.entry("risk_notes", response.riskNotes()))));
   }
 
@@ -335,6 +343,63 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     return elapsed > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) Math.max(0L, elapsed);
   }
 
+  private KnowledgeRetrievalResult retrieveKnowledge(LyricsGenerationRequest request) {
+    KnowledgeRetrievalRequest retrievalRequest =
+        new KnowledgeRetrievalRequest(query(request), List.of("yanyun", "lyrics"), 6);
+    long startedAt = System.nanoTime();
+    try {
+      KnowledgeRetrievalResult result = knowledgeService.retrieve(retrievalRequest);
+      recordKnowledgeRun(request, retrievalRequest, result, startedAt, null);
+      return result;
+    } catch (RuntimeException exception) {
+      KnowledgeRetrievalResult fallback = new KnowledgeRetrievalResult("unavailable", List.of());
+      recordKnowledgeRun(request, retrievalRequest, fallback, startedAt, exception);
+      return fallback;
+    }
+  }
+
+  private void recordKnowledgeRun(
+      LyricsGenerationRequest request,
+      KnowledgeRetrievalRequest retrievalRequest,
+      KnowledgeRetrievalResult result,
+      long startedAt,
+      RuntimeException exception) {
+    agentRunRecorder.record(
+        new AgentRunRecord(
+            request.workId(),
+            null,
+            "KnowledgeRetrieve",
+            "v0.3",
+            request.operation().name(),
+            result == null ? "knowledge-unavailable" : result.kbVersion(),
+            "knowledge.retrieve.v1",
+            1,
+            AgentRunHashing.sha256(knowledgeInputFingerprint(retrievalRequest)),
+            result == null ? null : AgentRunHashing.sha256(knowledgeOutputFingerprint(result)),
+            exception == null ? AgentRunStatus.SUCCEEDED : AgentRunStatus.FAILED,
+            elapsedMs(startedAt),
+            null,
+            null,
+            null,
+            exception == null ? null : "KNOWLEDGE_RETRIEVAL_FAILED",
+            exception == null ? null : exception.getMessage()));
+  }
+
+  private String knowledgeInputFingerprint(KnowledgeRetrievalRequest request) {
+    return String.join(
+        "\n",
+        firstNonBlank(request.query(), ""),
+        request.tags().toString(),
+        Integer.toString(request.limit()));
+  }
+
+  private String knowledgeOutputFingerprint(KnowledgeRetrievalResult result) {
+    return String.join(
+        "\n",
+        result.kbVersion(),
+        result.references().stream().map(KnowledgeReference::chunkId).toList().toString());
+  }
+
   private String inputFingerprint(DeepSeekLyricsRequest request) {
     return String.join(
         "\n",
@@ -370,7 +435,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         request.currentLyrics(),
         appendInstruction(
             request.instruction(),
-            "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion and music preference, but make the final lyrics clearly belong to Yanyun Sixteen Sounds. Add concrete Yanyun player-facing anchors such as Yanyun, Sixteen Sounds, Qinghe, Kaifeng, Yanmen, Xunsheng, Qishu, martial learning, or other suitable in-world cues when they fit naturally. Avoid generic wuxia phrasing."),
+            "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion, music preference, and story core. Make the final lyrics feel like they belong inside the Yanyun Sixteen Sounds world through character choices, place atmosphere, wuxia actions, player experience, or emotional texture. Do not force official names or the words Yanyun/Sixteen Sounds. Do not over-heroize ordinary characters. Avoid generic wuxia phrasing and plot-summary writing."),
         request.requestedTitle(),
         request.musicStyle(),
         request.vocalPreference());

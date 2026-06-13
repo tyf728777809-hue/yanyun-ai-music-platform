@@ -2,7 +2,7 @@ name: yanyun-ai-music-local
 
 services:
   postgres:
-    image: postgres:16
+    image: pgvector/pgvector:pg16
     container_name: yanyun-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-yanyun_music}

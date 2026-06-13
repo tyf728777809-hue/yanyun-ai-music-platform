@@ -61,6 +61,12 @@ yanyun:
     max-attempts: ${DEEPSEEK_MAX_ATTEMPTS:1}
     response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:4096}
     temperature: ${DEEPSEEK_TEMPERATURE:0.7}
+  knowledge:
+    retrieval-mode: ${KNOWLEDGE_RETRIEVAL_MODE:disabled}
+    kb-version: ${KNOWLEDGE_KB_VERSION:yanyun-official-kb-2026-06-13-v1}
+    max-references: ${KNOWLEDGE_MAX_REFERENCES:6}
+    entity-limit: ${KNOWLEDGE_ENTITY_LIMIT:4}
+    semantic-limit: ${KNOWLEDGE_SEMANTIC_LIMIT:6}
   image:
     provider: ${IMAGE_PROVIDER:mock}
   image2:
