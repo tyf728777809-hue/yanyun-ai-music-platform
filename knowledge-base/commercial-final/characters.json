@@ -101,6 +101,19 @@
           "emotional_arc": "安静困惑逐步推向自我确认。",
           "avoid_claims": ["不要堆砌玄学名词", "不要复述剧情梗概", "不要误写为其他 IP 角色"],
           "content": "寻心角色歌应偏内省。"
+        },
+        {
+          "id": "identity-mirror",
+          "heading_path": "人物/寻心/身份镜像",
+          "theme_tags": ["弱水岸", "心魔", "熟悉面容", "身份悬念"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "寻心可作为弱水岸里熟悉面容、心魔试炼和旧日倒影的创作素材：重点写被过去认出来的压迫感，而不是直接揭示她是谁。",
+          "usable_imagery": ["血月", "水面倒影", "井下火盆", "残字", "被认出的脸"],
+          "emotional_arc": "迷失、逼近、仍不敢确认。",
+          "avoid_claims": ["不要写死寻心等同寒香寻", "不要写完整身份真相", "不要把心魔写成单纯怪物"],
+          "content": "寻心身份镜像卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -108,7 +121,7 @@
       "key": "character-ayinuer",
       "entity_type": "character",
       "canonical_name": "阿依努尔",
-      "aliases": ["阿依努尔", "Ayinuer", "玉露为乡相关少女"],
+      "aliases": ["阿依努尔", "阿依奴", "阿依奴·艾合买提", "Ayinuer", "玉露为乡相关少女"],
       "summary": "凉州与玉露为乡线索中的高频人物名，适合写身份、故乡、风沙和归属感；完整剧情需实录补齐。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250718/37780_1247023.html",
@@ -136,6 +149,18 @@
           "emotional_arc": "细小脆弱感逐步展开成坚定。",
           "avoid_claims": ["不要套用泛西域符号", "不要写成宣传口号", "不要堆砌地名"],
           "content": "阿依努尔创作角度卡。"
+        },
+        {
+          "id": "yulu-hometown",
+          "heading_path": "人物/阿依努尔/玉露与故乡",
+          "theme_tags": ["玉露为乡", "故乡", "至亲", "月光酒"],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "点名阿依努尔/阿依奴时，可写玉露台、葡萄园、家人离散、歌谣里的故乡和月光酒；情绪是甜味记忆里压着离散。",
+          "usable_imagery": ["葡萄汁染紫的手", "月光酒", "风雪高塔", "故乡歌谣", "一碗盛月"],
+          "emotional_arc": "故乡记忆很甜，现实命途很苦，仍要把自己活成归乡的人。",
+          "avoid_claims": ["不要写死亲属结局", "不要异域猎奇", "不要把阿依奴写成工具人"],
+          "content": "阿依努尔/阿依奴故乡卡。",
+          "source_ref": "https://www.yysls.cn/news/official/20250514/37780_1234272.html"
         }
       ]
     },
@@ -171,6 +196,19 @@
           "emotional_arc": "从外部压力转向自我确认。",
           "avoid_claims": ["不要替官方定阵营", "不要写成单薄反派", "不要复述战斗数值"],
           "content": "田英冲突写法卡。"
+        },
+        {
+          "id": "assassin-boss-pressure",
+          "heading_path": "人物/田英/传奇刺客与镇守压迫",
+          "theme_tags": ["传奇刺客", "镇守", "压迫感", "分身"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "田英可写成冷硬强敌和试炼型对手：公开资料强调传奇刺客、强压迫感和镇守战斗表现；创作重点是他逼玩家回答为何拔剑。",
+          "usable_imagery": ["佛光之顶", "法阵", "分身残影", "冷铁", "高台风"],
+          "emotional_arc": "敬畏强敌，到看见强敌背后的执念，再确认自己的路。",
+          "avoid_claims": ["不要断言忠奸", "不要编造完整组织履历", "不要把战斗机制写成歌词说明书"],
+          "content": "田英强敌压迫卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -206,6 +244,19 @@
           "emotional_arc": "忍耐、失去、仍选择站住。",
           "avoid_claims": ["不要写成百科介绍", "不要直接套家国大词", "不要过度神化"],
           "content": "叶万山气质卡。"
+        },
+        {
+          "id": "frontier-general",
+          "heading_path": "人物/叶万山/北地名将",
+          "theme_tags": ["北地", "守城", "名将", "失序"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "叶万山适合写北地守城名将的重量：他身上有守土、失序、重压和不肯倒下的复杂感；歌词要写沉默背负，不要写脸谱忠臣。",
+          "usable_imagery": ["城门", "将袍", "旧甲", "北地霜雪", "被压弯的脊梁"],
+          "emotional_arc": "守城之名到失序重压，再到沉默站住。",
+          "avoid_claims": ["不要把妻女传闻写成事实", "不要编造具体战役", "不要直接定性为忠臣或恶人"],
+          "content": "叶万山北地名将卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -241,6 +292,19 @@
           "emotional_arc": "笑闹、受伤、重新站起。",
           "avoid_claims": ["不要给出官方未确认年龄", "不要编造亲缘", "不要写成救世主"],
           "content": "小十七反差创作卡。"
+        },
+        {
+          "id": "guardian-blacksmith",
+          "heading_path": "人物/小十七/守护者与锻甲",
+          "theme_tags": ["燕云别馆", "守护", "锻甲", "少年气"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "小十七可写成心思纯净、擅锻造铠甲的守护者：明亮少年感被乱世职责拖入重量，但仍保留一点不服输的铜火。",
+          "usable_imagery": ["铁胚", "甲片", "地下别馆", "守门人", "铜火"],
+          "emotional_arc": "明亮守护到被残酷职责压住，再重新站稳。",
+          "avoid_claims": ["不要低龄萌化", "不要补年龄", "不要把小十七写成纯喜剧角色"],
+          "content": "小十七守护与锻甲卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -276,6 +340,19 @@
           "emotional_arc": "压抑到决断。",
           "avoid_claims": ["不要写成玄学百科", "不要编造教义", "不要使用现实敏感宗教话术"],
           "content": "道主歌曲角度卡。"
+        },
+        {
+          "id": "underworld-order",
+          "heading_path": "人物/道主/地下秩序",
+          "theme_tags": ["九流门", "鬼市", "地下秩序", "身份壳"],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "道主当前更适合作为九流门、鬼市和地下秩序的待核线索：可写混乱里的规矩、街头生存术和怪谈化威名，但不要把身份、位阶或结局写死。",
+          "usable_imagery": ["地下灯火", "假面", "门规", "街头术", "骗局"],
+          "emotional_arc": "混乱中立规矩，到发现规矩也会吞人。",
+          "avoid_claims": ["不要写成确定单一人物传", "不要套现实宗教", "不要断言正邪终判"],
+          "content": "道主地下秩序待核卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -311,6 +388,19 @@
           "emotional_arc": "被压迫、识破、挣脱。",
           "avoid_claims": ["不要补全身世", "不要写确定结局", "不要把角色写成其他 IP 反派"],
           "content": "无相皇冲突写法卡。"
+        },
+        {
+          "id": "bloodline-limit",
+          "heading_path": "人物/无相皇/血脉限制",
+          "theme_tags": ["血脉", "突破", "超限", "早期试炼"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无相皇可写成试图突破血脉限制的武者：力量越强，越像被空名和异化吞住；适合作为玩家早期试炼的压迫意象。",
+          "usable_imagery": ["血脉枷锁", "巨像", "深渊", "空面", "超限爆发"],
+          "emotional_arc": "被限制、追求突破、力量反过来吞噬人形。",
+          "avoid_claims": ["不要把皇字写成确定皇族", "不要绑定无面人/绣金楼为事实", "不要现实政治影射"],
+          "content": "无相皇血脉限制卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
@@ -381,6 +471,19 @@
           "emotional_arc": "压低情绪到最后一句露出真实心声。",
           "avoid_claims": ["不要过度黑暗化", "不要编造官方任务线", "不要混入忍者等其他文化模板"],
           "content": "千夜歌曲角度卡。"
+        },
+        {
+          "id": "disguise-night",
+          "heading_path": "人物/千夜/伪装与夜行",
+          "theme_tags": ["伪装", "操纵人心", "绣金楼", "夜行"],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "千夜可写成擅长伪装、操纵人心的神秘夜行者；与寒香寻、绣金楼等关系只能作为旧怨和暗线氛围，不要写成确定亲缘结论。",
+          "usable_imagery": ["夜巷", "屋脊", "黑伞", "灭灯", "被识破前的一瞬"],
+          "emotional_arc": "冷硬执行，到隐秘执念外露，再回到孤绝夜色。",
+          "avoid_claims": ["不要把亲缘暗示写成事实", "不要血腥猎奇", "不要写成标准女刺客模板"],
+          "content": "千夜伪装夜行卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
     },
