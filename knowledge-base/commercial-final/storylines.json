@@ -5,221 +5,1201 @@
       "key": "story-yulu-weixiang",
       "entity_type": "story",
       "canonical_name": "玉露为乡",
-      "aliases": ["玉露为乡", "凉州主线", "阿依努尔线"],
+      "aliases": [
+        "玉露为乡",
+        "凉州主线",
+        "阿依努尔线"
+      ],
       "summary": "凉州相关公开剧情线索，适合写身份追问、归属、异乡和故土。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250718/37780_1247023.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "belonging",
-        "heading_path": "剧情/玉露为乡/归属",
-        "theme_tags": ["剧情", "凉州", "归属", "身份"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "玉露为乡可写人在异乡寻找归属、从风沙里确认自己是谁；角色歌和玩家故事都可用。",
-        "usable_imagery": ["玉露", "风沙", "故乡水", "远方灯"],
-        "emotional_arc": "漂泊、追问、被故乡重新命名。",
-        "avoid_claims": ["不要编造任务结局", "不要编造阿依努尔关系", "不要异域刻板化"],
-        "content": "玉露为乡剧情创作卡。"
-      }]
+      "cards": [
+        {
+          "id": "belonging",
+          "heading_path": "剧情/玉露为乡/归属",
+          "theme_tags": [
+            "剧情",
+            "凉州",
+            "归属",
+            "身份"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "玉露为乡可写人在异乡寻找归属、从风沙里确认自己是谁；角色歌和玩家故事都可用。",
+          "usable_imagery": [
+            "玉露",
+            "风沙",
+            "故乡水",
+            "远方灯"
+          ],
+          "emotional_arc": "漂泊、追问、被故乡重新命名。",
+          "avoid_claims": [
+            "不要编造任务结局",
+            "不要编造阿依努尔关系",
+            "不要异域刻板化"
+          ],
+          "content": "玉露为乡剧情创作卡。"
+        },
+        {
+          "id": "grape-garden-origin",
+          "heading_path": "剧情/玉露为乡/葡萄园起点",
+          "theme_tags": [
+            "玉露台",
+            "葡萄园",
+            "故乡",
+            "亲人"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "玉露为乡起点可写葡萄园与一家人的旧日甜味，后续苦处才更有重量；适合写故乡不是地点，而是被人记得的味道。",
+          "usable_imagery": [
+            "葡萄藤",
+            "紫色汁液",
+            "月光酒",
+            "空园",
+            "旧歌"
+          ],
+          "emotional_arc": "甜味旧日被风雪拉远。",
+          "avoid_claims": [
+            "不要异域猎奇",
+            "不要写成风景宣传",
+            "不要提前给结局"
+          ],
+          "content": "玉露为乡葡萄园起点卡。",
+          "fact_level": "official_public_seed",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#official-public-sources"
+        },
+        {
+          "id": "tower-memory",
+          "heading_path": "剧情/玉露为乡/望帝乡与高塔",
+          "theme_tags": [
+            "望帝乡",
+            "高塔",
+            "记忆",
+            "归乡"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "望帝乡和高塔可写成回望故乡的结构：玩家一步步向上，不是为了看远景，而是确认自己还记得谁。",
+          "usable_imagery": [
+            "高塔",
+            "风雪阶梯",
+            "月影",
+            "远方灯",
+            "旧名"
+          ],
+          "emotional_arc": "登高、回望、承认自己仍想归去。",
+          "avoid_claims": [
+            "不要写具体未核流程",
+            "不要把塔写成通关攻略",
+            "不要补亲属结局"
+          ],
+          "content": "玉露为乡高塔记忆卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "moon-puzzle",
+          "heading_path": "剧情/玉露为乡/月光酒与拼月",
+          "theme_tags": [
+            "月光酒",
+            "拼月",
+            "回忆",
+            "待核"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "月光酒、拼月和回忆可作待核意象：写碎片被重新拼起，故乡不完整却还能照见人。",
+          "usable_imagery": [
+            "碎月",
+            "酒碗",
+            "拼合的影",
+            "风沙里的亮点"
+          ],
+          "emotional_arc": "破碎、拼回、仍缺一角。",
+          "avoid_claims": [
+            "不要写死任务结局",
+            "不要宣称官方定论",
+            "不要把谜题说明化"
+          ],
+          "content": "玉露为乡拼月待核卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "story-ruoshui-xunxin",
       "entity_type": "story",
       "canonical_name": "弱水岸寻心",
-      "aliases": ["弱水岸寻心", "寻心线"],
+      "aliases": [
+        "弱水岸寻心",
+        "寻心线"
+      ],
       "summary": "弱水岸与寻心相关线索，适合记忆、身份、自我追问和回声主题。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20241227/37780_1202836.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "memory",
-        "heading_path": "剧情/弱水岸寻心/记忆",
-        "theme_tags": ["剧情", "寻心", "记忆", "身份"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "弱水岸寻心适合写记忆碎片、旧名、倒影和自我辨认；适合空灵或悬疑抒情。",
-        "usable_imagery": ["倒影", "芦苇", "旧名", "水声"],
-        "emotional_arc": "迷失、靠近、仍带谜团。",
-        "avoid_claims": ["不要写完整真相", "不要编造身份结论", "不要恐怖化"],
-        "content": "弱水岸寻心剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "memory",
+          "heading_path": "剧情/弱水岸寻心/记忆",
+          "theme_tags": [
+            "剧情",
+            "寻心",
+            "记忆",
+            "身份"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "弱水岸寻心适合写记忆碎片、旧名、倒影和自我辨认；适合空灵或悬疑抒情。",
+          "usable_imagery": [
+            "倒影",
+            "芦苇",
+            "旧名",
+            "水声"
+          ],
+          "emotional_arc": "迷失、靠近、仍带谜团。",
+          "avoid_claims": [
+            "不要写完整真相",
+            "不要编造身份结论",
+            "不要恐怖化"
+          ],
+          "content": "弱水岸寻心剧情卡。"
+        },
+        {
+          "id": "well-entry",
+          "heading_path": "剧情/弱水岸寻心/古井入口",
+          "theme_tags": [
+            "弱水岸",
+            "古井",
+            "入井",
+            "地下"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "弱水岸寻心可从入井写起：向下不是探险，而是进入记忆和身份的暗处。",
+          "usable_imagery": [
+            "古井",
+            "湿石阶",
+            "水声",
+            "暗灯",
+            "墙上字"
+          ],
+          "emotional_arc": "从好奇下探到发现旧事在等人。",
+          "avoid_claims": [
+            "不要写成恐怖副本",
+            "不要解谜攻略化",
+            "不要直接给身份答案"
+          ],
+          "content": "弱水岸古井入口卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "luoshen-writing",
+          "heading_path": "剧情/弱水岸寻心/洛神笔迹",
+          "theme_tags": [
+            "洛神",
+            "笔迹",
+            "旧信",
+            "身份"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "洛神笔迹适合写为身份裂缝：字迹像从过去伸出的手，让玩家知道熟悉感并非错觉。",
+          "usable_imagery": [
+            "笔迹",
+            "旧纸",
+            "墨痕",
+            "玉笛",
+            "残谱"
+          ],
+          "emotional_arc": "辨认、迟疑、被旧名刺中。",
+          "avoid_claims": [
+            "不要写死洛神等同某人",
+            "不要复述线索清单",
+            "不要解释过满"
+          ],
+          "content": "弱水岸洛神笔迹卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "xunxin-fight",
+          "heading_path": "剧情/弱水岸寻心/寻心战留白",
+          "theme_tags": [
+            "寻心",
+            "幻境",
+            "心魔",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "寻心战可作情绪高潮：不是打败怪物，而是与熟悉面容和内心恐惧对视。",
+          "usable_imagery": [
+            "血月",
+            "水面倒影",
+            "断笛",
+            "幻境门",
+            "空白脸"
+          ],
+          "emotional_arc": "逼近、交锋、留下未说明的痛。",
+          "avoid_claims": [
+            "不要写完整身份真相",
+            "不要战斗机制化",
+            "不要宣称官方定论"
+          ],
+          "content": "弱水岸寻心战留白卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "story-jiuliu-huoqi",
       "entity_type": "story",
       "canonical_name": "九流祸起",
-      "aliases": ["九流祸起", "九流奇谋", "九流暗涌", "逐鹿中原"],
+      "aliases": [
+        "九流祸起",
+        "九流奇谋",
+        "九流暗涌",
+        "逐鹿中原"
+      ],
       "summary": "九流相关公开剧情线索，适合局中局、暗涌、众生被卷入和中原风云。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250627/37780_1242827.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "scheme",
-        "heading_path": "剧情/九流祸起/局中局",
-        "theme_tags": ["剧情", "九流", "暗线", "逐鹿中原"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "九流祸起可写风声将起、普通人被卷进暗局、每个人都有自己的算盘。",
-        "usable_imagery": ["暗巷", "棋局", "风声", "杂色衣冠"],
-        "emotional_arc": "听见传闻、入局、看见人心复杂。",
-        "avoid_claims": ["不要断言幕后真相", "不要现实政治影射", "不要写成单纯阴谋论"],
-        "content": "九流祸起剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "scheme",
+          "heading_path": "剧情/九流祸起/局中局",
+          "theme_tags": [
+            "剧情",
+            "九流",
+            "暗线",
+            "逐鹿中原"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "九流祸起可写风声将起、普通人被卷进暗局、每个人都有自己的算盘。",
+          "usable_imagery": [
+            "暗巷",
+            "棋局",
+            "风声",
+            "杂色衣冠"
+          ],
+          "emotional_arc": "听见传闻、入局、看见人心复杂。",
+          "avoid_claims": [
+            "不要断言幕后真相",
+            "不要现实政治影射",
+            "不要写成单纯阴谋论"
+          ],
+          "content": "九流祸起剧情卡。"
+        },
+        {
+          "id": "ghost-market-entry",
+          "heading_path": "剧情/九流祸起/鬼市入口",
+          "theme_tags": [
+            "九流门",
+            "鬼市",
+            "开封",
+            "入局"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "九流线适合从开封鬼市入口写起：热闹城市背面有另一套规矩，玩家误入其中才看见众生流动。",
+          "usable_imagery": [
+            "鬼市灯",
+            "暗号",
+            "棺材铺门",
+            "铜钱声",
+            "湿巷"
+          ],
+          "emotional_arc": "热闹、迷路、入局。",
+          "avoid_claims": [
+            "不要现代黑帮化",
+            "不要恐怖片化",
+            "不要写交易攻略"
+          ],
+          "content": "九流鬼市入口卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "zhuyousheng-legend",
+          "heading_path": "剧情/九流祸起/朱佑生传闻",
+          "theme_tags": [
+            "朱佑生",
+            "创派",
+            "众生",
+            "待核"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "朱佑生、朱小家和九流门创派可作待核叙事素材：写市井中有人试图给弱者留一条活路。",
+          "usable_imagery": [
+            "旧门规",
+            "百坊灯火",
+            "破旗",
+            "暗巷饭香"
+          ],
+          "emotional_arc": "护人、立规、规矩又被人利用。",
+          "avoid_claims": [
+            "不要写成官方定论",
+            "不要补完整创派史",
+            "不要现实帮派化"
+          ],
+          "content": "九流创派传闻卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "ordinary-people-in-game",
+          "heading_path": "剧情/九流祸起/普通人入局",
+          "theme_tags": [
+            "普通人",
+            "局中局",
+            "市井",
+            "暗涌"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "九流线最适合写普通人被卷入大局：不是每个人都想争天下，更多人只是想在暗涌里活过今天。",
+          "usable_imagery": [
+            "小摊灯",
+            "旧账本",
+            "假名",
+            "雨夜脚步",
+            "乱纸"
+          ],
+          "emotional_arc": "求生、被卷入、学会看局。",
+          "avoid_claims": [
+            "不要全写权谋口号",
+            "不要忽略普通人",
+            "不要把九流写成纯骗术"
+          ],
+          "content": "九流普通人入局卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "story-wuming-jianpu",
       "entity_type": "story",
       "canonical_name": "无名剑谱",
-      "aliases": ["无名剑谱", "空谷古冢"],
+      "aliases": [
+        "无名剑谱",
+        "空谷古冢"
+      ],
       "summary": "官方公开无名剑谱相关线索，适合失落传承、鬼市传闻、旧谱和江湖万象。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250529/37780_1236417.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "lost-manual",
-        "heading_path": "剧情/无名剑谱/失落传承",
-        "theme_tags": ["剧情", "剑谱", "鬼市", "传承"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "无名剑谱适合写失落传承、真假传闻、学艺之心和江湖里无人署名的努力。",
-        "usable_imagery": ["旧剑谱", "空谷古冢", "鬼市灯", "磨损纸页"],
-        "emotional_arc": "寻找秘籍到明白真正传承是自己的选择。",
-        "avoid_claims": ["不要编造剑谱招式", "不要写成修仙秘籍", "不要断言归属"],
-        "content": "无名剑谱剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "lost-manual",
+          "heading_path": "剧情/无名剑谱/失落传承",
+          "theme_tags": [
+            "剧情",
+            "剑谱",
+            "鬼市",
+            "传承"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "无名剑谱适合写失落传承、真假传闻、学艺之心和江湖里无人署名的努力。",
+          "usable_imagery": [
+            "旧剑谱",
+            "空谷古冢",
+            "鬼市灯",
+            "磨损纸页"
+          ],
+          "emotional_arc": "寻找秘籍到明白真正传承是自己的选择。",
+          "avoid_claims": [
+            "不要编造剑谱招式",
+            "不要写成修仙秘籍",
+            "不要断言归属"
+          ],
+          "content": "无名剑谱剧情卡。"
+        },
+        {
+          "id": "old-manual-rumor",
+          "heading_path": "剧情/无名剑谱/旧谱传闻",
+          "theme_tags": [
+            "无名剑谱",
+            "传闻",
+            "鬼市",
+            "残卷"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无名剑谱可从传闻写起：残卷在鬼市和江湖人手中流转，真正吸引人的是“无名者也能练出自己的剑”。",
+          "usable_imagery": [
+            "残卷",
+            "鬼市书摊",
+            "烛火",
+            "旧剑鞘",
+            "手抄页"
+          ],
+          "emotional_arc": "听闻、追逐、怀疑真假。",
+          "avoid_claims": [
+            "不要杜撰招式全名",
+            "不要写成修仙秘籍",
+            "不要断言归属"
+          ],
+          "content": "无名剑谱传闻卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "self-made-style",
+          "heading_path": "剧情/无名剑谱/自成一派",
+          "theme_tags": [
+            "自成一派",
+            "偷师",
+            "传承",
+            "选择"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无名剑谱的创作核心应落在自成一派：不是证明血统，而是玩家把偷学、失败和练习缝成自己的招。",
+          "usable_imagery": [
+            "磨破虎口",
+            "半页残谱",
+            "雪地练剑",
+            "旧招新用"
+          ],
+          "emotional_arc": "模仿、失败、形成自己的路。",
+          "avoid_claims": [
+            "不要攻略化",
+            "不要把传承写成天命",
+            "不要强绑定名门血脉"
+          ],
+          "content": "无名剑谱自成一派卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "guishizi-link",
+          "heading_path": "剧情/无名剑谱/鬼市子关联",
+          "theme_tags": [
+            "鬼市子",
+            "旧谱",
+            "身份壳",
+            "待核"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "无名剑谱与鬼市子可作待核关联：歌词可写追名号追到暗市深处，最后发现名字只是诱饵。",
+          "usable_imagery": [
+            "假名册",
+            "暗市灯",
+            "残谱边角",
+            "空座"
+          ],
+          "emotional_arc": "追人、追谱、追到自己的执念。",
+          "avoid_claims": [
+            "不要写成官方定论",
+            "不要给交易细节",
+            "不要把鬼市子坐实为单人"
+          ],
+          "content": "无名剑谱鬼市子待核卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "story-kaifeng-night-market",
       "entity_type": "story",
       "canonical_name": "开封夜市与鬼市",
-      "aliases": ["开封夜市与鬼市", "开封夜市", "鬼市", "樊楼", "开封夜色"],
+      "aliases": [
+        "开封夜市与鬼市",
+        "开封夜市",
+        "鬼市",
+        "樊楼",
+        "开封夜色"
+      ],
       "summary": "开封公开场景线索，适合繁华与暗面并置、市井烟火和夜色孤独。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20241017/37780_1189576.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "city-underbelly",
-        "heading_path": "剧情/开封夜市与鬼市/繁华暗面",
-        "theme_tags": ["开封", "夜市", "鬼市", "市井"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "开封夜市与鬼市可写繁华人声、交易、暗巷和热闹里孤独的人。",
-        "usable_imagery": ["樊楼灯", "铜钱声", "鬼市暗巷", "小贩叫卖"],
-        "emotional_arc": "热闹、迷失、看见城市背后的秘密。",
-        "avoid_claims": ["不要恐怖化鬼市", "不要现实违法交易描写", "不要写成现代城市"],
-        "content": "开封夜市与鬼市剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "city-underbelly",
+          "heading_path": "剧情/开封夜市与鬼市/繁华暗面",
+          "theme_tags": [
+            "开封",
+            "夜市",
+            "鬼市",
+            "市井"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "开封夜市与鬼市可写繁华人声、交易、暗巷和热闹里孤独的人。",
+          "usable_imagery": [
+            "樊楼灯",
+            "铜钱声",
+            "鬼市暗巷",
+            "小贩叫卖"
+          ],
+          "emotional_arc": "热闹、迷失、看见城市背后的秘密。",
+          "avoid_claims": [
+            "不要恐怖化鬼市",
+            "不要现实违法交易描写",
+            "不要写成现代城市"
+          ],
+          "content": "开封夜市与鬼市剧情卡。"
+        },
+        {
+          "id": "day-night-contrast",
+          "heading_path": "剧情/开封夜市与鬼市/昼夜对照",
+          "theme_tags": [
+            "开封",
+            "夜市",
+            "鬼市",
+            "繁华暗面"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "开封剧情歌可写昼夜对照：白日叫卖和夜里暗巷并存，城市越热闹，个人越容易显出孤独。",
+          "usable_imagery": [
+            "樊楼灯",
+            "叫卖声",
+            "青石夜雨",
+            "暗巷",
+            "铜钱"
+          ],
+          "emotional_arc": "被繁华吸引，到在热闹里听见孤独。",
+          "avoid_claims": [
+            "不要现代都市化",
+            "不要恐怖片化",
+            "不要写违法细节"
+          ],
+          "content": "开封昼夜对照卡。",
+          "fact_level": "official_public_seed",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#official-public-sources"
+        },
+        {
+          "id": "trade-and-name",
+          "heading_path": "剧情/开封夜市与鬼市/交易与假名",
+          "theme_tags": [
+            "交易",
+            "假名",
+            "身份",
+            "市井"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市可写交易和假名：人们不只买卖物件，也买卖身份、传闻和一点活路。",
+          "usable_imagery": [
+            "假面",
+            "旧账本",
+            "低声讨价",
+            "门后灯",
+            "袖中纸"
+          ],
+          "emotional_arc": "试探、交易、发现代价。",
+          "avoid_claims": [
+            "不要黑帮化",
+            "不要教唆现实行为",
+            "不要让设定压过歌词"
+          ],
+          "content": "开封鬼市交易卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "market-loneliness",
+          "heading_path": "剧情/开封夜市与鬼市/热闹里的孤独",
+          "theme_tags": [
+            "孤独",
+            "市井",
+            "玩家故事",
+            "夜行"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "普通玩家写开封时可落到热闹里的孤独：一个人在灯海里乱逛，也能写出强烈分享感。",
+          "usable_imagery": [
+            "灯海",
+            "独自行走",
+            "桥边风",
+            "小吃摊",
+            "人声浪"
+          ],
+          "emotional_arc": "热闹包围，心事反而清楚。",
+          "avoid_claims": [
+            "不要强绑主线",
+            "不要写成旅游文案",
+            "不要堆地名"
+          ],
+          "content": "开封玩家孤独卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        }
+      ]
     },
     {
       "key": "story-qingzhou-pengshan",
       "entity_type": "story",
       "canonical_name": "青州蓬山文津",
-      "aliases": ["青州蓬山文津", "青州蓬山", "蓬山文津", "文津馆线索"],
+      "aliases": [
+        "青州蓬山文津",
+        "青州蓬山",
+        "蓬山文津",
+        "文津馆线索"
+      ],
       "summary": "青州/蓬山/文津馆相关公开线索，适合求索、书卷、旧案和山水情绪。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/news/official/20250823/37780_1254195.html",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "scholar-trail",
-        "heading_path": "剧情/青州蓬山文津/求索",
-        "theme_tags": ["青州", "文津馆", "求索", "书卷"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "青州蓬山文津适合写读书人、山中旧案、求索和情感未明。",
-        "usable_imagery": ["书卷", "山雨", "墨香", "青石阶"],
-        "emotional_arc": "理性寻找答案，到被人的情感打破冷静。",
-        "avoid_claims": ["不要编造案件结论", "不要现代校园化", "不要断言关系"],
-        "content": "青州蓬山文津剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "scholar-trail",
+          "heading_path": "剧情/青州蓬山文津/求索",
+          "theme_tags": [
+            "青州",
+            "文津馆",
+            "求索",
+            "书卷"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "青州蓬山文津适合写读书人、山中旧案、求索和情感未明。",
+          "usable_imagery": [
+            "书卷",
+            "山雨",
+            "墨香",
+            "青石阶"
+          ],
+          "emotional_arc": "理性寻找答案，到被人的情感打破冷静。",
+          "avoid_claims": [
+            "不要编造案件结论",
+            "不要现代校园化",
+            "不要断言关系"
+          ],
+          "content": "青州蓬山文津剧情卡。"
+        },
+        {
+          "id": "study-entry",
+          "heading_path": "剧情/青州蓬山文津/入门求学",
+          "theme_tags": [
+            "青州",
+            "文津馆",
+            "求学",
+            "入门"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "青州文津线可写入门求学：山中书声不是校园模板，而是江湖人暂时把刀放下，学着理解世道。",
+          "usable_imagery": [
+            "书卷",
+            "山雨",
+            "长案",
+            "墨香",
+            "门前石阶"
+          ],
+          "emotional_arc": "好奇入门，到被旧案和人情牵住。",
+          "avoid_claims": [
+            "不要现代校园化",
+            "不要写成考试攻略",
+            "不要编人物关系"
+          ],
+          "content": "青州文津入门卡。",
+          "fact_level": "official_public_seed",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#official-public-sources"
+        },
+        {
+          "id": "classmates-and-ambition",
+          "heading_path": "剧情/青州蓬山文津/同窗与经世",
+          "theme_tags": [
+            "同窗",
+            "经世之志",
+            "书院",
+            "旧案"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "文津馆适合写同窗、辩论和经世之志：读书不是逃离江湖，而是换一种方式面对人间。",
+          "usable_imagery": [
+            "同窗灯火",
+            "辩论声",
+            "雨窗",
+            "旧案卷",
+            "山路"
+          ],
+          "emotional_arc": "求知、争辩、把书读回人间。",
+          "avoid_claims": [
+            "不要书呆子化",
+            "不要官场定论",
+            "不要写成现代励志歌"
+          ],
+          "content": "文津馆经世卡。",
+          "fact_level": "accepted_story_synthesis",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        },
+        {
+          "id": "old-case",
+          "heading_path": "剧情/青州蓬山文津/旧案留白",
+          "theme_tags": [
+            "旧案",
+            "求索",
+            "待核",
+            "留白"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "青州文津旧案可作待核线索：适合写书页后藏着未完的人情债，不提前给答案。",
+          "usable_imagery": [
+            "夹在书里的信",
+            "山雨",
+            "未结案卷",
+            "墨迹"
+          ],
+          "emotional_arc": "读到疑点，才知道答案不在书里。",
+          "avoid_claims": [
+            "不要写死旧案真相",
+            "不要宣称官方定论",
+            "不要剧透未核结局"
+          ],
+          "content": "青州文津旧案待核卡。",
+          "fact_level": "pending_clues",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
+        }
+      ]
     },
     {
       "key": "story-qinghe-beginning",
       "entity_type": "story",
       "canonical_name": "清河初入江湖",
-      "aliases": ["清河初入江湖", "新手清河", "初入江湖"],
+      "aliases": [
+        "清河初入江湖",
+        "新手清河",
+        "初入江湖"
+      ],
       "summary": "玩家初入世界的通用叙事线，可承接普通玩家第一天、第一次偷师、第一次见到江湖烟火。",
       "source_type": "official_public_curated",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
       "fact_level": "creative_guidance",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "first-day",
-        "heading_path": "剧情/清河初入江湖/第一天",
-        "theme_tags": ["玩家故事", "清河", "初入江湖"],
-        "story_phase": "always",
-        "summary_for_prompt": "用户说刚入坑、第一次玩、第一次被场景打动时，可写清河山水和普通人初见江湖的心动。",
-        "usable_imagery": ["晨雾", "桥边草", "第一式武功", "茶摊"],
-        "emotional_arc": "陌生、惊喜、想继续走下去。",
-        "avoid_claims": ["不要强行变成官方主线", "不要把玩家写成救世主", "不要忽略用户个人体验"],
-        "content": "清河初入江湖通用剧情卡。"
-      }]
+      "cards": [
+        {
+          "id": "first-day",
+          "heading_path": "剧情/清河初入江湖/第一天",
+          "theme_tags": [
+            "玩家故事",
+            "清河",
+            "初入江湖"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "用户说刚入坑、第一次玩、第一次被场景打动时，可写清河山水和普通人初见江湖的心动。",
+          "usable_imagery": [
+            "晨雾",
+            "桥边草",
+            "第一式武功",
+            "茶摊"
+          ],
+          "emotional_arc": "陌生、惊喜、想继续走下去。",
+          "avoid_claims": [
+            "不要强行变成官方主线",
+            "不要把玩家写成救世主",
+            "不要忽略用户个人体验"
+          ],
+          "content": "清河初入江湖通用剧情卡。"
+        },
+        {
+          "id": "not-yet-hero",
+          "heading_path": "剧情/清河初入江湖/尚未成侠",
+          "theme_tags": [
+            "小人物",
+            "成长",
+            "清河",
+            "笨拙"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "玩家初期可以不是大侠：写笨拙、摔跤、学不会招式，反而更像燕云里的真实游侠。",
+          "usable_imagery": [
+            "泥点",
+            "木剑",
+            "被笑的招式",
+            "摔倒的坡",
+            "晚霞"
+          ],
+          "emotional_arc": "笨拙到自嘲，再到愿意继续。",
+          "avoid_claims": [
+            "不要天命开局",
+            "不要贬低玩家故事",
+            "不要套路热血"
+          ],
+          "content": "清河尚未成侠卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "return-to-qinghe",
+          "heading_path": "剧情/清河初入江湖/再回清河",
+          "theme_tags": [
+            "回忆",
+            "归来",
+            "清河",
+            "变化"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "再回清河可写玩家成长后的回望：同一条路、同一盏灯，已经不是第一次来时的自己。",
+          "usable_imagery": [
+            "旧桥",
+            "熟悉灯火",
+            "长高的草",
+            "旧摊位",
+            "回头风"
+          ],
+          "emotional_arc": "初见的轻，变成归来的重。",
+          "avoid_claims": [
+            "不要写死剧情结局",
+            "不要强行怀旧",
+            "不要堆砌地名"
+          ],
+          "content": "清河归来卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        }
+      ]
     },
     {
       "key": "story-faction-fall",
       "entity_type": "story",
       "canonical_name": "门派倾覆",
-      "aliases": ["门派倾覆", "门派覆灭", "师门被毁"],
+      "aliases": [
+        "门派倾覆",
+        "门派覆灭",
+        "师门被毁"
+      ],
       "summary": "用户常见原创故事模板：普通弟子面对门派倾覆、失去同门和重建自我。",
       "source_type": "official_public_curated",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
       "fact_level": "creative_guidance",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "ordinary-disciple",
-        "heading_path": "剧情/门派倾覆/普通弟子",
-        "theme_tags": ["原创故事", "门派", "失去", "成长"],
-        "story_phase": "creative_guidance",
-        "summary_for_prompt": "用户写门派覆灭时，不要强绑官方门派；可写普通弟子从失去同门到选择继续行侠。",
-        "usable_imagery": ["空山门", "断香", "旧剑架", "雨后瓦片"],
-        "emotional_arc": "失去、愧疚、重新背起师门一式。",
-        "avoid_claims": ["不要编造成官方任务", "不要强行写复仇爽文", "不要把普通人写成救世英雄"],
-        "content": "门派倾覆原创故事卡。"
-      }]
+      "cards": [
+        {
+          "id": "ordinary-disciple",
+          "heading_path": "剧情/门派倾覆/普通弟子",
+          "theme_tags": [
+            "原创故事",
+            "门派",
+            "失去",
+            "成长"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "用户写门派覆灭时，不要强绑官方门派；可写普通弟子从失去同门到选择继续行侠。",
+          "usable_imagery": [
+            "空山门",
+            "断香",
+            "旧剑架",
+            "雨后瓦片"
+          ],
+          "emotional_arc": "失去、愧疚、重新背起师门一式。",
+          "avoid_claims": [
+            "不要编造成官方任务",
+            "不要强行写复仇爽文",
+            "不要把普通人写成救世英雄"
+          ],
+          "content": "门派倾覆原创故事卡。"
+        },
+        {
+          "id": "rebuild-after-fall",
+          "heading_path": "剧情/门派倾覆/倾覆后重建",
+          "theme_tags": [
+            "重建",
+            "失去",
+            "自成一派",
+            "成长"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "倾覆后更适合写重建：带着旧招、旧人名字和失败，从废墟里练出自己的路。",
+          "usable_imagery": [
+            "废墟晨光",
+            "旧招式",
+            "新门牌",
+            "磨破手心",
+            "未扫完的灰"
+          ],
+          "emotional_arc": "失去、背起、慢慢重建。",
+          "avoid_claims": [
+            "不要复仇爽文单线",
+            "不要救世主化",
+            "不要写攻略门派选择"
+          ],
+          "content": "门派倾覆重建卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "memory-of-teachers",
+          "heading_path": "剧情/门派倾覆/师友记忆",
+          "theme_tags": [
+            "师友",
+            "记忆",
+            "旧课",
+            "玩家故事"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "用户写门派故事时可把师友记忆做成副歌核心：不是谁赢谁输，而是谁还记得那天教过的一招。",
+          "usable_imagery": [
+            "旧课",
+            "木桩",
+            "师友笑声",
+            "雨后练场",
+            "半句口诀"
+          ],
+          "emotional_arc": "想念、继承、把名字放进招式里。",
+          "avoid_claims": [
+            "不要乱编官方师承",
+            "不要写成设定科普",
+            "不要过度悲情"
+          ],
+          "content": "门派师友记忆卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        }
+      ]
     },
     {
       "key": "story-small-injustice",
       "entity_type": "story",
       "canonical_name": "小人物不平事",
-      "aliases": ["小人物不平事", "小人物侠义", "眼前不平"],
+      "aliases": [
+        "小人物不平事",
+        "小人物侠义",
+        "眼前不平"
+      ],
       "summary": "玩家故事常见主题：不为大义口号，只为眼前人做一个选择。",
       "source_type": "official_public_curated",
       "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md",
       "fact_level": "creative_guidance",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "small-justice",
-        "heading_path": "剧情/小人物不平事/眼前人",
-        "theme_tags": ["玩家故事", "不平事", "小人物", "侠义"],
-        "story_phase": "always",
-        "summary_for_prompt": "小人物不平事适合写帮助路人、救一个人、守一盏灯这种小而真切的侠义。",
-        "usable_imagery": ["摔碎的药碗", "小巷雨", "一枚铜钱", "路边灯"],
-        "emotional_arc": "犹豫、出手、发现侠义不是大词。",
-        "avoid_claims": ["不要写成宏大救世", "不要忽略用户的具体故事", "不要空喊家国"],
-        "content": "小人物不平事故事卡。"
-      }]
+      "cards": [
+        {
+          "id": "small-justice",
+          "heading_path": "剧情/小人物不平事/眼前人",
+          "theme_tags": [
+            "玩家故事",
+            "不平事",
+            "小人物",
+            "侠义"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "小人物不平事适合写帮助路人、救一个人、守一盏灯这种小而真切的侠义。",
+          "usable_imagery": [
+            "摔碎的药碗",
+            "小巷雨",
+            "一枚铜钱",
+            "路边灯"
+          ],
+          "emotional_arc": "犹豫、出手、发现侠义不是大词。",
+          "avoid_claims": [
+            "不要写成宏大救世",
+            "不要忽略用户的具体故事",
+            "不要空喊家国"
+          ],
+          "content": "小人物不平事故事卡。"
+        },
+        {
+          "id": "one-small-choice",
+          "heading_path": "剧情/小人物不平事/一个小选择",
+          "theme_tags": [
+            "不平事",
+            "小侠义",
+            "普通人",
+            "选择"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "小人物不平事要写小选择：为一碗药、一把伞、一个路人停下脚步，比喊大义更打动人。",
+          "usable_imagery": [
+            "药碗",
+            "雨伞",
+            "巷口灯",
+            "铜钱",
+            "湿鞋"
+          ],
+          "emotional_arc": "路过、停下、做一点小事。",
+          "avoid_claims": [
+            "不要救世主口号",
+            "不要暴力崇拜",
+            "不要把小事写空"
+          ],
+          "content": "小人物小选择卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "unnamed-kindness",
+          "heading_path": "剧情/小人物不平事/无名善意",
+          "theme_tags": [
+            "善意",
+            "无名者",
+            "江湖",
+            "玩家故事"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "无名善意适合写玩家日常：没有人记功，却有人因为你今晚能回家。",
+          "usable_imagery": [
+            "门缝灯",
+            "热粥",
+            "包扎布",
+            "空街",
+            "远处犬吠"
+          ],
+          "emotional_arc": "不求名，到自己也被温暖。",
+          "avoid_claims": [
+            "不要官方表彰化",
+            "不要商业承诺",
+            "不要说教化"
+          ],
+          "content": "无名善意卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "cost-of-helping",
+          "heading_path": "剧情/小人物不平事/帮人的代价",
+          "theme_tags": [
+            "代价",
+            "选择",
+            "侠义",
+            "现实感"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "不平事也要有代价：帮人可能耽误路、受伤、被误解，歌词因此更有真实重量。",
+          "usable_imagery": [
+            "破袖",
+            "误会眼神",
+            "迟到的路",
+            "擦伤",
+            "冷雨"
+          ],
+          "emotional_arc": "愿意帮，到承受代价，再确认值得。",
+          "avoid_claims": [
+            "不要写无脑爽感",
+            "不要过度血腥",
+            "不要把玩家写成完美圣人"
+          ],
+          "content": "帮人的代价卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        }
+      ]
     },
     {
       "key": "story-partner-journey",
       "entity_type": "story",
       "canonical_name": "同行伙伴",
-      "aliases": ["同行伙伴", "知己同行", "一起跑图故事"],
+      "aliases": [
+        "同行伙伴",
+        "知己同行",
+        "一起跑图故事"
+      ],
       "summary": "伙伴/同行玩法方向，可承接朋友、队友、知己、陪伴和共同冒险的用户故事。",
       "source_type": "official_public",
       "source_ref": "https://www.yysls.cn/",
       "fact_level": "official_public_seed",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "companions",
-        "heading_path": "剧情/同行伙伴/知己同行",
-        "theme_tags": ["伙伴", "同行", "知己", "玩家故事"],
-        "story_phase": "public_seed",
-        "summary_for_prompt": "用户写朋友、队友或知己时，可写同行、互相救场、一起看风景和分开后仍记得对方的声音。",
-        "usable_imagery": ["并肩脚印", "共乘小舟", "同一盏灯", "一声呼唤"],
-        "emotional_arc": "相遇、并肩、分别或继续同行。",
-        "avoid_claims": ["不要强行指定官方 CP", "不要替玩家决定关系性质", "不要写成社交功能说明"],
-        "content": "同行伙伴故事卡。"
-      }]
+      "cards": [
+        {
+          "id": "companions",
+          "heading_path": "剧情/同行伙伴/知己同行",
+          "theme_tags": [
+            "伙伴",
+            "同行",
+            "知己",
+            "玩家故事"
+          ],
+          "story_phase": "public_seed",
+          "summary_for_prompt": "用户写朋友、队友或知己时，可写同行、互相救场、一起看风景和分开后仍记得对方的声音。",
+          "usable_imagery": [
+            "并肩脚印",
+            "共乘小舟",
+            "同一盏灯",
+            "一声呼唤"
+          ],
+          "emotional_arc": "相遇、并肩、分别或继续同行。",
+          "avoid_claims": [
+            "不要强行指定官方 CP",
+            "不要替玩家决定关系性质",
+            "不要写成社交功能说明"
+          ],
+          "content": "同行伙伴故事卡。"
+        },
+        {
+          "id": "daily-running",
+          "heading_path": "剧情/同行伙伴/每日跑图",
+          "theme_tags": [
+            "搭子",
+            "跑图",
+            "同行",
+            "玩家故事"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "同行伙伴最适合写日常跑图：不是轰轰烈烈，而是每天上线都有人等你。",
+          "usable_imagery": [
+            "并肩脚印",
+            "地图标记",
+            "山顶风",
+            "错过的路口",
+            "笑声"
+          ],
+          "emotional_arc": "普通陪伴慢慢变成珍贵。",
+          "avoid_claims": [
+            "不要强行爱情",
+            "不要公会战口号",
+            "不要官方角色劫持"
+          ],
+          "content": "每日跑图搭子卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "save-each-other",
+          "heading_path": "剧情/同行伙伴/互相救场",
+          "theme_tags": [
+            "救场",
+            "失败",
+            "搭子",
+            "并肩"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "搭子歌可写互相救场：摔倒、失败、迷路时有人回头，比胜利本身更值得唱。",
+          "usable_imagery": [
+            "递来的药",
+            "回头脚步",
+            "倒地视角",
+            "山雨",
+            "复活点灯"
+          ],
+          "emotional_arc": "狼狈、被拉起、一起笑。",
+          "avoid_claims": [
+            "不要机制说明",
+            "不要竞技炫耀",
+            "不要写成商业社交广告"
+          ],
+          "content": "同行互相救场卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        },
+        {
+          "id": "farewell-online",
+          "heading_path": "剧情/同行伙伴/上线与离线",
+          "theme_tags": [
+            "离线",
+            "告别",
+            "玩家关系",
+            "回忆"
+          ],
+          "story_phase": "creative_guidance",
+          "summary_for_prompt": "玩家搭子也会离线或暂别：适合写虚拟江湖里真实关系的轻轻失落。",
+          "usable_imagery": [
+            "灰掉的头像",
+            "空队伍",
+            "旧截图",
+            "约好的山顶",
+            "未发消息"
+          ],
+          "emotional_arc": "相遇、习惯、分别时才知重量。",
+          "avoid_claims": [
+            "不要现实隐私细节",
+            "不要过度伤感",
+            "不要强绑官方剧情"
+          ],
+          "content": "同行离线告别卡。",
+          "fact_level": "creative_guidance",
+          "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
+        }
+      ]
     }
   ]
 }
