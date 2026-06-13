@@ -1514,6 +1514,61 @@
         "region-qingzhou"
       ],
       "expected_behavior": "命中燕十七和青州/伙伴人物线素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-xiao-mao-youan-001",
+      "input": "写小猫佑安的歌，要有伙伴系统/陪伴的感觉",
+      "expected_entities": [
+        "character-xiao-mao-youan",
+        "character-companion-four-cats-three-geese"
+      ],
+      "expected_behavior": "命中小猫佑安和伙伴系统/陪伴素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-bailangzhu-001",
+      "input": "写白狼主的歌，要有边地/伙伴或强记忆人物的感觉",
+      "expected_entities": [
+        "character-bailangzhu"
+      ],
+      "expected_behavior": "命中白狼主和边地/伙伴或强记忆人物素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-huakui-001",
+      "input": "写花魁的歌，要有青州/开封审美人物线索的感觉",
+      "expected_entities": [
+        "character-huakui",
+        "region-qingzhou",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中花魁和青州/开封审美人物线索素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-ye-mocheng-001",
+      "input": "写叶墨城的歌，要有青州/伙伴人物线的感觉",
+      "expected_entities": [
+        "character-ye-mocheng",
+        "region-qingzhou",
+        "character-companion-four-cats-three-geese"
+      ],
+      "expected_behavior": "命中叶墨城和青州/伙伴人物线素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-fubao-001",
+      "input": "写福宝的歌，要有伙伴/福气意象的感觉",
+      "expected_entities": [
+        "character-fubao",
+        "character-companion-four-cats-three-geese"
+      ],
+      "expected_behavior": "命中福宝和伙伴/福气意象素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-character-shi-yimo-001",
+      "input": "写时一墨的歌，要有墨山道/机关门派代表的感觉",
+      "expected_entities": [
+        "character-shi-yimo",
+        "faction-moshandao"
+      ],
+      "expected_behavior": "命中时一墨和墨山道/机关门派代表素材，不把 accepted_story_synthesis 写成官方定论。"
     }
   ]
 }

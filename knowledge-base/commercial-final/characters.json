@@ -8301,6 +8301,709 @@
           "content": "禁写边界创作卡。"
         }
       ]
+    },
+    {
+      "key": "character-xiao-mao-youan",
+      "entity_type": "character",
+      "canonical_name": "小猫佑安",
+      "aliases": [
+        "小猫佑安",
+        "佑安"
+      ],
+      "summary": "伙伴系统代表，支撑温柔陪伴类玩家故事；适合写一只小猫怎样让江湖路变得不孤单。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/小猫佑安/基础身份与创作定位",
+          "theme_tags": [
+            "伙伴",
+            "小猫",
+            "陪伴",
+            "玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "小猫佑安适合作为伙伴陪伴素材：歌词可写小猫脚印、檐下打盹、铃铛和玩家江湖路上的温柔陪伴。",
+          "usable_imagery": [
+            "小猫脚印",
+            "檐下打盹",
+            "铃铛",
+            "同行影子",
+            "暖灯"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/小猫佑安/关系网络与可接场景",
+          "theme_tags": [
+            "伙伴",
+            "小猫",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与四猫三鹅伙伴群像、玩家游侠和普通玩家故事相连；重点是陪伴感，不是把动物伙伴拟人化成复杂主线人物。",
+          "usable_imagery": [
+            "小猫脚印",
+            "檐下打盹",
+            "铃铛",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/小猫佑安/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "伙伴",
+            "小猫"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合温暖轻快的国风流行或治愈民谣；副歌可写“你一声铃响，我就知道江湖没那么远”。",
+          "usable_imagery": [
+            "小猫脚印",
+            "檐下打盹",
+            "铃铛",
+            "同行影子"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/小猫佑安/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "伙伴",
+            "小猫"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "小猫佑安当前按 accepted_story_synthesis 创作叙事层使用；可以提供伙伴系统/陪伴的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "铃铛",
+            "同行影子",
+            "暖灯",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-bailangzhu",
+      "entity_type": "character",
+      "canonical_name": "白狼主",
+      "aliases": [
+        "白狼主"
+      ],
+      "summary": "官方/社区高频人物或伙伴线索，适合白狼、边地、野性、守护与危险并存的创作。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/白狼主/基础身份与创作定位",
+          "theme_tags": [
+            "白狼",
+            "边地",
+            "野性",
+            "伙伴线索"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "白狼主适合作为边地野性和守护主题素材：歌词可写白狼影、雪地足印、远山嚎声和人与荒野互相试探。",
+          "usable_imagery": [
+            "白狼影",
+            "雪地足印",
+            "远山嚎声",
+            "皮毛冷光",
+            "边风"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/白狼主/关系网络与可接场景",
+          "theme_tags": [
+            "白狼",
+            "边地",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与边地行旅、伙伴系统或高记忆 NPC 线索相连；重点是野性和守护并存，不确认具体实体属性。",
+          "usable_imagery": [
+            "白狼影",
+            "雪地足印",
+            "远山嚎声",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/白狼主/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "白狼",
+            "边地"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合开阔摇滚、边塞民谣或低沉史诗流行；副歌可写“白狼回头，风也替我认路”。",
+          "usable_imagery": [
+            "白狼影",
+            "雪地足印",
+            "远山嚎声",
+            "皮毛冷光"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/白狼主/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "白狼",
+            "边地"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "白狼主当前按 accepted_story_synthesis 创作叙事层使用；可以提供边地/伙伴或强记忆人物的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "远山嚎声",
+            "皮毛冷光",
+            "边风",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-huakui",
+      "entity_type": "character",
+      "canonical_name": "花魁",
+      "aliases": [
+        "花魁"
+      ],
+      "summary": "青州/开封审美人物线索，适合写舞台、审美、被观看与自我选择；需要避免花楼风尘模板和低俗化。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/花魁/基础身份与创作定位",
+          "theme_tags": [
+            "审美",
+            "花魁",
+            "开封",
+            "青州"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "花魁适合作为审美人物线索：歌词可写花影、隔帘歌声、被观看的人如何保留自己的选择。",
+          "usable_imagery": [
+            "花影",
+            "楼上灯",
+            "衣香",
+            "一枝残花",
+            "隔帘歌声"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/花魁/关系网络与可接场景",
+          "theme_tags": [
+            "审美",
+            "花魁",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与开封繁华、青州审美、梨园/醉花阴等艺术气质相连；重点是主体性，不是消费化凝视。",
+          "usable_imagery": [
+            "花影",
+            "楼上灯",
+            "衣香",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/花魁/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "审美",
+            "花魁"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合女声抒情、轻戏曲融合或华丽但克制的国风流行；副歌可写“花开给众人看，根却向自己生”。",
+          "usable_imagery": [
+            "花影",
+            "楼上灯",
+            "衣香",
+            "一枝残花"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/花魁/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "审美",
+            "花魁"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "花魁当前按 accepted_story_synthesis 创作叙事层使用；可以提供青州/开封审美人物线索的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "衣香",
+            "一枝残花",
+            "隔帘歌声",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-ye-mocheng",
+      "entity_type": "character",
+      "canonical_name": "叶墨城",
+      "aliases": [
+        "叶墨城"
+      ],
+      "summary": "青州/伙伴系统公告相关人物线索，适合墨色、城影、同行、沉静与守护主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/叶墨城/基础身份与创作定位",
+          "theme_tags": [
+            "青州",
+            "伙伴",
+            "墨色",
+            "城影"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "叶墨城适合作为青州伙伴人物线素材：歌词可写墨色城影、青州雨、折叶和沉静同行。",
+          "usable_imagery": [
+            "墨色城影",
+            "青州雨",
+            "折叶",
+            "衣角风",
+            "远处灯"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/叶墨城/关系网络与可接场景",
+          "theme_tags": [
+            "青州",
+            "伙伴",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与青州、伙伴同行、玩家游侠和文津馆/蓬山氛围相连；重点是安静陪伴和不轻易说出口的守护。",
+          "usable_imagery": [
+            "墨色城影",
+            "青州雨",
+            "折叶",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/叶墨城/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "青州",
+            "伙伴"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合低声男声、冷色国风 pop 或中速抒情摇滚；副歌可写“墨色落城，也遮不住归路的灯”。",
+          "usable_imagery": [
+            "墨色城影",
+            "青州雨",
+            "折叶",
+            "衣角风"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/叶墨城/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "青州",
+            "伙伴"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "叶墨城当前按 accepted_story_synthesis 创作叙事层使用；可以提供青州/伙伴人物线的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "折叶",
+            "衣角风",
+            "远处灯",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-fubao",
+      "entity_type": "character",
+      "canonical_name": "福宝",
+      "aliases": [
+        "福宝"
+      ],
+      "summary": "伙伴/人物线索，适合陪伴、福气、轻松幸运感和普通玩家故事。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/福宝/基础身份与创作定位",
+          "theme_tags": [
+            "伙伴",
+            "福气",
+            "陪伴",
+            "普通玩家故事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "福宝适合作为福气和陪伴素材：歌词可写小福袋、红绳、圆灯和江湖路上一点意外好运。",
+          "usable_imagery": [
+            "小福袋",
+            "红绳",
+            "圆灯",
+            "脚边影子",
+            "笑声"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/福宝/关系网络与可接场景",
+          "theme_tags": [
+            "伙伴",
+            "福气",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与伙伴系统、四猫三鹅群像、玩家游侠和市井日常相连；重点是轻松温暖，不是把福气写成玄学万能。",
+          "usable_imagery": [
+            "小福袋",
+            "红绳",
+            "圆灯",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/福宝/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "伙伴",
+            "福气"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合轻快治愈流行、市井小调或温暖国风；副歌可写“福不是天降，是你陪我多走一程”。",
+          "usable_imagery": [
+            "小福袋",
+            "红绳",
+            "圆灯",
+            "脚边影子"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/福宝/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "伙伴",
+            "福气"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "福宝当前按 accepted_story_synthesis 创作叙事层使用；可以提供伙伴/福气意象的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "圆灯",
+            "脚边影子",
+            "笑声",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "character-shi-yimo",
+      "entity_type": "character",
+      "canonical_name": "时一墨",
+      "aliases": [
+        "时一墨"
+      ],
+      "summary": "墨山道/机关或门派代表人物，补不见山线、机关审美、冷理性和创作者代价。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "identity",
+          "heading_path": "人物/时一墨/基础身份与创作定位",
+          "theme_tags": [
+            "墨山道",
+            "机关",
+            "不见山",
+            "墨色"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "时一墨适合作为墨山道和机关门派代表人物：歌词可写墨线、机关齿轮、黑色图纸和冷理性背后的执念。",
+          "usable_imagery": [
+            "墨线",
+            "机关齿轮",
+            "山中雾",
+            "黑色图纸",
+            "冷灯"
+          ],
+          "emotional_arc": "从名字和场景意象进入人物气质，不把薄资料扩写成官方长传。",
+          "avoid_claims": [
+            "不要宣称官方完整人物传",
+            "不要把资料薄处写成剧情定论",
+            "不要混入其他 IP 设定"
+          ],
+          "content": "基础身份与创作定位创作卡。"
+        },
+        {
+          "id": "relationships",
+          "heading_path": "人物/时一墨/关系网络与可接场景",
+          "theme_tags": [
+            "墨山道",
+            "机关",
+            "关系",
+            "场景"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "关系上可与墨山道、冯继昇、燕/应宁、不见山和机关桃源素材相连；重点是技术与人心之间的张力。",
+          "usable_imagery": [
+            "墨线",
+            "机关齿轮",
+            "山中雾",
+            "同行路",
+            "未说出口的照看"
+          ],
+          "emotional_arc": "让关系服务用户故事，保留角色的创作边界。",
+          "avoid_claims": [
+            "不要强绑未确认亲缘或恋情",
+            "不要抢走用户原始故事",
+            "不要把伙伴写成主线工具"
+          ],
+          "content": "关系网络与可接场景创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "人物/时一墨/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "写词角度",
+            "墨山道",
+            "机关"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合冷色电子国风、机械节奏或克制摇滚；副歌可写“我用墨线量天地，却量不准人心”。",
+          "usable_imagery": [
+            "墨线",
+            "机关齿轮",
+            "山中雾",
+            "黑色图纸"
+          ],
+          "emotional_arc": "主歌铺场景，副歌给记忆点，桥段保留一点未说透。",
+          "avoid_claims": [
+            "不要堆砌设定名词",
+            "不要让歌词不可唱",
+            "不要泛古风套词"
+          ],
+          "content": "歌曲角度创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/时一墨/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "墨山道",
+            "机关"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "时一墨当前按 accepted_story_synthesis 创作叙事层使用；可以提供墨山道/机关门派代表的情绪和意象，不适合作为官方剧情定论。",
+          "usable_imagery": [
+            "山中雾",
+            "黑色图纸",
+            "冷灯",
+            "留白"
+          ],
+          "emotional_arc": "允许留白服务创作，不用编造填满留白。",
+          "avoid_claims": [
+            "不要宣称官方确认完整经历",
+            "不要写死结局或阵营反转",
+            "不要把社区综合写成官方定论"
+          ],
+          "content": "禁写边界创作卡。"
+        }
+      ]
     }
   ]
 }

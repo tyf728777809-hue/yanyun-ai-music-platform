@@ -340,9 +340,9 @@
   "coverage_summary": {
     "character": {
       "total": 130,
-      "missing": 36,
+      "missing": 30,
       "thin": 0,
-      "present": 72,
+      "present": 78,
       "needs_fact_split": 0,
       "pending_clues_only": 22
     },
@@ -4795,11 +4795,12 @@
         "佑安",
         "小猫佑安"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -4812,8 +4813,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "伙伴系统代表，支撑温柔陪伴类玩家故事。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4823,11 +4824,12 @@
       "aliases": [
         "白狼主"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -4840,8 +4842,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "官方/社区高频人物或伙伴线索，需确认实体属性。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4851,11 +4853,12 @@
       "aliases": [
         "花魁"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -4868,8 +4871,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "青州/开封审美人物线索，需防泛化。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4879,11 +4882,12 @@
       "aliases": [
         "叶墨城"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -4896,8 +4900,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "青州/伙伴系统公告相关人物线索。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4907,11 +4911,12 @@
       "aliases": [
         "福宝"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -4924,8 +4929,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "伙伴/人物线索，适合陪伴与福气意象。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4935,11 +4940,12 @@
       "aliases": [
         "时一墨"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4952,8 +4958,8 @@
         "情绪弧线卡",
         "可写意象与禁写误区卡"
       ],
-      "writing_impact": "墨山道/机关或门派代表人物，补不见山线。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "writing_impact": "已在正式人物库第五批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式库第五批仅做创作可用卡片，不代表人物传已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "characters.json"
     },
     {
@@ -8279,6 +8285,23 @@
       "新增 12 个 P1 人物实体，每个实体 4 张创作卡。",
       "覆盖开封暗线、河西/凉州、归义军、青州/文津馆和伙伴人物线。",
       "新增 12 条角色检索 eval case。"
+    ]
+  },
+  "formal_kb_fifth_batch_coverage": {
+    "completed_at": "2026-06-14T02:50:00+08:00",
+    "purpose": "正式人物知识库第五批补库，收尾剩余 P1 人物缺口。",
+    "covered_character_rows": [
+      "character-bailangzhu",
+      "character-fubao",
+      "character-huakui",
+      "character-shi-yimo",
+      "character-xiao-mao-youan",
+      "character-ye-mocheng"
+    ],
+    "notes": [
+      "新增 6 个 P1 人物实体，每个实体 4 张创作卡。",
+      "覆盖伙伴陪伴、审美人物、青州伙伴线和墨山道机关线。",
+      "新增 6 条角色检索 eval case；P1 人物缺口已清空。"
     ]
   }
 }
