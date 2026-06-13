@@ -5,155 +5,897 @@
       "key": "boundary-other-ip",
       "entity_type": "boundary",
       "canonical_name": "其他 IP 题材拒绝",
-      "aliases": ["其他 IP 题材拒绝", "高达", "原神", "其他游戏", "现实明星应援", "商业广告歌"],
+      "aliases": [
+        "其他 IP 题材拒绝",
+        "高达",
+        "原神",
+        "其他游戏",
+        "现实明星应援",
+        "商业广告歌"
+      ],
       "summary": "歌词内容必须发生在或可转译到燕云世界，不为其他 IP 直接写主题歌。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/yanyun-creative-agent-v0.5.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "reject",
-        "heading_path": "禁区/其他 IP 题材/拒绝与转译",
-        "theme_tags": ["禁区", "其他IP", "拒绝", "转译"],
-        "story_phase": "always",
-        "summary_for_prompt": "用户要求写其他 IP 主题歌时拒绝；如果只是借用情绪，如孤独、热血、机械感，应转译成燕云里的披甲游侠、机关奇术或孤城守望。",
-        "usable_imagery": ["披甲游侠", "机关奇术", "孤城守望", "风沙旗影"],
-        "emotional_arc": "保留情绪，替换世界观。",
-        "avoid_claims": ["不要保留其他 IP 专有名词", "不要直接写其他游戏角色", "不要写现实明星应援内容"],
-        "content": "其他 IP 边界卡。"
-      }]
+      "cards": [
+        {
+          "id": "reject",
+          "heading_path": "禁区/其他 IP 题材/拒绝与转译",
+          "theme_tags": [
+            "禁区",
+            "其他IP",
+            "拒绝",
+            "转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "用户要求写其他 IP 主题歌时拒绝；如果只是借用情绪，如孤独、热血、机械感，应转译成燕云里的披甲游侠、机关奇术或孤城守望。",
+          "usable_imagery": [
+            "披甲游侠",
+            "机关奇术",
+            "孤城守望",
+            "风沙旗影"
+          ],
+          "emotional_arc": "保留情绪，替换世界观。",
+          "avoid_claims": [
+            "不要保留其他 IP 专有名词",
+            "不要直接写其他游戏角色",
+            "不要写现实明星应援内容"
+          ],
+          "content": "其他 IP 边界卡。"
+        }
+      ]
     },
     {
       "key": "boundary-singer-style",
       "entity_type": "boundary",
       "canonical_name": "现实歌手风格安全改写",
-      "aliases": ["现实歌手风格安全改写", "周杰伦风格", "现实歌手风格", "仿唱", "声线模仿"],
+      "aliases": [
+        "现实歌手风格安全改写",
+        "周杰伦风格",
+        "现实歌手风格",
+        "仿唱",
+        "声线模仿"
+      ],
       "summary": "音乐风格偏好可以开放理解，但输出给音乐模型时必须泛化，不保留现实歌手名或仿唱要求。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/yanyun-creative-agent-v0.5.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "rewrite",
-        "heading_path": "禁区/现实歌手/风格改写",
-        "theme_tags": ["禁区", "版权", "风格改写"],
-        "story_phase": "always",
-        "summary_for_prompt": "用户可用现实歌手表达音乐偏好，但内部要改写成流派、节奏、人声和编曲语言，如华语国风 R&B、轻说唱段落、强旋律副歌。",
-        "usable_imagery": ["泛化风格", "旋律记忆点", "节奏型", "编曲语言"],
-        "emotional_arc": "理解偏好但保护版权安全。",
-        "avoid_claims": ["不要输出现实歌手名", "不要写仿唱某人", "不要指定某人声线"],
-        "content": "现实歌手风格安全改写卡。"
-      }]
+      "cards": [
+        {
+          "id": "rewrite",
+          "heading_path": "禁区/现实歌手/风格改写",
+          "theme_tags": [
+            "禁区",
+            "版权",
+            "风格改写"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "用户可用现实歌手表达音乐偏好，但内部要改写成流派、节奏、人声和编曲语言，如华语国风 R&B、轻说唱段落、强旋律副歌。",
+          "usable_imagery": [
+            "泛化风格",
+            "旋律记忆点",
+            "节奏型",
+            "编曲语言"
+          ],
+          "emotional_arc": "理解偏好但保护版权安全。",
+          "avoid_claims": [
+            "不要输出现实歌手名",
+            "不要写仿唱某人",
+            "不要指定某人声线"
+          ],
+          "content": "现实歌手风格安全改写卡。"
+        }
+      ]
     },
     {
       "key": "boundary-unconfirmed-plot",
       "entity_type": "boundary",
       "canonical_name": "剧情整合与官方口径分层",
-      "aliases": ["剧情整合与官方口径分层", "未确认剧情", "未确认结局", "官方设定", "剧透", "攻略站剧情", "玩家维基"],
+      "aliases": [
+        "剧情整合与官方口径分层",
+        "未确认剧情",
+        "未确认结局",
+        "官方设定",
+        "剧透",
+        "攻略站剧情",
+        "玩家维基"
+      ],
       "summary": "创作知识库允许使用攻略站、玩家维基和剧情整理串联人物传，但不得在用户侧宣称这些都是官方实锤；结局、亲缘、阵营等争议点可写成叙事暗线或情绪留白。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/yanyun-creative-knowledge-base-v0.3.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "no-fabrication",
-        "heading_path": "禁区/剧情整合/官方口径分层",
-        "theme_tags": ["禁区", "事实安全", "剧情整合"],
-        "story_phase": "always",
-        "summary_for_prompt": "角色歌和剧情歌可以采用知识库里的剧情整合人物传；如果某个关系或结局仍是玩家推断，不要写成说明书式定论，可写成暗线、传闻、未明旧事或人物内心裂缝。",
-        "usable_imagery": ["未写完的信", "传闻", "留白", "旧路", "旧名"],
-        "emotional_arc": "用创作叙事增强角色厚度，同时避免把推断包装成官方公告。",
-        "avoid_claims": ["不要在歌词里解释来源争议", "不要宣称官方已确认", "不要把争议点写成硬科普"],
-        "content": "剧情整合与官方口径分层边界卡。"
-      }]
+      "cards": [
+        {
+          "id": "no-fabrication",
+          "heading_path": "禁区/剧情整合/官方口径分层",
+          "theme_tags": [
+            "禁区",
+            "事实安全",
+            "剧情整合"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "角色歌和剧情歌可以采用知识库里的剧情整合人物传；如果某个关系或结局仍是玩家推断，不要写成说明书式定论，可写成暗线、传闻、未明旧事或人物内心裂缝。",
+          "usable_imagery": [
+            "未写完的信",
+            "传闻",
+            "留白",
+            "旧路",
+            "旧名"
+          ],
+          "emotional_arc": "用创作叙事增强角色厚度，同时避免把推断包装成官方公告。",
+          "avoid_claims": [
+            "不要在歌词里解释来源争议",
+            "不要宣称官方已确认",
+            "不要把争议点写成硬科普"
+          ],
+          "content": "剧情整合与官方口径分层边界卡。"
+        }
+      ]
     },
     {
       "key": "boundary-player-story",
       "entity_type": "boundary",
       "canonical_name": "玩家故事保真",
-      "aliases": ["玩家故事保真", "玩家故事", "普通人故事", "我的经历", "原创故事"],
+      "aliases": [
+        "玩家故事保真",
+        "玩家故事",
+        "普通人故事",
+        "我的经历",
+        "原创故事"
+      ],
       "summary": "普通玩家故事不强绑官方角色，不吞掉用户原意，只用燕云气质承接。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/yanyun-creative-knowledge-base-v0.3.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "preserve",
-        "heading_path": "禁区/玩家故事/保真",
-        "theme_tags": ["禁区", "玩家故事", "创意自由"],
-        "story_phase": "always",
-        "summary_for_prompt": "用户写自己的帮派、朋友、失败、告别或风景时，保留核心情绪；不要为了展示知识库而强塞角色名、地名或剧情。",
-        "usable_imagery": ["用户原故事", "燕云底色", "自由江湖"],
-        "emotional_arc": "用户情绪优先，世界观只做承托。",
-        "avoid_claims": ["不要强绑官方角色", "不要吞掉用户设定", "不要关键词堆砌"],
-        "content": "玩家故事保真边界卡。"
-      }]
+      "cards": [
+        {
+          "id": "preserve",
+          "heading_path": "禁区/玩家故事/保真",
+          "theme_tags": [
+            "禁区",
+            "玩家故事",
+            "创意自由"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "用户写自己的帮派、朋友、失败、告别或风景时，保留核心情绪；不要为了展示知识库而强塞角色名、地名或剧情。",
+          "usable_imagery": [
+            "用户原故事",
+            "燕云底色",
+            "自由江湖"
+          ],
+          "emotional_arc": "用户情绪优先，世界观只做承托。",
+          "avoid_claims": [
+            "不要强绑官方角色",
+            "不要吞掉用户设定",
+            "不要关键词堆砌"
+          ],
+          "content": "玩家故事保真边界卡。"
+        }
+      ]
     },
     {
       "key": "boundary-commercial-claims",
       "entity_type": "boundary",
       "canonical_name": "商业权益不承诺",
-      "aliases": ["商业权益不承诺", "奖励", "权益", "活动", "官方承诺", "商业广告"],
+      "aliases": [
+        "商业权益不承诺",
+        "奖励",
+        "权益",
+        "活动",
+        "官方承诺",
+        "商业广告"
+      ],
       "summary": "歌词和发布包不承诺游戏奖励、账号权益、活动结果或官方商业背书。",
       "source_type": "official_public_curated",
       "source_ref": "AGENTS.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "no-claims",
-        "heading_path": "禁区/商业权益/不承诺",
-        "theme_tags": ["禁区", "商业", "权益"],
-        "story_phase": "always",
-        "summary_for_prompt": "创作内容不得暗示使用作品能获得游戏奖励、官方身份、商业权益、账号特权或活动结果。",
-        "usable_imagery": ["无"],
-        "emotional_arc": "保持创作与商业承诺分离。",
-        "avoid_claims": ["不要承诺奖励", "不要冒充官方公告", "不要写推广转化话术"],
-        "content": "商业权益边界卡。"
-      }]
+      "cards": [
+        {
+          "id": "no-claims",
+          "heading_path": "禁区/商业权益/不承诺",
+          "theme_tags": [
+            "禁区",
+            "商业",
+            "权益"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "创作内容不得暗示使用作品能获得游戏奖励、官方身份、商业权益、账号特权或活动结果。",
+          "usable_imagery": [
+            "无"
+          ],
+          "emotional_arc": "保持创作与商业承诺分离。",
+          "avoid_claims": [
+            "不要承诺奖励",
+            "不要冒充官方公告",
+            "不要写推广转化话术"
+          ],
+          "content": "商业权益边界卡。"
+        }
+      ]
     },
     {
       "key": "boundary-cover-text",
       "entity_type": "boundary",
       "canonical_name": "封面文字受控",
-      "aliases": ["封面文字受控", "封面文字", "歌名标题", "假歌手", "假署名"],
+      "aliases": [
+        "封面文字受控",
+        "封面文字",
+        "歌名标题",
+        "假歌手",
+        "假署名"
+      ],
       "summary": "封面允许生成当前作品歌名，但禁止假歌手、假署名、假厂牌、版权、小字、水印和 UI。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/cover-visual-policy-v0.2.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "controlled-title",
-        "heading_path": "禁区/封面文字/受控歌名",
-        "theme_tags": ["禁区", "封面", "文字"],
-        "story_phase": "always",
-        "summary_for_prompt": "CoverPromptAgent 只允许 Image2 生成当前作品歌名作为唯一文字元素；不能出现假歌手、假署名、厂牌、版权、水印、二维码和 UI。",
-        "usable_imagery": ["歌名主标题", "高级排版", "专辑封面"],
-        "emotional_arc": "视觉高级但文字受控。",
-        "avoid_claims": ["不要假歌手名", "不要假版权", "不要密集小字"],
-        "content": "封面文字边界卡。"
-      }]
+      "cards": [
+        {
+          "id": "controlled-title",
+          "heading_path": "禁区/封面文字/受控歌名",
+          "theme_tags": [
+            "禁区",
+            "封面",
+            "文字"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "CoverPromptAgent 只允许 Image2 生成当前作品歌名作为唯一文字元素；不能出现假歌手、假署名、厂牌、版权、水印、二维码和 UI。",
+          "usable_imagery": [
+            "歌名主标题",
+            "高级排版",
+            "专辑封面"
+          ],
+          "emotional_arc": "视觉高级但文字受控。",
+          "avoid_claims": [
+            "不要假歌手名",
+            "不要假版权",
+            "不要密集小字"
+          ],
+          "content": "封面文字边界卡。"
+        }
+      ]
     },
     {
       "key": "boundary-sensitive-content",
       "entity_type": "boundary",
       "canonical_name": "暴力血腥与低俗限制",
-      "aliases": ["暴力血腥与低俗限制", "暴力", "血腥", "低俗", "猎奇"],
+      "aliases": [
+        "暴力血腥与低俗限制",
+        "暴力",
+        "血腥",
+        "低俗",
+        "猎奇"
+      ],
       "summary": "燕云可以有江湖冲突和悲情，但歌词应避免血腥猎奇、低俗化和现实伤害鼓励。",
       "source_type": "official_public_curated",
       "source_ref": "docs/specs/yanyun-creative-agent-v0.5.md",
       "fact_level": "creative_boundary",
       "spoiler_level": "open",
-      "cards": [{
-        "id": "safe-expression",
-        "heading_path": "禁区/表达安全/克制",
-        "theme_tags": ["禁区", "安全", "克制表达"],
-        "story_phase": "always",
-        "summary_for_prompt": "可以写刀剑、伤痕和战斗代价，但应诗化、克制，不写血腥细节或现实伤害引导。",
-        "usable_imagery": ["旧伤", "断弦", "冷铁", "雨洗血色"],
-        "emotional_arc": "痛感存在但不猎奇。",
-        "avoid_claims": ["不要血腥细节", "不要鼓励现实伤害", "不要低俗化角色"],
-        "content": "暴力血腥与低俗限制卡。"
-      }]
+      "cards": [
+        {
+          "id": "safe-expression",
+          "heading_path": "禁区/表达安全/克制",
+          "theme_tags": [
+            "禁区",
+            "安全",
+            "克制表达"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "可以写刀剑、伤痕和战斗代价，但应诗化、克制，不写血腥细节或现实伤害引导。",
+          "usable_imagery": [
+            "旧伤",
+            "断弦",
+            "冷铁",
+            "雨洗血色"
+          ],
+          "emotional_arc": "痛感存在但不猎奇。",
+          "avoid_claims": [
+            "不要血腥细节",
+            "不要鼓励现实伤害",
+            "不要低俗化角色"
+          ],
+          "content": "暴力血腥与低俗限制卡。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-spoiler-policy",
+      "entity_type": "boundary",
+      "canonical_name": "剧透等级与用户意图边界",
+      "aliases": [
+        "剧透等级与用户意图边界",
+        "剧透等级",
+        "剧情透出",
+        "角色结局",
+        "剧透等级与用户意图边界创作素材"
+      ],
+      "summary": "剧透等级与用户意图边界用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/剧透等级与用户意图边界/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "剧透等级与用户意图边界"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及剧透等级与用户意图边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及剧透等级与用户意图边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/剧透等级与用户意图边界/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "剧透等级与用户意图边界",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "剧透等级与用户意图边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "剧透等级与用户意图边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/剧透等级与用户意图边界/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "剧透等级与用户意图边界",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "剧透等级与用户意图边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "剧透等级与用户意图边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-unconfirmed-relationship",
+      "entity_type": "boundary",
+      "canonical_name": "未确认人物关系表达规则",
+      "aliases": [
+        "未确认人物关系表达规则",
+        "亲缘关系",
+        "恋人关系",
+        "师徒关系",
+        "身份反转"
+      ],
+      "summary": "未确认人物关系表达规则用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/未确认人物关系表达规则/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "未确认人物关系表达规则"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及未确认人物关系表达规则时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及未确认人物关系表达规则时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/未确认人物关系表达规则/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "未确认人物关系表达规则",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "未确认人物关系表达规则不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "未确认人物关系表达规则不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/未确认人物关系表达规则/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "未确认人物关系表达规则",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "未确认人物关系表达规则相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "未确认人物关系表达规则相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-ethnic-history",
+      "entity_type": "boundary",
+      "canonical_name": "民族/历史映射表达边界",
+      "aliases": [
+        "民族/历史映射表达边界",
+        "边军",
+        "历史人物",
+        "民族/历史映射表达边界创作素材",
+        "民族/历史映射表达边界补齐卡"
+      ],
+      "summary": "民族/历史映射表达边界用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/民族/历史映射表达边界/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "民族/历史映射表达边界"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及民族/历史映射表达边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及民族/历史映射表达边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/民族/历史映射表达边界/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "民族/历史映射表达边界",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "民族/历史映射表达边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "民族/历史映射表达边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/民族/历史映射表达边界/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "民族/历史映射表达边界",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "民族/历史映射表达边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "民族/历史映射表达边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-user-oc-vs-canon",
+      "entity_type": "boundary",
+      "canonical_name": "玩家原创角色与官方人物边界",
+      "aliases": [
+        "玩家原创角色与官方人物边界",
+        "玩家 OC",
+        "普通游侠",
+        "官方角色",
+        "代入故事"
+      ],
+      "summary": "玩家原创角色与官方人物边界用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/玩家原创角色与官方人物边界/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "玩家原创角色与官方人物边界"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及玩家原创角色与官方人物边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及玩家原创角色与官方人物边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/玩家原创角色与官方人物边界/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "玩家原创角色与官方人物边界",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "玩家原创角色与官方人物边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "玩家原创角色与官方人物边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/玩家原创角色与官方人物边界/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "玩家原创角色与官方人物边界",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "玩家原创角色与官方人物边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "玩家原创角色与官方人物边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-cover-title-policy",
+      "entity_type": "boundary",
+      "canonical_name": "封面标题文字边界",
+      "aliases": [
+        "封面标题文字边界",
+        "封面歌名",
+        "假歌手名",
+        "假厂牌",
+        "乱码文字"
+      ],
+      "summary": "封面标题文字边界用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/封面标题文字边界/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "封面标题文字边界"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及封面标题文字边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及封面标题文字边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/封面标题文字边界/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "封面标题文字边界",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "封面标题文字边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "封面标题文字边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/封面标题文字边界/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "封面标题文字边界",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "封面标题文字边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "封面标题文字边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
+    },
+    {
+      "key": "boundary-commercial-publish",
+      "entity_type": "boundary",
+      "canonical_name": "社区发布交接边界",
+      "aliases": [
+        "社区发布交接边界",
+        "发布包",
+        "社区审核",
+        "公司系统",
+        "分享系统"
+      ],
+      "summary": "社区发布交接边界用于约束燕云 AI 作曲平台的创作、审核或交付边界，避免歌词、封面、视频和发布包进入不适合商用交付的方向。",
+      "source_type": "official_public_curated",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#creative-boundaries",
+      "fact_level": "creative_boundary",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "创作边界/社区发布交接边界/资料补齐",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "社区发布交接边界"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "当用户请求触及社区发布交接边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "当用户请求触及社区发布交接边界时，系统应优先判断是否可转译到燕云创作域；不能转译时拒绝或要求修改。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "创作边界/社区发布交接边界/创作转译",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "社区发布交接边界",
+            "创作转译"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "社区发布交接边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "社区发布交接边界不限制玩家表达，但要求把题材、风格、视觉和发布表达放回燕云项目边界内，保持普通用户可理解和公司交接可控。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "创作边界/社区发布交接边界/禁写误区",
+          "theme_tags": [
+            "禁区",
+            "安全边界",
+            "质量门",
+            "社区发布交接边界",
+            "禁写误区"
+          ],
+          "story_phase": "always",
+          "summary_for_prompt": "社区发布交接边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。",
+          "usable_imagery": [
+            "边界线",
+            "改写提示",
+            "质量门",
+            "人工确认",
+            "发布前检查"
+          ],
+          "emotional_arc": "从自由创作进入可商用交付边界，保留表达空间，同时让风险可控。",
+          "avoid_claims": [
+            "不要绕开公司审核、权益、发布或分享边界",
+            "不要伪造官方背书、版权归属或生产承诺",
+            "不要用技术词替代普通用户可理解的提示"
+          ],
+          "content": "社区发布交接边界相关输出不得绕开审核、不得伪造来源、不得把不确定信息写成对外承诺。"
+        }
+      ]
     }
   ]
 }

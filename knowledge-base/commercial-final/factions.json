@@ -1241,6 +1241,1861 @@
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
+    },
+    {
+      "key": "current-faction-042",
+      "entity_type": "faction",
+      "canonical_name": "文津馆",
+      "aliases": [
+        "文津馆创作素材",
+        "文津馆补齐卡"
+      ],
+      "summary": "文津馆用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/文津馆/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "文津馆"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名文津馆或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名文津馆或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/文津馆/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "文津馆",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "文津馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "文津馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/文津馆/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "文津馆",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写文津馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写文津馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-faction-045",
+      "entity_type": "faction",
+      "canonical_name": "赤龙堂",
+      "aliases": [
+        "赤龙堂创作素材",
+        "赤龙堂补齐卡"
+      ],
+      "summary": "赤龙堂用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/赤龙堂/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "赤龙堂"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名赤龙堂或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名赤龙堂或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/赤龙堂/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "赤龙堂",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "赤龙堂的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "赤龙堂的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/赤龙堂/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "赤龙堂",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写赤龙堂时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写赤龙堂时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-faction-051",
+      "entity_type": "faction",
+      "canonical_name": "归义军",
+      "aliases": [
+        "归义军创作素材",
+        "归义军补齐卡"
+      ],
+      "summary": "归义军用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/归义军/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "归义军"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名归义军或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名归义军或相关方向时，调用该卡补齐势力语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/归义军/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "归义军",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "归义军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "归义军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/归义军/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "归义军",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写归义军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写归义军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-xuanjian",
+      "entity_type": "faction",
+      "canonical_name": "悬剑",
+      "aliases": [
+        "悬剑",
+        "春秋别馆悬剑",
+        "悬剑创作素材",
+        "悬剑补齐卡"
+      ],
+      "summary": "悬剑用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/悬剑/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "悬剑"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名悬剑或相关方向时，调用该卡补齐势力语境：补清河主线、旧朝遗绪、理想主义与权术的门派气质。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名悬剑或相关方向时，调用该卡补齐势力语境：补清河主线、旧朝遗绪、理想主义与权术的门派气质。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/悬剑/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "悬剑",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "悬剑的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "悬剑的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/悬剑/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "悬剑",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写悬剑时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写悬剑时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-yanbeimeng",
+      "entity_type": "faction",
+      "canonical_name": "燕北盟",
+      "aliases": [
+        "燕北盟",
+        "北盟",
+        "燕北盟创作素材",
+        "燕北盟补齐卡"
+      ],
+      "summary": "燕北盟用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/燕北盟/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "燕北盟"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名燕北盟或相关方向时，调用该卡补齐势力语境：家国、遗民、北伐未竟、英雄被遗忘等题材核心来源。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名燕北盟或相关方向时，调用该卡补齐势力语境：家国、遗民、北伐未竟、英雄被遗忘等题材核心来源。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/燕北盟/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "燕北盟",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "燕北盟的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "燕北盟的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/燕北盟/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "燕北盟",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写燕北盟时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写燕北盟时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-xiujinlou",
+      "entity_type": "faction",
+      "canonical_name": "绣金楼",
+      "aliases": [
+        "绣金楼",
+        "绣金楼创作素材",
+        "绣金楼补齐卡"
+      ],
+      "summary": "绣金楼用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/绣金楼/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "绣金楼"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名绣金楼或相关方向时，调用该卡补齐势力语境：人物歌大量会碰到，缺主势力卡会导致角色线失根。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名绣金楼或相关方向时，调用该卡补齐势力语境：人物歌大量会碰到，缺主势力卡会导致角色线失根。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/绣金楼/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "绣金楼",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "绣金楼的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "绣金楼的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/绣金楼/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "绣金楼",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写绣金楼时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写绣金楼时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-pojie-foye",
+      "entity_type": "faction",
+      "canonical_name": "破戒佛爷",
+      "aliases": [
+        "佛爷寨",
+        "佛爷",
+        "破戒佛爷创作素材",
+        "破戒佛爷补齐卡"
+      ],
+      "summary": "破戒佛爷用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/破戒佛爷/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "破戒佛爷"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名破戒佛爷或相关方向时，调用该卡补齐势力语境：补清河阴郁面、伪善/信仰崩塌/寺庙变寨。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名破戒佛爷或相关方向时，调用该卡补齐势力语境：补清河阴郁面、伪善/信仰崩塌/寺庙变寨。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/破戒佛爷/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "破戒佛爷",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "破戒佛爷的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "破戒佛爷的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/破戒佛爷/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "破戒佛爷",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写破戒佛爷时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写破戒佛爷时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-tianhu-jun",
+      "entity_type": "faction",
+      "canonical_name": "天虎军",
+      "aliases": [
+        "天虎军",
+        "天虎军创作素材",
+        "天虎军补齐卡"
+      ],
+      "summary": "天虎军用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/天虎军/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "天虎军"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名天虎军或相关方向时，调用该卡补齐势力语境：把叶万山从单人反派扩到整支军队的悲剧感。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名天虎军或相关方向时，调用该卡补齐势力语境：把叶万山从单人反派扩到整支军队的悲剧感。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/天虎军/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "天虎军",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天虎军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "天虎军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/天虎军/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "天虎军",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写天虎军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写天虎军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-qingjiao-tang",
+      "entity_type": "faction",
+      "canonical_name": "青蛟堂",
+      "aliases": [
+        "青蛟堂",
+        "青蛟帮",
+        "青蛟堂创作素材",
+        "青蛟堂补齐卡"
+      ],
+      "summary": "青蛟堂用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/青蛟堂/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青蛟堂"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青蛟堂或相关方向时，调用该卡补齐势力语境：当前赤龙堂已入库，但缺对手与前身，河运江湖叙事是断的。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青蛟堂或相关方向时，调用该卡补齐势力语境：当前赤龙堂已入库，但缺对手与前身，河运江湖叙事是断的。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/青蛟堂/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青蛟堂",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青蛟堂的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青蛟堂的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/青蛟堂/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青蛟堂",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青蛟堂时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青蛟堂时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-guyun",
+      "entity_type": "faction",
+      "canonical_name": "孤云",
+      "aliases": [
+        "孤云",
+        "孤云创作素材",
+        "孤云补齐卡"
+      ],
+      "summary": "孤云用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/孤云/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "孤云"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名孤云或相关方向时，调用该卡补齐势力语境：作为门派/势力线索，后续需确认上线与玩法边界。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名孤云或相关方向时，调用该卡补齐势力语境：作为门派/势力线索，后续需确认上线与玩法边界。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/孤云/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "孤云",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "孤云的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "孤云的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/孤云/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "孤云",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写孤云时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写孤云时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-kaifeng-government",
+      "entity_type": "faction",
+      "canonical_name": "开封官府/武德司",
+      "aliases": [
+        "开封官府/武德司",
+        "开封府",
+        "开封府衙",
+        "武德司",
+        "开封官府/武德司创作素材"
+      ],
+      "summary": "开封官府/武德司用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/开封官府/武德司/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封官府/武德司"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名开封官府/武德司或相关方向时，调用该卡补齐势力语境：开封歌、鬼市歌、庙堂线都需要白天秩序对照面。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名开封官府/武德司或相关方向时，调用该卡补齐势力语境：开封歌、鬼市歌、庙堂线都需要白天秩序对照面。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/开封官府/武德司/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封官府/武德司",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封官府/武德司的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "开封官府/武德司的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/开封官府/武德司/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封官府/武德司",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写开封官府/武德司时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写开封官府/武德司时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-palace-institutions",
+      "entity_type": "faction",
+      "canonical_name": "开封宫城机构",
+      "aliases": [
+        "开封宫城机构",
+        "内诸司",
+        "开封宫城机构创作素材",
+        "开封宫城机构补齐卡"
+      ],
+      "summary": "开封宫城机构作为待核线索层资料进入开封宫城机构相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/开封宫城机构/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封宫城机构"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名开封宫城机构或相关主题时，可把它作为待核线索使用：保留势力语境和对宫廷题材有用，但更像机构/场景。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名开封宫城机构或相关主题时，可把它作为待核线索使用：保留势力语境和对宫廷题材有用，但更像机构/场景。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/开封宫城机构/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封宫城机构",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "开封宫城机构适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入开封宫城机构相关的燕云气质。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "开封宫城机构适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入开封宫城机构相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/开封宫城机构/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "开封宫城机构",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "开封宫城机构资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "开封宫城机构资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "faction-ghost-market-order",
+      "entity_type": "faction",
+      "canonical_name": "鬼市地下秩序",
+      "aliases": [
+        "鬼市地下秩序",
+        "官财坊",
+        "鬼市地下秩序创作素材",
+        "鬼市地下秩序补齐卡"
+      ],
+      "summary": "鬼市地下秩序用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/鬼市地下秩序/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "鬼市地下秩序"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名鬼市地下秩序或相关方向时，调用该卡补齐势力语境：现有角色域和剧情域有散点，但缺势力/秩序壳。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名鬼市地下秩序或相关方向时，调用该卡补齐势力语境：现有角色域和剧情域有散点，但缺势力/秩序壳。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/鬼市地下秩序/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "鬼市地下秩序",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市地下秩序的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "鬼市地下秩序的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/鬼市地下秩序/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "鬼市地下秩序",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写鬼市地下秩序时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写鬼市地下秩序时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-khitan",
+      "entity_type": "faction",
+      "canonical_name": "契丹相关势力",
+      "aliases": [
+        "契丹相关势力",
+        "契丹",
+        "契丹王族",
+        "契丹军",
+        "萨满线"
+      ],
+      "summary": "契丹相关势力用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/契丹相关势力/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "契丹相关势力"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名契丹相关势力或相关方向时，调用该卡补齐势力语境：北地、燕北盟、天虎军、河西线都会回流到这层背景势力。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名契丹相关势力或相关方向时，调用该卡补齐势力语境：北地、燕北盟、天虎军、河西线都会回流到这层背景势力。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/契丹相关势力/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "契丹相关势力",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "契丹相关势力的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "契丹相关势力的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/契丹相关势力/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "契丹相关势力",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写契丹相关势力时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写契丹相关势力时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-hexi-border-army",
+      "entity_type": "faction",
+      "canonical_name": "河西边军/凉州守军",
+      "aliases": [
+        "河西边军/凉州守军",
+        "河西边军",
+        "凉州守军",
+        "边关守军",
+        "河西边军/凉州守军创作素材"
+      ],
+      "summary": "河西边军/凉州守军用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/河西边军/凉州守军/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "河西边军/凉州守军"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名河西边军/凉州守军或相关方向时，调用该卡补齐势力语境：归义军过于大历史，缺凉州现场军旅质感。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名河西边军/凉州守军或相关方向时，调用该卡补齐势力语境：归义军过于大历史，缺凉州现场军旅质感。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/河西边军/凉州守军/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "河西边军/凉州守军",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "河西边军/凉州守军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "河西边军/凉州守军的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/河西边军/凉州守军/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "河西边军/凉州守军",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写河西边军/凉州守军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写河西边军/凉州守军时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-wumianren",
+      "entity_type": "faction",
+      "canonical_name": "无面人",
+      "aliases": [
+        "无面人",
+        "无面人创作素材",
+        "无面人补齐卡"
+      ],
+      "summary": "无面人用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/无面人/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无面人"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名无面人或相关方向时，调用该卡补齐势力语境：适合氛围创作，但不一定是稳定组织。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名无面人或相关方向时，调用该卡补齐势力语境：适合氛围创作，但不一定是稳定组织。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/无面人/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无面人",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无面人的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "无面人的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/无面人/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无面人",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写无面人时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写无面人时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-no-sect",
+      "entity_type": "faction",
+      "canonical_name": "无门无派体系",
+      "aliases": [
+        "无门无派体系",
+        "无门无派",
+        "散修",
+        "无门无派体系创作素材",
+        "无门无派体系补齐卡"
+      ],
+      "summary": "无门无派体系用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/无门无派体系/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无门无派体系"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名无门无派体系或相关方向时，调用该卡补齐势力语境：玩家自我投射很强。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名无门无派体系或相关方向时，调用该卡补齐势力语境：玩家自我投射很强。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/无门无派体系/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无门无派体系",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无门无派体系的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "无门无派体系的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/无门无派体系/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "无门无派体系",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写无门无派体系时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写无门无派体系时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-qingzhou-literati",
+      "entity_type": "faction",
+      "canonical_name": "青州文脉关联组织",
+      "aliases": [
+        "青州文脉关联组织",
+        "青州学派",
+        "青州文脉关联组织创作素材",
+        "青州文脉关联组织补齐卡"
+      ],
+      "summary": "青州文脉关联组织用于补齐势力创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/青州文脉关联组织/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青州文脉关联组织"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青州文脉关联组织或相关方向时，调用该卡补齐势力语境：把文津馆从书卷气升级成可写人群与秩序。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青州文脉关联组织或相关方向时，调用该卡补齐势力语境：把文津馆从书卷气升级成可写人群与秩序。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/青州文脉关联组织/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青州文脉关联组织",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青州文脉关联组织的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青州文脉关联组织的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/青州文脉关联组织/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "青州文脉关联组织",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青州文脉关联组织时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青州文脉关联组织时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "faction-qiongqi-shi",
+      "entity_type": "faction",
+      "canonical_name": "穷奇师",
+      "aliases": [
+        "穷奇师",
+        "穷奇师创作素材",
+        "穷奇师补齐卡"
+      ],
+      "summary": "穷奇师作为待核线索层资料进入穷奇师相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "势力/穷奇师/资料补齐",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "穷奇师"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名穷奇师或相关主题时，可把它作为待核线索使用：保留势力语境和可补敌营感，但暂不稳。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名穷奇师或相关主题时，可把它作为待核线索使用：保留势力语境和可补敌营感，但暂不稳。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "势力/穷奇师/创作转译",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "穷奇师",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "穷奇师适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入穷奇师相关的燕云气质。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "穷奇师适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入穷奇师相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "势力/穷奇师/禁写误区",
+          "theme_tags": [
+            "势力歌",
+            "组织气质",
+            "江湖冲突",
+            "穷奇师",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "穷奇师资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "暗号",
+            "旧旗",
+            "夜行",
+            "门规",
+            "交错的影子"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "穷奇师资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
     }
   ]
 }

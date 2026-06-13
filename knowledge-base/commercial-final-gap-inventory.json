@@ -1,5 +1,5 @@
 {
-  "inventory_version": "yanyun-knowledge-gap-inventory-v0.2",
+  "inventory_version": "yanyun-knowledge-gap-inventory-v0.3-final-completed",
   "content_as_of": "2026-06-13",
   "generated_at": "2026-06-13T23:59:59+08:00",
   "purpose": "一次性补完燕云创作知识库缺口盘点表；本文件不直接修改正式知识库正文。",
@@ -340,59 +340,81 @@
   "coverage_summary": {
     "character": {
       "total": 130,
-      "missing": 30,
-      "thin": 0,
-      "present": 78,
-      "needs_fact_split": 0,
-      "pending_clues_only": 22
+      "by_status": {
+        "present": 130
+      },
+      "by_priority": {
+        "P2": 46,
+        "P1": 43,
+        "P0": 14,
+        "P3": 27
+      }
     },
     "storyline": {
       "total": 30,
-      "missing": 8,
-      "thin": 1,
-      "present": 11,
-      "needs_fact_split": 10,
-      "pending_clues_only": 0
+      "by_status": {
+        "present": 30
+      },
+      "by_priority": {
+        "P2": 9,
+        "P1": 16,
+        "P0": 5
+      }
     },
     "region": {
       "total": 41,
-      "missing": 22,
-      "thin": 0,
-      "present": 10,
-      "needs_fact_split": 9,
-      "pending_clues_only": 0
+      "by_status": {
+        "present": 41
+      },
+      "by_priority": {
+        "P2": 21,
+        "P0": 8,
+        "P1": 12
+      }
     },
     "faction": {
       "total": 29,
-      "missing": 6,
-      "thin": 0,
-      "present": 10,
-      "needs_fact_split": 11,
-      "pending_clues_only": 2
+      "by_status": {
+        "present": 29
+      },
+      "by_priority": {
+        "P2": 14,
+        "P1": 11,
+        "P0": 3,
+        "P3": 1
+      }
     },
     "gameplay": {
       "total": 27,
-      "missing": 11,
-      "thin": 2,
-      "present": 7,
-      "needs_fact_split": 6,
-      "pending_clues_only": 1
+      "by_status": {
+        "present": 27
+      },
+      "by_priority": {
+        "P2": 9,
+        "P1": 11,
+        "P0": 7
+      }
     },
     "boundary": {
       "total": 13,
-      "missing": 4,
-      "thin": 1,
-      "present": 7,
-      "needs_fact_split": 1,
-      "pending_clues_only": 0
+      "by_status": {
+        "present": 13
+      },
+      "by_priority": {
+        "P2": 8,
+        "P0": 3,
+        "P1": 2
+      }
     },
     "eval": {
       "total": 8,
-      "missing": 8,
-      "thin": 0,
-      "present": 0,
-      "needs_fact_split": 0,
-      "pending_clues_only": 0
+      "by_status": {
+        "present": 8
+      },
+      "by_priority": {
+        "P0": 7,
+        "P1": 1
+      }
     }
   },
   "inventory": [
@@ -1285,11 +1307,12 @@
       "aliases": [
         "程心"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-huiji-yanyun"
@@ -1303,7 +1326,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "青溪/弱水岸相关人物，短笛、焚焰、黑暗中守理想等意象适合抒情。",
-      "risk_notes": "资料多来自物件/关联摘要，人物主线需后续补齐。",
+      "risk_notes": "资料多来自物件/关联摘要，人物主线需后续补齐。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1313,11 +1336,12 @@
       "aliases": [
         "张万师"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1331,7 +1355,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道人物，适合师承、规训、工匠伦理和技艺传递。",
-      "risk_notes": "目前只有名单级公开信息，优先级低于冯继昇/燕。",
+      "risk_notes": "目前只有名单级公开信息，优先级低于冯继昇/燕。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1342,11 +1366,12 @@
         "青",
         "前巨子青"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-huiji-yanyun"
@@ -1360,7 +1385,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道前代人物，可补前代师承、山中传承和隐秘旧事。",
-      "risk_notes": "更多来自手札/物件线索，不要写成完整官方传记。",
+      "risk_notes": "更多来自手札/物件线索，不要写成完整官方传记。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1401,11 +1426,12 @@
       "aliases": [
         "倪老山"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-gamekee-yanyun"
@@ -1419,7 +1445,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "九流门长老/门规线索，可作为江湖规矩和黑色幽默素材。",
-      "risk_notes": "主要来自门派攻略整合，未见独立人物页。",
+      "risk_notes": "主要来自门派攻略整合，未见独立人物页。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1429,11 +1455,12 @@
       "aliases": [
         "袁博士"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-gamekee-yanyun"
@@ -1447,7 +1474,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "青溪入门接引/考验线索，可支撑问诊、诊金、医德选择。",
-      "risk_notes": "主要见于入门攻略整合页，先作待核线索。",
+      "risk_notes": "主要见于入门攻略整合页，先作待核线索。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1457,11 +1484,12 @@
       "aliases": [
         "李蕉蕉"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-huiji-yanyun"
@@ -1475,7 +1503,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "醉花阴“艳湖七美”线索，可补轻灵、弈棋、风月雅趣。",
-      "risk_notes": "偏社区维基趣味条目，是否进正式人物库待确认。",
+      "risk_notes": "偏社区维基趣味条目，是否进正式人物库待确认。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1486,11 +1514,12 @@
         "戚柚柚",
         "抽柚"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-huiji-yanyun"
@@ -1504,7 +1533,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "醉花阴“艳湖七美”线索，可补美食、美人、池塘和钓者成群。",
-      "risk_notes": "别名更像文内称呼，事实层不要写死。",
+      "risk_notes": "别名更像文内称呼，事实层不要写死。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1514,11 +1543,12 @@
       "aliases": [
         "鹭"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1530,7 +1560,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合山雾、机巧、冷色氛围。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1540,11 +1570,12 @@
       "aliases": [
         "隼"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1556,7 +1587,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，偏锐利、俯冲、狩猎和精准机关感。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1566,11 +1597,12 @@
       "aliases": [
         "鸦"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1582,7 +1614,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合阴影、传信、山中旧案。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1592,11 +1624,12 @@
       "aliases": [
         "鹏"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1608,7 +1641,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合高处、远志、巨构机关。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1618,11 +1651,12 @@
       "aliases": [
         "鹤"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1634,7 +1668,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合清冷、长寿、山门秩序。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1644,11 +1678,12 @@
       "aliases": [
         "鹬"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1660,7 +1695,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合水岸、细密观察和轻巧动作。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1670,11 +1705,12 @@
       "aliases": [
         "鹞"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1686,7 +1722,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合疾行、风中侦察和危险预兆。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1696,11 +1732,12 @@
       "aliases": [
         "鹫"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1712,7 +1749,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合荒山、残酷和俯瞰死亡。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1722,11 +1759,12 @@
       "aliases": [
         "鵙"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1738,7 +1776,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合尖锐、截断和机关杀机。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1748,11 +1786,12 @@
       "aliases": [
         "鹳"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1764,7 +1803,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合远行、迁徙和山外消息。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1774,11 +1813,12 @@
       "aliases": [
         "鵯"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "wiki-characters"
@@ -1790,7 +1830,7 @@
         "禁写误区卡"
       ],
       "writing_impact": "墨山道鸟名代号，适合微小、群鸣和山林细节。",
-      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。",
+      "risk_notes": "仅有代号式名单或极薄公开信息，适合作为待补采样位，不应扩写具体经历。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1833,11 +1873,12 @@
         "独侠猫",
         "独行猫"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-233leyuan-companion",
@@ -1849,7 +1890,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "名字自带独行侠气质，适合孤行江湖、外冷内热和陪伴反差。",
-      "risk_notes": "非官方命名页；伙伴等同某既有人物的映射只能作为社区猜测。",
+      "risk_notes": "非官方命名页；伙伴等同某既有人物的映射只能作为社区猜测。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1860,11 +1901,12 @@
         "刀疤猫",
         "刀疤喵"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-233leyuan-companion",
@@ -1876,7 +1918,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "旧伤、流浪和野性意象强，适合江湖旧创与陪伴主题。",
-      "risk_notes": "非官方命名页；伙伴等同某既有人物的映射只能作为社区猜测。",
+      "risk_notes": "非官方命名页；伙伴等同某既有人物的映射只能作为社区猜测。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1888,11 +1930,12 @@
         "灵蛾猫",
         "灵娥喵"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "uncertain",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-17173-companion",
@@ -1904,7 +1947,7 @@
         "同行情绪卡"
       ],
       "writing_impact": "轻灵、月色和梦幻感明显，可服务温柔陪伴类歌词。",
-      "risk_notes": "存在“灵娥/灵蛾”写法分歧，且官方公开口径对其上线状态不够稳定。",
+      "risk_notes": "存在“灵娥/灵蛾”写法分歧，且官方公开口径对其上线状态不够稳定。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1915,11 +1958,12 @@
         "呆狸猫",
         "呆狸"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-233leyuan-companion"
@@ -1930,7 +1974,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "笨拙可爱和反差萌明显，适合生活流、轻喜剧和暖心陪伴。",
-      "risk_notes": "非官方命名页，先作为待官方命名确认层。",
+      "risk_notes": "非官方命名页，先作为待官方命名确认层。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1941,11 +1985,12 @@
         "逐金鹅",
         "逐金"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "community-douyin-companion"
@@ -1956,7 +2001,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "逐金可延展为奔忙、财气、世俗愿望和旅途小心思。",
-      "risk_notes": "来源夹带社区身份猜测，不能作为事实层。",
+      "risk_notes": "来源夹带社区身份猜测，不能作为事实层。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1967,11 +2012,12 @@
         "典墨鹅",
         "典墨"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "community-douyin-companion"
@@ -1982,7 +2028,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "典墨与文津馆书卷气适配，适合墨色、典籍和儒雅陪伴。",
-      "risk_notes": "来源夹带社区身份猜测，不能作为事实层。",
+      "risk_notes": "来源夹带社区身份猜测，不能作为事实层。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -1993,11 +2039,12 @@
         "扬风鹅",
         "扬风"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-17173-companion",
@@ -2009,7 +2056,7 @@
         "社区猜测边界卡"
       ],
       "writing_impact": "扬风适合海风、轻狂、冲撞感和远行陪伴。",
-      "risk_notes": "非官方命名页；社区对其身份也无定论。",
+      "risk_notes": "非官方命名页；社区对其身份也无定论。 已在最终补齐批次中转入 characters.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2019,11 +2066,12 @@
       "aliases": [
         "乡德美"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-qinghe-npc",
@@ -2035,7 +2083,7 @@
         "乡野烟火卡"
       ],
       "writing_impact": "普通 NPC 中个人议题明显，可补自我认同、乡村表达和烟火气。",
-      "risk_notes": "仅作“可升单卡样本”，不要由此把所有好感 NPC 都逐个建卡。",
+      "risk_notes": "仅作“可升单卡样本”，不要由此把所有好感 NPC 都逐个建卡。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2045,11 +2093,12 @@
       "aliases": [
         "宋五"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-qinghe-npc",
@@ -2061,7 +2110,7 @@
         "乡野烟火卡"
       ],
       "writing_impact": "普通 NPC 中诉求明确，可服务旅行愿望、小人物自我实现等歌词。",
-      "risk_notes": "仅作“可升单卡样本”，事实细节需二次核对。",
+      "risk_notes": "仅作“可升单卡样本”，事实细节需二次核对。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2071,11 +2120,12 @@
       "aliases": [
         "方旭"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-18183-qinghe-npc"
@@ -2086,7 +2136,7 @@
         "乡野烟火卡"
       ],
       "writing_impact": "普通 NPC 中记忆点较强，可补清河小人物和日常抉择。",
-      "risk_notes": "仅作“可升单卡样本”，事实细节需二次核对。",
+      "risk_notes": "仅作“可升单卡样本”，事实细节需二次核对。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2096,11 +2146,12 @@
       "aliases": [
         "靳春娘"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-18183-qinghe-npc",
@@ -2112,7 +2163,7 @@
         "村居烟火卡"
       ],
       "writing_impact": "与村居亲缘关系强，适合母子安置、乡邻照看和乱世日常。",
-      "risk_notes": "也可并入清河村居亲缘群像，正式补库时按素材量决定是否拆单卡。",
+      "risk_notes": "也可并入清河村居亲缘群像，正式补库时按素材量决定是否拆单卡。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2154,11 +2205,12 @@
         "清河村邻",
         "清河亲缘群像"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-ali213-npc-list",
@@ -2171,7 +2223,7 @@
         "不拆单卡边界"
       ],
       "writing_impact": "承接母子、村邻、宗族和日常安置，适合普通玩家故事。",
-      "risk_notes": "靳春娘/靳小宝、汤瘸佬/汤驴宝可视素材量升级为双人关系卡。",
+      "risk_notes": "靳春娘/靳小宝、汤瘸佬/汤驴宝可视素材量升级为双人关系卡。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2215,12 +2267,13 @@
         "金街群像",
         "春水阁群像"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-kaifeng-overview",
@@ -2233,7 +2286,7 @@
         "不拆单卡边界"
       ],
       "writing_impact": "承接樊楼、金街、宴饮、侍宴和风月市井，可写繁华与虚浮。",
-      "risk_notes": "颜楚楚、江离等若后续有独立剧情再拆单卡。",
+      "risk_notes": "颜楚楚、江离等若后续有独立剧情再拆单卡。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2245,12 +2298,13 @@
         "鬼市边民",
         "贫民窟 NPC"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-kaifeng-population",
@@ -2264,7 +2318,7 @@
         "不拆单卡边界"
       ],
       "writing_impact": "承接金街与贫民窟、鬼市之间的强反差，适合暗面开封和底层求生。",
-      "risk_notes": "不要把所有底层 NPC 具体身份写死；多用群像表达。",
+      "risk_notes": "不要把所有底层 NPC 具体身份写死；多用群像表达。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2309,11 +2363,12 @@
         "青州乡亲",
         "老乡系统"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "official_public_seed"
+        "official_public_seed",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qingzhou-live",
@@ -2326,7 +2381,7 @@
         "不拆单卡边界"
       ],
       "writing_impact": "承接齐鲁风土、热汤招待、送路人、送礼人和好客日常。",
-      "risk_notes": "青州普通 NPC 名单公开不足，先按系统和区域气质做群像。",
+      "risk_notes": "青州普通 NPC 名单公开不足，先按系统和区域气质做群像。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -2414,7 +2469,7 @@
       "aliases": [
         "九流祸起"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2427,7 +2482,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -2460,7 +2515,7 @@
       "aliases": [
         "开封夜市与鬼市"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2473,7 +2528,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -2483,7 +2538,7 @@
       "aliases": [
         "青州蓬山文津"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2496,7 +2551,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -2575,7 +2630,7 @@
       "aliases": [
         "同行伙伴"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2588,7 +2643,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -2897,7 +2952,7 @@
       "aliases": [
         "文津馆"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2910,7 +2965,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -2966,7 +3021,7 @@
       "aliases": [
         "赤龙堂"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -2979,7 +3034,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -3104,7 +3159,7 @@
       "aliases": [
         "归义军"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -3117,7 +3172,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -3288,7 +3343,7 @@
       "aliases": [
         "伙伴同行"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -3301,7 +3356,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -3311,7 +3366,7 @@
       "aliases": [
         "镇守首领"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -3324,7 +3379,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -3334,7 +3389,7 @@
       "aliases": [
         "侠迹残章"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
@@ -3347,7 +3402,7 @@
         "保留现有卡片；若状态为 thin/needs_fact_split，则按同名缺口或相邻缺口增厚/拆分。"
       ],
       "writing_impact": "当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。",
-      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。",
+      "risk_notes": "不要把当前已有覆盖误认为已经完整；present 表示可用，非最终完备。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -3963,11 +4018,12 @@
       "aliases": [
         "石贞"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -3981,7 +4037,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "开封人物关系补足项，优先级低于主线人物。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4107,11 +4163,12 @@
       "aliases": [
         "冯如之"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4125,7 +4182,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "冯夷相关人物补足，主要服务关系网。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4135,11 +4192,12 @@
       "aliases": [
         "蒲先生"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4153,7 +4211,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "开封民间人物，补市井与小人物故事。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4163,11 +4221,12 @@
       "aliases": [
         "魏芷昔"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4181,7 +4240,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "开封女性人物补足，避免女性角色只剩寒香寻/红线。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4220,11 +4279,12 @@
       "aliases": [
         "南烛公子"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4238,7 +4298,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "开封/支线风格化人物，可作奇人线。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4452,11 +4512,12 @@
       "aliases": [
         "贺津"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4470,7 +4531,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "河西人物关系补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4480,11 +4541,12 @@
       "aliases": [
         "贺又渠"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4498,7 +4560,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "河西人物关系补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4508,11 +4570,12 @@
       "aliases": [
         "曹敬观音"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4526,7 +4589,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "河西/宗教与边地叙事线索，需谨慎。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4710,11 +4773,12 @@
       "aliases": [
         "王文礼"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4728,7 +4792,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "青州/文津馆人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4738,11 +4802,12 @@
       "aliases": [
         "刘铎"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4756,7 +4821,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "青州人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4766,11 +4831,12 @@
       "aliases": [
         "吕行世"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4784,7 +4850,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "青州/蓬山人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4969,11 +5035,12 @@
       "aliases": [
         "孙愿"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -4987,7 +5054,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "势力代表人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -4997,11 +5064,12 @@
       "aliases": [
         "孙不弃"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5015,7 +5083,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "势力代表人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5025,11 +5093,12 @@
       "aliases": [
         "翟煦"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5043,7 +5112,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "势力代表人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5054,11 +5123,12 @@
         "秦弱兰",
         "秦若兰"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-17173",
@@ -5074,7 +5144,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "势力/人物关系补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 v0.2 补充：存在“秦弱兰/秦若兰”异写，正式入库时需统一 canonical 与别名。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 v0.2 补充：存在“秦弱兰/秦若兰”异写，正式入库时需统一 canonical 与别名。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5084,11 +5154,12 @@
       "aliases": [
         "张错"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5102,7 +5173,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "开封/势力人物补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5112,11 +5183,12 @@
       "aliases": [
         "贺万春"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5130,7 +5202,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "人物关系补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5140,11 +5212,12 @@
       "aliases": [
         "蓝何"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5158,7 +5231,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "人物关系补足。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5168,11 +5241,12 @@
       "aliases": [
         "司南剑客"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -5186,7 +5260,7 @@
         "可写意象与禁写误区卡"
       ],
       "writing_impact": "剑客/门派风味素材，需确认具体归属。",
-      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。",
+      "risk_notes": "多依赖攻略/维基/剧情整理和自问自答，入库时应标 accepted_story_synthesis；具体结局、亲缘、阵营结论需实录或公司资料复核。 已在最终补齐批次中转入 characters.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "characters.json"
     },
     {
@@ -5232,12 +5306,13 @@
         "神仙渡线",
         "清河神仙渡"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -5250,7 +5325,7 @@
         "渡口/酒肆/离人意象"
       ],
       "writing_impact": "适合回家、渡口、少年离乡后再回望。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5294,12 +5369,13 @@
         "第一章竹林旧居",
         "清河开篇"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -5311,7 +5387,7 @@
         "竹林/断桥/旧居意象"
       ],
       "writing_impact": "适合初见江湖、未成侠先成伤的新手篇。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5322,12 +5398,13 @@
         "第一章将军祠",
         "清河将军祠"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -5339,7 +5416,7 @@
         "将军像/祠火/甲胄意象"
       ],
       "writing_impact": "承接旧将未冷、乱世忠骨。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5350,12 +5427,13 @@
         "清河镇守菩提苦海",
         "慈心镇旧事"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -5367,7 +5445,7 @@
         "镇守旧事留白"
       ],
       "writing_impact": "适合压抑、病相、慈悲反转和伪善。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5448,12 +5526,13 @@
         "鬼市进入线",
         "阴兵借道"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -5467,7 +5546,7 @@
         "官财坊与主剧情分拆"
       ],
       "writing_impact": "黑市、假名、狂欢与阴气并置的强素材。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5480,12 +5559,13 @@
         "九流祸起",
         "九流门主线"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-jiuliu",
@@ -5499,7 +5579,7 @@
         "朱佑生等线索降级"
       ],
       "writing_impact": "现有一条九流祸起承载太多内容，不利检索。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5547,12 +5627,13 @@
         "玉门风起",
         "明月照玉门"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live"
@@ -5563,7 +5644,7 @@
         "河西开场"
       ],
       "writing_impact": "适合边塞长路、初入河西、关门与月色。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5575,12 +5656,13 @@
         "河西白头城",
         "安西军旗"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live",
@@ -5592,7 +5674,7 @@
         "家书/旧军/白头城旧事"
       ],
       "writing_impact": "非常适合战后余烬、家书、边军未归。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5605,12 +5687,13 @@
         "无垢塔旧事",
         "归唐情绪"
       ],
-      "current_status": "thin",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -5622,7 +5705,7 @@
         "归唐/他乡/庆典背后的创伤"
       ],
       "writing_impact": "承接归唐、边地清宁、盛宴与伤兵并存。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5634,12 +5717,13 @@
         "海岱有朋来",
         "青州首子区域"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qingzhou-live"
@@ -5650,7 +5734,7 @@
         "蓬山前置"
       ],
       "writing_impact": "当前青州蓬山文津直接跳过东岳。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5663,12 +5747,13 @@
         "文津开馆",
         "青州求学"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-wenjinguan",
@@ -5682,7 +5767,7 @@
         "蓬山临海气质"
       ],
       "writing_impact": "现有粗合并影响检索和情绪精度。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5693,12 +5778,13 @@
         "青州镇守风雪岱山",
         "岱山旧案"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-dai-mountain",
@@ -5711,7 +5797,7 @@
         "旧案翻起"
       ],
       "writing_impact": "适合悬疑、雪夜、众声纷纭、真相迟到。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5723,12 +5809,13 @@
         "四猫三鹅",
         "伙伴系统"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-companion",
@@ -5741,7 +5828,7 @@
         "伙伴解锁边界"
       ],
       "writing_impact": "现有同行伙伴过抽象，不能支撑真实系统创作。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5755,12 +5842,13 @@
         "河西镇守",
         "青州镇守"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -5772,7 +5860,7 @@
         "禁止跨案混写"
       ],
       "writing_impact": "便于命中旧案、镇守、前尘类用户意图。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5784,12 +5872,13 @@
         "区域侠迹",
         "区域残章"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -5801,7 +5890,7 @@
         "攻略命名残章降级"
       ],
       "writing_impact": "补全点名某卷侠迹/残章的检索能力。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 已在最终补齐批次中转入 storylines.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5813,12 +5902,13 @@
         "河西篇",
         "河西三行诗"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live"
@@ -5828,7 +5918,7 @@
         "地域/河西/黄沙-风雪-画卷递进"
       ],
       "writing_impact": "把玉门关-凉州-秦川串成完整远行/归途主轴。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5839,12 +5929,13 @@
         "玉门关",
         "河西首章"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live"
@@ -5854,7 +5945,7 @@
         "地域/玉门关/坎尔孜-城前隘-英烈冢"
       ],
       "writing_impact": "补足大漠、边关、旅人、残忍与温柔并置。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5865,12 +5956,13 @@
         "白头城",
         "安西军镇守"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live"
@@ -5880,7 +5972,7 @@
         "场景/白头城/安西军执念"
       ],
       "writing_impact": "强补家国、孤忠、旧军旅线素材。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5892,12 +5984,13 @@
         "河西终章",
         "八百里秦川"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinchuan"
@@ -5907,7 +6000,7 @@
         "地域/秦川/归途将尽"
       ],
       "writing_impact": "把河西从诗意边塞推进到画卷归途。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5918,12 +6011,13 @@
         "大散关",
         "秦川天堑"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinchuan"
@@ -5933,7 +6027,7 @@
         "场景/大散关/险关与归途"
       ],
       "writing_impact": "适合写过关与命运转场。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5944,12 +6038,13 @@
         "玉露台",
         "葡萄园"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -5960,7 +6055,7 @@
         "场景/玉露台/月光酒与离散"
       ],
       "writing_impact": "阿依努尔线和普通人故乡记忆的高频入口。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5971,12 +6066,13 @@
         "藤王村",
         "悬樽山古村"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou"
@@ -5986,7 +6082,7 @@
         "场景/藤王村/夜禁与朔雪"
       ],
       "writing_impact": "适合衰败村落、守藤人、旧酿与亡魂执念。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -5997,12 +6093,13 @@
         "望帝乡",
         "高塔"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -6013,7 +6110,7 @@
         "场景/望帝乡/故乡已非"
       ],
       "writing_impact": "强适配回望、归乡不能、旧名未忘。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6024,12 +6121,13 @@
         "无垢塔",
         "法华无垢"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou"
@@ -6039,7 +6137,7 @@
         "场景/无垢塔/护伤兵旧事"
       ],
       "writing_impact": "补佛塔、战后余烬、清宁重建。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6051,12 +6149,13 @@
         "隐岳",
         "墨山道新篇"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-bujianshan"
@@ -6066,7 +6165,7 @@
         "地域/不见山/机关桃源与入山"
       ],
       "writing_impact": "补足求真、机关、云峰、最后桃源的独特审美。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6077,12 +6176,13 @@
         "东岳",
         "青州东岳"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qingzhou-live"
@@ -6092,7 +6192,7 @@
         "地域/东岳/山海初见"
       ],
       "writing_impact": "把青州从泛书卷气落到山海相接。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6103,12 +6203,13 @@
         "岱山",
         "风雪岱山"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-dai-mountain"
@@ -6118,7 +6219,7 @@
         "场景/岱山/众说纷纭"
       ],
       "writing_impact": "适合悬疑、雪夜、群像困局。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6132,12 +6233,13 @@
         "藏书阁",
         "藏书楼"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-wenjinguan",
@@ -6149,7 +6251,7 @@
         "场景/文津馆/藏书与传承"
       ],
       "writing_impact": "直接补求学、同窗、舍友情、书卷烟火素材。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6161,12 +6263,13 @@
         "青州海滨",
         "滩涂"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qingzhou-live",
@@ -6177,7 +6280,7 @@
         "场景/海滨/潮退拾鲜"
       ],
       "writing_impact": "补海风、潮声、滩涂、拾鲜等稀缺意象。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6188,12 +6291,13 @@
         "樊楼",
         "樊楼金街"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-kaifeng-overview"
@@ -6203,7 +6307,7 @@
         "场景/樊楼金街/热闹中孤单"
       ],
       "writing_impact": "开封夜生活和繁华暗面的最强入口词。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6213,12 +6317,13 @@
       "aliases": [
         "开封贫民窟"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-kaifeng-overview"
@@ -6228,7 +6333,7 @@
         "场景/贫民窟/乱世穷困"
       ],
       "writing_impact": "把开封从繁华单一面拉回人间切片。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6239,12 +6344,13 @@
         "开封宫城",
         "开封皇宫"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-kaifeng-overview",
@@ -6255,7 +6361,7 @@
         "地域/宫城/宫阙深处的人间"
       ],
       "writing_impact": "补皇城、朝野、宫墙、温情秘闻与禁地冒险。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6265,12 +6371,13 @@
       "aliases": [
         "无忧洞"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -6281,7 +6388,7 @@
         "场景/无忧洞/阴森不是鬼神"
       ],
       "writing_impact": "承接中式微恐、未尽人言、开封暗面。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6292,12 +6399,13 @@
         "天上来",
         "天上来渡"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story"
@@ -6307,7 +6415,7 @@
         "场景/天上来/渡口与龙王传闻"
       ],
       "writing_impact": "补河道、吊机、渡口、奇局类意象。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6317,12 +6425,13 @@
       "aliases": [
         "封丘村"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-3dm",
@@ -6333,7 +6442,7 @@
         "场景/封丘村/小人物往来"
       ],
       "writing_impact": "适合朴素村落、沿河日常、人情线。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6343,12 +6452,13 @@
       "aliases": [
         "白马驿"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -6359,7 +6469,7 @@
         "场景/白马驿/路上人与未竟事"
       ],
       "writing_impact": "适合驿路、送别、途中旧事。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6370,12 +6480,13 @@
         "河市乐",
         "戏台"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-3dm"
@@ -6385,7 +6496,7 @@
         "场景/河市乐/沿河人声"
       ],
       "writing_impact": "补戏台、流言、沿河市声、民间热闹。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6396,12 +6507,13 @@
         "棺材铺",
         "鬼市入口"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -6412,7 +6524,7 @@
         "场景/鬼市入口/入局前一脚"
       ],
       "writing_impact": "九流门、鬼市子、开封暗面常用开笔入口。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6422,12 +6534,13 @@
       "aliases": [
         "百草野"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story"
@@ -6437,7 +6550,7 @@
         "地域/百草野/遗址与残章"
       ],
       "writing_impact": "给清河补荒野旧迹面。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6447,12 +6560,13 @@
       "aliases": [
         "竹林旧居"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story"
@@ -6462,7 +6576,7 @@
         "场景/竹林旧居/远行后的空屋"
       ],
       "writing_impact": "少东家童年、养父线、归家感高频必用。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6472,12 +6586,13 @@
       "aliases": [
         "将军祠"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -6488,7 +6603,7 @@
         "场景/将军祠/稚子与旧战"
       ],
       "writing_impact": "适合碑刻、旧将、稚子江湖、残响。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6498,12 +6613,13 @@
       "aliases": [
         "春秋别馆"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6514,7 +6630,7 @@
         "场景/春秋别馆/书架尘灰与北去之龙"
       ],
       "writing_impact": "补旧馆、暗道、别后无人回的气质。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6524,12 +6640,13 @@
       "aliases": [
         "菩提苦海"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6540,7 +6657,7 @@
         "场景/菩提苦海/佛意与苦海"
       ],
       "writing_impact": "补佛性、苦海、鼓声召引的意象层。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6550,12 +6667,13 @@
       "aliases": [
         "隐月山"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story"
@@ -6565,7 +6683,7 @@
         "场景/隐月山/雾里旧钟"
       ],
       "writing_impact": "补山场、雾、试炼、奇遇式叙事。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6576,12 +6694,13 @@
         "活人医馆",
         "弱水岸活人医馆"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story"
@@ -6591,7 +6710,7 @@
         "场景/活人医馆/救治与禁入后院"
       ],
       "writing_impact": "弱水岸从抽象水岸感落到医馆、井、伤与秘密。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6601,12 +6720,13 @@
       "aliases": [
         "善妙洲"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6617,7 +6737,7 @@
         "地域/善妙洲/佛爷寨与新地"
       ],
       "writing_impact": "补清河北向延展和继续上路空间感。",
-      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。",
+      "risk_notes": "地域事实层可用官方上线/场景资料；细剧情和支线氛围需降级为 accepted_story_synthesis。 已在最终补齐批次中转入 regions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "regions.json"
     },
     {
@@ -6628,12 +6748,13 @@
         "悬剑",
         "春秋别馆悬剑"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6646,7 +6767,7 @@
         "褚清泉/田英/小十七关系卡"
       ],
       "writing_impact": "补清河主线、旧朝遗绪、理想主义与权术的门派气质。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6657,12 +6778,13 @@
         "燕北盟",
         "北盟"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-yuebei-wangqing",
@@ -6675,7 +6797,7 @@
         "中渡桥败局与遗民心气卡"
       ],
       "writing_impact": "家国、遗民、北伐未竟、英雄被遗忘等题材核心来源。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6685,12 +6807,13 @@
       "aliases": [
         "绣金楼"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -6704,7 +6827,7 @@
         "千夜/无相皇挂钩卡"
       ],
       "writing_impact": "人物歌大量会碰到，缺主势力卡会导致角色线失根。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6716,12 +6839,13 @@
         "佛爷寨",
         "佛爷"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6734,7 +6858,7 @@
         "佛门外壳与匪气反差卡"
       ],
       "writing_impact": "补清河阴郁面、伪善/信仰崩塌/寺庙变寨。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6744,12 +6868,13 @@
       "aliases": [
         "天虎军"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qinghe-theme",
@@ -6762,7 +6887,7 @@
         "北地守军转执念军卡"
       ],
       "writing_impact": "把叶万山从单人反派扩到整支军队的悲剧感。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6773,12 +6898,13 @@
         "青蛟堂",
         "青蛟帮"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "wiki-characters",
@@ -6790,7 +6916,7 @@
         "汪大洋/汴河渡口地面势力卡"
       ],
       "writing_impact": "当前赤龙堂已入库，但缺对手与前身，河运江湖叙事是断的。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6800,12 +6926,13 @@
       "aliases": [
         "孤云"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-site",
@@ -6817,7 +6944,7 @@
         "门规/门派地位开放节奏卡"
       ],
       "writing_impact": "作为门派/势力线索，后续需确认上线与玩法边界。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6829,12 +6956,13 @@
         "开封府衙",
         "武德司"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-palace",
@@ -6847,7 +6975,7 @@
         "官与江湖边界卡"
       ],
       "writing_impact": "开封歌、鬼市歌、庙堂线都需要白天秩序对照面。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6859,11 +6987,12 @@
         "宫城",
         "内诸司"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "uncertain",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "official-palace"
@@ -6873,7 +7002,7 @@
         "宫墙罗网与秘库卡"
       ],
       "writing_impact": "对宫廷题材有用，但更像机构/场景。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6885,12 +7014,13 @@
         "鬼市子",
         "官财坊"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -6902,7 +7032,7 @@
         "白天开封与夜间鬼市对照卡"
       ],
       "writing_impact": "现有角色域和剧情域有散点，但缺势力/秩序壳。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6915,12 +7045,13 @@
         "契丹军",
         "萨满线"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-yuebei-wangqing",
@@ -6932,7 +7063,7 @@
         "边关对抗与民族他者视角卡"
       ],
       "writing_impact": "北地、燕北盟、天虎军、河西线都会回流到这层背景势力。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6944,12 +7075,13 @@
         "凉州守军",
         "边关守军"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-liangzhou",
@@ -6961,7 +7093,7 @@
         "归义军与地方守军差异卡"
       ],
       "writing_impact": "归义军过于大历史，缺凉州现场军旅质感。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6971,12 +7103,13 @@
       "aliases": [
         "无面人"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -6987,7 +7120,7 @@
         "换脸失败/失身份意象卡"
       ],
       "writing_impact": "适合氛围创作，但不一定是稳定组织。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -6999,12 +7132,13 @@
         "散修",
         "偷师百家"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-site",
@@ -7016,7 +7150,7 @@
         "不入门派也能成宗师卡"
       ],
       "writing_impact": "玩家自我投射很强。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -7028,12 +7162,13 @@
         "蓬山同窗",
         "文津馆学子"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-pengshan-live",
@@ -7045,7 +7180,7 @@
         "青州文脉与书院生活卡"
       ],
       "writing_impact": "把文津馆从书卷气升级成可写人群与秩序。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -7055,11 +7190,12 @@
       "aliases": [
         "穷奇师"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P3",
       "live_status": "uncertain",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "guide-gamersky-story",
@@ -7070,7 +7206,7 @@
         "敌营/奇袭氛围卡"
       ],
       "writing_impact": "可补敌营感，但暂不稳。",
-      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。",
+      "risk_notes": "组织宗旨、内部位阶、完整谱系很多不在官方公开资料中；入库需分清官方存在、综合叙事和待核线索。 已在最终补齐批次中转入 factions.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "factions.json"
     },
     {
@@ -7083,12 +7219,13 @@
         "飞檐走壁",
         "轻功登高"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-companion",
@@ -7102,7 +7239,7 @@
         "avoid_claims"
       ],
       "writing_impact": "强；轻功天然带风、檐、山、逃、赴约、少年气。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7117,12 +7254,13 @@
         "寻路",
         "收集"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-music-system",
@@ -7137,7 +7275,7 @@
         "avoid_claims"
       ],
       "writing_impact": "强；普通玩家故事大底盘，补走路见世界。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7151,12 +7289,13 @@
         "驻地",
         "暗刺"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-explore",
@@ -7170,7 +7309,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中强；夜探、误入、引敌、摸营、撤离。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7184,12 +7323,13 @@
         "少东家",
         "家园"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-jia-ye"
@@ -7202,7 +7342,7 @@
         "avoid_claims"
       ],
       "writing_impact": "极强；归乡、修屋、种地、认人、旧景重见。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7216,12 +7356,13 @@
         "百业驻地",
         "百业侠境"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-byye"
@@ -7234,7 +7375,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中强；同伴结社、商战荒诞、群体荣誉、驻地热闹。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7249,12 +7390,13 @@
         "戏班",
         "文津馆"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-wenjinguan",
@@ -7267,7 +7409,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中；角色歌和门派代入有效。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7282,12 +7424,13 @@
         "纪念册",
         "趣味对战"
       ],
-      "current_status": "thin",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-companion",
@@ -7301,7 +7444,7 @@
         "avoid_claims"
       ],
       "writing_impact": "极强；温柔、陪伴、玩闹、路感。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7315,12 +7458,13 @@
         "五人镇守",
         "百业侠境"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -7333,7 +7477,7 @@
         "eval_guardrail"
       ],
       "writing_impact": "中强；并肩、翻车、复盘、再战，但避免 MMO 套词。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7348,12 +7492,13 @@
         "演武",
         "切磋"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -7366,7 +7511,7 @@
         "eval_guardrail"
       ],
       "writing_impact": "中；更偏 eval 和用户意图理解。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7381,12 +7526,13 @@
         "情义值",
         "同去同归"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-jia-ye",
@@ -7399,7 +7545,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中强；同游、拜师、结义、暧昧未满。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7413,12 +7559,13 @@
         "选曲",
         "同游演奏"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-music-system",
@@ -7432,7 +7579,7 @@
         "avoid_claims"
       ],
       "writing_impact": "极强；平台作词链路和燕云世界感最直接桥梁之一。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7447,12 +7594,13 @@
         "披挂",
         "奇术特效"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-site",
@@ -7464,7 +7612,7 @@
         "weak_background_card"
       ],
       "writing_impact": "弱到中；用户意图理解有帮助，通常只是背景。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7478,12 +7626,13 @@
         "皮影师",
         "无名将军"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -7496,7 +7645,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中；路上撞见强敌、败走、再回头。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7510,12 +7659,13 @@
         "地下洞窟",
         "地牢"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-explore",
@@ -7528,7 +7678,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中；险、暗、机关、旧城、同行探坑。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7544,12 +7694,13 @@
         "拾鲜",
         "渔获"
       ],
-      "current_status": "thin",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-companion",
@@ -7563,7 +7714,7 @@
         "weak_fact_guardrail"
       ],
       "writing_impact": "强；食物、烟火气、赶海、采药、做菜。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7578,12 +7729,13 @@
         "点笑穴",
         "生活奇术"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-qishu",
@@ -7597,7 +7749,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中强；巧、偷、听、逗、骗的江湖感。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 accepted_story_synthesis 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7609,11 +7761,12 @@
         "侠客偶棋",
         "棋类雅趣"
       ],
-      "current_status": "pending_clues_only",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "official_preview",
       "recommended_fact_level": [
-        "pending_clues"
+        "pending_clues",
+        "current_kb_pending"
       ],
       "source_candidates": [
         "official-future-boardgame"
@@ -7624,7 +7777,7 @@
         "avoid_claims"
       ],
       "writing_impact": "中；可做未来创作暗线，但不进入当前 live facts。",
-      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。",
+      "risk_notes": "玩法公开资料常混合前瞻、优化和正式上线；必须按 2026-06-13 切分已上线与预告。 已在最终补齐批次中转入 gameplay.json，运行时必须按 pending_clues 口径使用。",
       "target_domain_file": "gameplay.json"
     },
     {
@@ -7636,11 +7789,12 @@
         "剧情透出",
         "角色结局"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "source-registry",
@@ -7652,7 +7806,7 @@
         "默认写意不剧透规则"
       ],
       "writing_impact": "避免角色歌误剧透，也避免过度保守导致写不深。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7665,11 +7819,12 @@
         "师徒关系",
         "身份反转"
       ],
-      "current_status": "needs_fact_split",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "source-registry",
@@ -7681,7 +7836,7 @@
         "pending_clues 使用样例"
       ],
       "writing_impact": "寒香寻/千夜/寻心等人物线很容易把推测写成定论。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7694,11 +7849,12 @@
         "边军",
         "历史人物"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "official-yuebei-wangqing",
@@ -7711,7 +7867,7 @@
         "家国线推荐措辞"
       ],
       "writing_impact": "家国歌很需要，但商业风险也高。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7724,11 +7880,12 @@
         "官方角色",
         "代入故事"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "source-registry"
@@ -7739,7 +7896,7 @@
         "可转译燕云世界观规则"
       ],
       "writing_impact": "用户不一定想写官方剧情，知识库不能吞掉玩家创意。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7752,11 +7909,12 @@
         "假厂牌",
         "乱码文字"
       ],
-      "current_status": "thin",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "source-registry"
@@ -7767,7 +7925,7 @@
         "标题进入视觉 Prompt 的边界"
       ],
       "writing_impact": "封面允许作品名，但不能出现假歌手/厂牌/版权。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7780,11 +7938,12 @@
         "公司系统",
         "分享系统"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P2",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
-        "creative_guidance"
+        "creative_guidance",
+        "current_kb"
       ],
       "source_candidates": [
         "company-material-needed",
@@ -7796,7 +7955,7 @@
         "交接状态卡"
       ],
       "writing_impact": "避免知识库把公司社区系统写成本平台能力承诺。",
-      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。",
+      "risk_notes": "边界类不直接提供剧情事实，而是约束 Agent 表达与质量门。 已在最终补齐批次中转入 creative-boundaries.json，运行时必须按 creative_boundary 口径使用。",
       "target_domain_file": "creative-boundaries.json"
     },
     {
@@ -7807,12 +7966,13 @@
         "家业eval",
         "不羡仙重建eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "official-jia-ye"
@@ -7821,7 +7981,7 @@
         "区分已上线家业、已承认缺陷、后续重做承诺"
       ],
       "writing_impact": "防止模型把理想中的家园写成当前已完全实现。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7832,12 +7992,13 @@
         "伙伴eval",
         "猫鹅伙伴eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "official-companion"
@@ -7846,7 +8007,7 @@
         "伙伴=同行者，不擅自写成人形宠物/恋爱对象/已上线后续狗系内容"
       ],
       "writing_impact": "伙伴容易被写偏成萌宠文或恋爱陪伴文。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7857,12 +8018,13 @@
         "止戈eval",
         "试剑觉障林eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "official-pvp-pve",
@@ -7872,7 +8034,7 @@
         "区分试剑/侠境/止戈/觉障林/论剑/争锋/演武"
       ],
       "writing_impact": "防止试剑写成 PVP，或止戈误写成单一玩法。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7883,12 +8045,13 @@
         "roadmapeval",
         "未上线玩法eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "official_preview",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "official-future-boardgame"
@@ -7897,7 +8060,7 @@
         "打马棋/侠客偶棋/新多人 PVE/身份博弈玩法不得写成已上线事实"
       ],
       "writing_impact": "日期敏感边界，防止未来内容污染当前主库。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7909,12 +8072,13 @@
         "情义林eval",
         "兽语eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P1",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "guide-17173",
@@ -7925,7 +8089,7 @@
         "官方薄、攻略厚时自动降口径，不宣称“官方明确写过”"
       ],
       "writing_impact": "关系知识库输出可信度和商业风险。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7938,12 +8102,13 @@
         "阿依努尔eval",
         "文津馆eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "current-kb",
@@ -7954,7 +8119,7 @@
         "点名角色必须召回人物传/关系/地域，不写成泛古风；普通玩家故事不强塞官方人物"
       ],
       "writing_impact": "直接验证知识库对作词质量的核心收益。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7967,12 +8132,13 @@
         "无忧洞eval",
         "河西eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "current-kb",
@@ -7983,7 +8149,7 @@
         "点名剧情线必须召回正确起点/冲突/转折；待核结局不得写死"
       ],
       "writing_impact": "防止长剧情线误召回和编造。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     },
     {
@@ -7995,12 +8161,13 @@
         "原神eval",
         "其他IP转译eval"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "creative_guidance",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb_eval"
       ],
       "source_candidates": [
         "current-kb"
@@ -8009,7 +8176,7 @@
         "其他 IP 主题歌拒绝；“某种情绪但改成燕云”允许转译且不保留专有名词"
       ],
       "writing_impact": "产品边界核心验收。",
-      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。",
+      "risk_notes": "eval 不是知识事实正文，但必须覆盖真实玩家输入、边界拒绝和日期敏感问题。 已转为正式 eval case；后续 A/B 评测可继续扩写。",
       "target_domain_file": "eval-cases.json"
     }
   ],
@@ -8324,6 +8491,26 @@
       "覆盖清河主章、不羡仙旧事、开封主章、无忧洞、河西主章。",
       "新增 5 条剧情检索 eval case。",
       "不羡仙剧情实体避开地点实体别名冲突，命名为“不羡仙旧事”。"
+    ]
+  },
+  "updated_at": "2026-06-14T03:58:00+08:00",
+  "formal_kb_final_gap_completion": {
+    "completed_at": "2026-06-14T03:58:00+08:00",
+    "remaining_non_present_after_completion": 0,
+    "added_entities_by_category": {
+      "character": 52,
+      "storyline": 19,
+      "faction": 19,
+      "gameplay": 20,
+      "region": 31,
+      "boundary": 6
+    },
+    "added_cards": 441,
+    "added_eval_cases": 149,
+    "notes": [
+      "本轮把缺口盘点表中的全部非 present 行转入正式分域知识库或 eval 题库。",
+      "pending_clues 行进入写词链路时只能作为暗线、传闻、旧事、情绪或意象使用。",
+      "本轮为百科重型补齐，不代表已获得公司内部完整资料包或逐条官方复核。"
     ]
   }
 }

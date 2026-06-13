@@ -9004,6 +9004,5069 @@
           "content": "禁写边界创作卡。"
         }
       ]
+    },
+    {
+      "key": "character-cheng-xin",
+      "entity_type": "character",
+      "canonical_name": "程心",
+      "aliases": [
+        "程心",
+        "程心创作素材",
+        "程心补齐卡"
+      ],
+      "summary": "程心用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/程心/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "程心"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名程心或相关方向时，调用该卡补齐人物语境：青溪/弱水岸相关人物，短笛、焚焰、黑暗中守理想等意象适合抒情。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名程心或相关方向时，调用该卡补齐人物语境：青溪/弱水岸相关人物，短笛、焚焰、黑暗中守理想等意象适合抒情。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/程心/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "程心",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "程心的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "程心的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/程心/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "程心",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写程心时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写程心时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhang-wanshi",
+      "entity_type": "character",
+      "canonical_name": "张万师",
+      "aliases": [
+        "张万师",
+        "张万师创作素材",
+        "张万师补齐卡"
+      ],
+      "summary": "张万师用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/张万师/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张万师"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名张万师或相关方向时，调用该卡补齐人物语境：墨山道人物，适合师承、规训、工匠伦理和技艺传递。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名张万师或相关方向时，调用该卡补齐人物语境：墨山道人物，适合师承、规训、工匠伦理和技艺传递。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/张万师/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张万师",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张万师的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "张万师的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/张万师/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张万师",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写张万师时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写张万师时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-qing-moshandao",
+      "entity_type": "character",
+      "canonical_name": "青",
+      "aliases": [
+        "青",
+        "前巨子青",
+        "青创作素材",
+        "青补齐卡"
+      ],
+      "summary": "青用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/青/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青或相关方向时，调用该卡补齐人物语境：墨山道前代人物，可补前代师承、山中传承和隐秘旧事。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青或相关方向时，调用该卡补齐人物语境：墨山道前代人物，可补前代师承、山中传承和隐秘旧事。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/青/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/青/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-ni-laoshan",
+      "entity_type": "character",
+      "canonical_name": "倪老山",
+      "aliases": [
+        "倪老山",
+        "倪老山创作素材",
+        "倪老山补齐卡"
+      ],
+      "summary": "倪老山作为待核线索层资料进入倪老山相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/倪老山/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "倪老山"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名倪老山或相关主题时，可把它作为待核线索使用：保留人物语境和九流门长老/门规线索，可作为江湖规矩和黑色幽默素材。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名倪老山或相关主题时，可把它作为待核线索使用：保留人物语境和九流门长老/门规线索，可作为江湖规矩和黑色幽默素材。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/倪老山/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "倪老山",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "倪老山适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入倪老山相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "倪老山适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入倪老山相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/倪老山/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "倪老山",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "倪老山资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "倪老山资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-yuan-boshi",
+      "entity_type": "character",
+      "canonical_name": "袁博士",
+      "aliases": [
+        "袁博士",
+        "袁博士创作素材",
+        "袁博士补齐卡"
+      ],
+      "summary": "袁博士作为待核线索层资料进入袁博士相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/袁博士/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "袁博士"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名袁博士或相关主题时，可把它作为待核线索使用：保留人物语境和青溪入门接引/考验线索，可支撑问诊、诊金、医德选择。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名袁博士或相关主题时，可把它作为待核线索使用：保留人物语境和青溪入门接引/考验线索，可支撑问诊、诊金、医德选择。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/袁博士/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "袁博士",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "袁博士适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入袁博士相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "袁博士适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入袁博士相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/袁博士/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "袁博士",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "袁博士资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "袁博士资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-li-jiaojiao",
+      "entity_type": "character",
+      "canonical_name": "李蕉蕉",
+      "aliases": [
+        "李蕉蕉",
+        "李蕉蕉创作素材",
+        "李蕉蕉补齐卡"
+      ],
+      "summary": "李蕉蕉作为待核线索层资料进入李蕉蕉相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/李蕉蕉/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "李蕉蕉"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名李蕉蕉或相关主题时，可把它作为待核线索使用：保留人物语境和醉花阴“艳湖七美”线索，可补轻灵、弈棋、风月雅趣。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名李蕉蕉或相关主题时，可把它作为待核线索使用：保留人物语境和醉花阴“艳湖七美”线索，可补轻灵、弈棋、风月雅趣。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/李蕉蕉/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "李蕉蕉",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "李蕉蕉适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入李蕉蕉相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "李蕉蕉适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入李蕉蕉相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/李蕉蕉/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "李蕉蕉",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "李蕉蕉资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "李蕉蕉资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-qi-youyou",
+      "entity_type": "character",
+      "canonical_name": "戚柚柚",
+      "aliases": [
+        "戚柚柚",
+        "抽柚",
+        "戚柚柚创作素材",
+        "戚柚柚补齐卡"
+      ],
+      "summary": "戚柚柚作为待核线索层资料进入戚柚柚相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/戚柚柚/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "戚柚柚"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名戚柚柚或相关主题时，可把它作为待核线索使用：保留人物语境和醉花阴“艳湖七美”线索，可补美食、美人、池塘和钓者成群。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名戚柚柚或相关主题时，可把它作为待核线索使用：保留人物语境和醉花阴“艳湖七美”线索，可补美食、美人、池塘和钓者成群。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/戚柚柚/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "戚柚柚",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "戚柚柚适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入戚柚柚相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "戚柚柚适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入戚柚柚相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/戚柚柚/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "戚柚柚",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "戚柚柚资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "戚柚柚资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-lu",
+      "entity_type": "character",
+      "canonical_name": "鹭",
+      "aliases": [
+        "鹭",
+        "鹭创作素材",
+        "鹭补齐卡"
+      ],
+      "summary": "鹭作为待核线索层资料进入鹭相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹭/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹭"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹭或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合山雾、机巧、冷色氛围。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹭或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合山雾、机巧、冷色氛围。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹭/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹭",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹭适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹭相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹭适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹭相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹭/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹭",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹭资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹭资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-sun",
+      "entity_type": "character",
+      "canonical_name": "隼",
+      "aliases": [
+        "隼",
+        "隼创作素材",
+        "隼补齐卡"
+      ],
+      "summary": "隼作为待核线索层资料进入隼相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/隼/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "隼"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名隼或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，偏锐利、俯冲、狩猎和精准机关感。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名隼或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，偏锐利、俯冲、狩猎和精准机关感。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/隼/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "隼",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "隼适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入隼相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "隼适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入隼相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/隼/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "隼",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "隼资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "隼资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-ya",
+      "entity_type": "character",
+      "canonical_name": "鸦",
+      "aliases": [
+        "鸦",
+        "鸦创作素材",
+        "鸦补齐卡"
+      ],
+      "summary": "鸦作为待核线索层资料进入鸦相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鸦/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鸦"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鸦或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合阴影、传信、山中旧案。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鸦或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合阴影、传信、山中旧案。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鸦/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鸦",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鸦适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鸦相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鸦适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鸦相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鸦/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鸦",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鸦资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鸦资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-peng",
+      "entity_type": "character",
+      "canonical_name": "鹏",
+      "aliases": [
+        "鹏",
+        "鹏创作素材",
+        "鹏补齐卡"
+      ],
+      "summary": "鹏作为待核线索层资料进入鹏相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹏/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹏"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹏或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合高处、远志、巨构机关。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹏或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合高处、远志、巨构机关。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹏/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹏",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹏适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹏相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹏适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹏相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹏/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹏",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹏资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹏资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-he",
+      "entity_type": "character",
+      "canonical_name": "鹤",
+      "aliases": [
+        "鹤",
+        "鹤创作素材",
+        "鹤补齐卡"
+      ],
+      "summary": "鹤作为待核线索层资料进入鹤相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹤/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹤"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹤或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合清冷、长寿、山门秩序。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹤或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合清冷、长寿、山门秩序。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹤/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹤",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹤适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹤相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹤适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹤相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹤/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹤",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹤资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹤资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-yu",
+      "entity_type": "character",
+      "canonical_name": "鹬",
+      "aliases": [
+        "鹬",
+        "鹬创作素材",
+        "鹬补齐卡"
+      ],
+      "summary": "鹬作为待核线索层资料进入鹬相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹬/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹬"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹬或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合水岸、细密观察和轻巧动作。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹬或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合水岸、细密观察和轻巧动作。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹬/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹬",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹬适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹬相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹬适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹬相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹬/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹬",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹬资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹬资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-yao",
+      "entity_type": "character",
+      "canonical_name": "鹞",
+      "aliases": [
+        "鹞",
+        "鹞创作素材",
+        "鹞补齐卡"
+      ],
+      "summary": "鹞作为待核线索层资料进入鹞相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹞/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹞"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹞或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合疾行、风中侦察和危险预兆。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹞或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合疾行、风中侦察和危险预兆。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹞/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹞",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹞适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹞相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹞适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹞相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹞/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹞",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹞资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹞资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-jiu",
+      "entity_type": "character",
+      "canonical_name": "鹫",
+      "aliases": [
+        "鹫",
+        "鹫创作素材",
+        "鹫补齐卡"
+      ],
+      "summary": "鹫作为待核线索层资料进入鹫相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹫/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹫"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹫或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合荒山、残酷和俯瞰死亡。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹫或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合荒山、残酷和俯瞰死亡。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹫/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹫",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹫相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹫相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹫/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹫",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-ju",
+      "entity_type": "character",
+      "canonical_name": "鵙",
+      "aliases": [
+        "鵙",
+        "鵙创作素材",
+        "鵙补齐卡"
+      ],
+      "summary": "鵙作为待核线索层资料进入鵙相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鵙/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵙"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鵙或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合尖锐、截断和机关杀机。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鵙或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合尖锐、截断和机关杀机。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鵙/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵙",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鵙适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鵙相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鵙适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鵙相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鵙/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵙",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鵙资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鵙资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-guan",
+      "entity_type": "character",
+      "canonical_name": "鹳",
+      "aliases": [
+        "鹳",
+        "鹳创作素材",
+        "鹳补齐卡"
+      ],
+      "summary": "鹳作为待核线索层资料进入鹳相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鹳/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹳"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鹳或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合远行、迁徙和山外消息。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鹳或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合远行、迁徙和山外消息。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鹳/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹳",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹳适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹳相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹳适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鹳相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鹳/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鹳",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鹳资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鹳资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-moshandao-bird-bei",
+      "entity_type": "character",
+      "canonical_name": "鵯",
+      "aliases": [
+        "鵯",
+        "鵯创作素材",
+        "鵯补齐卡"
+      ],
+      "summary": "鵯作为待核线索层资料进入鵯相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/鵯/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵯"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名鵯或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合微小、群鸣和山林细节。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名鵯或相关主题时，可把它作为待核线索使用：保留人物语境和墨山道鸟名代号，适合微小、群鸣和山林细节。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/鵯/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵯",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鵯适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鵯相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鵯适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入鵯相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/鵯/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "鵯",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "鵯资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "鵯资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-duxia-cat",
+      "entity_type": "character",
+      "canonical_name": "独侠猫",
+      "aliases": [
+        "独侠猫",
+        "独行猫",
+        "独侠猫创作素材",
+        "独侠猫补齐卡"
+      ],
+      "summary": "独侠猫作为待核线索层资料进入独侠猫相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/独侠猫/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "独侠猫"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名独侠猫或相关主题时，可把它作为待核线索使用：保留人物语境和名字自带独行侠气质，适合孤行江湖、外冷内热和陪伴反差。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名独侠猫或相关主题时，可把它作为待核线索使用：保留人物语境和名字自带独行侠气质，适合孤行江湖、外冷内热和陪伴反差。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/独侠猫/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "独侠猫",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "独侠猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入独侠猫相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "独侠猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入独侠猫相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/独侠猫/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "独侠猫",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "独侠猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "独侠猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-daoba-cat",
+      "entity_type": "character",
+      "canonical_name": "刀疤猫",
+      "aliases": [
+        "刀疤猫",
+        "刀疤喵",
+        "刀疤猫创作素材",
+        "刀疤猫补齐卡"
+      ],
+      "summary": "刀疤猫作为待核线索层资料进入刀疤猫相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/刀疤猫/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刀疤猫"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名刀疤猫或相关主题时，可把它作为待核线索使用：保留人物语境和旧伤、流浪和野性意象强，适合江湖旧创与陪伴主题。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名刀疤猫或相关主题时，可把它作为待核线索使用：保留人物语境和旧伤、流浪和野性意象强，适合江湖旧创与陪伴主题。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/刀疤猫/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刀疤猫",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "刀疤猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入刀疤猫相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "刀疤猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入刀疤猫相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/刀疤猫/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刀疤猫",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "刀疤猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "刀疤猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-linge-cat",
+      "entity_type": "character",
+      "canonical_name": "灵娥猫",
+      "aliases": [
+        "灵娥猫",
+        "灵蛾猫",
+        "灵娥喵",
+        "灵娥猫创作素材",
+        "灵娥猫补齐卡"
+      ],
+      "summary": "灵娥猫作为待核线索层资料进入灵娥猫相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/灵娥猫/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "灵娥猫"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名灵娥猫或相关主题时，可把它作为待核线索使用：保留人物语境和轻灵、月色和梦幻感明显，可服务温柔陪伴类歌词。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名灵娥猫或相关主题时，可把它作为待核线索使用：保留人物语境和轻灵、月色和梦幻感明显，可服务温柔陪伴类歌词。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/灵娥猫/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "灵娥猫",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "灵娥猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入灵娥猫相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "灵娥猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入灵娥猫相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/灵娥猫/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "灵娥猫",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "灵娥猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "灵娥猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-daili-cat",
+      "entity_type": "character",
+      "canonical_name": "呆狸猫",
+      "aliases": [
+        "呆狸猫",
+        "呆狸",
+        "呆狸猫创作素材",
+        "呆狸猫补齐卡"
+      ],
+      "summary": "呆狸猫作为待核线索层资料进入呆狸猫相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/呆狸猫/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "呆狸猫"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名呆狸猫或相关主题时，可把它作为待核线索使用：保留人物语境和笨拙可爱和反差萌明显，适合生活流、轻喜剧和暖心陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名呆狸猫或相关主题时，可把它作为待核线索使用：保留人物语境和笨拙可爱和反差萌明显，适合生活流、轻喜剧和暖心陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/呆狸猫/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "呆狸猫",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "呆狸猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入呆狸猫相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "呆狸猫适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入呆狸猫相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/呆狸猫/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "呆狸猫",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "呆狸猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "呆狸猫资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-zhujin-goose",
+      "entity_type": "character",
+      "canonical_name": "逐金鹅",
+      "aliases": [
+        "逐金鹅",
+        "逐金",
+        "逐金鹅创作素材",
+        "逐金鹅补齐卡"
+      ],
+      "summary": "逐金鹅作为待核线索层资料进入逐金鹅相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/逐金鹅/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "逐金鹅"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名逐金鹅或相关主题时，可把它作为待核线索使用：保留人物语境和逐金可延展为奔忙、财气、世俗愿望和旅途小心思。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名逐金鹅或相关主题时，可把它作为待核线索使用：保留人物语境和逐金可延展为奔忙、财气、世俗愿望和旅途小心思。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/逐金鹅/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "逐金鹅",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "逐金鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入逐金鹅相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "逐金鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入逐金鹅相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/逐金鹅/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "逐金鹅",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "逐金鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "逐金鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-dianmo-goose",
+      "entity_type": "character",
+      "canonical_name": "典墨鹅",
+      "aliases": [
+        "典墨鹅",
+        "典墨",
+        "典墨鹅创作素材",
+        "典墨鹅补齐卡"
+      ],
+      "summary": "典墨鹅作为待核线索层资料进入典墨鹅相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/典墨鹅/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "典墨鹅"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名典墨鹅或相关主题时，可把它作为待核线索使用：保留人物语境和典墨与文津馆书卷气适配，适合墨色、典籍和儒雅陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名典墨鹅或相关主题时，可把它作为待核线索使用：保留人物语境和典墨与文津馆书卷气适配，适合墨色、典籍和儒雅陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/典墨鹅/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "典墨鹅",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "典墨鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入典墨鹅相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "典墨鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入典墨鹅相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/典墨鹅/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "典墨鹅",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "典墨鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "典墨鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-companion-yangfeng-goose",
+      "entity_type": "character",
+      "canonical_name": "扬风鹅",
+      "aliases": [
+        "扬风鹅",
+        "扬风",
+        "扬风鹅创作素材",
+        "扬风鹅补齐卡"
+      ],
+      "summary": "扬风鹅作为待核线索层资料进入扬风鹅相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/扬风鹅/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "扬风鹅"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名扬风鹅或相关主题时，可把它作为待核线索使用：保留人物语境和扬风适合海风、轻狂、冲撞感和远行陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名扬风鹅或相关主题时，可把它作为待核线索使用：保留人物语境和扬风适合海风、轻狂、冲撞感和远行陪伴。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/扬风鹅/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "扬风鹅",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "扬风鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入扬风鹅相关的燕云气质。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "扬风鹅适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入扬风鹅相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/扬风鹅/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "扬风鹅",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "扬风鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "扬风鹅资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
+    },
+    {
+      "key": "character-qinghe-xiangdemei",
+      "entity_type": "character",
+      "canonical_name": "乡德美",
+      "aliases": [
+        "乡德美",
+        "乡德美创作素材",
+        "乡德美补齐卡"
+      ],
+      "summary": "乡德美用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/乡德美/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "乡德美"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名乡德美或相关方向时，调用该卡补齐人物语境：普通 NPC 中个人议题明显，可补自我认同、乡村表达和烟火气。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名乡德美或相关方向时，调用该卡补齐人物语境：普通 NPC 中个人议题明显，可补自我认同、乡村表达和烟火气。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/乡德美/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "乡德美",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "乡德美的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "乡德美的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/乡德美/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "乡德美",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写乡德美时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写乡德美时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-qinghe-songwu",
+      "entity_type": "character",
+      "canonical_name": "宋五",
+      "aliases": [
+        "宋五",
+        "宋五创作素材",
+        "宋五补齐卡"
+      ],
+      "summary": "宋五用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/宋五/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "宋五"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名宋五或相关方向时，调用该卡补齐人物语境：普通 NPC 中诉求明确，可服务旅行愿望、小人物自我实现等歌词。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名宋五或相关方向时，调用该卡补齐人物语境：普通 NPC 中诉求明确，可服务旅行愿望、小人物自我实现等歌词。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/宋五/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "宋五",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "宋五的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "宋五的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/宋五/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "宋五",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写宋五时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写宋五时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-qinghe-fangxu",
+      "entity_type": "character",
+      "canonical_name": "方旭",
+      "aliases": [
+        "方旭",
+        "方旭创作素材",
+        "方旭补齐卡"
+      ],
+      "summary": "方旭用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/方旭/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "方旭"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名方旭或相关方向时，调用该卡补齐人物语境：普通 NPC 中记忆点较强，可补清河小人物和日常抉择。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名方旭或相关方向时，调用该卡补齐人物语境：普通 NPC 中记忆点较强，可补清河小人物和日常抉择。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/方旭/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "方旭",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "方旭的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "方旭的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/方旭/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "方旭",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写方旭时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写方旭时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-qinghe-jin-chunniang",
+      "entity_type": "character",
+      "canonical_name": "靳春娘",
+      "aliases": [
+        "靳春娘",
+        "靳春娘创作素材",
+        "靳春娘补齐卡"
+      ],
+      "summary": "靳春娘用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/靳春娘/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "靳春娘"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名靳春娘或相关方向时，调用该卡补齐人物语境：与村居亲缘关系强，适合母子安置、乡邻照看和乱世日常。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名靳春娘或相关方向时，调用该卡补齐人物语境：与村居亲缘关系强，适合母子安置、乡邻照看和乱世日常。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/靳春娘/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "靳春娘",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "靳春娘的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "靳春娘的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/靳春娘/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "靳春娘",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写靳春娘时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写靳春娘时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-qinghe-family-neighbors",
+      "entity_type": "character",
+      "canonical_name": "清河村居亲缘群像",
+      "aliases": [
+        "清河村居亲缘群像",
+        "清河村邻",
+        "清河亲缘群像",
+        "清河村居亲缘群像创作素材",
+        "清河村居亲缘群像补齐卡"
+      ],
+      "summary": "清河村居亲缘群像用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/清河村居亲缘群像/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "清河村居亲缘群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名清河村居亲缘群像或相关方向时，调用该卡补齐人物语境：承接母子、村邻、宗族和日常安置，适合普通玩家故事。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名清河村居亲缘群像或相关方向时，调用该卡补齐人物语境：承接母子、村邻、宗族和日常安置，适合普通玩家故事。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/清河村居亲缘群像/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "清河村居亲缘群像",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "清河村居亲缘群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "清河村居亲缘群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/清河村居亲缘群像/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "清河村居亲缘群像",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写清河村居亲缘群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写清河村居亲缘群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-kaifeng-fanlou-goldstreet",
+      "entity_type": "character",
+      "canonical_name": "开封樊楼金街群像",
+      "aliases": [
+        "开封樊楼金街群像",
+        "樊楼众生",
+        "金街群像",
+        "春水阁群像",
+        "开封樊楼金街群像创作素材"
+      ],
+      "summary": "开封樊楼金街群像用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/开封樊楼金街群像/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封樊楼金街群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名开封樊楼金街群像或相关方向时，调用该卡补齐人物语境：承接樊楼、金街、宴饮、侍宴和风月市井，可写繁华与虚浮。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名开封樊楼金街群像或相关方向时，调用该卡补齐人物语境：承接樊楼、金街、宴饮、侍宴和风月市井，可写繁华与虚浮。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/开封樊楼金街群像/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封樊楼金街群像",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封樊楼金街群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "开封樊楼金街群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/开封樊楼金街群像/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封樊楼金街群像",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写开封樊楼金街群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写开封樊楼金街群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-kaifeng-underclass-ghostmarket",
+      "entity_type": "character",
+      "canonical_name": "开封底层/鬼市边民群像",
+      "aliases": [
+        "开封底层/鬼市边民群像",
+        "开封底层群像",
+        "鬼市边民",
+        "贫民窟 NPC",
+        "开封底层/鬼市边民群像创作素材"
+      ],
+      "summary": "开封底层/鬼市边民群像用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/开封底层/鬼市边民群像/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封底层/鬼市边民群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名开封底层/鬼市边民群像或相关方向时，调用该卡补齐人物语境：承接金街与贫民窟、鬼市之间的强反差，适合暗面开封和底层求生。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名开封底层/鬼市边民群像或相关方向时，调用该卡补齐人物语境：承接金街与贫民窟、鬼市之间的强反差，适合暗面开封和底层求生。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/开封底层/鬼市边民群像/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封底层/鬼市边民群像",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封底层/鬼市边民群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "开封底层/鬼市边民群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/开封底层/鬼市边民群像/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "开封底层/鬼市边民群像",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写开封底层/鬼市边民群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写开封底层/鬼市边民群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-group-qingzhou-neighbor-hospitality",
+      "entity_type": "character",
+      "canonical_name": "青州好客老乡群像",
+      "aliases": [
+        "青州好客老乡群像",
+        "青州老乡",
+        "青州乡亲",
+        "老乡系统",
+        "青州好客老乡群像创作素材"
+      ],
+      "summary": "青州好客老乡群像用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/青州好客老乡群像/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青州好客老乡群像"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青州好客老乡群像或相关方向时，调用该卡补齐人物语境：承接齐鲁风土、热汤招待、送路人、送礼人和好客日常。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青州好客老乡群像或相关方向时，调用该卡补齐人物语境：承接齐鲁风土、热汤招待、送路人、送礼人和好客日常。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/青州好客老乡群像/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青州好客老乡群像",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青州好客老乡群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青州好客老乡群像的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/青州好客老乡群像/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "青州好客老乡群像",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青州好客老乡群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青州好客老乡群像时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-shi-zhen",
+      "entity_type": "character",
+      "canonical_name": "石贞",
+      "aliases": [
+        "石贞",
+        "石贞创作素材",
+        "石贞补齐卡"
+      ],
+      "summary": "石贞用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/石贞/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "石贞"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名石贞或相关方向时，调用该卡补齐人物语境：开封人物关系补足项，优先级低于主线人物。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名石贞或相关方向时，调用该卡补齐人物语境：开封人物关系补足项，优先级低于主线人物。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/石贞/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "石贞",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "石贞的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "石贞的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/石贞/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "石贞",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写石贞时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写石贞时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-feng-ruzhi",
+      "entity_type": "character",
+      "canonical_name": "冯如之",
+      "aliases": [
+        "冯如之",
+        "冯如之创作素材",
+        "冯如之补齐卡"
+      ],
+      "summary": "冯如之用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/冯如之/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "冯如之"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名冯如之或相关方向时，调用该卡补齐人物语境：冯夷相关人物补足，主要服务关系网。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名冯如之或相关方向时，调用该卡补齐人物语境：冯夷相关人物补足，主要服务关系网。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/冯如之/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "冯如之",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "冯如之的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "冯如之的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/冯如之/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "冯如之",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写冯如之时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写冯如之时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-pu-xiansheng",
+      "entity_type": "character",
+      "canonical_name": "蒲先生",
+      "aliases": [
+        "蒲先生",
+        "蒲先生创作素材",
+        "蒲先生补齐卡"
+      ],
+      "summary": "蒲先生用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/蒲先生/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蒲先生"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名蒲先生或相关方向时，调用该卡补齐人物语境：开封民间人物，补市井与小人物故事。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名蒲先生或相关方向时，调用该卡补齐人物语境：开封民间人物，补市井与小人物故事。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/蒲先生/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蒲先生",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "蒲先生的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "蒲先生的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/蒲先生/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蒲先生",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写蒲先生时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写蒲先生时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-wei-zhixi",
+      "entity_type": "character",
+      "canonical_name": "魏芷昔",
+      "aliases": [
+        "魏芷昔",
+        "魏芷昔创作素材",
+        "魏芷昔补齐卡"
+      ],
+      "summary": "魏芷昔用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/魏芷昔/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "魏芷昔"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名魏芷昔或相关方向时，调用该卡补齐人物语境：开封女性人物补足，避免女性角色只剩寒香寻/红线。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名魏芷昔或相关方向时，调用该卡补齐人物语境：开封女性人物补足，避免女性角色只剩寒香寻/红线。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/魏芷昔/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "魏芷昔",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "魏芷昔的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "魏芷昔的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/魏芷昔/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "魏芷昔",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写魏芷昔时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写魏芷昔时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-nanzhu-gongzi",
+      "entity_type": "character",
+      "canonical_name": "南烛公子",
+      "aliases": [
+        "南烛公子",
+        "南烛公子创作素材",
+        "南烛公子补齐卡"
+      ],
+      "summary": "南烛公子用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/南烛公子/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "南烛公子"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名南烛公子或相关方向时，调用该卡补齐人物语境：开封/支线风格化人物，可作奇人线。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名南烛公子或相关方向时，调用该卡补齐人物语境：开封/支线风格化人物，可作奇人线。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/南烛公子/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "南烛公子",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "南烛公子的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "南烛公子的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/南烛公子/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "南烛公子",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写南烛公子时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写南烛公子时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-he-jin",
+      "entity_type": "character",
+      "canonical_name": "贺津",
+      "aliases": [
+        "贺津",
+        "贺津创作素材",
+        "贺津补齐卡"
+      ],
+      "summary": "贺津用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/贺津/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺津"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名贺津或相关方向时，调用该卡补齐人物语境：河西人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名贺津或相关方向时，调用该卡补齐人物语境：河西人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/贺津/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺津",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "贺津的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "贺津的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/贺津/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺津",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写贺津时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写贺津时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-he-youqu",
+      "entity_type": "character",
+      "canonical_name": "贺又渠",
+      "aliases": [
+        "贺又渠",
+        "贺又渠创作素材",
+        "贺又渠补齐卡"
+      ],
+      "summary": "贺又渠用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/贺又渠/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺又渠"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名贺又渠或相关方向时，调用该卡补齐人物语境：河西人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名贺又渠或相关方向时，调用该卡补齐人物语境：河西人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/贺又渠/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺又渠",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "贺又渠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "贺又渠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/贺又渠/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺又渠",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写贺又渠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写贺又渠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-caojing-guanyin",
+      "entity_type": "character",
+      "canonical_name": "曹敬观音",
+      "aliases": [
+        "曹敬观音",
+        "曹敬观音创作素材",
+        "曹敬观音补齐卡"
+      ],
+      "summary": "曹敬观音用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/曹敬观音/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "曹敬观音"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名曹敬观音或相关方向时，调用该卡补齐人物语境：河西/宗教与边地叙事线索，需谨慎。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名曹敬观音或相关方向时，调用该卡补齐人物语境：河西/宗教与边地叙事线索，需谨慎。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/曹敬观音/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "曹敬观音",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "曹敬观音的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "曹敬观音的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/曹敬观音/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "曹敬观音",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写曹敬观音时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写曹敬观音时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-wang-wenli",
+      "entity_type": "character",
+      "canonical_name": "王文礼",
+      "aliases": [
+        "王文礼",
+        "王文礼创作素材",
+        "王文礼补齐卡"
+      ],
+      "summary": "王文礼用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/王文礼/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "王文礼"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名王文礼或相关方向时，调用该卡补齐人物语境：青州/文津馆人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名王文礼或相关方向时，调用该卡补齐人物语境：青州/文津馆人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/王文礼/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "王文礼",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "王文礼的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "王文礼的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/王文礼/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "王文礼",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写王文礼时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写王文礼时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-liu-duo",
+      "entity_type": "character",
+      "canonical_name": "刘铎",
+      "aliases": [
+        "刘铎",
+        "刘铎创作素材",
+        "刘铎补齐卡"
+      ],
+      "summary": "刘铎用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/刘铎/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刘铎"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名刘铎或相关方向时，调用该卡补齐人物语境：青州人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名刘铎或相关方向时，调用该卡补齐人物语境：青州人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/刘铎/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刘铎",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "刘铎的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "刘铎的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/刘铎/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "刘铎",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写刘铎时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写刘铎时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-lv-xingshi",
+      "entity_type": "character",
+      "canonical_name": "吕行世",
+      "aliases": [
+        "吕行世",
+        "吕行世创作素材",
+        "吕行世补齐卡"
+      ],
+      "summary": "吕行世用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/吕行世/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "吕行世"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名吕行世或相关方向时，调用该卡补齐人物语境：青州/蓬山人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名吕行世或相关方向时，调用该卡补齐人物语境：青州/蓬山人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/吕行世/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "吕行世",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "吕行世的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "吕行世的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/吕行世/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "吕行世",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写吕行世时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写吕行世时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-sun-yuan",
+      "entity_type": "character",
+      "canonical_name": "孙愿",
+      "aliases": [
+        "孙愿",
+        "孙愿创作素材",
+        "孙愿补齐卡"
+      ],
+      "summary": "孙愿用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/孙愿/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙愿"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名孙愿或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名孙愿或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/孙愿/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙愿",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "孙愿的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "孙愿的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/孙愿/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙愿",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写孙愿时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写孙愿时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-sun-buqi",
+      "entity_type": "character",
+      "canonical_name": "孙不弃",
+      "aliases": [
+        "孙不弃",
+        "孙不弃创作素材",
+        "孙不弃补齐卡"
+      ],
+      "summary": "孙不弃用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/孙不弃/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙不弃"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名孙不弃或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名孙不弃或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/孙不弃/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙不弃",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "孙不弃的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "孙不弃的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/孙不弃/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "孙不弃",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写孙不弃时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写孙不弃时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-diao-xu",
+      "entity_type": "character",
+      "canonical_name": "翟煦",
+      "aliases": [
+        "翟煦",
+        "翟煦创作素材",
+        "翟煦补齐卡"
+      ],
+      "summary": "翟煦用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/翟煦/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "翟煦"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名翟煦或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名翟煦或相关方向时，调用该卡补齐人物语境：势力代表人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/翟煦/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "翟煦",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "翟煦的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "翟煦的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/翟煦/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "翟煦",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写翟煦时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写翟煦时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-qin-ruolan",
+      "entity_type": "character",
+      "canonical_name": "秦弱兰",
+      "aliases": [
+        "秦弱兰",
+        "秦若兰",
+        "秦弱兰创作素材",
+        "秦弱兰补齐卡"
+      ],
+      "summary": "秦弱兰用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/秦弱兰/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "秦弱兰"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名秦弱兰或相关方向时，调用该卡补齐人物语境：势力/人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名秦弱兰或相关方向时，调用该卡补齐人物语境：势力/人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/秦弱兰/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "秦弱兰",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "秦弱兰的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "秦弱兰的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/秦弱兰/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "秦弱兰",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写秦弱兰时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写秦弱兰时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-zhang-cuo",
+      "entity_type": "character",
+      "canonical_name": "张错",
+      "aliases": [
+        "张错",
+        "张错创作素材",
+        "张错补齐卡"
+      ],
+      "summary": "张错用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/张错/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张错"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名张错或相关方向时，调用该卡补齐人物语境：开封/势力人物补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名张错或相关方向时，调用该卡补齐人物语境：开封/势力人物补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/张错/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张错",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "张错的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "张错的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/张错/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "张错",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写张错时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写张错时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-he-wanchun",
+      "entity_type": "character",
+      "canonical_name": "贺万春",
+      "aliases": [
+        "贺万春",
+        "贺万春创作素材",
+        "贺万春补齐卡"
+      ],
+      "summary": "贺万春用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/贺万春/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺万春"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名贺万春或相关方向时，调用该卡补齐人物语境：人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名贺万春或相关方向时，调用该卡补齐人物语境：人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/贺万春/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺万春",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "贺万春的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "贺万春的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/贺万春/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "贺万春",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写贺万春时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写贺万春时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-lan-he",
+      "entity_type": "character",
+      "canonical_name": "蓝何",
+      "aliases": [
+        "蓝何",
+        "蓝何创作素材",
+        "蓝何补齐卡"
+      ],
+      "summary": "蓝何用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/蓝何/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蓝何"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名蓝何或相关方向时，调用该卡补齐人物语境：人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名蓝何或相关方向时，调用该卡补齐人物语境：人物关系补足。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/蓝何/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蓝何",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "蓝何的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "蓝何的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/蓝何/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "蓝何",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写蓝何时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写蓝何时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "character-sinan-swordsman",
+      "entity_type": "character",
+      "canonical_name": "司南剑客",
+      "aliases": [
+        "司南剑客",
+        "司南剑客创作素材",
+        "司南剑客补齐卡"
+      ],
+      "summary": "司南剑客用于补齐人物创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "人物/司南剑客/资料补齐",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "司南剑客"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名司南剑客或相关方向时，调用该卡补齐人物语境：剑客/门派风味素材，需确认具体归属。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名司南剑客或相关方向时，调用该卡补齐人物语境：剑客/门派风味素材，需确认具体归属。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "人物/司南剑客/创作转译",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "司南剑客",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "司南剑客的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "司南剑客的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "人物/司南剑客/禁写误区",
+          "theme_tags": [
+            "角色歌",
+            "人物传",
+            "关系张力",
+            "司南剑客",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写司南剑客时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "旧名",
+            "回望",
+            "灯火",
+            "未寄出的信",
+            "人群里的背影"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写司南剑客时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
     }
   ]
 }

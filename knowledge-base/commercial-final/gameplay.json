@@ -959,6 +959,1977 @@
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
         }
       ]
+    },
+    {
+      "key": "current-gameplay-059",
+      "entity_type": "gameplay",
+      "canonical_name": "伙伴同行",
+      "aliases": [
+        "伙伴同行创作素材",
+        "伙伴同行补齐卡"
+      ],
+      "summary": "伙伴同行用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/伙伴同行/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴同行"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名伙伴同行或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名伙伴同行或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/伙伴同行/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴同行",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "伙伴同行的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "伙伴同行的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/伙伴同行/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴同行",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写伙伴同行时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写伙伴同行时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-gameplay-060",
+      "entity_type": "gameplay",
+      "canonical_name": "镇守首领",
+      "aliases": [
+        "镇守首领创作素材",
+        "镇守首领补齐卡"
+      ],
+      "summary": "镇守首领用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/镇守首领/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "镇守首领"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名镇守首领或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名镇守首领或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/镇守首领/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "镇守首领",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "镇守首领的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "镇守首领的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/镇守首领/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "镇守首领",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写镇守首领时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写镇守首领时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-gameplay-061",
+      "entity_type": "gameplay",
+      "canonical_name": "侠迹残章",
+      "aliases": [
+        "侠迹残章创作素材",
+        "侠迹残章补齐卡"
+      ],
+      "summary": "侠迹残章用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/侠迹残章/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "侠迹残章"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名侠迹残章或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名侠迹残章或相关方向时，调用该卡补齐玩法语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/侠迹残章/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "侠迹残章",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "侠迹残章的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "侠迹残章的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/侠迹残章/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "侠迹残章",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写侠迹残章时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写侠迹残章时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-qinggong-exploration",
+      "entity_type": "gameplay",
+      "canonical_name": "轻功与立体探索",
+      "aliases": [
+        "轻功与立体探索",
+        "轻功",
+        "登高",
+        "飞檐走壁",
+        "轻功登高"
+      ],
+      "summary": "轻功与立体探索用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/轻功与立体探索/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "轻功与立体探索"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名轻功与立体探索或相关方向时，调用该卡补齐玩法语境：强；轻功天然带风、檐、山、逃、赴约、少年气。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名轻功与立体探索或相关方向时，调用该卡补齐玩法语境：强；轻功天然带风、檐、山、逃、赴约、少年气。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/轻功与立体探索/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "轻功与立体探索",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "轻功与立体探索的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "轻功与立体探索的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/轻功与立体探索/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "轻功与立体探索",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写轻功与立体探索时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写轻功与立体探索时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-open-world-compendium",
+      "entity_type": "gameplay",
+      "canonical_name": "开放世界探索与博物志",
+      "aliases": [
+        "开放世界探索与博物志",
+        "探索",
+        "博物志",
+        "武林录",
+        "地宫"
+      ],
+      "summary": "开放世界探索与博物志用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/开放世界探索与博物志/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "开放世界探索与博物志"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名开放世界探索与博物志或相关方向时，调用该卡补齐玩法语境：强；普通玩家故事大底盘，补走路见世界。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名开放世界探索与博物志或相关方向时，调用该卡补齐玩法语境：强；普通玩家故事大底盘，补走路见世界。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/开放世界探索与博物志/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "开放世界探索与博物志",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开放世界探索与博物志的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "开放世界探索与博物志的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/开放世界探索与博物志/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "开放世界探索与博物志",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写开放世界探索与博物志时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写开放世界探索与博物志时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-stronghold-infiltration",
+      "entity_type": "gameplay",
+      "canonical_name": "据点渗透与战斗据点",
+      "aliases": [
+        "据点渗透与战斗据点",
+        "据点",
+        "战斗据点",
+        "敌营",
+        "驻地"
+      ],
+      "summary": "据点渗透与战斗据点用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/据点渗透与战斗据点/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "据点渗透与战斗据点"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名据点渗透与战斗据点或相关方向时，调用该卡补齐玩法语境：中强；夜探、误入、引敌、摸营、撤离。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名据点渗透与战斗据点或相关方向时，调用该卡补齐玩法语境：中强；夜探、误入、引敌、摸营、撤离。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/据点渗透与战斗据点/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "据点渗透与战斗据点",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "据点渗透与战斗据点的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "据点渗透与战斗据点的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/据点渗透与战斗据点/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "据点渗透与战斗据点",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写据点渗透与战斗据点时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写据点渗透与战斗据点时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-homestead-buxianxian",
+      "entity_type": "gameplay",
+      "canonical_name": "家业与不羡仙重建",
+      "aliases": [
+        "家业与不羡仙重建",
+        "家业",
+        "重建",
+        "少东家",
+        "家园"
+      ],
+      "summary": "家业与不羡仙重建用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/家业与不羡仙重建/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "家业与不羡仙重建"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名家业与不羡仙重建或相关方向时，调用该卡补齐玩法语境：极强；归乡、修屋、种地、认人、旧景重见。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名家业与不羡仙重建或相关方向时，调用该卡补齐玩法语境：极强；归乡、修屋、种地、认人、旧景重见。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/家业与不羡仙重建/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "家业与不羡仙重建",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "家业与不羡仙重建的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "家业与不羡仙重建的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/家业与不羡仙重建/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "家业与不羡仙重建",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写家业与不羡仙重建时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写家业与不羡仙重建时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-baiye",
+      "entity_type": "gameplay",
+      "canonical_name": "百业与百业战",
+      "aliases": [
+        "百业与百业战",
+        "百业",
+        "百业战",
+        "百业联赛",
+        "百业驻地"
+      ],
+      "summary": "百业与百业战用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/百业与百业战/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "百业与百业战"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名百业与百业战或相关方向时，调用该卡补齐玩法语境：中强；同伴结社、商战荒诞、群体荣誉、驻地热闹。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名百业与百业战或相关方向时，调用该卡补齐玩法语境：中强；同伴结社、商战荒诞、群体荣誉、驻地热闹。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/百业与百业战/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "百业与百业战",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "百业与百业战的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "百业与百业战的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/百业与百业战/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "百业与百业战",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写百业与百业战时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写百业与百业战时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-faction-prestige",
+      "entity_type": "gameplay",
+      "canonical_name": "门派地位与晋升",
+      "aliases": [
+        "门派地位与晋升",
+        "门派威望",
+        "门派地位",
+        "晋升",
+        "戒律值"
+      ],
+      "summary": "门派地位与晋升用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/门派地位与晋升/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "门派地位与晋升"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名门派地位与晋升或相关方向时，调用该卡补齐玩法语境：中；角色歌和门派代入有效。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名门派地位与晋升或相关方向时，调用该卡补齐玩法语境：中；角色歌和门派代入有效。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/门派地位与晋升/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "门派地位与晋升",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "门派地位与晋升的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "门派地位与晋升的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/门派地位与晋升/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "门派地位与晋升",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写门派地位与晋升时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写门派地位与晋升时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-companion-split",
+      "entity_type": "gameplay",
+      "canonical_name": "伙伴系统细分",
+      "aliases": [
+        "伙伴系统细分",
+        "伙伴",
+        "猫伙伴",
+        "鹅伙伴",
+        "伙伴配饰"
+      ],
+      "summary": "伙伴系统细分用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/伙伴系统细分/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴系统细分"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名伙伴系统细分或相关方向时，调用该卡补齐玩法语境：极强；温柔、陪伴、玩闹、路感。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名伙伴系统细分或相关方向时，调用该卡补齐玩法语境：极强；温柔、陪伴、玩闹、路感。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/伙伴系统细分/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴系统细分",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "伙伴系统细分的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "伙伴系统细分的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/伙伴系统细分/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "伙伴系统细分",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写伙伴系统细分时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写伙伴系统细分时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-coop-pve",
+      "entity_type": "gameplay",
+      "canonical_name": "多人副本与协作 PVE",
+      "aliases": [
+        "多人副本与协作 PVE",
+        "试剑",
+        "侠境",
+        "十人侠境",
+        "五人镇守"
+      ],
+      "summary": "多人副本与协作 PVE用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/多人副本与协作 PVE/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "多人副本与协作 PVE"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名多人副本与协作 PVE或相关方向时，调用该卡补齐玩法语境：中强；并肩、翻车、复盘、再战，但避免 MMO 套词。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名多人副本与协作 PVE或相关方向时，调用该卡补齐玩法语境：中强；并肩、翻车、复盘、再战，但避免 MMO 套词。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/多人副本与协作 PVE/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "多人副本与协作 PVE",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "多人副本与协作 PVE的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "多人副本与协作 PVE的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/多人副本与协作 PVE/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "多人副本与协作 PVE",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写多人副本与协作 PVE时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写多人副本与协作 PVE时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-pvp-zhige",
+      "entity_type": "gameplay",
+      "canonical_name": "PvP 与止戈竞技",
+      "aliases": [
+        "PvP 与止戈竞技",
+        "止戈",
+        "觉障林",
+        "论剑",
+        "争锋"
+      ],
+      "summary": "PvP 与止戈竞技用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/PvP 与止戈竞技/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "PvP 与止戈竞技"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名PvP 与止戈竞技或相关方向时，调用该卡补齐玩法语境：中；更偏 eval 和用户意图理解。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名PvP 与止戈竞技或相关方向时，调用该卡补齐玩法语境：中；更偏 eval 和用户意图理解。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/PvP 与止戈竞技/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "PvP 与止戈竞技",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "PvP 与止戈竞技的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "PvP 与止戈竞技的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/PvP 与止戈竞技/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "PvP 与止戈竞技",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写PvP 与止戈竞技时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写PvP 与止戈竞技时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-social-qingyilin",
+      "entity_type": "gameplay",
+      "canonical_name": "社交关系与情义林",
+      "aliases": [
+        "社交关系与情义林",
+        "情义林",
+        "侠缘",
+        "师徒",
+        "结义"
+      ],
+      "summary": "社交关系与情义林用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/社交关系与情义林/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "社交关系与情义林"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名社交关系与情义林或相关方向时，调用该卡补齐玩法语境：中强；同游、拜师、结义、暧昧未满。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名社交关系与情义林或相关方向时，调用该卡补齐玩法语境：中强；同游、拜师、结义、暧昧未满。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/社交关系与情义林/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "社交关系与情义林",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "社交关系与情义林的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "社交关系与情义林的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/社交关系与情义林/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "社交关系与情义林",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写社交关系与情义林时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写社交关系与情义林时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-music-system",
+      "entity_type": "gameplay",
+      "canonical_name": "丝竹雅韵与乐器系统",
+      "aliases": [
+        "丝竹雅韵与乐器系统",
+        "丝竹雅韵",
+        "乐器",
+        "古谱",
+        "选曲"
+      ],
+      "summary": "丝竹雅韵与乐器系统用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/丝竹雅韵与乐器系统/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "丝竹雅韵与乐器系统"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名丝竹雅韵与乐器系统或相关方向时，调用该卡补齐玩法语境：极强；平台作词链路和燕云世界感最直接桥梁之一。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名丝竹雅韵与乐器系统或相关方向时，调用该卡补齐玩法语境：极强；平台作词链路和燕云世界感最直接桥梁之一。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/丝竹雅韵与乐器系统/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "丝竹雅韵与乐器系统",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "丝竹雅韵与乐器系统的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "丝竹雅韵与乐器系统的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/丝竹雅韵与乐器系统/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "丝竹雅韵与乐器系统",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写丝竹雅韵与乐器系统时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写丝竹雅韵与乐器系统时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-appearance-wanxiang",
+      "entity_type": "gameplay",
+      "canonical_name": "外观、万相集与角色塑造",
+      "aliases": [
+        "外观、万相集与角色塑造",
+        "万相集",
+        "外观",
+        "藏音万相",
+        "发饰"
+      ],
+      "summary": "外观、万相集与角色塑造用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/外观、万相集与角色塑造/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "外观、万相集与角色塑造"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名外观、万相集与角色塑造或相关方向时，调用该卡补齐玩法语境：弱到中；用户意图理解有帮助，通常只是背景。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名外观、万相集与角色塑造或相关方向时，调用该卡补齐玩法语境：弱到中；用户意图理解有帮助，通常只是背景。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/外观、万相集与角色塑造/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "外观、万相集与角色塑造",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "外观、万相集与角色塑造的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "外观、万相集与角色塑造的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/外观、万相集与角色塑造/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "外观、万相集与角色塑造",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写外观、万相集与角色塑造时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写外观、万相集与角色塑造时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-wild-boss-split",
+      "entity_type": "gameplay",
+      "canonical_name": "野外首领细分",
+      "aliases": [
+        "野外首领细分",
+        "野外BOSS",
+        "遭遇战",
+        "皮影师",
+        "无名将军"
+      ],
+      "summary": "野外首领细分用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/野外首领细分/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "野外首领细分"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名野外首领细分或相关方向时，调用该卡补齐玩法语境：中；路上撞见强敌、败走、再回头。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名野外首领细分或相关方向时，调用该卡补齐玩法语境：中；路上撞见强敌、败走、再回头。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/野外首领细分/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "野外首领细分",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "野外首领细分的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "野外首领细分的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/野外首领细分/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "野外首领细分",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写野外首领细分时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写野外首领细分时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-tianggong-diku",
+      "entity_type": "gameplay",
+      "canonical_name": "天工地窟与地牢秘境",
+      "aliases": [
+        "天工地窟与地牢秘境",
+        "天工地窟",
+        "地窟",
+        "秘境",
+        "地下洞窟"
+      ],
+      "summary": "天工地窟与地牢秘境用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/天工地窟与地牢秘境/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "天工地窟与地牢秘境"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名天工地窟与地牢秘境或相关方向时，调用该卡补齐玩法语境：中；险、暗、机关、旧城、同行探坑。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名天工地窟与地牢秘境或相关方向时，调用该卡补齐玩法语境：中；险、暗、机关、旧城、同行探坑。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/天工地窟与地牢秘境/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "天工地窟与地牢秘境",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天工地窟与地牢秘境的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "天工地窟与地牢秘境的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/天工地窟与地牢秘境/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "天工地窟与地牢秘境",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写天工地窟与地牢秘境时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写天工地窟与地牢秘境时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-crafting-cooking",
+      "entity_type": "gameplay",
+      "canonical_name": "采集制作与美食烹饪",
+      "aliases": [
+        "采集制作与美食烹饪",
+        "采集",
+        "制作",
+        "食谱",
+        "烤食"
+      ],
+      "summary": "采集制作与美食烹饪用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/采集制作与美食烹饪/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "采集制作与美食烹饪"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名采集制作与美食烹饪或相关方向时，调用该卡补齐玩法语境：强；食物、烟火气、赶海、采药、做菜。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名采集制作与美食烹饪或相关方向时，调用该卡补齐玩法语境：强；食物、烟火气、赶海、采药、做菜。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/采集制作与美食烹饪/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "采集制作与美食烹饪",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "采集制作与美食烹饪的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "采集制作与美食烹饪的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/采集制作与美食烹饪/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "采集制作与美食烹饪",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写采集制作与美食烹饪时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写采集制作与美食烹饪时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-life-qishu-split",
+      "entity_type": "gameplay",
+      "canonical_name": "潜行、点穴、妙手空空与兽语等生活奇术",
+      "aliases": [
+        "潜行、点穴、妙手空空与兽语等生活奇术",
+        "潜行",
+        "妙手空空",
+        "兽语",
+        "点笑穴"
+      ],
+      "summary": "潜行、点穴、妙手空空与兽语等生活奇术用于补齐玩法创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/潜行、点穴、妙手空空与兽语等生活奇术/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "潜行、点穴、妙手空空与兽语等生活奇术"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名潜行、点穴、妙手空空与兽语等生活奇术或相关方向时，调用该卡补齐玩法语境：中强；巧、偷、听、逗、骗的江湖感。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名潜行、点穴、妙手空空与兽语等生活奇术或相关方向时，调用该卡补齐玩法语境：中强；巧、偷、听、逗、骗的江湖感。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/潜行、点穴、妙手空空与兽语等生活奇术/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "潜行、点穴、妙手空空与兽语等生活奇术",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "潜行、点穴、妙手空空与兽语等生活奇术的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "潜行、点穴、妙手空空与兽语等生活奇术的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/潜行、点穴、妙手空空与兽语等生活奇术/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "潜行、点穴、妙手空空与兽语等生活奇术",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写潜行、点穴、妙手空空与兽语等生活奇术时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写潜行、点穴、妙手空空与兽语等生活奇术时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "gameplay-boardgames-future",
+      "entity_type": "gameplay",
+      "canonical_name": "打马棋与侠客偶棋",
+      "aliases": [
+        "打马棋与侠客偶棋",
+        "打马棋",
+        "侠客偶棋",
+        "棋类雅趣",
+        "打马棋与侠客偶棋创作素材"
+      ],
+      "summary": "打马棋与侠客偶棋作为待核线索层资料进入打马棋与侠客偶棋相关创作，只提供氛围、关系暗线、旧事传闻和意象，不当作已盖棺的剧情结论。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#pending-clues",
+      "fact_level": "pending_clues",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "玩法/打马棋与侠客偶棋/资料补齐",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "打马棋与侠客偶棋"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "用户点名打马棋与侠客偶棋或相关主题时，可把它作为待核线索使用：保留玩法语境和中；可做未来创作暗线，但不进入当前 live facts。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "用户点名打马棋与侠客偶棋或相关主题时，可把它作为待核线索使用：保留玩法语境和中；可做未来创作暗线，但不进入当前 live facts。，表达上采用传闻、旧案、未明旧事、旁人所说等方式。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "玩法/打马棋与侠客偶棋/创作转译",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "打马棋与侠客偶棋",
+            "创作转译"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "打马棋与侠客偶棋适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入打马棋与侠客偶棋相关的燕云气质。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "打马棋与侠客偶棋适合提供情绪和意象，不承担硬剧情判定。写词优先保留用户故事，再轻量注入打马棋与侠客偶棋相关的燕云气质。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "玩法/打马棋与侠客偶棋/禁写误区",
+          "theme_tags": [
+            "玩法体验",
+            "玩家故事",
+            "江湖动作",
+            "打马棋与侠客偶棋",
+            "禁写误区"
+          ],
+          "story_phase": "needs_recording",
+          "summary_for_prompt": "打马棋与侠客偶棋资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。",
+          "usable_imagery": [
+            "袖中风",
+            "脚下路",
+            "第一次出手",
+            "同伴呼喊",
+            "江湖日常"
+          ],
+          "emotional_arc": "以含混、传闻和未明旧事保留想象空间，让玩家创意先行，资料只提供氛围支撑。",
+          "avoid_claims": [
+            "不要写成官方定论或唯一真相",
+            "不要补出不存在的明确结局、血缘或阵营结论",
+            "只能作为暗线、传闻、旧事、情绪或意象使用"
+          ],
+          "content": "打马棋与侠客偶棋资料处于待核层；歌词里不要写成板上钉钉的官方结论，也不要替角色、剧情或势力补不存在的确定结局。"
+        }
+      ]
     }
   ]
 }

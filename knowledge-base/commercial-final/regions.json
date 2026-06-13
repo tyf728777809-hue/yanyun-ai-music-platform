@@ -971,6 +971,3027 @@
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis"
         }
       ]
+    },
+    {
+      "key": "region-hexi",
+      "entity_type": "region",
+      "canonical_name": "河西",
+      "aliases": [
+        "河西",
+        "河西篇",
+        "河西三行诗",
+        "河西创作素材",
+        "河西补齐卡"
+      ],
+      "summary": "河西用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/河西/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河西"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名河西或相关方向时，调用该卡补齐地域语境：把玉门关-凉州-秦川串成完整远行/归途主轴。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名河西或相关方向时，调用该卡补齐地域语境：把玉门关-凉州-秦川串成完整远行/归途主轴。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/河西/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河西",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "河西的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "河西的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/河西/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河西",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写河西时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写河西时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-yumen-guan",
+      "entity_type": "region",
+      "canonical_name": "玉门关",
+      "aliases": [
+        "河西首章",
+        "玉门关补齐卡"
+      ],
+      "summary": "玉门关用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/玉门关/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉门关"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名玉门关或相关方向时，调用该卡补齐地域语境：补足大漠、边关、旅人、残忍与温柔并置。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名玉门关或相关方向时，调用该卡补齐地域语境：补足大漠、边关、旅人、残忍与温柔并置。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/玉门关/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉门关",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "玉门关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "玉门关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/玉门关/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉门关",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写玉门关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写玉门关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-baitou-cheng",
+      "entity_type": "region",
+      "canonical_name": "白头城",
+      "aliases": [
+        "安西军镇守",
+        "白头城补齐卡"
+      ],
+      "summary": "白头城用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/白头城/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白头城"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名白头城或相关方向时，调用该卡补齐地域语境：强补家国、孤忠、旧军旅线素材。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名白头城或相关方向时，调用该卡补齐地域语境：强补家国、孤忠、旧军旅线素材。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/白头城/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白头城",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "白头城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "白头城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/白头城/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白头城",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写白头城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写白头城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-qinchuan",
+      "entity_type": "region",
+      "canonical_name": "秦川",
+      "aliases": [
+        "秦川",
+        "河西终章",
+        "八百里秦川",
+        "秦川创作素材",
+        "秦川补齐卡"
+      ],
+      "summary": "秦川用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/秦川/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "秦川"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名秦川或相关方向时，调用该卡补齐地域语境：把河西从诗意边塞推进到画卷归途。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名秦川或相关方向时，调用该卡补齐地域语境：把河西从诗意边塞推进到画卷归途。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/秦川/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "秦川",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "秦川的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "秦川的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/秦川/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "秦川",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写秦川时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写秦川时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-dasanguan",
+      "entity_type": "region",
+      "canonical_name": "大散关",
+      "aliases": [
+        "大散关",
+        "秦川天堑",
+        "大散关创作素材",
+        "大散关补齐卡"
+      ],
+      "summary": "大散关用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/大散关/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "大散关"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名大散关或相关方向时，调用该卡补齐地域语境：适合写过关与命运转场。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名大散关或相关方向时，调用该卡补齐地域语境：适合写过关与命运转场。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/大散关/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "大散关",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "大散关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "大散关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/大散关/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "大散关",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写大散关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写大散关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-yulutai",
+      "entity_type": "region",
+      "canonical_name": "玉露台",
+      "aliases": [
+        "玉露台",
+        "葡萄园",
+        "玉露台创作素材",
+        "玉露台补齐卡"
+      ],
+      "summary": "玉露台用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/玉露台/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉露台"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名玉露台或相关方向时，调用该卡补齐地域语境：阿依努尔线和普通人故乡记忆的高频入口。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名玉露台或相关方向时，调用该卡补齐地域语境：阿依努尔线和普通人故乡记忆的高频入口。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/玉露台/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉露台",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "玉露台的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "玉露台的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/玉露台/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "玉露台",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写玉露台时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写玉露台时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-tengwang-village",
+      "entity_type": "region",
+      "canonical_name": "藤王村",
+      "aliases": [
+        "藤王村",
+        "悬樽山古村",
+        "藤王村创作素材",
+        "藤王村补齐卡"
+      ],
+      "summary": "藤王村用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/藤王村/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "藤王村"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名藤王村或相关方向时，调用该卡补齐地域语境：适合衰败村落、守藤人、旧酿与亡魂执念。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名藤王村或相关方向时，调用该卡补齐地域语境：适合衰败村落、守藤人、旧酿与亡魂执念。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/藤王村/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "藤王村",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "藤王村的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "藤王村的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/藤王村/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "藤王村",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写藤王村时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写藤王村时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-wangdi-xiang",
+      "entity_type": "region",
+      "canonical_name": "望帝乡",
+      "aliases": [
+        "望帝乡",
+        "高塔",
+        "望帝乡创作素材",
+        "望帝乡补齐卡"
+      ],
+      "summary": "望帝乡用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/望帝乡/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "望帝乡"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名望帝乡或相关方向时，调用该卡补齐地域语境：强适配回望、归乡不能、旧名未忘。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名望帝乡或相关方向时，调用该卡补齐地域语境：强适配回望、归乡不能、旧名未忘。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/望帝乡/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "望帝乡",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "望帝乡的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "望帝乡的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/望帝乡/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "望帝乡",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写望帝乡时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写望帝乡时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-wugou-ta",
+      "entity_type": "region",
+      "canonical_name": "无垢塔",
+      "aliases": [
+        "无垢塔",
+        "法华无垢",
+        "无垢塔创作素材",
+        "无垢塔补齐卡"
+      ],
+      "summary": "无垢塔用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/无垢塔/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无垢塔"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名无垢塔或相关方向时，调用该卡补齐地域语境：补佛塔、战后余烬、清宁重建。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名无垢塔或相关方向时，调用该卡补齐地域语境：补佛塔、战后余烬、清宁重建。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/无垢塔/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无垢塔",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无垢塔的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "无垢塔的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/无垢塔/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无垢塔",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写无垢塔时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写无垢塔时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-bujianshan",
+      "entity_type": "region",
+      "canonical_name": "不见山",
+      "aliases": [
+        "不见山",
+        "隐岳",
+        "墨山道新篇",
+        "不见山创作素材",
+        "不见山补齐卡"
+      ],
+      "summary": "不见山用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/不见山/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "不见山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名不见山或相关方向时，调用该卡补齐地域语境：补足求真、机关、云峰、最后桃源的独特审美。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名不见山或相关方向时，调用该卡补齐地域语境：补足求真、机关、云峰、最后桃源的独特审美。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/不见山/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "不见山",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "不见山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "不见山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/不见山/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "不见山",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写不见山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写不见山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-dongyue",
+      "entity_type": "region",
+      "canonical_name": "东岳",
+      "aliases": [
+        "东岳",
+        "东岳创作素材",
+        "东岳补齐卡"
+      ],
+      "summary": "东岳用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/东岳/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "东岳"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名东岳或相关方向时，调用该卡补齐地域语境：把青州从泛书卷气落到山海相接。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名东岳或相关方向时，调用该卡补齐地域语境：把青州从泛书卷气落到山海相接。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/东岳/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "东岳",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "东岳的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "东岳的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/东岳/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "东岳",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写东岳时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写东岳时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-daishan",
+      "entity_type": "region",
+      "canonical_name": "岱山",
+      "aliases": [
+        "岱山",
+        "岱山创作素材",
+        "岱山补齐卡"
+      ],
+      "summary": "岱山用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/岱山/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "岱山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名岱山或相关方向时，调用该卡补齐地域语境：适合悬疑、雪夜、群像困局。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名岱山或相关方向时，调用该卡补齐地域语境：适合悬疑、雪夜、群像困局。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/岱山/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "岱山",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "岱山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "岱山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/岱山/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "岱山",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写岱山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写岱山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-wenjinguan-school",
+      "entity_type": "region",
+      "canonical_name": "文津馆学斋/校舍/藏书阁",
+      "aliases": [
+        "文津馆学斋/校舍/藏书阁",
+        "文津馆学斋",
+        "学斋",
+        "校舍",
+        "藏书阁"
+      ],
+      "summary": "文津馆学斋/校舍/藏书阁用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/文津馆学斋/校舍/藏书阁/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "文津馆学斋/校舍/藏书阁"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名文津馆学斋/校舍/藏书阁或相关方向时，调用该卡补齐地域语境：直接补求学、同窗、舍友情、书卷烟火素材。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名文津馆学斋/校舍/藏书阁或相关方向时，调用该卡补齐地域语境：直接补求学、同窗、舍友情、书卷烟火素材。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/文津馆学斋/校舍/藏书阁/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "文津馆学斋/校舍/藏书阁",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "文津馆学斋/校舍/藏书阁的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "文津馆学斋/校舍/藏书阁的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/文津馆学斋/校舍/藏书阁/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "文津馆学斋/校舍/藏书阁",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写文津馆学斋/校舍/藏书阁时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写文津馆学斋/校舍/藏书阁时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-seaside",
+      "entity_type": "region",
+      "canonical_name": "海滨",
+      "aliases": [
+        "海滨",
+        "蓬山海滨",
+        "青州海滨",
+        "滩涂",
+        "海滨创作素材"
+      ],
+      "summary": "海滨用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/海滨/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "海滨"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名海滨或相关方向时，调用该卡补齐地域语境：补海风、潮声、滩涂、拾鲜等稀缺意象。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名海滨或相关方向时，调用该卡补齐地域语境：补海风、潮声、滩涂、拾鲜等稀缺意象。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/海滨/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "海滨",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "海滨的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "海滨的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/海滨/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "海滨",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写海滨时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写海滨时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-fanlou-golden-street",
+      "entity_type": "region",
+      "canonical_name": "樊楼金街",
+      "aliases": [
+        "樊楼金街",
+        "樊楼金街创作素材",
+        "樊楼金街补齐卡"
+      ],
+      "summary": "樊楼金街用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/樊楼金街/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "樊楼金街"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名樊楼金街或相关方向时，调用该卡补齐地域语境：开封夜生活和繁华暗面的最强入口词。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名樊楼金街或相关方向时，调用该卡补齐地域语境：开封夜生活和繁华暗面的最强入口词。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/樊楼金街/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "樊楼金街",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "樊楼金街的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "樊楼金街的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/樊楼金街/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "樊楼金街",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写樊楼金街时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写樊楼金街时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-poor-quarter",
+      "entity_type": "region",
+      "canonical_name": "贫民窟",
+      "aliases": [
+        "贫民窟",
+        "开封贫民窟",
+        "贫民窟创作素材",
+        "贫民窟补齐卡"
+      ],
+      "summary": "贫民窟用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/贫民窟/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "贫民窟"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名贫民窟或相关方向时，调用该卡补齐地域语境：把开封从繁华单一面拉回人间切片。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名贫民窟或相关方向时，调用该卡补齐地域语境：把开封从繁华单一面拉回人间切片。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/贫民窟/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "贫民窟",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "贫民窟的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "贫民窟的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/贫民窟/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "贫民窟",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写贫民窟时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写贫民窟时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-palace-city",
+      "entity_type": "region",
+      "canonical_name": "宫城",
+      "aliases": [
+        "宫城",
+        "开封宫城",
+        "开封皇宫",
+        "宫城创作素材",
+        "宫城补齐卡"
+      ],
+      "summary": "宫城用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/宫城/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "宫城"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名宫城或相关方向时，调用该卡补齐地域语境：补皇城、朝野、宫墙、温情秘闻与禁地冒险。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名宫城或相关方向时，调用该卡补齐地域语境：补皇城、朝野、宫墙、温情秘闻与禁地冒险。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/宫城/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "宫城",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "宫城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "宫城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/宫城/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "宫城",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写宫城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写宫城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-wuyou-dong",
+      "entity_type": "region",
+      "canonical_name": "无忧洞",
+      "aliases": [
+        "无忧洞创作素材",
+        "无忧洞补齐卡"
+      ],
+      "summary": "无忧洞用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/无忧洞/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无忧洞"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名无忧洞或相关方向时，调用该卡补齐地域语境：承接中式微恐、未尽人言、开封暗面。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名无忧洞或相关方向时，调用该卡补齐地域语境：承接中式微恐、未尽人言、开封暗面。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/无忧洞/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无忧洞",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无忧洞的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "无忧洞的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/无忧洞/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "无忧洞",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写无忧洞时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写无忧洞时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-tianshanglai",
+      "entity_type": "region",
+      "canonical_name": "天上来",
+      "aliases": [
+        "天上来",
+        "天上来渡",
+        "天上来创作素材",
+        "天上来补齐卡"
+      ],
+      "summary": "天上来用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/天上来/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "天上来"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名天上来或相关方向时，调用该卡补齐地域语境：补河道、吊机、渡口、奇局类意象。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名天上来或相关方向时，调用该卡补齐地域语境：补河道、吊机、渡口、奇局类意象。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/天上来/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "天上来",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天上来的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "天上来的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/天上来/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "天上来",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写天上来时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写天上来时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-fengqiu-village",
+      "entity_type": "region",
+      "canonical_name": "封丘村",
+      "aliases": [
+        "封丘村",
+        "封丘村创作素材",
+        "封丘村补齐卡"
+      ],
+      "summary": "封丘村用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/封丘村/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "封丘村"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名封丘村或相关方向时，调用该卡补齐地域语境：适合朴素村落、沿河日常、人情线。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名封丘村或相关方向时，调用该卡补齐地域语境：适合朴素村落、沿河日常、人情线。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/封丘村/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "封丘村",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "封丘村的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "封丘村的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/封丘村/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "封丘村",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写封丘村时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写封丘村时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-baima-yi",
+      "entity_type": "region",
+      "canonical_name": "白马驿",
+      "aliases": [
+        "白马驿",
+        "白马驿创作素材",
+        "白马驿补齐卡"
+      ],
+      "summary": "白马驿用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/白马驿/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白马驿"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名白马驿或相关方向时，调用该卡补齐地域语境：适合驿路、送别、途中旧事。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名白马驿或相关方向时，调用该卡补齐地域语境：适合驿路、送别、途中旧事。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/白马驿/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白马驿",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "白马驿的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "白马驿的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/白马驿/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "白马驿",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写白马驿时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写白马驿时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-heshile",
+      "entity_type": "region",
+      "canonical_name": "河市乐",
+      "aliases": [
+        "河市乐",
+        "戏台",
+        "河市乐创作素材",
+        "河市乐补齐卡"
+      ],
+      "summary": "河市乐用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/河市乐/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河市乐"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名河市乐或相关方向时，调用该卡补齐地域语境：补戏台、流言、沿河市声、民间热闹。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名河市乐或相关方向时，调用该卡补齐地域语境：补戏台、流言、沿河市声、民间热闹。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/河市乐/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河市乐",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "河市乐的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "河市乐的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/河市乐/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "河市乐",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写河市乐时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写河市乐时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-coffin-shop-ghost-market",
+      "entity_type": "region",
+      "canonical_name": "棺材铺/鬼市入口",
+      "aliases": [
+        "棺材铺/鬼市入口",
+        "棺材铺",
+        "鬼市入口",
+        "棺材铺/鬼市入口创作素材",
+        "棺材铺/鬼市入口补齐卡"
+      ],
+      "summary": "棺材铺/鬼市入口用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/棺材铺/鬼市入口/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "棺材铺/鬼市入口"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名棺材铺/鬼市入口或相关方向时，调用该卡补齐地域语境：九流门、鬼市子、开封暗面常用开笔入口。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名棺材铺/鬼市入口或相关方向时，调用该卡补齐地域语境：九流门、鬼市子、开封暗面常用开笔入口。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/棺材铺/鬼市入口/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "棺材铺/鬼市入口",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "棺材铺/鬼市入口的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "棺材铺/鬼市入口的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/棺材铺/鬼市入口/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "棺材铺/鬼市入口",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写棺材铺/鬼市入口时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写棺材铺/鬼市入口时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-baicao-ye",
+      "entity_type": "region",
+      "canonical_name": "百草野",
+      "aliases": [
+        "百草野",
+        "百草野创作素材",
+        "百草野补齐卡"
+      ],
+      "summary": "百草野用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/百草野/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "百草野"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名百草野或相关方向时，调用该卡补齐地域语境：给清河补荒野旧迹面。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名百草野或相关方向时，调用该卡补齐地域语境：给清河补荒野旧迹面。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/百草野/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "百草野",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "百草野的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "百草野的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/百草野/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "百草野",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写百草野时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写百草野时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-zhulin-jiuju",
+      "entity_type": "region",
+      "canonical_name": "竹林旧居",
+      "aliases": [
+        "竹林旧居-region-zhulin-jiuju"
+      ],
+      "summary": "竹林旧居用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/竹林旧居/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "竹林旧居"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名竹林旧居或相关方向时，调用该卡补齐地域语境：少东家童年、养父线、归家感高频必用。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名竹林旧居或相关方向时，调用该卡补齐地域语境：少东家童年、养父线、归家感高频必用。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/竹林旧居/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "竹林旧居",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "竹林旧居的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "竹林旧居的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/竹林旧居/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "竹林旧居",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写竹林旧居时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写竹林旧居时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-jiangjun-ci",
+      "entity_type": "region",
+      "canonical_name": "将军祠",
+      "aliases": [
+        "将军祠-region-jiangjun-ci"
+      ],
+      "summary": "将军祠用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/将军祠/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "将军祠"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名将军祠或相关方向时，调用该卡补齐地域语境：适合碑刻、旧将、稚子江湖、残响。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名将军祠或相关方向时，调用该卡补齐地域语境：适合碑刻、旧将、稚子江湖、残响。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/将军祠/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "将军祠",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "将军祠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "将军祠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/将军祠/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "将军祠",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写将军祠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写将军祠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-chunqiu-bieguan",
+      "entity_type": "region",
+      "canonical_name": "春秋别馆",
+      "aliases": [
+        "春秋别馆",
+        "春秋别馆创作素材",
+        "春秋别馆补齐卡"
+      ],
+      "summary": "春秋别馆用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/春秋别馆/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "春秋别馆"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名春秋别馆或相关方向时，调用该卡补齐地域语境：补旧馆、暗道、别后无人回的气质。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名春秋别馆或相关方向时，调用该卡补齐地域语境：补旧馆、暗道、别后无人回的气质。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/春秋别馆/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "春秋别馆",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "春秋别馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "春秋别馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/春秋别馆/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "春秋别馆",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写春秋别馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写春秋别馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-puti-kuhai",
+      "entity_type": "region",
+      "canonical_name": "菩提苦海",
+      "aliases": [
+        "菩提苦海-region-puti-kuhai"
+      ],
+      "summary": "菩提苦海用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/菩提苦海/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "菩提苦海"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名菩提苦海或相关方向时，调用该卡补齐地域语境：补佛性、苦海、鼓声召引的意象层。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名菩提苦海或相关方向时，调用该卡补齐地域语境：补佛性、苦海、鼓声召引的意象层。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/菩提苦海/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "菩提苦海",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "菩提苦海的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "菩提苦海的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/菩提苦海/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "菩提苦海",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写菩提苦海时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写菩提苦海时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-yinyue-shan",
+      "entity_type": "region",
+      "canonical_name": "隐月山",
+      "aliases": [
+        "隐月山",
+        "隐月山创作素材",
+        "隐月山补齐卡"
+      ],
+      "summary": "隐月山用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/隐月山/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "隐月山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名隐月山或相关方向时，调用该卡补齐地域语境：补山场、雾、试炼、奇遇式叙事。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名隐月山或相关方向时，调用该卡补齐地域语境：补山场、雾、试炼、奇遇式叙事。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/隐月山/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "隐月山",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "隐月山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "隐月山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/隐月山/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "隐月山",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写隐月山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写隐月山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-huoren-yiguan",
+      "entity_type": "region",
+      "canonical_name": "活人医馆",
+      "aliases": [
+        "活人医馆",
+        "弱水岸活人医馆",
+        "活人医馆创作素材",
+        "活人医馆补齐卡"
+      ],
+      "summary": "活人医馆用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/活人医馆/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "活人医馆"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名活人医馆或相关方向时，调用该卡补齐地域语境：弱水岸从抽象水岸感落到医馆、井、伤与秘密。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名活人医馆或相关方向时，调用该卡补齐地域语境：弱水岸从抽象水岸感落到医馆、井、伤与秘密。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/活人医馆/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "活人医馆",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "活人医馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "活人医馆的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/活人医馆/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "活人医馆",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写活人医馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写活人医馆时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "region-shanmiaozhou",
+      "entity_type": "region",
+      "canonical_name": "善妙洲",
+      "aliases": [
+        "善妙洲",
+        "善妙洲创作素材",
+        "善妙洲补齐卡"
+      ],
+      "summary": "善妙洲用于补齐地域创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "地域/善妙洲/资料补齐",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "善妙洲"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名善妙洲或相关方向时，调用该卡补齐地域语境：补清河北向延展和继续上路空间感。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名善妙洲或相关方向时，调用该卡补齐地域语境：补清河北向延展和继续上路空间感。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "地域/善妙洲/创作转译",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "善妙洲",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "善妙洲的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "善妙洲的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "地域/善妙洲/禁写误区",
+          "theme_tags": [
+            "地域歌",
+            "场景气质",
+            "玩家记忆",
+            "善妙洲",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写善妙洲时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "城门",
+            "街巷",
+            "山河",
+            "灯火",
+            "远处钟声"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写善妙洲时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
     }
   ]
 }

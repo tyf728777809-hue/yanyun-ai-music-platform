@@ -1909,6 +1909,1870 @@
           "content": "禁写边界剧情创作卡。"
         }
       ]
+    },
+    {
+      "key": "current-storyline-021",
+      "entity_type": "story",
+      "canonical_name": "九流祸起",
+      "aliases": [
+        "九流祸起创作素材",
+        "九流祸起补齐卡"
+      ],
+      "summary": "九流祸起用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/九流祸起/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流祸起"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名九流祸起或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名九流祸起或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/九流祸起/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流祸起",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "九流祸起的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "九流祸起的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/九流祸起/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流祸起",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写九流祸起时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写九流祸起时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-storyline-023",
+      "entity_type": "story",
+      "canonical_name": "开封夜市与鬼市",
+      "aliases": [
+        "开封夜市与鬼市创作素材",
+        "开封夜市与鬼市补齐卡"
+      ],
+      "summary": "开封夜市与鬼市用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/开封夜市与鬼市/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "开封夜市与鬼市"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名开封夜市与鬼市或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名开封夜市与鬼市或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/开封夜市与鬼市/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "开封夜市与鬼市",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封夜市与鬼市的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "开封夜市与鬼市的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/开封夜市与鬼市/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "开封夜市与鬼市",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写开封夜市与鬼市时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写开封夜市与鬼市时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-storyline-024",
+      "entity_type": "story",
+      "canonical_name": "青州蓬山文津",
+      "aliases": [
+        "青州蓬山文津创作素材",
+        "青州蓬山文津补齐卡"
+      ],
+      "summary": "青州蓬山文津用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/青州蓬山文津/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州蓬山文津"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青州蓬山文津或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青州蓬山文津或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/青州蓬山文津/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州蓬山文津",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青州蓬山文津的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青州蓬山文津的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/青州蓬山文津/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州蓬山文津",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青州蓬山文津时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青州蓬山文津时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "current-storyline-028",
+      "entity_type": "story",
+      "canonical_name": "同行伙伴",
+      "aliases": [
+        "同行伙伴创作素材",
+        "同行伙伴补齐卡"
+      ],
+      "summary": "同行伙伴用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/同行伙伴/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "同行伙伴"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名同行伙伴或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名同行伙伴或相关方向时，调用该卡补齐剧情语境：当前已可被检索，但仍需根据缺口表判断是否增厚到商用百科级。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/同行伙伴/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "同行伙伴",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "同行伙伴的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "同行伙伴的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/同行伙伴/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "同行伙伴",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写同行伙伴时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写同行伙伴时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-shenxiandu",
+      "entity_type": "story",
+      "canonical_name": "神仙渡",
+      "aliases": [
+        "神仙渡线",
+        "清河神仙渡",
+        "神仙渡创作素材",
+        "神仙渡补齐卡"
+      ],
+      "summary": "神仙渡用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/神仙渡/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "神仙渡"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名神仙渡或相关方向时，调用该卡补齐剧情语境：适合回家、渡口、少年离乡后再回望。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名神仙渡或相关方向时，调用该卡补齐剧情语境：适合回家、渡口、少年离乡后再回望。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/神仙渡/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "神仙渡",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "神仙渡的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "神仙渡的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/神仙渡/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "神仙渡",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写神仙渡时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写神仙渡时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-zhulin-jiuju",
+      "entity_type": "story",
+      "canonical_name": "竹林旧居",
+      "aliases": [
+        "第一章竹林旧居",
+        "清河开篇",
+        "竹林旧居创作素材",
+        "竹林旧居补齐卡"
+      ],
+      "summary": "竹林旧居用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/竹林旧居/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "竹林旧居"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名竹林旧居或相关方向时，调用该卡补齐剧情语境：适合初见江湖、未成侠先成伤的新手篇。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名竹林旧居或相关方向时，调用该卡补齐剧情语境：适合初见江湖、未成侠先成伤的新手篇。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/竹林旧居/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "竹林旧居",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "竹林旧居的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "竹林旧居的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/竹林旧居/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "竹林旧居",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写竹林旧居时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写竹林旧居时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-jiangjun-ci",
+      "entity_type": "story",
+      "canonical_name": "将军祠",
+      "aliases": [
+        "将军祠",
+        "第一章将军祠",
+        "清河将军祠",
+        "将军祠创作素材",
+        "将军祠补齐卡"
+      ],
+      "summary": "将军祠用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/将军祠/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "将军祠"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名将军祠或相关方向时，调用该卡补齐剧情语境：承接旧将未冷、乱世忠骨。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名将军祠或相关方向时，调用该卡补齐剧情语境：承接旧将未冷、乱世忠骨。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/将军祠/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "将军祠",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "将军祠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "将军祠的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/将军祠/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "将军祠",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写将军祠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写将军祠时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-puti-kuhai",
+      "entity_type": "story",
+      "canonical_name": "菩提苦海",
+      "aliases": [
+        "菩提苦海",
+        "清河镇守菩提苦海",
+        "慈心镇旧事",
+        "菩提苦海创作素材",
+        "菩提苦海补齐卡"
+      ],
+      "summary": "菩提苦海用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/菩提苦海/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "菩提苦海"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名菩提苦海或相关方向时，调用该卡补齐剧情语境：适合压抑、病相、慈悲反转和伪善。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名菩提苦海或相关方向时，调用该卡补齐剧情语境：适合压抑、病相、慈悲反转和伪善。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/菩提苦海/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "菩提苦海",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "菩提苦海的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "菩提苦海的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/菩提苦海/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "菩提苦海",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写菩提苦海时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写菩提苦海时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-guishizi-split",
+      "entity_type": "story",
+      "canonical_name": "鬼市子",
+      "aliases": [
+        "鬼市进入线",
+        "阴兵借道",
+        "鬼市子创作素材",
+        "鬼市子补齐卡"
+      ],
+      "summary": "鬼市子用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/鬼市子/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "鬼市子"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名鬼市子或相关方向时，调用该卡补齐剧情语境：黑市、假名、狂欢与阴气并置的强素材。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名鬼市子或相关方向时，调用该卡补齐剧情语境：黑市、假名、狂欢与阴气并置的强素材。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/鬼市子/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "鬼市子",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "鬼市子的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "鬼市子的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/鬼市子/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "鬼市子",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写鬼市子时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写鬼市子时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-jiuliu-split",
+      "entity_type": "story",
+      "canonical_name": "九流线·奇谋/暗涌/祸起",
+      "aliases": [
+        "九流线·奇谋/暗涌/祸起",
+        "九流门主线",
+        "九流线·奇谋/暗涌/祸起创作素材",
+        "九流线·奇谋/暗涌/祸起补齐卡"
+      ],
+      "summary": "九流线·奇谋/暗涌/祸起用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/九流线·奇谋/暗涌/祸起/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流线·奇谋/暗涌/祸起"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名九流线·奇谋/暗涌/祸起或相关方向时，调用该卡补齐剧情语境：现有一条九流祸起承载太多内容，不利检索。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名九流线·奇谋/暗涌/祸起或相关方向时，调用该卡补齐剧情语境：现有一条九流祸起承载太多内容，不利检索。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/九流线·奇谋/暗涌/祸起/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流线·奇谋/暗涌/祸起",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "九流线·奇谋/暗涌/祸起的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "九流线·奇谋/暗涌/祸起的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/九流线·奇谋/暗涌/祸起/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "九流线·奇谋/暗涌/祸起",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写九流线·奇谋/暗涌/祸起时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写九流线·奇谋/暗涌/祸起时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-yumen-guan",
+      "entity_type": "story",
+      "canonical_name": "玉门关",
+      "aliases": [
+        "玉门关",
+        "河西首篇",
+        "玉门风起",
+        "明月照玉门",
+        "玉门关创作素材"
+      ],
+      "summary": "玉门关用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/玉门关/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "玉门关"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名玉门关或相关方向时，调用该卡补齐剧情语境：适合边塞长路、初入河西、关门与月色。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名玉门关或相关方向时，调用该卡补齐剧情语境：适合边塞长路、初入河西、关门与月色。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/玉门关/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "玉门关",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "玉门关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "玉门关的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/玉门关/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "玉门关",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写玉门关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写玉门关时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-baitou-cheng",
+      "entity_type": "story",
+      "canonical_name": "白头城",
+      "aliases": [
+        "白头城",
+        "白头城镇守",
+        "河西白头城",
+        "安西军旗",
+        "白头城创作素材"
+      ],
+      "summary": "白头城用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/白头城/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "白头城"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名白头城或相关方向时，调用该卡补齐剧情语境：非常适合战后余烬、家书、边军未归。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名白头城或相关方向时，调用该卡补齐剧情语境：非常适合战后余烬、家书、边军未归。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/白头城/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "白头城",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "白头城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "白头城的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/白头城/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "白头城",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写白头城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写白头城时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-liangzhou-guiyijun",
+      "entity_type": "story",
+      "canonical_name": "凉州与归义军旧事",
+      "aliases": [
+        "凉州与归义军旧事",
+        "凉州主区域",
+        "无垢塔旧事",
+        "归唐情绪",
+        "凉州与归义军旧事创作素材"
+      ],
+      "summary": "凉州与归义军旧事用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/凉州与归义军旧事/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "凉州与归义军旧事"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名凉州与归义军旧事或相关方向时，调用该卡补齐剧情语境：承接归唐、边地清宁、盛宴与伤兵并存。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名凉州与归义军旧事或相关方向时，调用该卡补齐剧情语境：承接归唐、边地清宁、盛宴与伤兵并存。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/凉州与归义军旧事/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "凉州与归义军旧事",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "凉州与归义军旧事的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "凉州与归义军旧事的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/凉州与归义军旧事/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "凉州与归义军旧事",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写凉州与归义军旧事时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写凉州与归义军旧事时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-qingzhou-dongyue",
+      "entity_type": "story",
+      "canonical_name": "青州主线前段·东岳",
+      "aliases": [
+        "青州主线前段·东岳",
+        "青州东岳",
+        "海岱有朋来",
+        "青州首子区域",
+        "青州主线前段·东岳创作素材"
+      ],
+      "summary": "青州主线前段·东岳用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/青州主线前段·东岳/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州主线前段·东岳"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名青州主线前段·东岳或相关方向时，调用该卡补齐剧情语境：当前青州蓬山文津直接跳过东岳。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名青州主线前段·东岳或相关方向时，调用该卡补齐剧情语境：当前青州蓬山文津直接跳过东岳。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/青州主线前段·东岳/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州主线前段·东岳",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "青州主线前段·东岳的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "青州主线前段·东岳的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/青州主线前段·东岳/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "青州主线前段·东岳",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写青州主线前段·东岳时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写青州主线前段·东岳时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-wenjinguan-pengshan-split",
+      "entity_type": "story",
+      "canonical_name": "文津馆与蓬山",
+      "aliases": [
+        "文津馆与蓬山",
+        "文津馆线",
+        "蓬山线",
+        "文津开馆",
+        "青州求学"
+      ],
+      "summary": "文津馆与蓬山用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/文津馆与蓬山/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "文津馆与蓬山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名文津馆与蓬山或相关方向时，调用该卡补齐剧情语境：现有粗合并影响检索和情绪精度。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名文津馆与蓬山或相关方向时，调用该卡补齐剧情语境：现有粗合并影响检索和情绪精度。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/文津馆与蓬山/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "文津馆与蓬山",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "文津馆与蓬山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "文津馆与蓬山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/文津馆与蓬山/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "文津馆与蓬山",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写文津馆与蓬山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写文津馆与蓬山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-fengxue-daishan",
+      "entity_type": "story",
+      "canonical_name": "风雪岱山",
+      "aliases": [
+        "风雪岱山",
+        "青州镇守风雪岱山",
+        "岱山旧案",
+        "风雪岱山创作素材",
+        "风雪岱山补齐卡"
+      ],
+      "summary": "风雪岱山用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/风雪岱山/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "风雪岱山"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名风雪岱山或相关方向时，调用该卡补齐剧情语境：适合悬疑、雪夜、众声纷纭、真相迟到。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名风雪岱山或相关方向时，调用该卡补齐剧情语境：适合悬疑、雪夜、众声纷纭、真相迟到。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/风雪岱山/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "风雪岱山",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "风雪岱山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "风雪岱山的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/风雪岱山/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "风雪岱山",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写风雪岱山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写风雪岱山时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-companion-first-season",
+      "entity_type": "story",
+      "canonical_name": "伙伴系统首期剧情",
+      "aliases": [
+        "伙伴系统首期剧情",
+        "伙伴剧情",
+        "伙伴系统首期剧情创作素材",
+        "伙伴系统首期剧情补齐卡"
+      ],
+      "summary": "伙伴系统首期剧情用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/伙伴系统首期剧情/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "伙伴系统首期剧情"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名伙伴系统首期剧情或相关方向时，调用该卡补齐剧情语境：现有同行伙伴过抽象，不能支撑真实系统创作。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名伙伴系统首期剧情或相关方向时，调用该卡补齐剧情语境：现有同行伙伴过抽象，不能支撑真实系统创作。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/伙伴系统首期剧情/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "伙伴系统首期剧情",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "伙伴系统首期剧情的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "伙伴系统首期剧情的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/伙伴系统首期剧情/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "伙伴系统首期剧情",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写伙伴系统首期剧情时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写伙伴系统首期剧情时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-boss-old-cases-index",
+      "entity_type": "story",
+      "canonical_name": "镇守旧事总线",
+      "aliases": [
+        "镇守旧事总线",
+        "镇守旧事",
+        "清河镇守",
+        "开封镇守",
+        "河西镇守"
+      ],
+      "summary": "镇守旧事总线用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/镇守旧事总线/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "镇守旧事总线"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名镇守旧事总线或相关方向时，调用该卡补齐剧情语境：便于命中旧案、镇守、前尘类用户意图。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名镇守旧事总线或相关方向时，调用该卡补齐剧情语境：便于命中旧案、镇守、前尘类用户意图。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/镇守旧事总线/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "镇守旧事总线",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "镇守旧事总线的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "镇守旧事总线的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/镇守旧事总线/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "镇守旧事总线",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写镇守旧事总线时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写镇守旧事总线时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
+    },
+    {
+      "key": "story-xiaji-canzhang-index",
+      "entity_type": "story",
+      "canonical_name": "侠迹与残章索引线",
+      "aliases": [
+        "侠迹与残章索引线",
+        "区域侠迹",
+        "区域残章",
+        "侠迹与残章索引线创作素材",
+        "侠迹与残章索引线补齐卡"
+      ],
+      "summary": "侠迹与残章索引线用于补齐剧情创作资料。当前按攻略/维基/剧情整理综合口径整理，可服务角色歌、剧情歌和普通玩家故事，但写词时不应复述成百科条目。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "overview",
+          "heading_path": "剧情/侠迹与残章索引线/资料补齐",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "侠迹与残章索引线"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "用户点名侠迹与残章索引线或相关方向时，调用该卡补齐剧情语境：补全点名某卷侠迹/残章的检索能力。。歌词要把资料转成可唱的场景、关系和情绪。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "用户点名侠迹与残章索引线或相关方向时，调用该卡补齐剧情语境：补全点名某卷侠迹/残章的检索能力。。歌词要把资料转成可唱的场景、关系和情绪。"
+        },
+        {
+          "id": "creative-use",
+          "heading_path": "剧情/侠迹与残章索引线/创作转译",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "侠迹与残章索引线",
+            "创作转译"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "侠迹与残章索引线的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "侠迹与残章索引线的创作价值在于给用户故事增加燕云世界归属感。不要强塞名词；优先把人物关系、地域气味、势力冲突或玩法经历转译成副歌记忆点。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/侠迹与残章索引线/禁写误区",
+          "theme_tags": [
+            "剧情歌",
+            "任务线",
+            "叙事弧",
+            "侠迹与残章索引线",
+            "禁写误区"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "写侠迹与残章索引线时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。",
+          "usable_imagery": [
+            "渡口",
+            "风声",
+            "旧案",
+            "夜雨",
+            "未说完的结局"
+          ],
+          "emotional_arc": "从用户原始灵感进入燕云语境，再提炼出可唱的冲突、关系和记忆点。",
+          "avoid_claims": [
+            "不要把资料写成百科复述",
+            "不要编造未确认的官方结局或人物关系",
+            "不要混入其他 IP 专属名词或现实仿冒内容"
+          ],
+          "content": "写侠迹与残章索引线时不要编造未给出的官方结局、阵营定论或人物关系；不要把资料直接堆成设定说明，也不要混入其他 IP 专属名词。"
+        }
+      ]
     }
   ]
 }
