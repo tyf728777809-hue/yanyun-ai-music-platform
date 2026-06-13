@@ -348,9 +348,9 @@
     },
     "storyline": {
       "total": 30,
-      "missing": 13,
+      "missing": 8,
       "thin": 1,
-      "present": 6,
+      "present": 11,
       "needs_fact_split": 10,
       "pending_clues_only": 0
     },
@@ -5201,12 +5201,13 @@
         "菱花尘满",
         "为谁归去"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -5219,8 +5220,8 @@
         "火烧前后状态变化",
         "可用意象与禁写项"
       ],
-      "writing_impact": "清河初入江湖现有卡过泛，难支撑少东家归家、灾前灾后反差。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "writing_impact": "已在正式剧情库第一批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5262,12 +5263,13 @@
         "重返不羡仙",
         "梦中不羡仙"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -5280,8 +5282,8 @@
         "梦中不羡仙",
         "重建前情绪边界"
       ],
-      "writing_impact": "清河最强情绪节点之一，用户常点名。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "writing_impact": "已在正式剧情库第一批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5381,12 +5383,13 @@
         "平地风波",
         "大义熔炉"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-public-beta",
@@ -5399,8 +5402,8 @@
         "故人/权势/局中局",
         "黑财神/郑鄂分流禁混"
       ],
-      "writing_impact": "现有开封夜市与鬼市无法承接开封主线创作。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "writing_impact": "已在正式剧情库第一批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5412,12 +5415,13 @@
         "平地风波前置",
         "道主线"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-ghost-market",
@@ -5430,8 +5434,8 @@
         "九流门弟子救援",
         "禁写过度定论"
       ],
-      "writing_impact": "用户点名无忧洞/道主/阴间开封时需要独立命中。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "writing_impact": "已在正式剧情库第一批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -5512,12 +5516,13 @@
         "纸月亮",
         "秦川梦别"
       ],
-      "current_status": "missing",
+      "current_status": "present",
       "priority": "P0",
       "live_status": "live_confirmed",
       "recommended_fact_level": [
         "official_public_seed",
-        "accepted_story_synthesis"
+        "accepted_story_synthesis",
+        "current_kb"
       ],
       "source_candidates": [
         "official-hexi-live",
@@ -5529,8 +5534,8 @@
         "玉门至凉州再至秦川",
         "故乡/归唐/边塞/梦月意象"
       ],
-      "writing_impact": "当前凉州只剩玉露为乡，不能代替河西主章。",
-      "risk_notes": "完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。",
+      "writing_impact": "已在正式剧情库第一批补入，可被检索和用于写词；后续仍可按实录和公司资料继续增强。",
+      "risk_notes": "正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局；accepted_story_synthesis 不应对外宣称官方定论。",
       "target_domain_file": "storylines.json"
     },
     {
@@ -8302,6 +8307,23 @@
       "新增 6 个 P1 人物实体，每个实体 4 张创作卡。",
       "覆盖伙伴陪伴、审美人物、青州伙伴线和墨山道机关线。",
       "新增 6 条角色检索 eval case；P1 人物缺口已清空。"
+    ]
+  },
+  "formal_story_kb_first_batch_coverage": {
+    "completed_at": "2026-06-14T03:20:00+08:00",
+    "purpose": "正式剧情知识库第一批补库，优先转入 P0 核心主章/强情绪剧情线。",
+    "covered_storyline_rows": [
+      "story-buxianxian-fire-return",
+      "story-hexi-wenyue-changan",
+      "story-kaifeng-tiandi-ronglu",
+      "story-qinghe-shenxian-budu",
+      "story-wuyou-dong"
+    ],
+    "notes": [
+      "新增 5 条 P0 剧情实体，每条实体 5 张创作卡。",
+      "覆盖清河主章、不羡仙旧事、开封主章、无忧洞、河西主章。",
+      "新增 5 条剧情检索 eval case。",
+      "不羡仙剧情实体避开地点实体别名冲突，命名为“不羡仙旧事”。"
     ]
   }
 }

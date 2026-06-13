@@ -1200,6 +1200,715 @@
           "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md"
         }
       ]
+    },
+    {
+      "key": "story-qinghe-shenxian-budu",
+      "entity_type": "story",
+      "canonical_name": "清河主章·神仙不渡",
+      "aliases": [
+        "清河主章·神仙不渡",
+        "清河主章",
+        "神仙不渡",
+        "清河神仙不渡"
+      ],
+      "summary": "清河早期主章核心剧情，承接少东家归家、不羡仙灾前灾后、寒姨/江叔家庭感和少年离乡后的第一道裂缝。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "home-before-break",
+          "heading_path": "剧情/清河主章·神仙不渡/灾前归家感",
+          "theme_tags": [
+            "清河",
+            "少东家",
+            "不羡仙旧事",
+            "归家"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "神仙不渡的起点不是大事件，而是少东家在清河、神仙渡、不羡仙里的归家感；歌词应先写烟火和亲近，再让后续破碎有重量。",
+          "usable_imagery": [
+            "竹林旧路",
+            "酒馆灯火",
+            "梨花",
+            "饭菜热气",
+            "江叔寒姨"
+          ],
+          "emotional_arc": "安稳、亲近、被保护，随后才意识到这份安稳很脆。",
+          "avoid_claims": [
+            "不要一上来就写灾难",
+            "不要把清河写成纯新手村",
+            "不要把亲情写成口号"
+          ],
+          "content": "灾前归家感剧情创作卡。"
+        },
+        {
+          "id": "river-crossing",
+          "heading_path": "剧情/清河主章·神仙不渡/渡口与离乡",
+          "theme_tags": [
+            "神仙渡",
+            "渡口",
+            "少年离乡",
+            "江湖"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "神仙渡可写成“渡人不渡命”的起点：少年从被护着的人，变成不得不自己过河的人。",
+          "usable_imagery": [
+            "渡口木桥",
+            "水声",
+            "离岸灯",
+            "湿鞋印",
+            "回头路"
+          ],
+          "emotional_arc": "从不舍离家，到不得不走向江湖。",
+          "avoid_claims": [
+            "不要写成旅游风景",
+            "不要把渡口神怪化",
+            "不要复述任务步骤"
+          ],
+          "content": "渡口与离乡剧情创作卡。"
+        },
+        {
+          "id": "fire-and-return",
+          "heading_path": "剧情/清河主章·神仙不渡/火光与归来",
+          "theme_tags": [
+            "火烧不羡仙",
+            "旧家破碎",
+            "回望"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "清河主章的强情绪在“回去时已经不是原来的家”：可写酒馆灯火被火光替代，少年终于懂得寒姨为何不让他入江湖。",
+          "usable_imagery": [
+            "火光",
+            "烧焦酒香",
+            "门楣灰烬",
+            "旧牌匾",
+            "空桌"
+          ],
+          "emotional_arc": "从不理解保护，到亲眼看见旧家被拖进江湖。",
+          "avoid_claims": [
+            "不要过度血腥",
+            "不要把火灾写成爽点",
+            "不要补未核实凶手链条"
+          ],
+          "content": "火光与归来剧情创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "剧情/清河主章·神仙不渡/歌曲角度",
+          "theme_tags": [
+            "角色歌",
+            "归家",
+            "少年江湖"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合少年感国风摇滚或叙事流行：主歌写归家，副歌写“神仙不渡，我自己过河”，桥段再回望不羡仙。",
+          "usable_imagery": [
+            "渡口",
+            "梨花",
+            "旧灯",
+            "火后灰"
+          ],
+          "emotional_arc": "由温暖铺陈到副歌破局，再落回怀念。",
+          "avoid_claims": [
+            "不要堆古风套词",
+            "不要写成剧情梗概",
+            "不要让主角变成救世口号"
+          ],
+          "content": "歌曲角度剧情创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/清河主章·神仙不渡/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "禁写",
+            "清河"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "神仙不渡可以提供清河主线骨架，但不应替官方确认所有幕后真相；写词重点是家被打破、少年被迫长大。",
+          "usable_imagery": [
+            "未灭的炭火",
+            "渡口回声",
+            "旧碗"
+          ],
+          "emotional_arc": "保留真相留白，让情绪先成立。",
+          "avoid_claims": [
+            "不要宣称完整官方剧情",
+            "不要写死争议身份结论",
+            "不要把清河人物关系随意改写"
+          ],
+          "content": "禁写边界剧情创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "story-buxianxian-fire-return",
+      "entity_type": "story",
+      "canonical_name": "不羡仙旧事",
+      "aliases": [
+        "不羡仙旧事",
+        "火烧不羡仙",
+        "不羡仙归家旧事",
+        "梦中不羡仙"
+      ],
+      "summary": "不羡仙作为归家、亲情、火烧前后反差和重建/回望的核心情绪节点；为避免和地点实体别名冲突，剧情实体使用“不羡仙旧事”。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "warm-home",
+          "heading_path": "剧情/不羡仙旧事/酒馆作为家",
+          "theme_tags": [
+            "不羡仙旧事",
+            "归家",
+            "寒香寻",
+            "江无浪"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "不羡仙旧事要先写家：酒、饭、梨花、寒姨的叮嘱、江叔的沉默和少东家以为理所当然的日常。",
+          "usable_imagery": [
+            "酒坛",
+            "梨花",
+            "热饭",
+            "木桌",
+            "门口灯"
+          ],
+          "emotional_arc": "日常越温暖，后续失去越刺痛。",
+          "avoid_claims": [
+            "不要只写建筑",
+            "不要把不羡仙写成普通客栈",
+            "不要泛化成酒馆宣传"
+          ],
+          "content": "酒馆作为家剧情创作卡。"
+        },
+        {
+          "id": "fire-break",
+          "heading_path": "剧情/不羡仙旧事/火烧后的断裂",
+          "theme_tags": [
+            "火烧不羡仙",
+            "失去",
+            "旧家"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "火烧不羡仙适合写成“旧家被旧江湖追上”的瞬间：火不是爽感，而是少东家童年被迫结束。",
+          "usable_imagery": [
+            "烧焦门楣",
+            "酒香成灰",
+            "碎瓦",
+            "黑烟",
+            "空椅"
+          ],
+          "emotional_arc": "从不敢相信，到承认自己已经回不到原来的夜晚。",
+          "avoid_claims": [
+            "不要血腥猎奇",
+            "不要写成复仇爽文",
+            "不要补全部幕后因果"
+          ],
+          "content": "火烧后的断裂剧情创作卡。"
+        },
+        {
+          "id": "dream-return",
+          "heading_path": "剧情/不羡仙旧事/梦中归来",
+          "theme_tags": [
+            "梦中不羡仙",
+            "回忆",
+            "归家"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "梦中不羡仙可以写“醒来前一切都还在”：适合回忆杀、慢歌和玩家想给寒姨/江叔写歌的场景。",
+          "usable_imagery": [
+            "梦里灯火",
+            "未凉的饭",
+            "旧称呼",
+            "推门声",
+            "梨花落桌"
+          ],
+          "emotional_arc": "梦里重逢，醒后空落，仍把家带在身上。",
+          "avoid_claims": [
+            "不要写成真的复活定论",
+            "不要滥用催泪",
+            "不要把回忆写成设定说明"
+          ],
+          "content": "梦中归来剧情创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "剧情/不羡仙旧事/歌曲角度",
+          "theme_tags": [
+            "归家歌",
+            "亲情",
+            "火后回望"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合抒情国风、叙事民谣或后半段爆发的摇滚；副歌可写“我走过十六州，仍想推开那扇门”。",
+          "usable_imagery": [
+            "门",
+            "灯",
+            "梨花",
+            "火灰"
+          ],
+          "emotional_arc": "温柔主歌，副歌爆发，尾声只剩一盏灯。",
+          "avoid_claims": [
+            "不要口号化",
+            "不要过度堆泪点",
+            "不要脱离寒香寻/少东家语境"
+          ],
+          "content": "歌曲角度剧情创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/不羡仙旧事/禁写边界",
+          "theme_tags": [
+            "禁写",
+            "地点冲突",
+            "资料边界"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "不羡仙旧事是剧情情绪卡，不是地点卡；写词时可用归家、火后、梦中回望，不要抢地点实体的基础描述。",
+          "usable_imagery": [
+            "旧门牌",
+            "空酒坛",
+            "灰里梨花"
+          ],
+          "emotional_arc": "地点承载事实，旧事承载情绪。",
+          "avoid_claims": [
+            "不要和地点实体混淆",
+            "不要宣称火烧全部真相已确认",
+            "不要写死所有人物结局"
+          ],
+          "content": "禁写边界剧情创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "story-kaifeng-tiandi-ronglu",
+      "entity_type": "story",
+      "canonical_name": "开封主章·天地熔炉",
+      "aliases": [
+        "开封主章·天地熔炉",
+        "开封主章",
+        "天地熔炉",
+        "开封天地熔炉"
+      ],
+      "summary": "开封主章核心剧情，承接汴梁繁华、庙堂权力、鬼市暗面、炉火意象和人在大城局中被熔炼的主题。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "city-as-furnace",
+          "heading_path": "剧情/开封主章·天地熔炉/大城如炉",
+          "theme_tags": [
+            "开封",
+            "天地熔炉",
+            "汴梁",
+            "权力"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天地熔炉的核心是开封像一座大炉：繁华、权力、市井和暗线都把人放进去熔炼，写词不要只写夜市热闹。",
+          "usable_imagery": [
+            "炉火",
+            "汴梁灯海",
+            "宫墙",
+            "街市铜声",
+            "烟尘"
+          ],
+          "emotional_arc": "初见繁华，逐渐发现每盏灯都照着一场局。",
+          "avoid_claims": [
+            "不要只写开封旅游感",
+            "不要现实政治影射",
+            "不要把主章写成纯权谋爽剧"
+          ],
+          "content": "大城如炉剧情创作卡。"
+        },
+        {
+          "id": "palace-and-street",
+          "heading_path": "剧情/开封主章·天地熔炉/庙堂与市井",
+          "theme_tags": [
+            "庙堂",
+            "市井",
+            "宫城",
+            "开封"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封主章适合写宫门深处和街头烟火互相牵扯：上面的一句话，会变成下面的一夜风声。",
+          "usable_imagery": [
+            "宫门",
+            "街鼓",
+            "樊楼灯",
+            "旧榜文",
+            "夜雨"
+          ],
+          "emotional_arc": "从市井近景推到宫城远景，再回到普通人身上。",
+          "avoid_claims": [
+            "不要把庙堂线写成历史论文",
+            "不要忽略普通人",
+            "不要乱写未确认官职结论"
+          ],
+          "content": "庙堂与市井剧情创作卡。"
+        },
+        {
+          "id": "underworld-shadow",
+          "heading_path": "剧情/开封主章·天地熔炉/鬼市暗面",
+          "theme_tags": [
+            "鬼市",
+            "无忧洞",
+            "九流",
+            "暗线"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "开封暗面可写鬼市、无忧洞、九流暗线和地下人间：它们不是恐怖元素，而是繁华背后被压住的人声。",
+          "usable_imagery": [
+            "鬼市绿灯",
+            "地底巷",
+            "面具",
+            "湿墙",
+            "低声叫卖"
+          ],
+          "emotional_arc": "越往地下，越听见被繁华盖住的人。",
+          "avoid_claims": [
+            "不要恐怖片化",
+            "不要现实黑帮化",
+            "不要写具体交易攻略"
+          ],
+          "content": "鬼市暗面剧情创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "剧情/开封主章·天地熔炉/歌曲角度",
+          "theme_tags": [
+            "开封歌",
+            "庙堂",
+            "市井暗面"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合宏大国风流行、暗色摇滚或带市井说唱段落；副歌可写“大城如炉，熔不掉我的名字”。",
+          "usable_imagery": [
+            "炉火",
+            "宫墙",
+            "夜市",
+            "鬼面"
+          ],
+          "emotional_arc": "繁华开场，暗面推进，副歌给大城压迫感。",
+          "avoid_claims": [
+            "不要太散",
+            "不要堆地名",
+            "不要把用户故事淹没"
+          ],
+          "content": "歌曲角度剧情创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/开封主章·天地熔炉/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "开封",
+            "禁写"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "天地熔炉可以作为开封主章骨架，但具体结局、身份反转和官方真相需实录或公司资料覆盖。",
+          "usable_imagery": [
+            "合上的城门",
+            "炉灰",
+            "未揭的榜"
+          ],
+          "emotional_arc": "用大城压迫感服务创作，不硬解释全局。",
+          "avoid_claims": [
+            "不要宣称完整官方剧情",
+            "不要编造朝局结论",
+            "不要现实影射"
+          ],
+          "content": "禁写边界剧情创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "story-wuyou-dong",
+      "entity_type": "story",
+      "canonical_name": "无忧洞",
+      "aliases": [
+        "无忧洞",
+        "鬼樊楼",
+        "无忧洞线"
+      ],
+      "summary": "无忧洞独立剧情线，承接开封地下、鬼樊楼、人市、道主/小福身份反转、九流弟子救援和阴间开封感。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "underground-entry",
+          "heading_path": "剧情/无忧洞/地下入口",
+          "theme_tags": [
+            "无忧洞",
+            "开封地下",
+            "鬼樊楼"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无忧洞适合写开封地下世界：向下走不是探险，而是看见被地上繁华压住的人和命。",
+          "usable_imagery": [
+            "地底阶梯",
+            "潮湿墙面",
+            "昏灯",
+            "铁门",
+            "回声"
+          ],
+          "emotional_arc": "从误入地下，到发现这里也有人等待被救。",
+          "avoid_claims": [
+            "不要恐怖片化",
+            "不要写成副本攻略",
+            "不要血腥猎奇"
+          ],
+          "content": "地下入口剧情创作卡。"
+        },
+        {
+          "id": "daoist-and-xiaofu",
+          "heading_path": "剧情/无忧洞/道主与小福",
+          "theme_tags": [
+            "道主",
+            "小福",
+            "身份反转",
+            "救援"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "道主/小福相关线索可写身份错位和迟来的救援：重点不是反转本身，而是一个名字背后有多少未被看见的人。",
+          "usable_imagery": [
+            "小福旧名",
+            "破碗",
+            "地底灯",
+            "被遮住的脸",
+            "低声呼救"
+          ],
+          "emotional_arc": "误认、靠近、反转、救人。",
+          "avoid_claims": [
+            "不要提前剧透式解谜",
+            "不要写死所有身份细节",
+            "不要把弱者写成猎奇素材"
+          ],
+          "content": "道主与小福剧情创作卡。"
+        },
+        {
+          "id": "jiuliu-rescue",
+          "heading_path": "剧情/无忧洞/九流弟子救援",
+          "theme_tags": [
+            "九流门",
+            "救援",
+            "地下众生"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无忧洞可以写九流弟子救援和地下众生：九流不是单纯邪恶标签，也有市井互助和救人一面。",
+          "usable_imagery": [
+            "破旗",
+            "暗号",
+            "湿巷脚步",
+            "扶起的人",
+            "旧灯"
+          ],
+          "emotional_arc": "从灰色组织到看见其中的人情。",
+          "avoid_claims": [
+            "不要把九流门单一邪教化",
+            "不要现代黑帮化",
+            "不要把救援写成口号"
+          ],
+          "content": "九流弟子救援剧情创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "剧情/无忧洞/歌曲角度",
+          "theme_tags": [
+            "地下开封",
+            "救援",
+            "身份"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合暗色叙事歌、低沉说唱或后半段救援爆发；副歌可写“无忧洞里，最难的是忘忧”。",
+          "usable_imagery": [
+            "地底灯",
+            "回声",
+            "旧名",
+            "破门"
+          ],
+          "emotional_arc": "压抑开场，救援推进，最后留一点光。",
+          "avoid_claims": [
+            "不要过度阴森",
+            "不要写得不可唱",
+            "不要只讲反转"
+          ],
+          "content": "歌曲角度剧情创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/无忧洞/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "开封暗面",
+            "禁写"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "无忧洞是强剧情线，事实细节必须克制；写词优先用地下、救援、身份错位和被压住的人声。",
+          "usable_imagery": [
+            "未亮的灯",
+            "湿墙名字",
+            "地上脚步"
+          ],
+          "emotional_arc": "不把黑暗当噱头，而写人如何走出去。",
+          "avoid_claims": [
+            "不要宣称完整官方真相",
+            "不要血腥低俗化",
+            "不要用现实犯罪映射"
+          ],
+          "content": "禁写边界剧情创作卡。"
+        }
+      ]
+    },
+    {
+      "key": "story-hexi-wenyue-changan",
+      "entity_type": "story",
+      "canonical_name": "河西主章·问月长安",
+      "aliases": [
+        "河西主章·问月长安",
+        "河西主章",
+        "问月长安",
+        "河西问月长安"
+      ],
+      "summary": "河西主章核心剧情，承接玉门入关、凉州、长安、归义军旧事、玉露为乡、月色和边地归属感。",
+      "source_type": "guide_wiki_synthesis",
+      "source_ref": "docs/integrations/yanyun-knowledge-source-registry.md#guide-wiki-story-synthesis",
+      "fact_level": "accepted_story_synthesis",
+      "spoiler_level": "open",
+      "cards": [
+        {
+          "id": "yumen-to-liangzhou",
+          "heading_path": "剧情/河西主章·问月长安/玉门至凉州",
+          "theme_tags": [
+            "河西",
+            "玉门关",
+            "凉州",
+            "长路"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "问月长安应写一条长路：从玉门关风沙入境，到凉州城灯火，玩家一路听见边地人的旧愿。",
+          "usable_imagery": [
+            "玉门关",
+            "风沙",
+            "驼铃",
+            "凉州灯",
+            "长路月"
+          ],
+          "emotional_arc": "入关、远行、看见边地和中原的牵连。",
+          "avoid_claims": [
+            "不要异域猎奇",
+            "不要只写风景",
+            "不要把河西人物混成一人"
+          ],
+          "content": "玉门至凉州剧情创作卡。"
+        },
+        {
+          "id": "guiyi-memory",
+          "heading_path": "剧情/河西主章·问月长安/归义军旧事",
+          "theme_tags": [
+            "归义军",
+            "家国",
+            "边地",
+            "归唐"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "归义军旧事适合写守土、归心和后人仍在听见的旗声；主角不是历史讲解员，而是走进余响的人。",
+          "usable_imagery": [
+            "旧军旗",
+            "边城墙",
+            "家书",
+            "烽火灰",
+            "长安月"
+          ],
+          "emotional_arc": "从听见旧名，到理解边地为什么要归。",
+          "avoid_claims": [
+            "不要写成历史课",
+            "不要现实政治影射",
+            "不要忽略普通边民"
+          ],
+          "content": "归义军旧事剧情创作卡。"
+        },
+        {
+          "id": "moon-and-home",
+          "heading_path": "剧情/河西主章·问月长安/月与故乡",
+          "theme_tags": [
+            "月",
+            "长安",
+            "故乡",
+            "身份"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "问月长安的月不是装饰，而是远方、故乡、归属和身份追问；适合与阿依努尔、麻布袋、宝音等人物素材联动。",
+          "usable_imagery": [
+            "长安月",
+            "葡萄藤",
+            "月光酒",
+            "高塔",
+            "远方灯"
+          ],
+          "emotional_arc": "漂泊、望月、想起故乡、重新确认自己。",
+          "avoid_claims": [
+            "不要把月亮写成泛古风套词",
+            "不要强行爱情化",
+            "不要异域刻板化"
+          ],
+          "content": "月与故乡剧情创作卡。"
+        },
+        {
+          "id": "song-angle",
+          "heading_path": "剧情/河西主章·问月长安/歌曲角度",
+          "theme_tags": [
+            "河西歌",
+            "边塞",
+            "归属"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "适合边塞史诗、国风摇滚或开阔女/男声；副歌可写“我问月，长安还照不照河西”。",
+          "usable_imagery": [
+            "玉门风",
+            "长安月",
+            "旧旗",
+            "凉州灯"
+          ],
+          "emotional_arc": "长路铺陈，副歌开阔，尾声回到一个人的归处。",
+          "avoid_claims": [
+            "不要口号化",
+            "不要堆边塞套词",
+            "不要让宏大压掉人物"
+          ],
+          "content": "歌曲角度剧情创作卡。"
+        },
+        {
+          "id": "boundary",
+          "heading_path": "剧情/河西主章·问月长安/禁写边界",
+          "theme_tags": [
+            "资料边界",
+            "河西",
+            "禁写"
+          ],
+          "story_phase": "spoiler_synthesis",
+          "summary_for_prompt": "问月长安可以提供河西主章骨架，但具体任务结局、身份反转和未复核人物关系要保持创作叙事层。",
+          "usable_imagery": [
+            "未寄的归书",
+            "风沙盖过脚印",
+            "月下空城"
+          ],
+          "emotional_arc": "历史与玩家故事并行，不用一方压倒另一方。",
+          "avoid_claims": [
+            "不要宣称完整官方剧情",
+            "不要编造角色结局",
+            "不要现实政治影射"
+          ],
+          "content": "禁写边界剧情创作卡。"
+        }
+      ]
     }
   ]
 }

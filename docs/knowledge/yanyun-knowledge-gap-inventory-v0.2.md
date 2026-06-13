@@ -13,6 +13,7 @@
 - 第三批正式补库已回写状态：画睛兄、兰澳、贺然、黎蓁蓁、柳青衣、柏楚玉、福禄寿三姐妹、赵大哥、龟奶奶、史鸩、石守信、慕容延钊已转入正式人物库。
 - 第四批正式补库已回写状态：朱鱼、冯夷、赵承宗、廉道子、张淮深、望月婵媛、安琉璃、鹰铃、宝音、方白、宋九薇、燕十七已转入正式人物库。
 - 第五批正式补库已回写状态：小猫佑安、白狼主、花魁、叶墨城、福宝、时一墨已转入正式人物库，P1 人物缺口已清空。
+- 第一批正式剧情补库已回写状态：清河主章·神仙不渡、不羡仙旧事、开封主章·天地熔炉、无忧洞、河西主章·问月长安已转入正式剧情库。
 - 人物覆盖口径：只收对歌词创作有价值的主线/支线/势力代表/历史锚点/伙伴/强记忆 NPC；低叙事普通 NPC 按地域或市井群像纳入 P3。
 - `pending_clues` 可以进入创作素材层，但只能写成暗线、传闻、旧事、情绪或意象，不得写成官方定论。
 - 江南/杭州、陈子奚、玉山君、文津馆十相等截至 2026-06-13 属于未来/预告资料，不进当前 live 主库事实层。
@@ -22,7 +23,7 @@
 | 类型 | 总行数 | 已有 | 缺失 | 偏薄 | 需拆分 | 仅待核线索 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | 人物 | 130 | 78 | 30 | 0 | 0 | 22 |
-| 剧情/任务线 | 30 | 6 | 13 | 1 | 10 | 0 |
+| 剧情/任务线 | 30 | 11 | 8 | 1 | 10 | 0 |
 | 地域/场景 | 41 | 10 | 22 | 0 | 9 | 0 |
 | 势力/门派/组织 | 29 | 10 | 6 | 0 | 11 | 2 |
 | 玩法体验 | 27 | 7 | 11 | 2 | 6 | 1 |
@@ -186,11 +187,11 @@
 
 | ID | 名称 | 状态 | 优先级 | 来源等级 | 建议补卡 | 写词影响 / 风险 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `story-buxianxian-fire-return` | 不羡仙 | 缺失 | P0 | official_public_seed, accepted_story_synthesis | 酒馆与寒香寻；火烧前后反差；梦中不羡仙；重建前情绪边界 | 清河最强情绪节点之一，用户常点名。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
-| `story-hexi-wenyue-changan` | 河西主章·问月长安 | 缺失 | P0 | official_public_seed, accepted_story_synthesis | 河西五段主章；玉门至凉州再至秦川；故乡/归唐/边塞/梦月意象 | 当前凉州只剩玉露为乡，不能代替河西主章。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
-| `story-kaifeng-tiandi-ronglu` | 开封主章·天地熔炉 | 缺失 | P0 | official_public_seed, accepted_story_synthesis | 五段主章摘要；汴梁繁华与炉火；故人/权势/局中局；黑财神/郑鄂分流禁混 | 现有开封夜市与鬼市无法承接开封主线创作。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
-| `story-qinghe-shenxian-budu` | 清河主章·神仙不渡 | 缺失 | P0 | official_public_seed, accepted_story_synthesis | 主章四段摘要；清河主情绪弧线；火烧前后状态变化；可用意象与禁写项 | 清河初入江湖现有卡过泛，难支撑少东家归家、灾前灾后反差。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
-| `story-wuyou-dong` | 无忧洞 | 缺失 | P0 | official_public_seed, accepted_story_synthesis | 地宫/鬼樊楼/人市；道主与小福身份反转；九流门弟子救援；禁写过度定论 | 用户点名无忧洞/道主/阴间开封时需要独立命中。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
+| `story-buxianxian-fire-return` | 不羡仙旧事 | 已有 | P0 | accepted_story_synthesis, current_kb | 已补 5 张正式剧情卡 | 清河最强情绪节点之一，用户常点名。 风险：正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局。 |
+| `story-hexi-wenyue-changan` | 河西主章·问月长安 | 已有 | P0 | accepted_story_synthesis, current_kb | 已补 5 张正式剧情卡 | 当前凉州只剩玉露为乡，不能代替河西主章。 风险：正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局。 |
+| `story-kaifeng-tiandi-ronglu` | 开封主章·天地熔炉 | 已有 | P0 | accepted_story_synthesis, current_kb | 已补 5 张正式剧情卡 | 现有开封夜市与鬼市无法承接开封主线创作。 风险：正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局。 |
+| `story-qinghe-shenxian-budu` | 清河主章·神仙不渡 | 已有 | P0 | accepted_story_synthesis, current_kb | 已补 5 张正式剧情卡 | 清河初入江湖现有卡过泛，难支撑少东家归家、灾前灾后反差。 风险：正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局。 |
+| `story-wuyou-dong` | 无忧洞 | 已有 | P0 | accepted_story_synthesis, current_kb | 已补 5 张正式剧情卡 | 用户点名无忧洞/道主/阴间开封时需要独立命中。 风险：正式剧情库第一批仅做创作可用卡片，不代表剧情线已完全终局。 |
 | `story-baitou-cheng` | 白头城 | 缺失 | P1 | official_public_seed, accepted_story_synthesis | 军旗回忆；城门难入；家书/旧军/白头城旧事 | 非常适合战后余烬、家书、边军未归。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
 | `story-fengxue-daishan` | 风雪岱山 | 缺失 | P1 | official_public_seed, accepted_story_synthesis | 雪夜群困客栈；迷案推理；魔头传闻；旧案翻起 | 适合悬疑、雪夜、众声纷纭、真相迟到。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |
 | `story-jiangjun-ci` | 将军祠 | 缺失 | P1 | official_public_seed, accepted_story_synthesis | 荒祠旧将；忠勇余烬；将军像/祠火/甲胄意象 | 承接旧将未冷、乱世忠骨。 风险：完整梗概多数依赖攻略/实录综合；结局、身份反转和真相需标 accepted_story_synthesis 或 pending_clues。 |

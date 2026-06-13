@@ -1569,6 +1569,54 @@
         "faction-moshandao"
       ],
       "expected_behavior": "命中时一墨和墨山道/机关门派代表素材，不把 accepted_story_synthesis 写成官方定论。"
+    },
+    {
+      "id": "eval-story-qinghe-shenxian-budu-001",
+      "input": "写清河主章神仙不渡，少东家从不羡仙离家以后才懂寒姨",
+      "expected_entities": [
+        "story-qinghe-shenxian-budu",
+        "place-buxianxian",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "命中清河主章、归家和火后成长，不写成剧情百科。"
+    },
+    {
+      "id": "eval-story-buxianxian-fire-return-001",
+      "input": "写火烧不羡仙之后回不去家的歌",
+      "expected_entities": [
+        "story-buxianxian-fire-return",
+        "place-buxianxian"
+      ],
+      "expected_behavior": "命中不羡仙旧事和火后回望，不血腥猎奇。"
+    },
+    {
+      "id": "eval-story-kaifeng-tiandi-ronglu-001",
+      "input": "写开封主章天地熔炉，大城如炉，庙堂和市井都在局里",
+      "expected_entities": [
+        "story-kaifeng-tiandi-ronglu",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中开封主章、大城如炉、庙堂与市井，不现实政治影射。"
+    },
+    {
+      "id": "eval-story-wuyou-dong-001",
+      "input": "写无忧洞和道主小福，地下开封里有人等着被救",
+      "expected_entities": [
+        "story-wuyou-dong",
+        "character-dao-lord",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中无忧洞、地下开封和救援主题，不恐怖片化。"
+    },
+    {
+      "id": "eval-story-hexi-wenyue-changan-001",
+      "input": "写河西主章问月长安，从玉门到凉州，归义军旧旗和长安月",
+      "expected_entities": [
+        "story-hexi-wenyue-changan",
+        "region-liangzhou",
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "命中河西主章、归义军和长安月，不写成历史课。"
     }
   ]
 }
