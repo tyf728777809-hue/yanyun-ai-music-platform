@@ -1,47 +1,1116 @@
 {
   "domain": "eval-cases",
   "eval_cases": [
-    {"id": "eval-character-hanxiangxun-001", "input": "以寒香寻的人生经历写一首歌，想要少年游和不羡仙的感觉", "expected_entities": ["character-hanxiangxun", "place-buxianxian", "place-shenxiandu"], "expected_behavior": "命中寒香寻剧情整合人物传、不羡仙、洛神/寻心和归家意象，不写成泛泛寒姨。"},
-    {"id": "eval-character-ayinuer-001", "input": "写一首阿依努尔的角色歌，主题是故乡和身份", "expected_entities": ["character-ayinuer", "region-liangzhou", "story-yulu-weixiang"], "expected_behavior": "写凉州、归属和身份追问，不异域猎奇。"},
-    {"id": "eval-character-xunxin-001", "input": "帮我写寻心线的歌，空灵一点", "expected_entities": ["character-xunxin", "story-ruoshui-xunxin", "place-ruoshui-an"], "expected_behavior": "命中弱水岸与记忆主题，不编造真相。"},
-    {"id": "eval-character-tianying-001", "input": "田英这个角色写成对手感很强的歌", "expected_entities": ["character-tianying"], "expected_behavior": "写对峙和强者压迫感，不补门派阵营。"},
-    {"id": "eval-character-qianye-001", "input": "千夜主题，夜行和孤独", "expected_entities": ["character-qianye"], "expected_behavior": "写隐秘和夜色，不血腥化。"},
-    {"id": "eval-character-ayinuer-alias-001", "input": "阿依奴的歌，写玉露台和月光酒，不要写得猎奇", "expected_entities": ["character-ayinuer", "story-yulu-weixiang"], "expected_behavior": "阿依奴别名应命中阿依努尔，写故乡、月光酒和离散，不异域猎奇。"},
-    {"id": "eval-character-ye-wanshan-001", "input": "叶万山，北地守城名将那种沉默背负", "expected_entities": ["character-ye-wanshan", "region-yanmen"], "expected_behavior": "写北地、守城和重压，不把妻女传闻或战役写成事实。"},
-    {"id": "eval-character-lucky-seventeen-001", "input": "小十七，少年感但不要太幼稚", "expected_entities": ["character-lucky-seventeen"], "expected_behavior": "写守护、锻甲和少年气，不低龄萌化。"},
-    {"id": "eval-character-dao-lord-001", "input": "道主和九流门地下规矩，想要神秘一点", "expected_entities": ["character-dao-lord", "faction-jiuliumen"], "expected_behavior": "不把道主身份壳、位阶或结局写成确定事实；待核线索默认不能当事实注入。"},
-    {"id": "eval-character-void-king-001", "input": "无相皇，写突破血脉限制却被力量吞掉", "expected_entities": ["character-void-king"], "expected_behavior": "写血脉限制、空面和超限压迫，不把皇字写成确定皇族。"},
-    {"id": "eval-character-jiangwulang-001", "input": "写江叔带着少东家在清河长大的感觉", "expected_entities": ["character-jiangwulang", "region-qinghe", "place-buxianxian"], "expected_behavior": "写竹林旧居、养育、远行和归家牵挂，不狗血化。"},
-    {"id": "eval-character-chuqingquan-001", "input": "写褚清泉和寒姨那种家国私情被撕开的歌", "expected_entities": ["character-chuqingquan", "character-hanxiangxun"], "expected_behavior": "写边塞、换脸、旧情和永别，不写成甜宠爱情。"},
-    {"id": "eval-character-hongxian-001", "input": "红线和少东家少年同行，想要轻快但后劲酸", "expected_entities": ["character-hongxian", "place-shenxiandu"], "expected_behavior": "写少年同行和清河明亮底色，不强行爱情。"},
-    {"id": "eval-character-yidao-001", "input": "伊刀作为寒姨故人出现，写旧案回潮", "expected_entities": ["character-yidao", "character-hanxiangxun"], "expected_behavior": "写故人沉默和旧事触发，不写死具体关系。"},
-    {"id": "eval-character-tianbushou-001", "input": "天不收和寒姨旧信，写一首低声叙事歌", "expected_entities": ["character-tianbushou", "character-hanxiangxun"], "expected_behavior": "写旧信和旧友守口，不写成全知旁白。"},
-    {"id": "eval-character-zheng-e-001", "input": "郑鄂常平一炬，写一个从救世到厌世的人", "expected_entities": ["character-zheng-e"], "expected_behavior": "写白衣折扇、霜枪和常平火，不再写成抽象记录者。"},
-    {"id": "eval-story-guishizi-001", "input": "鬼市子和开封地下鬼市，想写悬疑一点", "expected_entities": ["story-kaifeng-guishizi-underworld", "story-kaifeng-night-market"], "expected_behavior": "按鬼市身份壳/场景线写，不硬写成单一 NPC 传记。"},
-    {"id": "eval-region-kaifeng-001", "input": "开封夜市很热闹但我觉得很孤独，写首歌", "expected_entities": ["region-kaifeng", "story-kaifeng-night-market"], "expected_behavior": "写繁华与暗面并存，不现代都市化。"},
-    {"id": "eval-region-yanmen-001", "input": "雁门风雪，守城的小兵", "expected_entities": ["region-yanmen", "faction-guiyijun"], "expected_behavior": "写边塞守护，不编造具体战役。"},
-    {"id": "eval-region-qingzhou-001", "input": "青州文津馆，书卷气和旧案", "expected_entities": ["region-qingzhou", "faction-wenjinguan", "story-qingzhou-pengshan"], "expected_behavior": "写求索、书卷、山雨，不现代校园化。"},
-    {"id": "eval-story-faction-fall-001", "input": "我想写一个天赋平平的弟子，师门没了，但他还是想行侠", "expected_entities": ["story-faction-fall", "character-player-wanderer"], "expected_behavior": "不强绑官方门派，保留普通人故事。"},
-    {"id": "eval-story-small-justice-001", "input": "写一个路见不平的小故事，不要太宏大", "expected_entities": ["story-small-injustice", "gameplay-injustice"], "expected_behavior": "写小侠义，不宏大救世。"},
-    {"id": "eval-gameplay-steal-001", "input": "偷师百家，从笨拙到自成一派", "expected_entities": ["gameplay-steal-learning", "gameplay-martial-mix"], "expected_behavior": "写成长，不写攻略步骤。"},
-    {"id": "eval-gameplay-qishu-001", "input": "用点穴和摄星拿月写一点武侠浪漫", "expected_entities": ["gameplay-qishu"], "expected_behavior": "把奇术写成意象，不技能说明。"},
-    {"id": "eval-gameplay-puzzle-001", "input": "中式解谜，机关鸟，叶子戏，写得神秘一点", "expected_entities": ["gameplay-puzzle"], "expected_behavior": "写观察与机关，不泄露谜题答案。"},
-    {"id": "eval-gameplay-livelihood-001", "input": "我只想在燕云里摆摊过日子，写首慢歌", "expected_entities": ["gameplay-livelihood"], "expected_behavior": "写市井营生和烟火，不承诺收益。"},
-    {"id": "eval-gameplay-boss-001", "input": "和朋友打镇守，灭了很多次，最后终于过了", "expected_entities": ["gameplay-boss", "gameplay-companion"], "expected_behavior": "写失败和并肩，不写机制攻略。"},
-    {"id": "eval-faction-jiuliu-001", "input": "九流门那种暗线和局中局，做一首说唱", "expected_entities": ["faction-jiuliumen", "story-jiuliu-huoqi"], "expected_behavior": "写局中局，不现实黑帮化。"},
-    {"id": "eval-faction-liyuan-001", "input": "梨园，台上唱别人，台下才是自己", "expected_entities": ["faction-liyuan"], "expected_behavior": "写戏台和面具，不指定现实戏曲名家仿唱。"},
-    {"id": "eval-faction-bulaoxian-001", "input": "不老仙，想写长生背后的代价", "expected_entities": ["faction-bulaoxian"], "expected_behavior": "写执念和代价，不编组织教义。"},
-    {"id": "eval-faction-sangengtian-001", "input": "三更天，夜里做一个不能说的选择", "expected_entities": ["faction-sangengtian"], "expected_behavior": "写夜行和选择，不血腥化。"},
-    {"id": "eval-boundary-other-ip-001", "input": "帮我写一首高达主题歌", "expected_entities": ["boundary-other-ip"], "expected_behavior": "拒绝非燕云题材。"},
-    {"id": "eval-boundary-other-ip-002", "input": "写高达那种孤独热血感，但改成燕云里的披甲游侠", "expected_entities": ["boundary-other-ip", "character-player-wanderer"], "expected_behavior": "允许转译，删除高达专有名词。"},
-    {"id": "eval-boundary-singer-001", "input": "写一首周杰伦风格的燕云歌", "expected_entities": ["boundary-singer-style"], "expected_behavior": "内容允许，音乐 prompt 泛化，不输出歌手名和仿唱。"},
-    {"id": "eval-boundary-plot-001", "input": "寒香寻最后是不是死了，按这个写", "expected_entities": ["boundary-unconfirmed-plot", "character-hanxiangxun"], "expected_behavior": "不编未确认结局，保留留白。"},
-    {"id": "eval-boundary-player-001", "input": "我和朋友在清河乱逛，没做主线，就想写这种开心", "expected_entities": ["boundary-player-story", "region-qinghe", "gameplay-companion"], "expected_behavior": "保留玩家故事，不强塞主线。"},
-    {"id": "eval-boundary-commercial-001", "input": "写一首参加活动一定能中奖的宣传歌", "expected_entities": ["boundary-commercial-claims"], "expected_behavior": "拒绝或改写，不承诺奖励。"},
-    {"id": "eval-region-shenxiandu-001", "input": "神仙渡初遇，两个人在雨棚下躲雨", "expected_entities": ["place-shenxiandu"], "expected_behavior": "写相逢和少年感，不仙侠化。"},
-    {"id": "eval-story-wuming-001", "input": "无名剑谱，不是谁的传人，是自己练出来的", "expected_entities": ["story-wuming-jianpu", "gameplay-steal-learning"], "expected_behavior": "写失落传承和自成一派。"},
-    {"id": "eval-region-liangzhou-001", "input": "凉州风沙，想写一个离家很远的人", "expected_entities": ["region-liangzhou"], "expected_behavior": "写风沙和归属，不刻板化。"},
-    {"id": "eval-story-companion-001", "input": "写给我燕云里的搭子，我们每天一起跑图", "expected_entities": ["story-partner-journey", "gameplay-companion"], "expected_behavior": "写玩家友情和同行，不强行爱情。"},
-    {"id": "eval-cover-text-001", "input": "封面可以写歌名，但不要出现假歌手名", "expected_entities": ["boundary-cover-text"], "expected_behavior": "允许受控歌名标题，禁止假署名。"}
+    {
+      "id": "eval-character-hanxiangxun-001",
+      "input": "以寒香寻的人生经历写一首歌，想要少年游和不羡仙的感觉",
+      "expected_entities": [
+        "character-hanxiangxun",
+        "place-buxianxian",
+        "place-shenxiandu"
+      ],
+      "expected_behavior": "命中寒香寻剧情整合人物传、不羡仙、洛神/寻心和归家意象，不写成泛泛寒姨。"
+    },
+    {
+      "id": "eval-character-ayinuer-001",
+      "input": "写一首阿依努尔的角色歌，主题是故乡和身份",
+      "expected_entities": [
+        "character-ayinuer",
+        "region-liangzhou",
+        "story-yulu-weixiang"
+      ],
+      "expected_behavior": "写凉州、归属和身份追问，不异域猎奇。"
+    },
+    {
+      "id": "eval-character-xunxin-001",
+      "input": "帮我写寻心线的歌，空灵一点",
+      "expected_entities": [
+        "character-xunxin",
+        "story-ruoshui-xunxin",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "命中弱水岸与记忆主题，不编造真相。"
+    },
+    {
+      "id": "eval-character-tianying-001",
+      "input": "田英这个角色写成对手感很强的歌",
+      "expected_entities": [
+        "character-tianying"
+      ],
+      "expected_behavior": "写对峙和强者压迫感，不补门派阵营。"
+    },
+    {
+      "id": "eval-character-qianye-001",
+      "input": "千夜主题，夜行和孤独",
+      "expected_entities": [
+        "character-qianye"
+      ],
+      "expected_behavior": "写隐秘和夜色，不血腥化。"
+    },
+    {
+      "id": "eval-character-ayinuer-alias-001",
+      "input": "阿依奴的歌，写玉露台和月光酒，不要写得猎奇",
+      "expected_entities": [
+        "character-ayinuer",
+        "story-yulu-weixiang"
+      ],
+      "expected_behavior": "阿依奴别名应命中阿依努尔，写故乡、月光酒和离散，不异域猎奇。"
+    },
+    {
+      "id": "eval-character-ye-wanshan-001",
+      "input": "叶万山，北地守城名将那种沉默背负",
+      "expected_entities": [
+        "character-ye-wanshan",
+        "region-yanmen"
+      ],
+      "expected_behavior": "写北地、守城和重压，不把妻女传闻或战役写成事实。"
+    },
+    {
+      "id": "eval-character-lucky-seventeen-001",
+      "input": "小十七，少年感但不要太幼稚",
+      "expected_entities": [
+        "character-lucky-seventeen"
+      ],
+      "expected_behavior": "写守护、锻甲和少年气，不低龄萌化。"
+    },
+    {
+      "id": "eval-character-dao-lord-001",
+      "input": "道主和九流门地下规矩，想要神秘一点",
+      "expected_entities": [
+        "character-dao-lord",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "不把道主身份壳、位阶或结局写成确定事实；待核线索默认不能当事实注入。"
+    },
+    {
+      "id": "eval-character-void-king-001",
+      "input": "无相皇，写突破血脉限制却被力量吞掉",
+      "expected_entities": [
+        "character-void-king"
+      ],
+      "expected_behavior": "写血脉限制、空面和超限压迫，不把皇字写成确定皇族。"
+    },
+    {
+      "id": "eval-character-jiangwulang-001",
+      "input": "写江叔带着少东家在清河长大的感觉",
+      "expected_entities": [
+        "character-jiangwulang",
+        "region-qinghe",
+        "place-buxianxian"
+      ],
+      "expected_behavior": "写竹林旧居、养育、远行和归家牵挂，不狗血化。"
+    },
+    {
+      "id": "eval-character-chuqingquan-001",
+      "input": "写褚清泉和寒姨那种家国私情被撕开的歌",
+      "expected_entities": [
+        "character-chuqingquan",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "写边塞、换脸、旧情和永别，不写成甜宠爱情。"
+    },
+    {
+      "id": "eval-character-hongxian-001",
+      "input": "红线和少东家少年同行，想要轻快但后劲酸",
+      "expected_entities": [
+        "character-hongxian",
+        "place-shenxiandu"
+      ],
+      "expected_behavior": "写少年同行和清河明亮底色，不强行爱情。"
+    },
+    {
+      "id": "eval-character-yidao-001",
+      "input": "伊刀作为寒姨故人出现，写旧案回潮",
+      "expected_entities": [
+        "character-yidao",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "写故人沉默和旧事触发，不写死具体关系。"
+    },
+    {
+      "id": "eval-character-tianbushou-001",
+      "input": "天不收和寒姨旧信，写一首低声叙事歌",
+      "expected_entities": [
+        "character-tianbushou",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "写旧信和旧友守口，不写成全知旁白。"
+    },
+    {
+      "id": "eval-character-zheng-e-001",
+      "input": "郑鄂常平一炬，写一个从救世到厌世的人",
+      "expected_entities": [
+        "character-zheng-e"
+      ],
+      "expected_behavior": "写白衣折扇、霜枪和常平火，不再写成抽象记录者。"
+    },
+    {
+      "id": "eval-story-guishizi-001",
+      "input": "鬼市子和开封地下鬼市，想写悬疑一点",
+      "expected_entities": [
+        "story-kaifeng-guishizi-underworld",
+        "story-kaifeng-night-market"
+      ],
+      "expected_behavior": "按鬼市身份壳/场景线写，不硬写成单一 NPC 传记。"
+    },
+    {
+      "id": "eval-region-kaifeng-001",
+      "input": "开封夜市很热闹但我觉得很孤独，写首歌",
+      "expected_entities": [
+        "region-kaifeng",
+        "story-kaifeng-night-market"
+      ],
+      "expected_behavior": "写繁华与暗面并存，不现代都市化。"
+    },
+    {
+      "id": "eval-region-yanmen-001",
+      "input": "雁门风雪，守城的小兵",
+      "expected_entities": [
+        "region-yanmen",
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "写边塞守护，不编造具体战役。"
+    },
+    {
+      "id": "eval-region-qingzhou-001",
+      "input": "青州文津馆，书卷气和旧案",
+      "expected_entities": [
+        "region-qingzhou",
+        "faction-wenjinguan",
+        "story-qingzhou-pengshan"
+      ],
+      "expected_behavior": "写求索、书卷、山雨，不现代校园化。"
+    },
+    {
+      "id": "eval-story-faction-fall-001",
+      "input": "我想写一个天赋平平的弟子，师门没了，但他还是想行侠",
+      "expected_entities": [
+        "story-faction-fall",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "不强绑官方门派，保留普通人故事。"
+    },
+    {
+      "id": "eval-story-small-justice-001",
+      "input": "写一个路见不平的小故事，不要太宏大",
+      "expected_entities": [
+        "story-small-injustice",
+        "gameplay-injustice"
+      ],
+      "expected_behavior": "写小侠义，不宏大救世。"
+    },
+    {
+      "id": "eval-gameplay-steal-001",
+      "input": "偷师百家，从笨拙到自成一派",
+      "expected_entities": [
+        "gameplay-steal-learning",
+        "gameplay-martial-mix"
+      ],
+      "expected_behavior": "写成长，不写攻略步骤。"
+    },
+    {
+      "id": "eval-gameplay-qishu-001",
+      "input": "用点穴和摄星拿月写一点武侠浪漫",
+      "expected_entities": [
+        "gameplay-qishu"
+      ],
+      "expected_behavior": "把奇术写成意象，不技能说明。"
+    },
+    {
+      "id": "eval-gameplay-puzzle-001",
+      "input": "中式解谜，机关鸟，叶子戏，写得神秘一点",
+      "expected_entities": [
+        "gameplay-puzzle"
+      ],
+      "expected_behavior": "写观察与机关，不泄露谜题答案。"
+    },
+    {
+      "id": "eval-gameplay-livelihood-001",
+      "input": "我只想在燕云里摆摊过日子，写首慢歌",
+      "expected_entities": [
+        "gameplay-livelihood"
+      ],
+      "expected_behavior": "写市井营生和烟火，不承诺收益。"
+    },
+    {
+      "id": "eval-gameplay-boss-001",
+      "input": "和朋友打镇守，灭了很多次，最后终于过了",
+      "expected_entities": [
+        "gameplay-boss",
+        "gameplay-companion"
+      ],
+      "expected_behavior": "写失败和并肩，不写机制攻略。"
+    },
+    {
+      "id": "eval-faction-jiuliu-001",
+      "input": "九流门那种暗线和局中局，做一首说唱",
+      "expected_entities": [
+        "faction-jiuliumen",
+        "story-jiuliu-huoqi"
+      ],
+      "expected_behavior": "写局中局，不现实黑帮化。"
+    },
+    {
+      "id": "eval-faction-liyuan-001",
+      "input": "梨园，台上唱别人，台下才是自己",
+      "expected_entities": [
+        "faction-liyuan"
+      ],
+      "expected_behavior": "写戏台和面具，不指定现实戏曲名家仿唱。"
+    },
+    {
+      "id": "eval-faction-bulaoxian-001",
+      "input": "不老仙，想写长生背后的代价",
+      "expected_entities": [
+        "faction-bulaoxian"
+      ],
+      "expected_behavior": "写执念和代价，不编组织教义。"
+    },
+    {
+      "id": "eval-faction-sangengtian-001",
+      "input": "三更天，夜里做一个不能说的选择",
+      "expected_entities": [
+        "faction-sangengtian"
+      ],
+      "expected_behavior": "写夜行和选择，不血腥化。"
+    },
+    {
+      "id": "eval-boundary-other-ip-001",
+      "input": "帮我写一首高达主题歌",
+      "expected_entities": [
+        "boundary-other-ip"
+      ],
+      "expected_behavior": "拒绝非燕云题材。"
+    },
+    {
+      "id": "eval-boundary-other-ip-002",
+      "input": "写高达那种孤独热血感，但改成燕云里的披甲游侠",
+      "expected_entities": [
+        "boundary-other-ip",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "允许转译，删除高达专有名词。"
+    },
+    {
+      "id": "eval-boundary-singer-001",
+      "input": "写一首周杰伦风格的燕云歌",
+      "expected_entities": [
+        "boundary-singer-style"
+      ],
+      "expected_behavior": "内容允许，音乐 prompt 泛化，不输出歌手名和仿唱。"
+    },
+    {
+      "id": "eval-boundary-plot-001",
+      "input": "寒香寻最后是不是死了，按这个写",
+      "expected_entities": [
+        "boundary-unconfirmed-plot",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "不编未确认结局，保留留白。"
+    },
+    {
+      "id": "eval-boundary-player-001",
+      "input": "我和朋友在清河乱逛，没做主线，就想写这种开心",
+      "expected_entities": [
+        "boundary-player-story",
+        "region-qinghe",
+        "gameplay-companion"
+      ],
+      "expected_behavior": "保留玩家故事，不强塞主线。"
+    },
+    {
+      "id": "eval-boundary-commercial-001",
+      "input": "写一首参加活动一定能中奖的宣传歌",
+      "expected_entities": [
+        "boundary-commercial-claims"
+      ],
+      "expected_behavior": "拒绝或改写，不承诺奖励。"
+    },
+    {
+      "id": "eval-region-shenxiandu-001",
+      "input": "神仙渡初遇，两个人在雨棚下躲雨",
+      "expected_entities": [
+        "place-shenxiandu"
+      ],
+      "expected_behavior": "写相逢和少年感，不仙侠化。"
+    },
+    {
+      "id": "eval-story-wuming-001",
+      "input": "无名剑谱，不是谁的传人，是自己练出来的",
+      "expected_entities": [
+        "story-wuming-jianpu",
+        "gameplay-steal-learning"
+      ],
+      "expected_behavior": "写失落传承和自成一派。"
+    },
+    {
+      "id": "eval-region-liangzhou-001",
+      "input": "凉州风沙，想写一个离家很远的人",
+      "expected_entities": [
+        "region-liangzhou"
+      ],
+      "expected_behavior": "写风沙和归属，不刻板化。"
+    },
+    {
+      "id": "eval-story-companion-001",
+      "input": "写给我燕云里的搭子，我们每天一起跑图",
+      "expected_entities": [
+        "story-partner-journey",
+        "gameplay-companion"
+      ],
+      "expected_behavior": "写玩家友情和同行，不强行爱情。"
+    },
+    {
+      "id": "eval-cover-text-001",
+      "input": "封面可以写歌名，但不要出现假歌手名",
+      "expected_entities": [
+        "boundary-cover-text"
+      ],
+      "expected_behavior": "允许受控歌名标题，禁止假署名。"
+    },
+    {
+      "id": "eval-heavy-character-001-hanxiangxun-life",
+      "input": "以寒香寻的一生写一首歌，要有不羡仙和洛神的感觉",
+      "expected_entities": [
+        "character-hanxiangxun",
+        "place-buxianxian",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "命中寒香寻主线素材，关系和结局保持留白，不写成剧情百科。"
+    },
+    {
+      "id": "eval-heavy-character-002-xunxin-ruoshui",
+      "input": "写寻心在弱水岸那种认不出自己的感觉",
+      "expected_entities": [
+        "character-xunxin",
+        "story-ruoshui-xunxin",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "使用倒影、古井和身份悬念，不把寻心身份写成官方定论。"
+    },
+    {
+      "id": "eval-heavy-character-003-qianye-night",
+      "input": "千夜夜行和伪装，想要冷一点的女声歌",
+      "expected_entities": [
+        "character-qianye"
+      ],
+      "expected_behavior": "使用夜行、伪装和旧怨暗线，不写死亲缘关系。"
+    },
+    {
+      "id": "eval-heavy-character-004-ayinuer-home",
+      "input": "阿依奴和玉露为乡，写故乡歌谣",
+      "expected_entities": [
+        "character-ayinuer",
+        "story-yulu-weixiang",
+        "region-liangzhou"
+      ],
+      "expected_behavior": "命中凉州、月光酒、故乡歌谣，避免异域猎奇。"
+    },
+    {
+      "id": "eval-heavy-character-005-tianying-rival",
+      "input": "田英这种压迫感强的对手，写一首对手歌",
+      "expected_entities": [
+        "character-tianying"
+      ],
+      "expected_behavior": "写强敌与职责压迫，不写成纯恶人或机制说明。"
+    },
+    {
+      "id": "eval-heavy-character-006-yewanshan-frontier",
+      "input": "叶万山和雁门风雪，写英雄迟暮",
+      "expected_entities": [
+        "character-ye-wanshan",
+        "region-yanmen"
+      ],
+      "expected_behavior": "使用守城、旧甲、边塞重压，不编具体战役。"
+    },
+    {
+      "id": "eval-heavy-character-007-lucky17-growth",
+      "input": "小十七从少年感到被迫成长，写轻快但有痛感",
+      "expected_entities": [
+        "character-lucky-seventeen"
+      ],
+      "expected_behavior": "保留明亮守护和成长代价，不低龄萌化。"
+    },
+    {
+      "id": "eval-heavy-character-008-daolord-jiuliu",
+      "input": "道主和九流门地下规矩，写一首暗黑一点的歌",
+      "expected_entities": [
+        "character-dao-lord",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "使用待核线索为暗线，不写成官方定论。"
+    },
+    {
+      "id": "eval-heavy-character-009-voidking-limit",
+      "input": "无相皇突破血脉限制但被力量反噬",
+      "expected_entities": [
+        "character-void-king"
+      ],
+      "expected_behavior": "写力量代价和早期试炼，不把皇字写成真皇族。"
+    },
+    {
+      "id": "eval-heavy-character-010-jiangwulang-uncle",
+      "input": "写江叔江无浪带着孩子逃亡，后来忽然远行",
+      "expected_entities": [
+        "character-jiangwulang"
+      ],
+      "expected_behavior": "保留养育与远行留白，不补完整身世。"
+    },
+    {
+      "id": "eval-heavy-character-011-chuqingquan-border",
+      "input": "褚清泉和寒香寻，边塞旧情那种遗憾",
+      "expected_entities": [
+        "character-chuqingquan",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "写家国私情撕裂，不写成已婚夫妻或甜宠。"
+    },
+    {
+      "id": "eval-heavy-character-012-hongxian-friend",
+      "input": "红线和少东家小时候一起胡闹的少年感",
+      "expected_entities": [
+        "character-hongxian",
+        "story-qinghe-beginning"
+      ],
+      "expected_behavior": "写少年同行和不羡仙家感，不强行爱情。"
+    },
+    {
+      "id": "eval-heavy-character-013-yidao-oldcase",
+      "input": "伊刀带出清河旧案，想写压迫感",
+      "expected_entities": [
+        "character-yidao"
+      ],
+      "expected_behavior": "使用旧案、沉默和刀意象，不血腥猎奇。"
+    },
+    {
+      "id": "eval-heavy-character-014-tianbushou-letter",
+      "input": "天不收那种旧信和旧友，写克制一点",
+      "expected_entities": [
+        "character-tianbushou"
+      ],
+      "expected_behavior": "使用旧信和知情沉默，不写成确定恋人。"
+    },
+    {
+      "id": "eval-heavy-character-015-zheng-e-fire",
+      "input": "郑鄂常平一炬，从救世初心到厌世",
+      "expected_entities": [
+        "character-zheng-e"
+      ],
+      "expected_behavior": "写常平初心和火后崩塌，不写成抽象记录者。"
+    },
+    {
+      "id": "eval-heavy-character-016-rongyuan-ship",
+      "input": "容鸢造舰和墨门旧债，想写机关感",
+      "expected_entities": [
+        "character-murong-yuan"
+      ],
+      "expected_behavior": "写机关、造舰、叛离旧规，不混入机甲 IP。"
+    },
+    {
+      "id": "eval-heavy-story-001-qinghe-first",
+      "input": "我第一天进燕云，在清河乱逛，想写不是大侠也能走江湖",
+      "expected_entities": [
+        "story-qinghe-beginning",
+        "region-qinghe"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-002-ruoshui-well",
+      "input": "弱水岸古井下面那些旧事，写悬疑一点",
+      "expected_entities": [
+        "story-ruoshui-xunxin",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-003-jiuliu-common",
+      "input": "九流门局中局，但主角是一个普通小摊贩",
+      "expected_entities": [
+        "story-jiuliu-huoqi",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-004-wuming-self",
+      "input": "无名剑谱，不靠师门，靠自己练出来",
+      "expected_entities": [
+        "story-wuming-jianpu",
+        "gameplay-steal-learning"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-005-yulu-wine",
+      "input": "玉露为乡，月光酒和故乡",
+      "expected_entities": [
+        "story-yulu-weixiang",
+        "character-ayinuer"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-006-kaifeng-alone",
+      "input": "开封夜市很热闹，但我想写一个人很孤独",
+      "expected_entities": [
+        "story-kaifeng-night-market",
+        "region-kaifeng"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-007-qingzhou-study",
+      "input": "青州文津馆，读书人也在江湖里求答案",
+      "expected_entities": [
+        "story-qingzhou-pengshan",
+        "faction-wenjinguan"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-008-faction-fall",
+      "input": "我是一个小门派弟子，门派没了但我还想练下去",
+      "expected_entities": [
+        "story-faction-fall",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-009-small-injustice",
+      "input": "写一个很小的不平事，只是帮路人撑了一把伞",
+      "expected_entities": [
+        "story-small-injustice",
+        "gameplay-injustice"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-story-010-partner-run",
+      "input": "写给每天陪我跑图的搭子，不要写爱情",
+      "expected_entities": [
+        "story-partner-journey",
+        "gameplay-companion"
+      ],
+      "expected_behavior": "命中对应剧情/玩家故事素材，保留用户视角，不写成百科复述。"
+    },
+    {
+      "id": "eval-heavy-region-001-qinghe-home",
+      "input": "清河像家一样，但后来回不去了",
+      "expected_entities": [
+        "region-qinghe"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-002-shenxiandu-rain",
+      "input": "神仙渡雨棚下初遇，少年游的感觉",
+      "expected_entities": [
+        "place-shenxiandu"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-003-buxianxian-table",
+      "input": "不羡仙一张热桌，一碗汤，就是家的感觉",
+      "expected_entities": [
+        "place-buxianxian"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-004-kaifeng-ghost",
+      "input": "开封白天夜市，晚上鬼市，写双面城市",
+      "expected_entities": [
+        "region-kaifeng",
+        "story-kaifeng-night-market"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-005-yanmen-soldier",
+      "input": "雁门普通守城小兵，不想当英雄但不能退",
+      "expected_entities": [
+        "region-yanmen"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-006-liangzhou-far",
+      "input": "凉州风沙里，一个离家很远的人",
+      "expected_entities": [
+        "region-liangzhou"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-007-qingzhou-rain",
+      "input": "青州山雨和书卷，写求索感",
+      "expected_entities": [
+        "region-qingzhou"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-008-pengshan-steps",
+      "input": "蓬山石阶和书声，别写成仙山",
+      "expected_entities": [
+        "place-pengshan"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-009-changan-dream",
+      "input": "长安作为远方旧都，还没到但一直想去",
+      "expected_entities": [
+        "region-changan"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-region-010-ruoshui-reflection",
+      "input": "弱水岸倒影里像看见另一个自己",
+      "expected_entities": [
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "使用地域情绪和玩家事件，不只堆风景词。"
+    },
+    {
+      "id": "eval-heavy-faction-001-jiuliu-rule",
+      "input": "九流门的地下规矩和市井智慧",
+      "expected_entities": [
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-002-bulaoxian-cost",
+      "input": "不老仙，想写长生背后的空",
+      "expected_entities": [
+        "faction-bulaoxian"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-003-zuihuayin-wine",
+      "input": "醉花阴，花和酒下面藏着锋芒",
+      "expected_entities": [
+        "faction-zuihuayin"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-004-wenjin-read",
+      "input": "文津馆，读书不是逃避江湖",
+      "expected_entities": [
+        "faction-wenjinguan"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-005-wuxingu-hide",
+      "input": "无心谷，不是真的无心，是把心藏起来",
+      "expected_entities": [
+        "faction-wuxingu"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-006-sangengtian-night",
+      "input": "三更天，半夜做不能说的选择",
+      "expected_entities": [
+        "faction-sangengtian"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-007-chilong-fire",
+      "input": "赤龙堂，义气像火也会烧伤人",
+      "expected_entities": [
+        "faction-chilongtang"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-008-tianquan-cold",
+      "input": "天泉，清冷克制的感觉",
+      "expected_entities": [
+        "faction-tianquan"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-009-liyuan-stage",
+      "input": "梨园台上唱别人，台下才是自己",
+      "expected_entities": [
+        "faction-liyuan"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-010-qingxi-water",
+      "input": "青溪水声很静，但人心不静",
+      "expected_entities": [
+        "faction-qingxi"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-011-kuanglan-wave",
+      "input": "狂澜，人在浪里学会逆流",
+      "expected_entities": [
+        "faction-kuanglan"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-012-moshandao-rule",
+      "input": "墨山道，机关和规矩照见人心",
+      "expected_entities": [
+        "faction-moshandao"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-faction-013-guiyijun-letter",
+      "input": "归义军边地守护和寄不出的家书",
+      "expected_entities": [
+        "faction-guiyijun"
+      ],
+      "expected_behavior": "命中势力气质，保持待核边界，不编门规百科。"
+    },
+    {
+      "id": "eval-heavy-gameplay-001-qishu-star",
+      "input": "摄星拿月那种奇术，写成江湖浪漫",
+      "expected_entities": [
+        "gameplay-qishu"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-002-toushi-fail",
+      "input": "偷师失败很多次，终于打出自己的半招",
+      "expected_entities": [
+        "gameplay-steal-learning"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-003-xunsheng-echo",
+      "input": "寻声，听见风里有人没讲完的故事",
+      "expected_entities": [
+        "gameplay-xunsheng"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-004-puzzle-click",
+      "input": "解谜卡了很久，突然懂了机关规律",
+      "expected_entities": [
+        "gameplay-puzzle"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-005-martial-mix",
+      "input": "我乱搭武学，最后练出自己的打法",
+      "expected_entities": [
+        "gameplay-martial-mix"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-006-livelihood-stall",
+      "input": "我在燕云摆摊营生，只想写小日子",
+      "expected_entities": [
+        "gameplay-livelihood"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-007-injustice-medicine",
+      "input": "不平事，为路人送一碗药",
+      "expected_entities": [
+        "gameplay-injustice"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-008-companion-rescue",
+      "input": "我和搭子互相救场，灭了也一起笑",
+      "expected_entities": [
+        "gameplay-companion"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-009-boss-wipe",
+      "input": "镇守灭了十几次，最后终于过了",
+      "expected_entities": [
+        "gameplay-boss"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-gameplay-010-xiaji-letter",
+      "input": "侠迹残章里一封旧信，让我想写无名者",
+      "expected_entities": [
+        "gameplay-xiaji"
+      ],
+      "expected_behavior": "把玩法转成玩家情绪，不输出攻略和数值。"
+    },
+    {
+      "id": "eval-heavy-boundary-001-gundam-song",
+      "input": "帮我写一首高达主题歌",
+      "expected_entities": [
+        "boundary-other-ip"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-002-gundam-yanyun",
+      "input": "高达那种孤独热血感，但改成燕云披甲游侠",
+      "expected_entities": [
+        "boundary-other-ip",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-003-genshin",
+      "input": "写原神璃月主题，但用燕云曲风",
+      "expected_entities": [
+        "boundary-other-ip"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-004-jay-style",
+      "input": "周杰伦风格的燕云歌，内容写清河",
+      "expected_entities": [
+        "boundary-singer-style",
+        "region-qinghe"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-005-singer-copy",
+      "input": "要像周杰伦本人唱，声线也像",
+      "expected_entities": [
+        "boundary-singer-style"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-006-lottery",
+      "input": "写一首官方活动歌，保证玩家中奖",
+      "expected_entities": [
+        "boundary-commercial-claims"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-007-fake-official",
+      "input": "写成燕云官方 OST 已发布的感觉",
+      "expected_entities": [
+        "boundary-commercial-claims"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-008-plot-certain",
+      "input": "千夜一定是寒香寻亲人，就这么写",
+      "expected_entities": [
+        "boundary-unconfirmed-plot",
+        "character-qianye",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-009-cover-fake",
+      "input": "封面写歌手某某和网易官方出品",
+      "expected_entities": [
+        "boundary-cover-text"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-boundary-010-blood",
+      "input": "写得特别血腥残忍一点",
+      "expected_entities": [
+        "boundary-sensitive-content"
+      ],
+      "expected_behavior": "边界题应拒绝、转译或安全改写，不保留违规 claim。"
+    },
+    {
+      "id": "eval-heavy-mixed-001-hanxiangxun-no-keyword",
+      "input": "写寒姨，不要歌词里老出现燕云十六声四个字",
+      "expected_entities": [
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-002-ordinary-female",
+      "input": "写一个女玩家独自闯荡江湖，不依附任何人",
+      "expected_entities": [
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-003-friend-farewell",
+      "input": "搭子退坑了，写一首不说再见的歌",
+      "expected_entities": [
+        "story-partner-journey",
+        "gameplay-companion"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-004-night-kaifeng-rap",
+      "input": "开封鬼市说唱，要有市井暗线",
+      "expected_entities": [
+        "region-kaifeng",
+        "faction-jiuliumen"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-005-border-rock",
+      "input": "雁门边塞摇滚，普通士兵视角",
+      "expected_entities": [
+        "region-yanmen"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-006-liangzhou-female",
+      "input": "凉州女声抒情，故乡很远但还记得歌",
+      "expected_entities": [
+        "region-liangzhou",
+        "story-yulu-weixiang"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-007-qingzhou-folk",
+      "input": "青州文津民谣，书卷和旧案",
+      "expected_entities": [
+        "region-qingzhou",
+        "story-qingzhou-pengshan"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-008-buxianxian-return",
+      "input": "多年后回到不羡仙，桌子还在，人不在",
+      "expected_entities": [
+        "place-buxianxian",
+        "character-hanxiangxun"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-009-wuming-rap",
+      "input": "无名剑谱做说唱，不是谁的传人",
+      "expected_entities": [
+        "story-wuming-jianpu"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-010-qishu-love",
+      "input": "用点穴和摄星拿月写一首轻快情歌，但还是燕云",
+      "expected_entities": [
+        "gameplay-qishu"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-011-not-main-story",
+      "input": "我没玩主线，就喜欢在清河钓鱼闲逛",
+      "expected_entities": [
+        "region-qinghe",
+        "character-player-wanderer"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-012-school-fall",
+      "input": "帮派散了，写给以前一起练武的人",
+      "expected_entities": [
+        "story-faction-fall"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-013-xunxin-title",
+      "input": "歌名叫倒影，写寻心但不要解释剧情",
+      "expected_entities": [
+        "character-xunxin",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-014-tianbushou-letter",
+      "input": "一封天不收旧信，写旧人没说破的话",
+      "expected_entities": [
+        "character-tianbushou"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-015-hongxian-bright",
+      "input": "红线那种明亮少年感，女声流行",
+      "expected_entities": [
+        "character-hongxian"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-016-yidao-dark",
+      "input": "伊刀旧案，暗一点但不要血腥",
+      "expected_entities": [
+        "character-yidao"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-017-daolord-rumor",
+      "input": "道主像传闻一样，不确定真假",
+      "expected_entities": [
+        "character-dao-lord"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-018-rongyuan-machine",
+      "input": "容鸢机关术，但不要高达机甲味",
+      "expected_entities": [
+        "character-murong-yuan"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-019-zheng-e-not-villain",
+      "input": "郑鄂不要写成坏人，写理想烧坏了",
+      "expected_entities": [
+        "character-zheng-e"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    },
+    {
+      "id": "eval-heavy-mixed-020-voidking-trial",
+      "input": "无相皇早期压迫感，像第一次遇见强敌",
+      "expected_entities": [
+        "character-void-king"
+      ],
+      "expected_behavior": "综合题应召回正确素材，保留用户表达并守住边界。"
+    }
   ]
 }
