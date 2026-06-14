@@ -20,9 +20,9 @@ import java.util.Set;
 public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent {
 
   private static final String AGENT_NAME = "CreativeBriefAgent";
-  private static final String AGENT_VERSION = "v0.6";
-  private static final String TEMPLATE_KEY = "creative.brief.v6";
-  private static final int TEMPLATE_VERSION = 6;
+  private static final String AGENT_VERSION = "v0.7";
+  private static final String TEMPLATE_KEY = "creative.brief.v7";
+  private static final int TEMPLATE_VERSION = 7;
   private static final Set<String> OTHER_IP_TERMS =
       Set.of("高达", "gundam", "原神", "genshin", "星穹", "崩坏", "鸣潮", "王者荣耀", "火影", "海贼王");
   private static final Set<String> YANYUN_TERMS =
@@ -113,7 +113,26 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         DeepSeekAgentJson.stringList(
             root.path("freeform_opportunities").isMissingNode()
                 ? root.path("freeformOpportunities")
-                : root.path("freeform_opportunities")));
+                : root.path("freeform_opportunities")),
+        DeepSeekAgentJson.firstNonBlank(
+            DeepSeekAgentJson.text(root, "creative_core", "creativeCore"),
+            DeepSeekAgentJson.text(root, "theme")),
+        DeepSeekAgentJson.firstNonBlank(
+            DeepSeekAgentJson.text(root, "chosen_angle", "chosenAngle"),
+            DeepSeekAgentJson.text(root, "narrative_viewpoint", "narrativeViewpoint")),
+        DeepSeekAgentJson.stringList(
+            root.path("alternative_angles").isMissingNode()
+                ? root.path("alternativeAngles")
+                : root.path("alternative_angles")),
+        DeepSeekAgentJson.text(root, "anti_cliche_strategy", "antiClicheStrategy"),
+        DeepSeekAgentJson.firstNonBlank(
+            DeepSeekAgentJson.text(root, "voice_texture", "voiceTexture"),
+            DeepSeekAgentJson.text(root, "narrative_viewpoint", "narrativeViewpoint")),
+        DeepSeekAgentJson.stringList(
+            root.path("image_pool").isMissingNode()
+                ? root.path("imagePool")
+                : root.path("image_pool")),
+        DeepSeekAgentJson.text(root, "song_energy", "songEnergy"));
   }
 
   private List<String> fallbackYanyunReferences(CreativeBriefRequest request) {
@@ -195,8 +214,8 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
 
   private String systemPrompt() {
     return """
-        你是燕云十六声 AI 作曲平台的创意理解 Agent。
-        你的任务不是写歌词，而是判断用户请求是否属于《燕云十六声》创作域，并输出开放式创作简报。
+        你是燕云十六声 AI 作曲平台的创作可能性判断 Agent。
+        你的任务不是写歌词，也不是套固定作词模板，而是判断用户请求是否属于《燕云十六声》创作域，并为 LyricsAgent 提供开放的世界级创作判断。
 
         硬规则：
         1. 歌词内容必须属于《燕云十六声》大世界，不得写其他 IP、现实明星应援或完全无关题材。
@@ -205,9 +224,12 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         4. 如果用户请求完全无关，例如高达主题歌、其他游戏主题歌，domain_decision 必须为 REJECT。
         5. 如果用户表达的情绪可转成燕云世界，domain_decision 为 REWRITE_TO_YANYUN。
         6. 普通江湖、门派、侠义、乱世、小人物、同行、奇术、寻声、地域、角色歌都可以属于燕云创作域。
-        7. 在 narrative_viewpoint 中同时给出语言口吻建议，例如市井、少年、悲怆、燃向、温柔、冷峻；不要新增字段。
-        8. 普通玩家故事优先保留用户原始视角，不强行改成官方角色歌或救世英雄叙事。
-        9. 只输出 JSON object，不输出 Markdown 或解释。
+        7. 不按曲风套写法；音乐风格只作为声口、节奏、能量和语言松紧的参考，不决定创意路径。
+        8. 不强制每首歌都有同一种结构，不强制一定有金句式 hook，不强制悲情、国风或大叙事。
+        9. 普通玩家故事优先保留用户原始视角，不强行改成官方角色歌或救世英雄叙事。
+        10. 你的重点是帮 LyricsAgent 避免第一反应俗套：例如“侠=自由、离别=月光、江湖=风雨、少年=逍遥”这种太容易写普通的入口。
+        11. 可以建议叙事、意象、口语、重复、对白、独白、群像、反讽、留白、反差、反套路等任一路径，但不要要求全部使用。
+        12. 只输出 JSON object，不输出 Markdown 或解释。
 
         输出字段：
         {
@@ -222,7 +244,14 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
           "risk_notes": ["风险提示"],
           "user_facing_message": "REJECT 时给用户看的友好说明，否则可为空",
           "yanyun_rewrite_suggestion": "REWRITE_TO_YANYUN 时给 LyricsAgent 的转译建议",
-          "freeform_opportunities": ["可自由发挥的空间"]
+          "freeform_opportunities": ["可自由发挥的空间"],
+          "creative_core": "这首歌最值得写的东西，可以是人物、情绪、画面、命运、口气、反差或一种关系",
+          "chosen_angle": "本次建议从哪个角度进入，不要求固定为叙事或抒情",
+          "alternative_angles": ["2-3 个不采用但可参考的角度，用来帮助避开第一反应俗套"],
+          "anti_cliche_strategy": "如何避开最容易写俗、写浅、写成泛江湖的表达",
+          "voice_texture": "语言质感，例如市井、冷峻、轻盈、粗粝、温柔、克制、荒凉、戏谑",
+          "image_pool": ["可用画面、动作或物件，不要求全部使用"],
+          "song_energy": "这首歌的能量走向，例如收束、爆发、游走、回环、低烧、明亮、压抑"
         }
         """
         .trim();
@@ -287,7 +316,14 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         result.riskNotes().toString(),
         nullToEmpty(result.userFacingMessage()),
         nullToEmpty(result.yanyunRewriteSuggestion()),
-        result.freeformOpportunities().toString());
+        result.freeformOpportunities().toString(),
+        result.creativeCore(),
+        result.chosenAngle(),
+        result.alternativeAngles().toString(),
+        result.antiClicheStrategy(),
+        result.voiceTexture(),
+        result.imagePool().toString(),
+        result.songEnergy());
   }
 
   private int elapsedMs(long startedAt) {

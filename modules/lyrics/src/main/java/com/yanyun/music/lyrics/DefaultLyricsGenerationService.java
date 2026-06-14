@@ -8,6 +8,7 @@ import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
 import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
+import com.yanyun.music.creativeagent.CreativeDomainDecision;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.QualityDecision;
@@ -22,18 +23,22 @@ import com.yanyun.music.knowledge.KnowledgeReference;
 import com.yanyun.music.knowledge.KnowledgeRetrievalRequest;
 import com.yanyun.music.knowledge.KnowledgeRetrievalResult;
 import com.yanyun.music.knowledge.KnowledgeService;
+import com.yanyun.music.knowledge.ResolvedKnowledgeEntity;
 import com.yanyun.music.prompt.PromptRenderRequest;
 import com.yanyun.music.prompt.PromptRenderResult;
 import com.yanyun.music.prompt.PromptTemplateService;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class DefaultLyricsGenerationService implements LyricsGenerationService {
 
-  private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.70);
-  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v5";
-  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 5;
+  private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.80);
+  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v7";
+  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 7;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
@@ -109,15 +114,16 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   @Override
   public LyricsGenerationResult generate(LyricsGenerationRequest request) {
     KnowledgeRetrievalResult knowledge = retrieveKnowledge(request);
+    ensureEntityResolutionAllowed(request, knowledge);
     CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
     ensureCreativeDomainAllowed(creativeBrief);
-    LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief);
+    LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief, knowledge);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
     QualityEvaluationResult quality =
         evaluateLyricsQuality(briefedRequest, response, creativeBrief, knowledge);
     if (isLowQuality(response) || shouldRewrite(quality)) {
-      LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest);
+      LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest, quality);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
       quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief, knowledge);
@@ -151,7 +157,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private CreativeBriefResult generateCreativeBrief(
       LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
-    return creativeBriefAgent.generate(
+    CreativeBriefRequest briefRequest =
         new CreativeBriefRequest(
             request.userId(),
             request.workId(),
@@ -162,24 +168,65 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.requestedTitle(),
             request.musicStyle(),
             request.vocalPreference(),
-            knowledge.references().stream().map(KnowledgeReference::displayName).toList()));
+            yanyunReferenceLabels(knowledge));
+    try {
+      return creativeBriefAgent.generate(briefRequest);
+    } catch (RuntimeException exception) {
+      return fallbackCreativeBrief(request, knowledge);
+    }
+  }
+
+  private CreativeBriefResult fallbackCreativeBrief(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    List<String> references = yanyunReferenceLabels(knowledge);
+    String theme =
+        firstNonBlank(
+            request.requestedTitle(),
+            firstNonBlank(request.userInput(), firstNonBlank(request.instruction(), "燕云玩家故事")));
+    return new CreativeBriefResult(
+        CreativeDomainDecision.PASS,
+        "Creative brief agent unavailable; continue from user request and retrieved Yanyun context.",
+        trimToLength(theme, 80),
+        List.of("user-directed"),
+        "preserve the user's viewpoint and keep the language singable",
+        firstNonBlank(request.musicStyle(), "open music style"),
+        references.isEmpty() ? List.of("燕云十六声创作域") : references,
+        List.of(
+            "creative_brief_unavailable_fallback",
+            "preserve user instruction",
+            "ground named entities in retrieved knowledge when available"),
+        List.of("creative_brief_agent_fallback"),
+        null,
+        null,
+        List.of("use current lyrics and user edit instruction as the primary source"),
+        "Use the user's current lyric or story core as the creative core.",
+        "Enter through the user's requested change instead of inventing a new plot.",
+        List.of("voice-led rewrite", "image-led rewrite"),
+        "Avoid generic wuxia phrasing; keep the requested edit concrete and singable.",
+        "user-directed, natural, singable",
+        references.isEmpty() ? List.of() : references,
+        "focused rewrite");
   }
 
   private LyricsGenerationRequest withCreativeBrief(
-      LyricsGenerationRequest request, CreativeBriefResult creativeBrief) {
+      LyricsGenerationRequest request,
+      CreativeBriefResult creativeBrief,
+      KnowledgeRetrievalResult knowledge) {
     return new LyricsGenerationRequest(
         request.userId(),
         request.workId(),
         request.operation(),
         request.userInput(),
         request.currentLyrics(),
-        appendInstruction(request.instruction(), creativeBriefInstruction(creativeBrief)),
+        appendInstruction(
+            request.instruction(), creativeBriefInstruction(creativeBrief, knowledge)),
         request.requestedTitle(),
         firstNonBlank(request.musicStyle(), creativeBrief.musicDirection()),
         request.vocalPreference());
   }
 
-  private String creativeBriefInstruction(CreativeBriefResult creativeBrief) {
+  private String creativeBriefInstruction(
+      CreativeBriefResult creativeBrief, KnowledgeRetrievalResult knowledge) {
     return """
         Creative brief:
         domain_decision=%s
@@ -189,8 +236,18 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         narrative_viewpoint=%s
         music_direction=%s
         yanyun_references=%s
+        resolved_entities=%s
         constraints=%s
+        creative_core=%s
+        chosen_angle=%s
+        alternative_angles=%s
+        anti_cliche_strategy=%s
+        voice_texture=%s
+        image_pool=%s
+        song_energy=%s
         knowledge_policy=Knowledge references are optional creative material. Preserve the user's story core. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally. Do not turn lyrics into plot summary.
+        entity_grounding_policy=If the user names a character, storyline, place, faction, or gameplay concept and resolved_entities maps it to a canonical Yanyun entity, use that canonical entity as the grounding source. Do not preserve user typos as official names. Character or storyline songs must use the core relationships, life events, conflicts, and scenes from the matched knowledge references instead of generic wuxia atmosphere.
+        songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, and song_energy as open creative guidance. Do not treat them as a rigid template. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
         """
         .formatted(
             creativeBrief.domainDecision(),
@@ -200,10 +257,18 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             creativeBrief.narrativeViewpoint(),
             creativeBrief.musicDirection(),
             creativeBrief.yanyunReferences(),
+            entityLabels(knowledge),
             creativeBrief.constraints()
                 + (creativeBrief.yanyunRewriteSuggestion() == null
                     ? ""
-                    : "\nyanyun_rewrite_suggestion=" + creativeBrief.yanyunRewriteSuggestion()))
+                    : "\nyanyun_rewrite_suggestion=" + creativeBrief.yanyunRewriteSuggestion()),
+            creativeBrief.creativeCore(),
+            creativeBrief.chosenAngle(),
+            creativeBrief.alternativeAngles(),
+            creativeBrief.antiClicheStrategy(),
+            creativeBrief.voiceTexture(),
+            creativeBrief.imagePool(),
+            creativeBrief.songEnergy())
         .trim();
   }
 
@@ -246,7 +311,32 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "creative_brief_constraints",
                     creativeBrief == null ? List.of() : creativeBrief.constraints()),
+                Map.entry(
+                    "creative_core",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.creativeCore(), "")),
+                Map.entry(
+                    "chosen_angle",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.chosenAngle(), "")),
+                Map.entry(
+                    "alternative_angles",
+                    creativeBrief == null ? List.of() : creativeBrief.alternativeAngles()),
+                Map.entry(
+                    "anti_cliche_strategy",
+                    creativeBrief == null
+                        ? ""
+                        : firstNonBlank(creativeBrief.antiClicheStrategy(), "")),
+                Map.entry(
+                    "voice_texture",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.voiceTexture(), "")),
+                Map.entry(
+                    "image_pool", creativeBrief == null ? List.of() : creativeBrief.imagePool()),
+                Map.entry(
+                    "song_energy",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.songEnergy(), "")),
                 Map.entry("knowledge_base_version", knowledge == null ? "" : knowledge.kbVersion()),
+                Map.entry("knowledge_resolved_entities", entityLabels(knowledge)),
+                Map.entry("knowledge_reference_names", referenceNames(knowledge)),
+                Map.entry("knowledge_reference_summaries", referenceSummaries(knowledge)),
                 Map.entry(
                     "knowledge_reference_ids",
                     knowledge == null
@@ -298,7 +388,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.requestedTitle(),
             request.musicStyle(),
             request.vocalPreference(),
-            knowledge.references().stream().map(KnowledgeReference::displayName).toList());
+            yanyunReferenceLabels(knowledge));
     long startedAt = System.nanoTime();
     try {
       DeepSeekLyricsResponse response = deepSeekLyricsClient.generate(deepSeekRequest);
@@ -322,7 +412,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.workId(),
             null,
             "LyricsAgent",
-            "v0.1",
+            "v0.7",
             request.operation().name(),
             deepSeekLyricsClient.modelName(),
             prompt.templateKey(),
@@ -397,7 +487,11 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     return String.join(
         "\n",
         result.kbVersion(),
-        result.references().stream().map(KnowledgeReference::chunkId).toList().toString());
+        result.references().stream().map(KnowledgeReference::chunkId).toList().toString(),
+        result.resolvedEntities().stream()
+            .map(ResolvedKnowledgeEntity::promptLabel)
+            .toList()
+            .toString());
   }
 
   private String inputFingerprint(DeepSeekLyricsRequest request) {
@@ -426,19 +520,59 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         response.qualityScore() == null ? "" : response.qualityScore().toPlainString());
   }
 
-  private LyricsGenerationRequest rewriteRequest(LyricsGenerationRequest request) {
+  private LyricsGenerationRequest rewriteRequest(
+      LyricsGenerationRequest request, QualityEvaluationResult quality) {
     return new LyricsGenerationRequest(
         request.userId(),
         request.workId(),
         request.operation(),
         request.userInput(),
         request.currentLyrics(),
-        appendInstruction(
-            request.instruction(),
-            "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion, music preference, and story core. Make the final lyrics feel like they belong inside the Yanyun Sixteen Sounds world through character choices, place atmosphere, wuxia actions, player experience, or emotional texture. Do not force official names or the words Yanyun/Sixteen Sounds. Do not over-heroize ordinary characters. Avoid generic wuxia phrasing and plot-summary writing."),
+        appendInstruction(request.instruction(), rewriteInstruction(quality)),
         request.requestedTitle(),
         request.musicStyle(),
         request.vocalPreference());
+  }
+
+  private String rewriteInstruction(QualityEvaluationResult quality) {
+    String action = recommendedRewriteAction(quality == null ? null : quality.recommendedAction());
+    String base =
+        "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion, music preference, and story core. Make the final lyrics feel like they belong inside the Yanyun Sixteen Sounds world through character choices, place atmosphere, wuxia actions, player experience, or emotional texture. If the request names a resolved Yanyun character, storyline, place, or faction, ground the rewrite in that canonical entity and do not output user typos as official names. Do not force official names or the words Yanyun/Sixteen Sounds. Do not over-heroize ordinary characters. Avoid generic wuxia phrasing and plot-summary writing.";
+    String targeted =
+        switch (action) {
+          case "rewrite_angle" ->
+              "Change to a more distinctive creative entry angle. Avoid the first obvious interpretation and choose an angle with stronger song identity.";
+          case "rewrite_cliche" ->
+              "Remove first-response cliches and generic wuxia phrasing. Replace them with unexpected but truthful actions, objects, voices, or scene details.";
+          case "rewrite_voice" ->
+              "Unify the singing voice. Make the lyrics sound like a real person or group inside the song is singing, not like an outside narrator summarizing a plot.";
+          case "rewrite_memory_point" ->
+              "Strengthen the song's memory point. It can be a repeatable line, repeated sentence shape, spoken habit, sound action, image loop, or rhythmic refrain; do not force a slogan.";
+          case "rewrite_singability" ->
+              "Repair singability: shorter natural lines, clearer rhythmic repetition, more natural rhyme or near-rhyme, and fewer prose-like explanations.";
+          case "rewrite_grounding" ->
+              "Strengthen Yanyun grounding and user-story fidelity. Use matched knowledge as creative material without turning the lyric into encyclopedia or plot summary.";
+          default ->
+              "Use the quality gate feedback to make the rewrite less ordinary, more singable, more concrete, and more memorable without locking into a fixed formula.";
+        };
+    return base + " Targeted rewrite action=" + action + ". " + targeted;
+  }
+
+  private String recommendedRewriteAction(String recommendedAction) {
+    String normalized = nullToEmpty(recommendedAction);
+    for (String action :
+        List.of(
+            "rewrite_angle",
+            "rewrite_cliche",
+            "rewrite_voice",
+            "rewrite_memory_point",
+            "rewrite_singability",
+            "rewrite_grounding")) {
+      if (normalized.contains(action)) {
+        return action;
+      }
+    }
+    return "rewrite_open_quality";
   }
 
   private LyricsGenerationResult toResult(
@@ -471,6 +605,61 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     return knowledge.references().stream().map(KnowledgeReference::displayName).toList();
   }
 
+  private void ensureEntityResolutionAllowed(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null || knowledge.resolvedEntities().isEmpty()) {
+      return;
+    }
+    boolean hasAmbiguousEntity =
+        knowledge.resolvedEntities().stream().anyMatch(ResolvedKnowledgeEntity::ambiguous);
+    if (hasAmbiguousEntity && looksLikeExplicitEntityRequest(request)) {
+      throw new LyricsCreativeDomainException("没能准确识别你提到的燕云角色、剧情、地点或门派。请检查名称，或补充一句描述后重试。", null);
+    }
+  }
+
+  private boolean looksLikeExplicitEntityRequest(LyricsGenerationRequest request) {
+    String query = query(request);
+    return query.contains("燕云十六声中")
+        || query.contains("游戏中")
+        || query.contains("游戏里")
+        || query.contains("角色歌")
+        || query.contains("人生经历")
+        || query.contains("剧情歌")
+        || query.contains("任务线")
+        || query.contains("门派")
+        || query.contains("势力");
+  }
+
+  private List<String> yanyunReferenceLabels(KnowledgeRetrievalResult knowledge) {
+    Set<String> labels = new LinkedHashSet<>();
+    labels.addAll(entityLabels(knowledge));
+    labels.addAll(referenceNames(knowledge));
+    return new ArrayList<>(labels).stream().limit(12).toList();
+  }
+
+  private List<String> entityLabels(KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null) {
+      return List.of();
+    }
+    return knowledge.resolvedEntities().stream().map(ResolvedKnowledgeEntity::promptLabel).toList();
+  }
+
+  private List<String> referenceNames(KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null) {
+      return List.of();
+    }
+    return knowledge.references().stream().map(KnowledgeReference::displayName).toList();
+  }
+
+  private List<String> referenceSummaries(KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null) {
+      return List.of();
+    }
+    return knowledge.references().stream()
+        .map(reference -> reference.displayName() + ": " + trimToLength(reference.content(), 320))
+        .toList();
+  }
+
   private boolean isLowQuality(DeepSeekLyricsResponse response) {
     return response.qualityScore() != null
         && response.qualityScore().compareTo(QUALITY_REWRITE_THRESHOLD) < 0;
@@ -497,6 +686,13 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private String firstNonBlank(String value, String fallback) {
     return value == null || value.isBlank() ? fallback : value.trim();
+  }
+
+  private String trimToLength(String value, int maxLength) {
+    if (value == null || value.length() <= maxLength) {
+      return value == null ? "" : value;
+    }
+    return value.substring(0, Math.max(0, maxLength)) + "...";
   }
 
   private String nullToEmpty(String value) {

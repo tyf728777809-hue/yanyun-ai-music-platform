@@ -25,6 +25,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -74,7 +75,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertEquals(CreativeDomainDecision.REJECT, result.domainDecision());
     assertEquals(0, requestCount.get());
     assertEquals("CreativeBriefAgent", records.getFirst().agentName());
-    assertEquals("v0.6", records.getFirst().agentVersion());
+    assertEquals("v0.7", records.getFirst().agentVersion());
   }
 
   @Test
@@ -86,7 +87,7 @@ class RealDeepSeekCreativeAgentsTest {
                     exchange,
                     200,
                     chatResponse(
-                        Map.of(
+                        mapOf(
                             "domain_decision",
                             "PASS",
                             "creative_intent",
@@ -105,6 +106,20 @@ class RealDeepSeekCreativeAgentsTest {
                             List.of("must remain Yanyun-related"),
                             "risk_notes",
                             List.of(),
+                            "creative_core",
+                            "一个无名游侠在风雪里选择把刀埋下。",
+                            "chosen_angle",
+                            "不写胜利，写放下武器后的余温。",
+                            "alternative_angles",
+                            List.of("边关旧友", "雪夜归路"),
+                            "anti_cliche_strategy",
+                            "避开风雪孤刀的第一反应，用埋刀动作写人。",
+                            "voice_texture",
+                            "克制、苍凉、低声",
+                            "image_pool",
+                            List.of("埋刀", "雪线", "旧马蹄"),
+                            "song_energy",
+                            "收束后回响",
                             "freeform_opportunities",
                             List.of()))));
     RealDeepSeekCreativeBriefAgent agent =
@@ -127,10 +142,13 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(result.yanyunReferences().contains("雁门关外风雪"));
     assertTrue(result.yanyunReferences().contains("燕云十六声玩家故事"));
     assertTrue(result.yanyunReferences().contains("江湖游侠心境"));
+    assertTrue(result.creativeCore().contains("无名游侠"));
+    assertTrue(result.alternativeAngles().contains("边关旧友"));
+    assertTrue(result.imagePool().contains("埋刀"));
   }
 
   @Test
-  void creativeBriefPromptGuidesLanguageToneWithoutChangingSchema() throws IOException {
+  void creativeBriefPromptUsesOpenSongcraftInsteadOfFixedTemplate() throws IOException {
     AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
     server =
         startServer(
@@ -143,7 +161,7 @@ class RealDeepSeekCreativeAgentsTest {
                   exchange,
                   200,
                   chatResponse(
-                      Map.of(
+                      mapOf(
                           "domain_decision",
                           "PASS",
                           "creative_intent",
@@ -162,6 +180,20 @@ class RealDeepSeekCreativeAgentsTest {
                           List.of("preserve user story"),
                           "risk_notes",
                           List.of(),
+                          "creative_core",
+                          "普通人不是成为英雄，而是在摊灯下仍然愿意伸手。",
+                          "chosen_angle",
+                          "从摊贩手上的油烟和迟疑进入。",
+                          "alternative_angles",
+                          List.of("夜市群像", "旧门派余波"),
+                          "anti_cliche_strategy",
+                          "不写大侠出场，写他放下葱油饼后还是回头。",
+                          "voice_texture",
+                          "市井、低声、带一点倔",
+                          "image_pool",
+                          List.of("摊灯", "葱油饼", "袖口油渍"),
+                          "song_energy",
+                          "低烧后抬头",
                           "freeform_opportunities",
                           List.of())));
             });
@@ -182,8 +214,17 @@ class RealDeepSeekCreativeAgentsTest {
             List.of("开封夜市")));
 
     String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
-    assertTrue(systemPrompt.contains("语言口吻"));
-    assertTrue(systemPrompt.contains("不要新增字段"));
+    assertTrue(systemPrompt.contains("不按曲风套写法"));
+    assertTrue(systemPrompt.contains("不强制每首歌都有同一种结构"));
+    assertTrue(systemPrompt.contains("不强制一定有金句式 hook"));
+    assertTrue(systemPrompt.contains("creative_core"));
+    assertTrue(systemPrompt.contains("chosen_angle"));
+    assertTrue(systemPrompt.contains("alternative_angles"));
+    assertTrue(systemPrompt.contains("anti_cliche_strategy"));
+    assertTrue(systemPrompt.contains("voice_texture"));
+    assertTrue(systemPrompt.contains("image_pool"));
+    assertTrue(systemPrompt.contains("song_energy"));
+    assertTrue(systemPrompt.contains("侠=自由、离别=月光、江湖=风雨、少年=逍遥"));
     assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
   }
 
@@ -494,7 +535,7 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void qualityAgentLyricsPromptChecksRhymeLineLengthAndHook() throws IOException {
+  void qualityAgentLyricsPromptChecksOpenCraftAndMemoryPoint() throws IOException {
     AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
     server =
         startServer(
@@ -545,12 +586,128 @@ class RealDeepSeekCreativeAgentsTest {
             Map.of("context", "lyrics quality smoke")));
 
     String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
-    assertTrue(systemPrompt.contains("副歌主韵脚"));
-    assertTrue(systemPrompt.contains("整首是否几乎无韵"));
-    assertTrue(systemPrompt.contains("句长是否适合中文人声演唱"));
-    assertTrue(systemPrompt.contains("核心 hook 是否有声音记忆点"));
-    assertTrue(systemPrompt.contains("故事清楚但不像歌"));
+    assertTrue(systemPrompt.contains("不要用固定模板审稿"));
+    assertTrue(systemPrompt.contains("是否值得被唱"));
+    assertTrue(systemPrompt.contains("摆脱第一反应俗套"));
+    assertTrue(systemPrompt.contains("声音记忆点不限定为金句"));
+    assertTrue(systemPrompt.contains("完整但普通"));
+    assertTrue(systemPrompt.contains("每句都对但没有一处让人想再听"));
+    assertTrue(systemPrompt.contains("副歌主韵脚或节奏回环"));
     assertTrue(systemPrompt.contains("连续堆叠成填充词"));
+    assertTrue(systemPrompt.contains("rewrite_angle"));
+    assertTrue(systemPrompt.contains("rewrite_cliche"));
+    assertTrue(systemPrompt.contains("rewrite_voice"));
+    assertTrue(systemPrompt.contains("rewrite_memory_point"));
+    assertTrue(systemPrompt.contains("rewrite_singability"));
+    assertTrue(systemPrompt.contains("rewrite_grounding"));
+    assertTrue(systemPrompt.contains("knowledge_resolved_entities"));
+    assertTrue(systemPrompt.contains("点名角色但歌词只是泛江湖"));
+    assertTrue(systemPrompt.contains("错字/非标准称呼"));
+  }
+
+  @Test
+  void qualityAgentCanRewriteCompleteButOrdinaryLyricsWithMemoryPointAction() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "LYRICS",
+                            "decision",
+                            "REWRITE",
+                            "score",
+                            76,
+                            "reasons",
+                            List.of("题材正确但入口普通，副歌没有能留下来的声音记忆点。"),
+                            "recommended_action",
+                            "rewrite_memory_point",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.LYRICS,
+                "天地任逍遥",
+                "[Chorus]\n你看那天高地也阔\n云自飘来水自流\n我就这么快乐地游",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of("song_summary", "一个市井少年选择成为游侠。")));
+
+    assertEquals(QualityDecision.REWRITE, result.decision());
+    assertEquals("rewrite_memory_point", result.recommendedAction());
+    assertEquals(76, result.score());
+  }
+
+  @Test
+  void qualityAgentLocalSafetyRejectsCorrectedEntityTypoInLyrics() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "LYRICS",
+                            "decision",
+                            "PASS",
+                            "score",
+                            90,
+                            "reasons",
+                            List.of(),
+                            "recommended_action",
+                            "PASS",
+                            "retryable",
+                            false))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.LYRICS,
+                "姜无浪",
+                "[Chorus]\n姜无浪把门留在竹林旁",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "song_summary",
+                    "姜无浪的人生经历。",
+                    "knowledge_resolved_entities",
+                    List.of("character/江无浪 matched=姜无浪 kind=fuzzy confidence=0.92"))));
+
+    assertEquals(QualityDecision.REWRITE, result.decision());
+    assertTrue(result.reasons().getFirst().contains("错字"));
   }
 
   @Test
@@ -875,6 +1032,17 @@ class RealDeepSeekCreativeAgentsTest {
   private String chatResponse(Map<String, Object> contentFields) throws IOException {
     String content = objectMapper.writeValueAsString(contentFields);
     return chatResponseContent(content);
+  }
+
+  private Map<String, Object> mapOf(Object... keysAndValues) {
+    if (keysAndValues.length % 2 != 0) {
+      throw new IllegalArgumentException("Expected key/value pairs");
+    }
+    Map<String, Object> result = new LinkedHashMap<>();
+    for (int i = 0; i < keysAndValues.length; i += 2) {
+      result.put((String) keysAndValues[i], keysAndValues[i + 1]);
+    }
+    return result;
   }
 
   private String chatResponseContent(String content) throws IOException {

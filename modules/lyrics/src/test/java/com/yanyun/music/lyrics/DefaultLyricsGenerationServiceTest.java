@@ -51,7 +51,7 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
     assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
     assertEquals(7, result.promptTemplateVersions().get("lyrics.inspiration.v1"));
-    assertEquals(5, result.promptTemplateVersions().get("creative.brief.v5"));
+    assertEquals(7, result.promptTemplateVersions().get("creative.brief.v7"));
     assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
   }
 
@@ -131,6 +131,14 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(renderedInstructions.getFirst().contains("intent=Shape a song"));
     assertTrue(
         renderedInstructions.getFirst().contains("yanyun_references=[Mock Yanyun Reference]"));
+    assertTrue(renderedInstructions.getFirst().contains("creative_core="));
+    assertTrue(renderedInstructions.getFirst().contains("chosen_angle="));
+    assertTrue(renderedInstructions.getFirst().contains("alternative_angles="));
+    assertTrue(renderedInstructions.getFirst().contains("anti_cliche_strategy="));
+    assertTrue(renderedInstructions.getFirst().contains("voice_texture="));
+    assertTrue(renderedInstructions.getFirst().contains("image_pool="));
+    assertTrue(renderedInstructions.getFirst().contains("song_energy="));
+    assertTrue(renderedInstructions.getFirst().contains("songcraft_policy="));
   }
 
   @Test
@@ -224,6 +232,55 @@ class DefaultLyricsGenerationServiceTest {
   }
 
   @Test
+  void rewriteUsesQualityGateRecommendedActionForTargetedInstruction() {
+    AtomicInteger deepSeekCalls = new AtomicInteger();
+    List<String> seenInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request -> {
+          seenInstructions.add(request.instruction());
+          int call = deepSeekCalls.incrementAndGet();
+          return new DeepSeekLyricsResponse(
+              "Song",
+              "Summary",
+              call == 1 ? "[Chorus]\n天高地阔任我游" : request.instruction(),
+              "cinematic folk",
+              "cover seed",
+              List.of(),
+              BigDecimal.valueOf(0.92));
+        };
+    AtomicInteger qualityCalls = new AtomicInteger();
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            new MockCreativeBriefAgent(),
+            deepSeek,
+            request -> {
+              if (qualityCalls.incrementAndGet() == 1) {
+                return new QualityEvaluationResult(
+                    request.gate(),
+                    QualityDecision.REWRITE,
+                    76,
+                    List.of("副歌没有声音记忆点。"),
+                    "rewrite_memory_point",
+                    true,
+                    Map.of());
+              }
+              return new QualityEvaluationResult(
+                  request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of());
+            },
+            new ArrayList<AgentRunRecord>()::add);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertEquals(2, deepSeekCalls.get());
+    assertEquals(2, qualityCalls.get());
+    assertTrue(seenInstructions.get(1).contains("Targeted rewrite action=rewrite_memory_point"));
+    assertTrue(seenInstructions.get(1).contains("do not force a slogan"));
+    assertTrue(result.lyricsText().contains("rewrite_memory_point"));
+  }
+
+  @Test
   void failedGenerationRecordsSanitizedAgentRun() {
     List<AgentRunRecord> records = new ArrayList<>();
     DeepSeekLyricsClient deepSeek =
@@ -249,7 +306,7 @@ class DefaultLyricsGenerationServiceTest {
   }
 
   @Test
-  void failedCreativeBriefRecordsFailureAndStopsBeforeDeepSeek() {
+  void failedCreativeBriefFallsBackAndContinuesGeneration() {
     List<AgentRunRecord> records = new ArrayList<>();
     AtomicInteger deepSeekCalls = new AtomicInteger();
     DefaultLyricsGenerationService service =
@@ -276,14 +333,14 @@ class DefaultLyricsGenerationServiceTest {
                       null,
                       "CREATIVE_BRIEF_AGENT_FAILED",
                       "brief failed"));
-              throw new IllegalArgumentException("brief failed");
+              throw new IllegalStateException("DeepSeek response content is empty");
             },
             request -> {
               deepSeekCalls.incrementAndGet();
               return new DeepSeekLyricsResponse(
                   "Song",
                   "Summary",
-                  "[Verse]\nLyrics",
+                  request.instruction(),
                   "cinematic folk",
                   "cover seed",
                   List.of(),
@@ -291,17 +348,19 @@ class DefaultLyricsGenerationServiceTest {
             },
             records::add);
 
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> service.generate(baseRequest(LyricsOperation.INSPIRATION)));
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
-    assertEquals(0, deepSeekCalls.get());
-    assertEquals(2, records.size());
+    assertEquals(1, deepSeekCalls.get());
+    assertTrue(result.lyricsText().contains("creative_brief_unavailable_fallback"));
+    assertEquals(4, records.size());
     assertEquals("KnowledgeRetrieve", records.get(0).agentName());
     AgentRunRecord record = records.get(1);
     assertEquals("CreativeBriefAgent", record.agentName());
     assertEquals(AgentRunStatus.FAILED, record.status());
     assertEquals("CREATIVE_BRIEF_AGENT_FAILED", record.failureCode());
+    assertEquals("LyricsAgent", records.get(2).agentName());
+    assertEquals(AgentRunStatus.SUCCEEDED, records.get(2).status());
+    assertEquals("QualityEvaluationAgent", records.get(3).agentName());
   }
 
   private LyricsGenerationRequest baseRequest(LyricsOperation operation) {

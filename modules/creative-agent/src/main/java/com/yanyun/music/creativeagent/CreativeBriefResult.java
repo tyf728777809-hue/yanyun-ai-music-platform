@@ -14,7 +14,49 @@ public record CreativeBriefResult(
     List<String> riskNotes,
     String userFacingMessage,
     String yanyunRewriteSuggestion,
-    List<String> freeformOpportunities) {
+    List<String> freeformOpportunities,
+    String creativeCore,
+    String chosenAngle,
+    List<String> alternativeAngles,
+    String antiClicheStrategy,
+    String voiceTexture,
+    List<String> imagePool,
+    String songEnergy) {
+
+  public CreativeBriefResult(
+      CreativeDomainDecision domainDecision,
+      String userIntentSummary,
+      String theme,
+      List<String> moodTags,
+      String narrativeViewpoint,
+      String musicDirection,
+      List<String> yanyunReferences,
+      List<String> constraints,
+      List<String> riskNotes,
+      String userFacingMessage,
+      String yanyunRewriteSuggestion,
+      List<String> freeformOpportunities) {
+    this(
+        domainDecision,
+        userIntentSummary,
+        theme,
+        moodTags,
+        narrativeViewpoint,
+        musicDirection,
+        yanyunReferences,
+        constraints,
+        riskNotes,
+        userFacingMessage,
+        yanyunRewriteSuggestion,
+        freeformOpportunities,
+        null,
+        null,
+        List.of(),
+        null,
+        null,
+        List.of(),
+        null);
+  }
 
   public CreativeBriefResult(
       String userIntentSummary,
@@ -37,7 +79,14 @@ public record CreativeBriefResult(
         riskNotes,
         null,
         null,
-        List.of());
+        List.of(),
+        null,
+        null,
+        List.of(),
+        null,
+        null,
+        List.of(),
+        null);
   }
 
   public CreativeBriefResult {
@@ -63,6 +112,17 @@ public record CreativeBriefResult(
     yanyunRewriteSuggestion = blankToNull(yanyunRewriteSuggestion);
     freeformOpportunities =
         freeformOpportunities == null ? List.of() : List.copyOf(freeformOpportunities);
+    creativeCore = firstNonBlank(creativeCore, theme);
+    chosenAngle = firstNonBlank(chosenAngle, narrativeViewpoint);
+    alternativeAngles =
+        alternativeAngles == null || alternativeAngles.isEmpty()
+            ? List.of()
+            : List.copyOf(alternativeAngles);
+    antiClicheStrategy =
+        firstNonBlank(antiClicheStrategy, "avoid generic wuxia and first-response cliches");
+    voiceTexture = firstNonBlank(voiceTexture, narrativeViewpoint);
+    imagePool = imagePool == null || imagePool.isEmpty() ? List.of() : List.copyOf(imagePool);
+    songEnergy = firstNonBlank(songEnergy, String.join(", ", moodTags));
   }
 
   private static String firstNonBlank(String value, String fallback) {

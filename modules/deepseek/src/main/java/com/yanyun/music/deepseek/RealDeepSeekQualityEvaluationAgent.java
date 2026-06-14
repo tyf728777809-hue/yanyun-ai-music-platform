@@ -20,9 +20,9 @@ import java.util.Map;
 public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluationAgent {
 
   private static final String AGENT_NAME = "QualityEvaluationAgent";
-  private static final String AGENT_VERSION = "v0.6.1";
-  private static final String TEMPLATE_KEY = "quality.evaluation.v6.1";
-  private static final int TEMPLATE_VERSION = 7;
+  private static final String AGENT_VERSION = "v0.7";
+  private static final String TEMPLATE_KEY = "quality.evaluation.v7";
+  private static final int TEMPLATE_VERSION = 8;
 
   private final DeepSeekJsonChatClient client;
   private final ObjectMapper objectMapper;
@@ -114,6 +114,10 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         && (joined.contains("高达") || joined.contains("gundam") || joined.contains("原神"))) {
       return QualityDecision.REWRITE;
     }
+    if (request.gate() == QualityGate.LYRICS && usesCorrectedEntityTypoAsOfficialName(request)) {
+      modelReasons.add("歌词使用了知识库已纠正的错字或非标准称呼，需要改为标准实体名后重写。");
+      return QualityDecision.REWRITE;
+    }
     if (request.gate() == QualityGate.MUSIC
         && (joined.contains("周杰伦") || joined.contains("jay chou") || joined.contains("仿唱"))) {
       return QualityDecision.REWRITE;
@@ -133,6 +137,57 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
     }
     return modelDecision;
+  }
+
+  private boolean usesCorrectedEntityTypoAsOfficialName(QualityEvaluationRequest request) {
+    Object labels = request.context().get("knowledge_resolved_entities");
+    if (labels == null) {
+      return false;
+    }
+    String output =
+        String.join(
+            "\n",
+            nullToEmpty(request.songTitle()),
+            nullToEmpty(request.lyricsText()),
+            String.valueOf(request.context().getOrDefault("song_summary", "")));
+    for (String label : entityLabels(labels)) {
+      if (!label.contains("kind=fuzzy")) {
+        continue;
+      }
+      String canonical = between(label, "/", " matched=");
+      String matched = between(label, "matched=", " kind=");
+      if (!canonical.isBlank()
+          && !matched.isBlank()
+          && !canonical.equals(matched)
+          && output.contains(matched)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private java.util.List<String> entityLabels(Object labels) {
+    if (labels instanceof Iterable<?> iterable) {
+      java.util.List<String> result = new ArrayList<>();
+      for (Object label : iterable) {
+        result.add(String.valueOf(label));
+      }
+      return result;
+    }
+    return java.util.List.of(String.valueOf(labels));
+  }
+
+  private String between(String value, String startMarker, String endMarker) {
+    int start = value.indexOf(startMarker);
+    if (start < 0) {
+      return "";
+    }
+    start += startMarker.length();
+    int end = value.indexOf(endMarker, start);
+    if (end < 0) {
+      return "";
+    }
+    return value.substring(start, end).trim();
   }
 
   private boolean containsUnsafeCoverInstruction(Map<String, Object> context) {
@@ -308,17 +363,26 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
 
         重点规则：
         1. LYRICS：歌词必须有《燕云十六声》大世界归属感，不得写其他 IP，不能只是泛古风；但不要求出现“燕云”“十六声”等字面关键词。
-        2. LYRICS：必须检查歌词音乐性，包括副歌主韵脚、整首是否几乎无韵、句长是否适合中文人声演唱、核心 hook 是否有声音记忆点。
-        3. LYRICS：故事清楚但不像歌、只像分行叙事文本、缺少副歌韵脚或 hook 弱时，不能给高分；严重时应返回 REWRITE。
-        4. LYRICS：不要求格律诗式押韵，允许自然近韵、换韵和口语化表达；但为了押韵而硬凑、倒装、变土，也不能 PASS 高分。
-        5. LYRICS：允许使用“明月、山河、江湖、风烟、长夜、流浪、故乡”等词，但必须检查是否连续堆叠成填充词；如果没有具体动作、物件或场景支撑，应扣分或建议重写。
-        6. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
-        7. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
-        8. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
-        9. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        10. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
-        11. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
-        12. 只输出 JSON object。
+        2. LYRICS：不要用固定模板审稿；先判断歌词实际选择了哪种作词路径，例如叙事、意象、口语、对白/独白、群像、反差、重复、反讽、留白或反套路。
+        3. LYRICS：必须检查歌词是否值得被唱：是否有独特入口，是否摆脱第一反应俗套，是否有听众能记住的声音记忆点，是否像歌而不是漂亮作文。
+        4. LYRICS：声音记忆点不限定为金句；可以是句子、重复句式、口头禅、声音动作、意象回环或节奏记忆。
+        5. LYRICS：完整但普通、题材正确但没有独特入口、每句都对但没有一处让人想再听，必须 REWRITE，score 上限 79。
+        6. LYRICS：必须检查歌词音乐性，包括副歌主韵脚或节奏回环、整首是否几乎无韵、句长是否适合中文人声演唱。
+        7. LYRICS：故事清楚但不像歌、只像分行叙事文本、缺少声音记忆点时，不能给高分；严重时应返回 REWRITE。
+        8. LYRICS：不要求格律诗式押韵，允许自然近韵、换韵和口语化表达；但为了押韵而硬凑、倒装、变土，也不能 PASS 高分。
+        9. LYRICS：允许使用“明月、山河、江湖、风烟、长夜、流浪、故乡”等词，但必须检查是否连续堆叠成填充词；如果没有具体动作、物件或场景支撑，应扣分或建议重写。
+        10. LYRICS：如果 context.knowledge_resolved_entities 显示用户点名的人物、剧情、地点、门派或玩法已映射到 canonical entity，歌词必须贴合该实体的核心经历、关系、冲突、场景或玩家体验。
+        11. LYRICS：点名角色但歌词只是泛江湖、泛燕云、无关任务氛围，必须 REWRITE；点名剧情但没有对应核心冲突或场景，也必须 REWRITE。
+        12. LYRICS：如果歌词、标题或摘要把用户错字/非标准称呼当成正式名字输出，而 context 已给出 canonical name，必须 REWRITE。
+        13. LYRICS：如果歌词引入未被用户输入或知识库上下文支撑的核心人物、剧情或组织作为主轴，必须 REWRITE 或 MANUAL_REVIEW。
+        14. LYRICS：recommended_action 必须优先使用这些值之一：rewrite_angle、rewrite_cliche、rewrite_voice、rewrite_memory_point、rewrite_singability、rewrite_grounding。不要发明接口状态。
+        15. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
+        16. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
+        17. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
+        18. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
+        19. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
+        20. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        21. 只输出 JSON object。
 
         输出字段：
         {

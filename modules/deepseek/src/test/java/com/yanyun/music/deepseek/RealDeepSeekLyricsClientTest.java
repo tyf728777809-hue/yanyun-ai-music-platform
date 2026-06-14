@@ -57,15 +57,24 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("顶级中文作词 Agent"));
     assertTrue(systemPrompt.contains("世界级中文作词家"));
     assertTrue(systemPrompt.contains("不编造官方设定"));
-    assertTrue(systemPrompt.contains("核心 hook"));
+    assertTrue(systemPrompt.contains("开放作词路径"));
+    assertTrue(systemPrompt.contains("叙事型、意象型、口语型"));
+    assertTrue(systemPrompt.contains("Hook 不限定为金句"));
+    assertTrue(systemPrompt.contains("music_style 只影响语言声口"));
+    assertTrue(systemPrompt.contains("避开第一反应俗套"));
+    assertTrue(systemPrompt.contains("creative_core"));
     assertTrue(systemPrompt.contains("主韵脚"));
     assertTrue(systemPrompt.contains("整首歌不得完全无韵"));
+    assertTrue(systemPrompt.contains("canonical name"));
+    assertTrue(systemPrompt.contains("不要把用户错字当成正式名字输出"));
+    assertTrue(systemPrompt.contains("不能只写泛江湖"));
     assertTrue(systemPrompt.contains("7-14 字短句"));
     assertTrue(systemPrompt.contains("具体动作、物件或场景"));
     assertTrue(systemPrompt.contains("叙事流水账"));
     assertTrue(systemPrompt.contains("万能诗性词连续堆叠"));
     assertTrue(systemPrompt.contains("3 个以上万能词"));
     assertTrue(systemPrompt.contains("禁止只靠“酒、剑、月、风”"));
+    assertTrue(systemPrompt.contains("剧情解释太满"));
     assertTrue(systemPrompt.contains("只输出 JSON object"));
     assertTrue(systemPrompt.contains("0.90-1.00"));
     assertEquals("边城旧梦", response.songTitle());
@@ -102,6 +111,28 @@ class RealDeepSeekLyricsClientTest {
 
     DeepSeekLyricsResponse response = client.generate(request());
 
+    assertEquals("边城旧梦", response.songTitle());
+    assertTrue(response.lyricsText().contains("[Verse]"));
+  }
+
+  @Test
+  void retriesWhenProviderReturnsEmptyChoiceContent() throws IOException {
+    AtomicInteger requestCount = new AtomicInteger();
+    server =
+        startServer(
+            exchange -> {
+              if (requestCount.incrementAndGet() == 1) {
+                respondJson(exchange, 200, chatResponseContent(""));
+              } else {
+                respondJson(exchange, 200, chatResponseJson());
+              }
+            });
+    RealDeepSeekLyricsClient client =
+        new RealDeepSeekLyricsClient(properties(serverBaseUri(), true, true), objectMapper);
+
+    DeepSeekLyricsResponse response = client.generate(request());
+
+    assertEquals(2, requestCount.get());
     assertEquals("边城旧梦", response.songTitle());
     assertTrue(response.lyricsText().contains("[Verse]"));
   }

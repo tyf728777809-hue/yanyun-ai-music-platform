@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
 
+  private static final int CONTENT_SEMANTIC_ATTEMPTS = 3;
   private static final Pattern BEARER_TOKEN_PATTERN =
       Pattern.compile("Bearer\\s+[A-Za-z0-9._~+/=-]+", Pattern.CASE_INSENSITIVE);
   private static final Pattern API_KEY_PATTERN =
@@ -58,9 +59,20 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
             .header("Authorization", "Bearer " + properties.getApiKey())
             .POST(HttpRequest.BodyPublishers.ofByteArray(writeJson(requestBody(request))))
             .build();
-    JsonNode root = sendWithRetry(httpRequest);
-    String content = firstChoiceContent(root);
-    return parseContent(content, request);
+    RuntimeException lastFailure = null;
+    for (int attempt = 1; attempt <= CONTENT_SEMANTIC_ATTEMPTS; attempt++) {
+      try {
+        JsonNode root = sendWithRetry(httpRequest);
+        String content = firstChoiceContent(root);
+        return parseContent(content, request);
+      } catch (RuntimeException exception) {
+        if (!isRetryableContentFailure(exception) || attempt == CONTENT_SEMANTIC_ATTEMPTS) {
+          throw exception;
+        }
+        lastFailure = exception;
+      }
+    }
+    throw lastFailure == null ? new IllegalStateException("DeepSeek request failed") : lastFailure;
   }
 
   @Override
@@ -95,22 +107,31 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         核心目标：
         1. 写出属于《燕云十六声》大世界气质的歌词，但不要求反复出现“燕云”“十六声”等字面关键词。
         2. 使用知识库上下文时，只吸收事实、人物情绪、场景气质和可用意象；不要照抄资料，不要把歌词写成剧情百科。
-        3. 不编造官方设定、人物关系、阵营结论或未公开内容。
-        4. 歌词必须可唱，不要像散文、小说、设定介绍或宣传文案。
-        5. 生成前先在内部确定核心 hook、主韵脚、段落情绪递进和 3-5 个具体画面；这些规划不要输出。
-        6. 整首歌不得完全无韵；副歌必须有一个主韵脚，至少 2-4 行自然使用相同或相近韵母。
-        7. 中文歌词优先 7-14 字短句，长句要拆分，避免像散文、小说分行或剧情梗概。
-        8. 副歌必须有一句可重复、可传播、口语但不俗的核心 hook，并尽量绑定主韵脚，适合用户听完愿意分享。
-        9. 每个主要段落至少有一个具体动作、物件或场景，不只写抽象情绪和漂亮形容词。
-        10. 允许讲故事，但不能只按事件顺序说明发生了什么；每段都要有可唱的情绪句或回环句。
-        11. 必须有清晰情绪推进，不要平铺直叙。
-        12. 避免廉价古风词堆砌，例如过度使用“红尘、宿命、刀光剑影、天涯、此生无悔”等空泛表达。
-        13. 减少“明月、山河、江湖、风烟、长夜、流浪、故乡”等万能诗性词连续堆叠；这些词可以使用，但每段不要当填充词连用，出现时必须落到具体动作、物件或场景上。
-        14. 如果一段里出现 3 个以上万能词，内部重写替换为更具体的燕云画面、人物动作或生活细节；禁止只靠“酒、剑、月、风”撑完整首歌。
-        15. 押韵要自然，不为了押韵牺牲内容，不使用生硬倒装、土味口号、网络梗或廉价古风词。
-        16. 必须原创，不模仿、不改写、不借用现实歌曲歌词、影视台词或已有商业歌词。
-        17. 不写真实歌手名、现实歌曲名、翻唱导向、仿唱导向。
-        18. 不输出 Markdown，不输出解释，只输出 JSON object。
+        3. 如果 instruction 或 yanyun_references 中出现 resolved_entities，说明系统已经把用户输入映射到标准燕云实体；必须使用 canonical name 和对应知识库资料，不要把用户错字当成正式名字输出。
+        4. 用户点名人物、剧情、地点、门派或玩法时，歌词必须转译该实体的核心经历、关系、冲突、场景或玩家体验；不能只写泛江湖、泛古风或无关任务氛围。
+        5. 不编造官方设定、人物关系、阵营结论或未公开内容。
+        6. 歌词必须可唱，不要像散文、小说、设定介绍或宣传文案。
+        7. 生成前先在内部选择最适合本题的作词路径，而不是套固定流程；这些规划不要输出。
+        8. 可选路径包括但不限于：叙事型、意象型、口语型、对白/独白型、群像型、反差型、重复型、反讽型、留白型、反套路型。
+        9. 不按曲风套模板；music_style 只影响语言声口、句子松紧、重复程度、节奏感和能量，不决定创意结构。
+        10. Hook 不限定为金句或口号；可以是一句、一个重复句式、一个口头禅、一个声音动作、一个意象回环或一段节奏记忆点。
+        11. 避开第一反应俗套，例如“侠=自由、离别=月光、江湖=风雨、少年=逍遥”；必须找到更有作品感、更具体、更有人的入口。
+        12. 可以使用 creative brief 中的 creative_core、chosen_angle、alternative_angles、anti_cliche_strategy、voice_texture、image_pool、song_energy，但它们是开放指导，不是必须逐项填满的模板。
+        13. 歌词要像一个真实的人、一类人或一个可信声音在唱；不要像平台宣传文案、剧情简介或漂亮作文。
+        14. 允许留白，不要解释透所有剧情；用动作、物件、场景、重复或沉默让听众自己补完。
+        15. 生成前内部确定声音记忆点、主韵脚或节奏回环、段落情绪递进和 3-5 个具体画面；这些规划不要输出。
+        16. 整首歌不得完全无韵；副歌必须有一个主韵脚或清晰节奏回环，至少 2-4 行自然使用相同或相近韵母、句式或声音节奏。
+        17. 中文歌词优先 7-14 字短句，长句要拆分，避免像散文、小说分行或剧情梗概。
+        18. 每个主要段落至少有一个具体动作、物件或场景，不只写抽象情绪和漂亮形容词。
+        19. 允许讲故事，但不能只按事件顺序说明发生了什么；每段都要有可唱的情绪句、声音记忆点或回环句。
+        20. 必须有情绪变化或意义加深，不要从头到尾只是同一种正确情绪。
+        21. 避免廉价古风词堆砌，例如过度使用“红尘、宿命、刀光剑影、天涯、此生无悔”等空泛表达。
+        22. 减少“明月、山河、江湖、风烟、长夜、流浪、故乡”等万能诗性词连续堆叠；这些词可以使用，但每段不要当填充词连用，出现时必须落到具体动作、物件或场景上。
+        23. 如果一段里出现 3 个以上万能词，内部重写替换为更具体的燕云画面、人物动作或生活细节；禁止只靠“酒、剑、月、风”撑完整首歌。
+        24. 押韵要自然，不为了押韵牺牲内容，不使用生硬倒装、土味口号、网络梗或廉价古风词。
+        25. 必须原创，不模仿、不改写、不借用现实歌曲歌词、影视台词或已有商业歌词。
+        26. 不写真实歌手名、现实歌曲名、翻唱导向、仿唱导向。
+        27. 不输出 Markdown，不输出解释，只输出 JSON object。
 
         不同 operation 的处理方式：
         - INSPIRATION：把用户故事扩展成完整歌词，允许强创作。
@@ -148,20 +169,24 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         }
 
         生成前自检：
-        1. 副歌是否有记忆点？
-        2. 副歌是否有主韵脚，且至少 2-4 行自然押同韵或近韵？
-        3. 整首歌是否避免完全无韵？
-        4. 句长是否适合中文人声演唱，是否避免散文化长句？
-        5. 是否可唱？
-        6. 是否像发生在燕云十六声大世界里，而不是泛古风或其它 IP？
-        7. 是否有俗套古风堆词？
-        8. 是否有具体动作、物件或场景支撑，而不是只写抽象情绪？
-        9. 是否有一句用户能记住、能跟唱、具备声音记忆点的核心 hook？
-        10. 是否只是叙事流水账，缺少情绪句或回环句？
-        11. 是否为了押韵而硬凑、倒装、变土？
-        12. 是否把万能诗性词当填充词连续堆叠，而不是写具体画面和动作？
-        13. 是否编造了具体官方设定？
-        14. 是否存在版权、仿唱或现实歌曲风险？
+        1. 是否选择了适合本题的开放作词路径，而不是套固定古风/曲风模板？
+        2. 是否有声音记忆点？它可以是金句、重复句式、口头禅、声音动作、意象回环或节奏记忆，而不一定是口号。
+        3. 是否避开第一反应俗套，而不是“侠=自由、离别=月光、江湖=风雨、少年=逍遥”的普通答案？
+        4. 副歌是否有主韵脚、节奏回环或重复结构，且至少 2-4 行自然押同韵、近韵或形成清晰声音记忆？
+        5. 整首歌是否避免完全无韵？
+        6. 句长是否适合中文人声演唱，是否避免散文化长句？
+        7. 是否可唱？
+        8. 是否像发生在燕云十六声大世界里，而不是泛古风或其它 IP？
+        9. 是否有俗套古风堆词？
+        10. 是否有具体动作、物件或场景支撑，而不是只写抽象情绪？
+        11. 是否只是叙事流水账，缺少情绪句、声音记忆点或回环句？
+        12. 是否为了押韵而硬凑、倒装、变土？
+        13. 是否把万能诗性词当填充词连续堆叠，而不是写具体画面和动作？
+        14. 是否把剧情解释太满，缺少留白和再听空间？
+        15. 是否编造了具体官方设定？
+        16. 如果用户点名角色、剧情、地点、门派或玩法，是否真的落到了对应 canonical entity 的核心材料，而不是泛写燕云气氛？
+        17. 是否把用户错字或非标准称呼当成正式名字输出？
+        18. 是否存在版权、仿唱或现实歌曲风险？
         如果自检不达标，内部重写后再输出最终 JSON。
         """
         .trim();
@@ -243,6 +268,13 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
       throw new IllegalStateException("DeepSeek response content is empty");
     }
     return content;
+  }
+
+  private boolean isRetryableContentFailure(RuntimeException exception) {
+    String message = exception.getMessage();
+    return message != null
+        && (message.startsWith("DeepSeek response content")
+            || message.startsWith("DeepSeek response did not include choices"));
   }
 
   private DeepSeekLyricsResponse parseContent(String content, DeepSeekLyricsRequest request) {
