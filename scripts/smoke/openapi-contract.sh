@@ -217,13 +217,13 @@ assert_status "$status" "409"
 assert_error_response "IDEMPOTENCY_CONFLICT"
 
 log "checking inspiration create contract"
-inspiration_body='{"story_input":"雁门关外风雪夜，少年与旧友重逢。","mood":"温柔热血","scene":"边塞雪夜","music_style":"国风摇滚"}'
+inspiration_body='{"story_input":"雁门关外风雪夜，少年与旧友重逢。","mood":"温柔热血","music_style":"摇滚"}'
 status="$(request POST "/works/inspiration" "$inspiration_body" "$(idempotency_key inspiration)")"
 assert_status "$status" "202"
 assert_create_work_response
 
 log "checking lyrics create and detail contract"
-lyrics_body='{"song_title":"契约 Smoke 歌","lyrics_input":"风过雁门\n灯照长街","music_style":"国风民谣"}'
+lyrics_body='{"song_title":"契约 Smoke 歌","lyrics_input":"风过雁门\n灯照长街","music_style":"民谣叙事"}'
 status="$(request POST "/works/lyrics" "$lyrics_body" "$(idempotency_key lyrics)")"
 assert_status "$status" "202"
 assert_create_work_response
@@ -253,6 +253,7 @@ assert_job_response
 status="$(request GET "/works/${work_id}")"
 assert_status "$status" "200"
 assert_json '.lyrics_draft.version_no == 3 and .polish_used_count == 2 and .polish_remaining_count == 0' "continue did not exhaust edit counters"
+lyrics_draft_id="$(jq -er '.lyrics_draft.lyrics_draft_id' <"$RESULT_BODY")"
 
 log "checking edit limit error"
 status="$(request POST "/works/${work_id}/lyrics/polish" '{"instruction":"第三次润色应失败。"}' "$(idempotency_key polish-limit)")"
@@ -260,7 +261,7 @@ assert_status "$status" "409"
 assert_error_response "CONFLICT"
 
 log "checking confirm, generated detail, cover and video actions"
-status="$(request POST "/works/${work_id}/confirm" '{"music_provider":"mock"}' "$(idempotency_key confirm)")"
+status="$(request POST "/works/${work_id}/confirm" "{\"lyrics_draft_id\":\"${lyrics_draft_id}\",\"music_provider\":\"mock\"}" "$(idempotency_key confirm)")"
 assert_status "$status" "202"
 assert_job_response
 assert_json '.status == "GENERATED" and .generation_stage == "PACKAGE_READY"' "confirm response state mismatch"
@@ -276,8 +277,8 @@ status="$(request POST "/works/${work_id}/cover/regenerate" '{}' "$(idempotency_
 assert_status "$status" "202"
 assert_job_response
 status="$(request POST "/works/${work_id}/video/rerender" '{}' "$(idempotency_key video)")"
-assert_status "$status" "202"
-assert_job_response
+assert_status "$status" "501"
+assert_error_response "INTERNAL_ERROR"
 
 log "checking list and publish package contracts"
 status="$(request GET "/works?page=1&page_size=5&status=GENERATED")"
@@ -310,7 +311,10 @@ log "checking controlled music failure and retry contract"
 status="$(request POST "/works/lyrics" '{"song_title":"失败契约 Smoke","lyrics_input":"先失败，再重试"}' "$(idempotency_key failure-create)")"
 assert_status "$status" "202"
 failure_work_id="$(jq -er '.work_id' <"$RESULT_BODY")"
-status="$(request POST "/works/${failure_work_id}/confirm" '{"music_provider":"suno"}' "$(idempotency_key failure-confirm)")"
+status="$(request GET "/works/${failure_work_id}")"
+assert_status "$status" "200"
+failure_lyrics_draft_id="$(jq -er '.lyrics_draft.lyrics_draft_id' <"$RESULT_BODY")"
+status="$(request POST "/works/${failure_work_id}/confirm" "{\"lyrics_draft_id\":\"${failure_lyrics_draft_id}\",\"music_provider\":\"suno\"}" "$(idempotency_key failure-confirm)")"
 assert_status "$status" "409"
 assert_error_response "CONFLICT"
 

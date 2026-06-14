@@ -57,7 +57,7 @@ describe('ConfirmView', () => {
     expect(screen.getByRole('button', { name: 'AI 续写' })).toBeInTheDocument();
   });
 
-  it('requires an instruction before submitting polish', () => {
+  it('keeps polish submit disabled until an instruction is provided', () => {
     render(
       <ToastProvider>
         <ConfirmView
@@ -69,6 +69,55 @@ describe('ConfirmView', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+
+    expect(screen.queryByText('请先写下润色方向。')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '开始润色' })).toBeDisabled();
+
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '更押韵一点' },
+    });
+
+    expect(screen.queryByText('请先写下润色方向。')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '开始润色' })).not.toBeDisabled();
+  });
+
+  it('keeps focus in the edit textarea while typing', async () => {
+    render(
+      <ToastProvider>
+        <ConfirmView
+          work={work({ polish_used_count: 0, polish_remaining_count: 2 })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    const textarea = screen.getByRole('textbox', { name: /想让 AI/ });
+    await waitFor(() => expect(textarea).toHaveFocus());
+
+    fireEvent.change(textarea, { target: { value: '更' } });
+    await waitFor(() => expect(textarea).toHaveFocus());
+
+    fireEvent.change(textarea, { target: { value: '更押' } });
+    await waitFor(() => expect(textarea).toHaveFocus());
+  });
+
+  it('shows a readable error when polish instruction only contains spaces', () => {
+    render(
+      <ToastProvider>
+        <ConfirmView
+          work={work({ polish_used_count: 0, polish_remaining_count: 2 })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '   ' },
+    });
 
     expect(screen.getByText('请先写下润色方向。')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '开始润色' })).toBeDisabled();

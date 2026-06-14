@@ -1,5 +1,6 @@
 package com.yanyun.music.api.work;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
@@ -15,14 +16,11 @@ public final class WorkDtos {
 
   private WorkDtos() {}
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public record InspirationCreateRequest(
-      String storyInput,
-      String mood,
-      String scene,
-      String relationship,
-      String musicStyle,
-      String vocalPreference) {}
+      String storyInput, String mood, String musicStyle, String vocalPreference) {}
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public record LyricsCreateRequest(
       String lyricsInput, String songTitle, String musicStyle, String vocalPreference) {}
 

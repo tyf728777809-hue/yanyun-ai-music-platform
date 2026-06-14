@@ -622,7 +622,7 @@ System Prompt
   ↓
 用户输入
   ↓
-用户控制项：情绪、场景、风格、演唱倾向、篇幅
+用户控制项：情绪、开放曲风、演唱倾向、篇幅
   ↓
 燕云风格约束与禁止编造规则
   ↓
@@ -698,12 +698,10 @@ POST /api/v1/works/inspiration
 
 ```json
 {
-  "story_input": "我想写一首清河雨夜，少年侠客与故人重逢，最后各自远行的歌。",
+  "story_input": "我想写一首清河雨夜，少年侠客与故人重逢，最后各自远行的歌。雨夜长街、旧伞和没有说出口的告别都写在里面。",
   "mood": "悲壮",
-  "scene": "清河雨夜",
-  "relationship": "故人重逢",
-  "music_style": "国风流行，也可以有一点摇滚推进感",
-  "vocal_preference": "不指定",
+  "music_style": "R&B 或摇滚都可以，旋律要有记忆点",
+  "vocal_preference": "AUTO",
   "song_scope": "STANDARD"
 }
 ```
@@ -883,7 +881,7 @@ song_title
 song_summary
 lyrics_highlights
 mood
-scene
+visual_context
 cover_prompt_seed
 platform_cover_style_template
 ```

@@ -6,18 +6,29 @@ import { useToast } from '../components/Toast';
 import { service } from '../mock/service';
 import { ApiError } from '../api/client';
 import { requestIdLine } from '../api/friendlyError';
-import type { VocalPreference } from '../api/types';
 
 type Mode = 'inspiration' | 'lyrics';
 
-const VOCAL_OPTIONS: { value: VocalPreference; label: string }[] = [
+const VOCAL_OPTIONS = [
   { value: 'AUTO', label: '智能匹配' },
-  { value: 'FEMALE', label: '女声' },
-  { value: 'MALE', label: '男声' },
-  { value: 'CHORUS', label: '合唱' },
+  { value: 'MALE_LEAD', label: '男声主唱' },
+  { value: 'FEMALE_LEAD', label: '女声主唱' },
+  { value: 'DUET', label: '双人对唱' },
+  { value: 'CHORUS_ACCENT', label: '副歌和声点缀' },
 ];
 
-const STYLE_PRESETS = ['国风古韵', '空灵山水', '热血江湖', '婉转抒情', '电子国潮'];
+const STYLE_PRESETS = [
+  '流行抒情',
+  'R&B',
+  '摇滚',
+  '民谣叙事',
+  '说唱',
+  '电子',
+  '影视OST',
+  '史诗战歌',
+  'City Pop',
+  '国风融合',
+];
 
 interface HomePageProps {
   onWorkCreated: (workId: string) => void;
@@ -33,8 +44,6 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
   // 灵感成歌字段
   const [story, setStory] = useState('');
   const [mood, setMood] = useState('');
-  const [scene, setScene] = useState('');
-  const [relationship, setRelationship] = useState('');
 
   // 填词成歌字段
   const [lyrics, setLyrics] = useState('');
@@ -42,7 +51,7 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
 
   // 共用字段
   const [musicStyle, setMusicStyle] = useState('');
-  const [vocal, setVocal] = useState<VocalPreference>('AUTO');
+  const [vocal, setVocal] = useState('AUTO');
 
   const canSubmit =
     mode === 'inspiration' ? story.trim().length > 0 : lyrics.trim().length > 0;
@@ -57,8 +66,6 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
           ? await service.createFromInspiration({
               story_input: story.trim(),
               mood: mood.trim() || undefined,
-              scene: scene.trim() || undefined,
-              relationship: relationship.trim() || undefined,
               music_style: musicStyle.trim() || undefined,
               vocal_preference: vocal,
             })
@@ -118,38 +125,20 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
           <div className="form-stack">
             <TextAreaField
               label="你的灵感"
-              hint="一段故事、一种心情、一个画面都可以"
-              placeholder="例如：江南雨夜，老友重逢，聊起年少时一起仗剑走过的清河镇……"
+              hint="把人物、地点、关系、画面都直接写在这里就好"
+              placeholder="例如：我想写一个燕云里的普通游侠，夜里回到清河，发现旧友还守着当年的酒摊……"
               rows={5}
               maxLength={3000}
               value={story}
               onChange={(e) => setStory(e.target.value)}
             />
-            <div className="form-grid">
-              <TextField
-                label="心情"
-                optional
-                placeholder="如 释然、思念"
-                maxLength={128}
-                value={mood}
-                onChange={(e) => setMood(e.target.value)}
-              />
-              <TextField
-                label="场景"
-                optional
-                placeholder="如 雨夜长街"
-                maxLength={256}
-                value={scene}
-                onChange={(e) => setScene(e.target.value)}
-              />
-            </div>
             <TextField
-              label="人物关系"
+              label="心情"
               optional
-              placeholder="如 久别重逢的旧友"
-              maxLength={256}
-              value={relationship}
-              onChange={(e) => setRelationship(e.target.value)}
+              placeholder="如 释然、思念、热血、孤独"
+              maxLength={128}
+              value={mood}
+              onChange={(e) => setMood(e.target.value)}
             />
           </div>
         ) : (
@@ -195,7 +184,7 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
             </div>
             <input
               className="field__input"
-              placeholder="或自定义曲风描述"
+              placeholder="可自由填写喜欢的曲风"
               maxLength={512}
               value={musicStyle}
               onChange={(e) => setMusicStyle(e.target.value)}
@@ -207,7 +196,7 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
             optional
             options={VOCAL_OPTIONS}
             value={vocal}
-            onChange={(v) => setVocal(v as VocalPreference)}
+            onChange={setVocal}
           />
         </div>
 

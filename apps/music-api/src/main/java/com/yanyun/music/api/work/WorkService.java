@@ -151,8 +151,8 @@ public class WorkService {
             request.storyInput(),
             null,
             request.mood(),
-            request.scene(),
-            request.relationship(),
+            null,
+            null,
             request.musicStyle(),
             request.vocalPreference());
 

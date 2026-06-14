@@ -79,10 +79,11 @@ log "creating lyrics work"
 CREATE_RESPONSE="$(
   post_json "/works/lyrics" "$(idempotency_key create)" \
     '{
-      "song_title": "DreamMaker Guard Smoke",
-      "lyrics_input": "雁门风起过长街，灯影照见旧山河。故人踏月归来晚，一曲清歌入燕云。",
-      "music_style": "国风民谣，古筝，笛子，女声，温柔叙事"
-    }'
+	      "song_title": "DreamMaker Guard Smoke",
+	      "lyrics_input": "雁门风起过长街，灯影照见旧山河。故人踏月归来晚，一曲清歌入燕云。",
+	      "music_style": "流行抒情，旋律清晰，温柔叙事",
+	      "vocal_preference": "FEMALE_LEAD"
+	    }'
 )"
 WORK_ID="$(jq -er '.work_id' <<<"$CREATE_RESPONSE")"
 log "created work_id=$WORK_ID"

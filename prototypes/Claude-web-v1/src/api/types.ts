@@ -1,5 +1,5 @@
 // 与后端 OpenAPI v0.1 对齐的领域类型。
-// 后端 Jackson 使用 SNAKE_CASE 序列化，枚举为大写常量字符串，null 字段会被省略。
+// 后端 Jackson 使用 SNAKE_CASE 序列化，null 字段会被省略。
 // 这些字符串联合类型直接来自 com.yanyun.music.workdomain 下的枚举定义，
 // 前端只“读取并展示”后端状态，绝不自行猜测状态机。
 
@@ -69,7 +69,7 @@ export type FailureCode =
 
 export type CreationMode = 'INSPIRATION' | 'LYRICS';
 
-export type VocalPreference = 'AUTO' | 'MALE' | 'FEMALE' | 'CHORUS';
+export type VocalPreference = string;
 
 export interface QuotaHint {
   locked: boolean;
@@ -216,8 +216,6 @@ export interface PublishPackage {
 export interface InspirationCreateRequest {
   story_input: string;
   mood?: string;
-  scene?: string;
-  relationship?: string;
   music_style?: string;
   vocal_preference?: VocalPreference;
 }

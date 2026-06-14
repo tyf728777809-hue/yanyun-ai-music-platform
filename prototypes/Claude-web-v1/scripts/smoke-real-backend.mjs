@@ -121,6 +121,13 @@ async function runMainFlow(page) {
   await page.goto(frontendUrl, { waitUntil: 'networkidle' });
   await waitForVisibleText(page, '本地服务', 'local service mode');
   await expectNoHorizontalOverflow(page, 'mobile home');
+  assert((await page.getByLabel('场景').count()) === 0, 'scene field should not be shown on home page');
+  assert((await page.getByLabel('人物关系').count()) === 0, 'relationship field should not be shown on home page');
+  assert((await page.getByRole('button', { name: 'R&B' }).count()) > 0, 'open style preset R&B should be shown');
+  assert(
+    (await page.getByRole('button', { name: '副歌和声点缀' }).count()) > 0,
+    'chorus accent vocal preference should be shown',
+  );
 
   await page
     .getByRole('textbox', { name: /你的灵感/ })

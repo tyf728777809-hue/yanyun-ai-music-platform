@@ -167,8 +167,8 @@ public final class SunoMusicProvider implements MusicProvider {
       return null;
     }
     return switch (value.trim().toUpperCase(java.util.Locale.ROOT)) {
-      case "FEMALE" -> "f";
-      case "MALE" -> "m";
+      case "FEMALE", "FEMALE_LEAD" -> "f";
+      case "MALE", "MALE_LEAD" -> "m";
       default -> null;
     };
   }

@@ -354,14 +354,14 @@ check_api_readiness() {
 
 create_real_work() {
   log "creating one inspiration work with real DeepSeek lyrics"
-  CREATE_RESPONSE="$(
-    post_json "/works/inspiration" "$IDEMPOTENCY_PREFIX-create" '{
-      "story_input": "我想写一个燕云十六声里的普通玩家故事：一个天赋平平的小弟子，师门没了，后来在开封夜市摆摊，但遇到不平事还是会出手。",
-      "mood": "市井、克制、热血、温柔",
-      "scene": "开封夜市、旧山门、雨后的摊灯",
-      "music_style": "国风流行，旋律性强，副歌有记忆点，温暖男声"
-    }'
-  )"
+	  CREATE_RESPONSE="$(
+	    post_json "/works/inspiration" "$IDEMPOTENCY_PREFIX-create" '{
+	      "story_input": "我想写一个燕云十六声里的普通玩家故事：一个天赋平平的小弟子，师门没了，后来在开封夜市摆摊，旧山门、雨后的摊灯都还在心里；遇到不平事，他还是会出手。",
+	      "mood": "市井、克制、热血、温柔",
+	      "music_style": "流行抒情，旋律性强，副歌有记忆点",
+	      "vocal_preference": "MALE_LEAD"
+	    }'
+	  )"
   WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id // empty')"
   if [ -z "$WORK_ID" ]; then
     echo "$CREATE_RESPONSE" | jq '{status, generation_stage, failure, error: {code: .error.code, request_id: .error.request_id}}' >&2

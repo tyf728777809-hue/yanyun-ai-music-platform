@@ -128,14 +128,14 @@ case "$IMAGE2_MODE" in
 esac
 
 log "creating one inspiration work for real DeepSeek lyrics smoke"
-CREATE_RESPONSE="$(
-  post_json "/works/inspiration" "$IDEMPOTENCY_PREFIX-create" '{
-    "story_input": "雁门关外初雪落下，少年侠客在长亭听见故人笛声，想写一首温柔但有力量的燕云主题原创歌。",
+  CREATE_RESPONSE="$(
+    post_json "/works/inspiration" "$IDEMPOTENCY_PREFIX-create" '{
+    "story_input": "雁门关外初雪落下，少年侠客在边塞长亭听见故人笛声，想写一首温柔但有力量的燕云主题原创歌。",
     "mood": "温柔、坚定、宿命感",
-    "scene": "边塞长亭、初雪、旧友重逢",
-    "music_style": "国风民谣，笛子，古筝，温暖女声"
+    "music_style": "民谣叙事，旋律清晰，温暖但有力量",
+    "vocal_preference": "FEMALE_LEAD"
   }'
-)"
+  )"
 
 WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id // empty')"
 STATUS="$(echo "$CREATE_RESPONSE" | jq -r '.status // empty')"

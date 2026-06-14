@@ -6,15 +6,58 @@ import { Banner } from '../../components/Banner';
 import { Modal } from '../../components/Modal';
 import { Spinner } from '../../components/Spinner';
 import { PackagePill } from '../../components/StatusPill';
+import { useToast } from '../../components/Toast';
 import { useAction } from '../../hooks/useAction';
 import { ApiError } from '../../api/client';
 import { actionLabel } from '../../api/actions';
 import { requestIdLine } from '../../api/friendlyError';
 import { service } from '../../mock/service';
 
+function copyTextWithTextarea(text: string): boolean {
+  if (typeof document === 'undefined' || !document.body) {
+    return false;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '0';
+  textarea.style.left = '-9999px';
+  textarea.style.width = '1px';
+  textarea.style.height = '1px';
+  textarea.style.opacity = '0';
+  textarea.style.pointerEvents = 'none';
+
+  document.body.appendChild(textarea);
+  textarea.focus({ preventScroll: true });
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  try {
+    return document.execCommand?.('copy') === true;
+  } finally {
+    textarea.remove();
+  }
+}
+
+async function writeClipboardText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Some embedded browsers expose navigator.clipboard but reject writes without focus/permission.
+  }
+
+  return copyTextWithTextarea(text);
+}
+
 // 成品页：作品已生成且可交接发布。媒体优先用 media_assets，交接信息来自 publish-package。
 export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const { run, busyKey } = useAction(refresh);
+  const toast = useToast();
   const [pkg, setPkg] = useState<PublishPackage | null>(null);
   const [pkgError, setPkgError] = useState<{ message: string; requestId?: string | null } | null>(null);
   const [pkgLoading, setPkgLoading] = useState(true);
@@ -46,6 +89,9 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const expired = work.package_status === 'PACKAGE_EXPIRED' || pkg?.package_status === 'PACKAGE_EXPIRED';
   const availableActions = pkg?.available_actions ?? work.available_actions;
   const hasAvailableAction = (action: AvailableAction) => availableActions.includes(action);
+  const lyricsText =
+    work.lyrics_draft?.lyrics_text?.trim() || pkg?.package_json?.lyrics?.text?.trim() || '';
+  const hasLyrics = lyricsText.length > 0;
 
   async function markFetched() {
     await run(
@@ -71,6 +117,16 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
     });
   }
 
+  async function copyLyrics() {
+    if (!hasLyrics) return;
+    const copied = await writeClipboardText(lyricsText);
+    if (copied) {
+      toast.success('歌词已复制');
+    } else {
+      toast.error('复制失败，请长按歌词手动复制');
+    }
+  }
+
   return (
     <div className="work-stage finished-view">
       <header className="stage-head">
@@ -82,40 +138,57 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
         {work.song_summary && <p className="song-summary">{work.song_summary}</p>}
       </header>
 
-      {/* 媒体预览 */}
-      <section className="card media-card">
-        <div className="media-cover">
-          {media?.cover_url ? (
-            <img src={media.cover_url} alt="歌曲封面" />
-          ) : (
-            <div className="media-cover__placeholder">封面生成中</div>
-          )}
+      {/* 作品预览 */}
+      <section className="card preview-card">
+        <div className="card__head">
+          <h2 className="card__title">作品预览</h2>
         </div>
 
-        <div className="media-body">
-          {media?.audio_url ? (
-            <div className="media-row">
-              <span className="media-row__label">试听</span>
-              <audio controls preload="none" src={media.audio_url} className="audio-player">
-                你的浏览器不支持音频播放。
-              </audio>
+        <div className="preview-layout">
+          <div className="preview-media">
+            <div className="preview-video-shell">
+              {media?.video_url ? (
+                <video
+                  controls
+                  preload="none"
+                  src={media.video_url}
+                  poster={media.cover_url ?? undefined}
+                  className="video-player preview-video"
+                >
+                  你的浏览器不支持视频播放。
+                </video>
+              ) : media?.cover_url ? (
+                <img className="preview-cover-fallback" src={media.cover_url} alt="歌曲封面" />
+              ) : (
+                <div className="preview-media__placeholder">作品画面准备中</div>
+              )}
             </div>
-          ) : null}
 
-          {media?.video_url ? (
-            <div className="media-row">
-              <span className="media-row__label">画面</span>
-              <video
-                controls
-                preload="none"
-                src={media.video_url}
-                poster={media.cover_url ?? undefined}
-                className="video-player"
-              >
-                你的浏览器不支持视频播放。
-              </video>
+            {media?.audio_url ? (
+              <details className="audio-fallback">
+                <summary>仅听音频</summary>
+                <audio controls preload="none" src={media.audio_url} className="audio-player">
+                  你的浏览器不支持音频播放。
+                </audio>
+              </details>
+            ) : null}
+          </div>
+
+          <aside className="lyrics-panel" aria-label="歌词">
+            <div className="lyrics-panel__head">
+              <h3 className="lyrics-panel__title">歌词</h3>
+              {hasLyrics && (
+                <Button tone="secondary" size="sm" onClick={copyLyrics}>
+                  复制歌词
+                </Button>
+              )}
             </div>
-          ) : null}
+            {hasLyrics ? (
+              <pre className="finished-lyrics-text">{lyricsText}</pre>
+            ) : (
+              <div className="finished-lyrics-empty">歌词暂未准备好</div>
+            )}
+          </aside>
         </div>
       </section>
 

@@ -389,12 +389,6 @@ components:
         mood:
           type: string
           maxLength: 128
-        scene:
-          type: string
-          maxLength: 256
-        relationship:
-          type: string
-          maxLength: 256
         music_style:
           type: string
           maxLength: 512
@@ -788,7 +782,10 @@ components:
       enum: [INSPIRATION, LYRICS]
     VocalPreference:
       type: string
-      enum: [AUTO, MALE, FEMALE, CHORUS]
+      description: >
+        Optional vocal direction such as AUTO, MALE_LEAD, FEMALE_LEAD, DUET,
+        CHORUS_ACCENT, or a short custom vocal preference. Legacy values
+        AUTO, MALE, FEMALE, and CHORUS remain accepted for compatibility.
       default: AUTO
     MusicProvider:
       type: string

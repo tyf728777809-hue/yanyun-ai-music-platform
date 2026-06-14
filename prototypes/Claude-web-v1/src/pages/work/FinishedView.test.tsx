@@ -15,7 +15,14 @@ function work(overrides: Partial<WorkDetail> = {}): WorkDetail {
     package_status: 'PACKAGE_READY',
     song_title: '成品测试歌',
     song_summary: '一首用于测试交接信息的歌',
-    lyrics_draft: null,
+    lyrics_draft: {
+      lyrics_draft_id: 'draft-1',
+      version_no: 1,
+      song_title: '成品测试歌',
+      song_summary: '一首用于测试交接信息的歌',
+      lyrics_text: '[Verse]\n本地草稿歌词',
+      music_prompt: 'pop ballad',
+    },
     media_assets: {
       audio_url: 'https://cdn.local/audio.mp3',
       cover_url: 'https://cdn.local/cover.png',
@@ -87,6 +94,122 @@ describe('FinishedView', () => {
     expect(screen.queryByText('https://cdn.local/package.zip')).not.toBeInTheDocument();
     expect(screen.queryByText('https://cdn.local/package-audio.mp3')).not.toBeInTheDocument();
     expect(screen.queryByText((_, element) => element?.textContent === '第一句\n第二句')).not.toBeInTheDocument();
+    expect(screen.getByText((_, element) => element?.textContent === '[Verse]\n本地草稿歌词')).toBeInTheDocument();
+  });
+
+  it('falls back to package lyrics when current work has no lyrics draft', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: {
+        work_id: 'work-1',
+        audio: { url: 'https://cdn.local/package-audio.mp3', mime_type: 'audio/mpeg' },
+        video: { url: 'https://cdn.local/package-video.mp4', mime_type: 'video/mp4' },
+        cover: { url: 'https://cdn.local/package-cover.png', mime_type: 'image/png' },
+        lyrics: { text: '[Chorus]\n发布包歌词', timeline_url: null },
+        metadata: { song_title: '成品测试歌' },
+      },
+      available_actions: ['REFRESH_PACKAGE_URL'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView
+          work={work({ lyrics_draft: null })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    expect(
+      await screen.findByText((_, element) => element?.textContent === '[Chorus]\n发布包歌词'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a readable lyrics empty state when no lyrics text is available', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: null,
+      available_actions: ['REFRESH_PACKAGE_URL'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView
+          work={work({ lyrics_draft: null })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    expect(screen.getByText('歌词暂未准备好')).toBeInTheDocument();
+  });
+
+  it('copies the currently displayed lyrics text', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: null,
+      available_actions: ['REFRESH_PACKAGE_URL'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '复制歌词' }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('[Verse]\n本地草稿歌词'));
+    expect(await screen.findByText('歌词已复制')).toBeInTheDocument();
+  });
+
+  it('falls back to textarea copy when clipboard permission fails', async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error('clipboard denied'));
+    const execCommand = vi.fn().mockReturnValue(true);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    Object.defineProperty(document, 'execCommand', {
+      configurable: true,
+      value: execCommand,
+    });
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_READY',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: null,
+      available_actions: ['REFRESH_PACKAGE_URL'],
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '复制歌词' }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('[Verse]\n本地草稿歌词'));
+    await waitFor(() => expect(execCommand).toHaveBeenCalledWith('copy'));
+    expect(await screen.findByText('歌词已复制')).toBeInTheDocument();
   });
 
   it('hides mark fetched after package handoff is marked fetched locally', async () => {

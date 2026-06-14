@@ -202,6 +202,7 @@ function EditModal({
 }) {
   const isPolish = kind === 'polish';
   const needsInstruction = isPolish && instruction.trim().length === 0;
+  const showInstructionError = isPolish && instruction.length > 0 && instruction.trim().length === 0;
   return (
     <Modal
       open={kind !== null}
@@ -227,9 +228,10 @@ function EditModal({
         rows={4}
         maxLength={500}
         value={instruction}
+        autoFocus
         onChange={(e) => onInstruction(e.target.value)}
       />
-      {needsInstruction && <p className="field-error">请先写下润色方向。</p>}
+      {showInstructionError && <p className="field-error">请先写下润色方向。</p>}
       {error && (
         <p className="modal-error" role="alert">
           {error}

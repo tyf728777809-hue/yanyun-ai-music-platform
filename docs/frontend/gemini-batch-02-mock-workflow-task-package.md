@@ -43,10 +43,10 @@
 
 - `story_input`，必填。
 - `mood`，可选。
-- `scene`，可选。
-- `relationship`，可选。
 - `music_style`，可选。
-- `vocal_preference`，可选值：`AUTO`、`MALE`、`FEMALE`、`CHORUS`。
+- `vocal_preference`，可选字符串，例如 `AUTO`、`MALE_LEAD`、`FEMALE_LEAD`、`DUET`、`CHORUS_ACCENT`。
+
+人物、地点、关系、画面等内容不要拆成单独字段，直接写入 `story_input`。
 
 提交接口：
 
@@ -61,7 +61,7 @@
 - `lyrics_input`，必填。
 - `song_title`，可选。
 - `music_style`，可选。
-- `vocal_preference`，可选值同上。
+- `vocal_preference`，可选字符串，建议复用灵感成歌页的声线选项。
 
 提交接口：
 

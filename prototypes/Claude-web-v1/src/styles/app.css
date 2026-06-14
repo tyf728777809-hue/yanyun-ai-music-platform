@@ -1235,27 +1235,54 @@
   color: #07120c;
   background: linear-gradient(150deg, var(--jade-400), var(--jade-600));
 }
-.media-card {
+
+.content:has(.finished-view) {
+  max-width: min(var(--shell-max), calc(100vw - 24px));
+}
+
+.preview-card {
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
   padding: var(--sp-4);
 }
-.media-cover {
+
+.preview-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+.preview-media {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.preview-video-shell {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 16 / 9;
   border-radius: var(--r-md);
   overflow: hidden;
   background: var(--ink-900);
   box-shadow: var(--shadow-md);
 }
-.media-cover img {
+.preview-video,
+.preview-cover-fallback {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
-.media-cover__placeholder {
+.preview-video {
+  border-radius: 0;
+  background: #000;
+}
+.preview-cover-fallback {
+  object-fit: cover;
+}
+.preview-media__placeholder {
   width: 100%;
   height: 100%;
   display: grid;
@@ -1263,31 +1290,82 @@
   color: var(--paper-ghost);
   font-size: 14px;
 }
-.media-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
+
+.audio-fallback {
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--ink-850) 84%, transparent);
+  overflow: hidden;
 }
-.media-row {
+.audio-fallback summary {
+  min-height: 42px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.media-row__label {
-  font-size: 12.5px;
+  align-items: center;
+  padding: 0 var(--sp-3);
+  color: var(--text-dim);
+  font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.audio-fallback summary::-webkit-details-marker {
+  display: none;
+}
+.audio-fallback summary::after {
+  content: '+';
+  margin-left: auto;
   color: var(--text-faint);
-  letter-spacing: 0.06em;
+  font-size: 18px;
+  line-height: 1;
+}
+.audio-fallback[open] summary::after {
+  content: '-';
+}
+.audio-fallback .audio-player {
+  display: block;
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+
+.lyrics-panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--ink-900) 72%, transparent);
+}
+.lyrics-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.lyrics-panel__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text);
+}
+.finished-lyrics-text {
+  margin: 0;
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.finished-lyrics-empty {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  color: var(--paper-ghost);
+  font-size: 14px;
 }
 .audio-player {
   width: 100%;
   height: 40px;
-}
-.video-player {
-  width: 100%;
-  border-radius: var(--r-md);
-  background: #000;
-  max-height: 360px;
 }
 .handoff-card {
   display: flex;
@@ -1348,21 +1426,26 @@
   .content {
     padding: var(--sp-6) var(--sp-5) var(--sp-7);
   }
-  .media-card {
-    flex-direction: row;
-    align-items: flex-start;
-    padding: var(--sp-5);
-  }
-  .media-cover {
-    width: 240px;
-    flex: none;
-  }
-  .media-body {
-    flex: 1;
-    min-width: 0;
-  }
   .failed-view .action-bar--stack {
     flex-direction: column;
+  }
+}
+
+@media (min-width: 840px) {
+  .preview-card {
+    padding: var(--sp-5);
+  }
+  .preview-layout {
+    grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+    gap: var(--sp-5);
+  }
+  .finished-lyrics-text {
+    max-height: clamp(300px, 36vw, 460px);
+    overflow: auto;
+    padding-right: var(--sp-2);
+  }
+  .finished-lyrics-empty {
+    min-height: 300px;
   }
 }
 
@@ -1406,6 +1489,9 @@
     max-width: 860px;
     margin: 0 auto;
     width: 100%;
+  }
+  .finished-view {
+    max-width: 1040px;
   }
   .generating-view,
   .failed-view {

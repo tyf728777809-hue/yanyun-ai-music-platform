@@ -57,7 +57,7 @@ class SunoMusicProviderTest {
     MusicGenerationResult result =
         provider.submit(
             new MusicGenerationRequest(
-                "work-1", "[Verse]\nlyrics", "cinematic folk", "FEMALE", Map.of()));
+                "work-1", "[Verse]\nlyrics", "cinematic folk", "FEMALE_LEAD", Map.of()));
 
     assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
     assertEquals("task-1", result.providerTaskId());

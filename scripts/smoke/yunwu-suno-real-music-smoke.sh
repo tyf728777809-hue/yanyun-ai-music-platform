@@ -79,10 +79,11 @@ CREATE_RESPONSE="$(
     -H "X-Mock-User-Id: $MOCK_USER" \
     -H "Idempotency-Key: $IDEMPOTENCY_PREFIX-create" \
     -d '{
-      "song_title": "Yunwu Suno real smoke",
-      "lyrics_input": "雁门风起过长街，灯影照见旧山河。故人踏月归来晚，一曲清歌入燕云。",
-      "music_style": "国风民谣，古筝，笛子，女声，温柔叙事"
-    }'
+	      "song_title": "Yunwu Suno real smoke",
+	      "lyrics_input": "雁门风起过长街，灯影照见旧山河。故人踏月归来晚，一曲清歌入燕云。",
+	      "music_style": "流行抒情，旋律清晰，温柔叙事",
+	      "vocal_preference": "FEMALE_LEAD"
+	    }'
 )"
 WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id')"
 if [ -z "$WORK_ID" ] || [ "$WORK_ID" = "null" ]; then
