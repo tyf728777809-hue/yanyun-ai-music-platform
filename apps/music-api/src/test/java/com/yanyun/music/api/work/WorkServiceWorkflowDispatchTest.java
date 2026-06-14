@@ -386,9 +386,80 @@ class WorkServiceWorkflowDispatchTest {
     verify(workRepository)
         .updatePublishPackageUrl(
             workId,
+            PackageStatus.PACKAGE_READY,
             refreshedPackageJson,
             "http://localhost/yanyun-works-local/" + packageRow.packageObjectKey() + "?v=refreshed",
             OffsetDateTime.parse("2026-06-07T00:00:00Z"));
+  }
+
+  @Test
+  void refreshPublishPackageUrlPreservesFetchedPackageStatus() {
+    UUID workId = UUID.randomUUID();
+    WorkRow generated =
+        workWithPackageStatus(
+            workId,
+            WorkStatus.GENERATED,
+            GenerationStage.PACKAGE_READY,
+            PackageStatus.PACKAGE_FETCHED);
+    PublishPackageRow packageRow =
+        new PublishPackageRow(
+            UUID.randomUUID(),
+            workId,
+            PackageStatus.PACKAGE_FETCHED,
+            "{\"audio\":{\"url\":\"http://old/audio\"}}",
+            "yanyun-ai-music/local/2026/06/06/" + workId + "/package/publish-package.json",
+            "http://old-url",
+            OffsetDateTime.parse("2026-06-06T01:00:00Z"),
+            null,
+            OffsetDateTime.parse("2026-06-06T00:00:00Z"),
+            OffsetDateTime.parse("2026-06-06T00:00:00Z"));
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(generated))
+        .thenReturn(Optional.of(generated));
+    when(workRepository.findPublishPackage(workId)).thenReturn(Optional.of(packageRow));
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of());
+    when(objectStorageClient.createDownloadUrl(any()))
+        .thenReturn(
+            new ObjectStorageDownloadUrl(
+                packageRow.packageObjectKey(),
+                "http://localhost/yanyun-works-local/package.json?v=refreshed",
+                OffsetDateTime.parse("2026-06-07T00:00:00Z")));
+
+    service(syncProperties()).refreshPublishPackageUrl("user-1", workId);
+
+    verify(workRepository)
+        .updatePublishPackageUrl(
+            eq(workId),
+            eq(PackageStatus.PACKAGE_FETCHED),
+            any(),
+            eq("http://localhost/yanyun-works-local/package.json?v=refreshed"),
+            eq(OffsetDateTime.parse("2026-06-07T00:00:00Z")));
+  }
+
+  @Test
+  void markPublishPackageFetchedRejectsExpiredPackageUrl() {
+    UUID workId = UUID.randomUUID();
+    WorkRow generated = work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY);
+    PublishPackageRow packageRow =
+        new PublishPackageRow(
+            UUID.randomUUID(),
+            workId,
+            PackageStatus.PACKAGE_READY,
+            "{}",
+            "yanyun-ai-music/local/2026/06/06/" + workId + "/package/publish-package.json",
+            "http://old-url",
+            OffsetDateTime.now().minusMinutes(1),
+            null,
+            OffsetDateTime.now().minusHours(1),
+            OffsetDateTime.now().minusHours(1));
+    when(workRepository.findWorkForUser(workId, "user-1")).thenReturn(Optional.of(generated));
+    when(workRepository.findPublishPackage(workId)).thenReturn(Optional.of(packageRow));
+
+    assertThatThrownBy(() -> service(syncProperties()).markPublishPackageFetched("user-1", workId))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("链接已过期");
+
+    verify(workRepository, never()).markPackageFetched(workId);
   }
 
   @Test
@@ -491,6 +562,17 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   private WorkRow work(UUID workId, WorkStatus status, GenerationStage stage) {
+    return workWithPackageStatus(
+        workId,
+        status,
+        stage,
+        status == WorkStatus.GENERATED
+            ? PackageStatus.PACKAGE_READY
+            : PackageStatus.PACKAGE_NOT_READY);
+  }
+
+  private WorkRow workWithPackageStatus(
+      UUID workId, WorkStatus status, GenerationStage stage, PackageStatus packageStatus) {
     return new WorkRow(
         workId,
         "YYM-20260605-ABCDEF",
@@ -498,9 +580,7 @@ class WorkServiceWorkflowDispatchTest {
         CreationMode.LYRICS,
         status,
         stage,
-        status == WorkStatus.GENERATED
-            ? PackageStatus.PACKAGE_READY
-            : PackageStatus.PACKAGE_NOT_READY,
+        packageStatus,
         "Mock title",
         "Mock summary",
         0,

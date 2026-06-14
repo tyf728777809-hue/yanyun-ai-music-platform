@@ -450,6 +450,15 @@ public class WorkService {
     if (work.packageStatus() != PackageStatus.PACKAGE_READY) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "作品尚未准备好，暂不能交给社区发布。");
     }
+    PublishPackageRow packageRow =
+        workRepository
+            .findPublishPackage(workId)
+            .orElseThrow(
+                () ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Publish package not found"));
+    if (packageExpired(packageRow)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "作品素材链接已过期，请先刷新下载链接。");
+    }
     workRepository.markPackageFetched(workId);
     return getPublishPackage(userId, workId);
   }
@@ -479,7 +488,11 @@ public class WorkService {
     ObjectStorageDownloadUrl downloadUrl =
         objectStorageClient.createDownloadUrl(packageRow.packageObjectKey());
     workRepository.updatePublishPackageUrl(
-        workId, refreshedPackageJson, downloadUrl.url(), downloadUrl.expiresAt());
+        workId,
+        refreshedStatus(packageRow.packageStatus()),
+        refreshedPackageJson,
+        downloadUrl.url(),
+        downloadUrl.expiresAt());
     return getPublishPackage(userId, workId);
   }
 
@@ -657,6 +670,11 @@ public class WorkService {
     UUID draftId = UUID.randomUUID();
     String title = firstNonBlank(lyrics.songTitle(), work.songTitle());
     String summary = firstNonBlank(lyrics.songSummary(), work.songSummary());
+    if (!workRepository.markLyricsReadyIfVersion(
+        work.id(), work.userId(), work.version(), title, summary, incrementEditCount)) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "Lyrics changed, please refresh and retry");
+    }
     workRepository.insertLyricsDraft(
         new LyricsDraftRow(
             draftId,
@@ -673,7 +691,6 @@ public class WorkService {
             lyrics.knowledgeBaseVersion(),
             writeJson(lyrics.promptTemplateVersions()),
             null));
-    workRepository.markLyricsReady(work.id(), title, summary, incrementEditCount);
     return workRepository.insertGenerationJob(
         work.id(),
         jobType,
@@ -751,10 +768,7 @@ public class WorkService {
   }
 
   private PublishPackage toPublishPackage(WorkRow work, PublishPackageRow row) {
-    boolean expired =
-        row.packageStatus() == PackageStatus.PACKAGE_READY
-            && row.packageUrlExpiresAt() != null
-            && row.packageUrlExpiresAt().isBefore(OffsetDateTime.now());
+    boolean expired = packageExpired(row);
     PackageStatus packageStatus = expired ? PackageStatus.PACKAGE_EXPIRED : row.packageStatus();
     return new PublishPackage(
         work.id(),
@@ -764,6 +778,23 @@ public class WorkService {
         expired ? null : readJsonObject(row.packageJson()),
         availableActions(work, packageStatus),
         packageStatus == PackageStatus.PACKAGE_BLOCKED ? "作品暂不能交给社区发布。" : null);
+  }
+
+  private boolean refreshablePackageStatus(PackageStatus packageStatus) {
+    return packageStatus == PackageStatus.PACKAGE_READY
+        || packageStatus == PackageStatus.PACKAGE_FETCHED;
+  }
+
+  private boolean packageExpired(PublishPackageRow row) {
+    return refreshablePackageStatus(row.packageStatus())
+        && row.packageUrlExpiresAt() != null
+        && row.packageUrlExpiresAt().isBefore(OffsetDateTime.now());
+  }
+
+  private PackageStatus refreshedStatus(PackageStatus packageStatus) {
+    return packageStatus == PackageStatus.PACKAGE_FETCHED
+        ? PackageStatus.PACKAGE_FETCHED
+        : PackageStatus.PACKAGE_READY;
   }
 
   private String refreshedPackageJson(UUID workId, PublishPackageRow packageRow) {

@@ -130,6 +130,7 @@ public final class WorkStateMachine {
         // The common RETURN_TO_EDIT action is appended below.
       }
       case PACKAGE_BLOCKED,
+          QUOTA_COMMIT_FAILED,
           PROVIDER_AUTH_FAILED,
           PROVIDER_ACCOUNT_LIMIT,
           QUOTA_LOCK_FAILED,

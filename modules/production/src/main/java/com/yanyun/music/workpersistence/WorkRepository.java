@@ -406,9 +406,16 @@ public class WorkRepository {
     return version == null ? 1 : version;
   }
 
-  public void markLyricsReady(UUID workId, String title, String summary, boolean incrementPolish) {
-    jdbcTemplate.update(
-        """
+  public boolean markLyricsReadyIfVersion(
+      UUID workId,
+      String userId,
+      int expectedVersion,
+      String title,
+      String summary,
+      boolean incrementPolish) {
+    int updated =
+        jdbcTemplate.update(
+            """
         UPDATE works
         SET status = ?,
             generation_stage = ?,
@@ -418,13 +425,21 @@ public class WorkRepository {
             updated_at = now(),
             version = version + 1
         WHERE id = ?
+          AND user_id = ?
+          AND version = ?
+          AND status IN (?, ?)
         """,
-        WorkStatus.LYRICS_READY.name(),
-        GenerationStage.WAITING_CONFIRM.name(),
-        title,
-        summary,
-        incrementPolish ? 1 : 0,
-        workId);
+            WorkStatus.LYRICS_READY.name(),
+            GenerationStage.WAITING_CONFIRM.name(),
+            title,
+            summary,
+            incrementPolish ? 1 : 0,
+            workId,
+            userId,
+            expectedVersion,
+            WorkStatus.DRAFT.name(),
+            WorkStatus.LYRICS_READY.name());
+    return updated == 1;
   }
 
   public void markPackageReady(
@@ -688,7 +703,11 @@ public class WorkRepository {
   }
 
   public void updatePublishPackageUrl(
-      UUID workId, String packageJson, String packageUrl, OffsetDateTime expiresAt) {
+      UUID workId,
+      PackageStatus packageStatus,
+      String packageJson,
+      String packageUrl,
+      OffsetDateTime expiresAt) {
     jdbcTemplate.update(
         """
         UPDATE publish_packages
@@ -700,7 +719,7 @@ public class WorkRepository {
             updated_at = now()
         WHERE work_id = ?
         """,
-        PackageStatus.PACKAGE_READY.name(),
+        packageStatus.name(),
         packageJson,
         packageUrl,
         expiresAt,
@@ -713,7 +732,7 @@ public class WorkRepository {
             version = version + 1
         WHERE id = ?
         """,
-        PackageStatus.PACKAGE_READY.name(),
+        packageStatus.name(),
         workId);
   }
 

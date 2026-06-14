@@ -223,7 +223,6 @@ class MockSongProductionWorkflowTest {
     assertThat(audioAsset.metadataJson()).contains("\"provider\":\"mock\"");
     assertThat(audioAsset.metadataJson()).contains("\"source\":\"mock-audio\"");
     assertThat(coverAsset.metadataJson()).contains("mock-image2");
-    assertThat(coverAsset.metadataJson()).contains("CoverPromptAgent");
     assertThat(coverAsset.metadataJson()).contains("visual_prompt");
     assertThat(videoAsset.metadataJson()).contains("mock-remotion-ffmpeg");
     assertThat(timelineAsset.metadataJson()).contains("mobile-first");
@@ -270,6 +269,71 @@ class MockSongProductionWorkflowTest {
     verify(workRepository)
         .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
     verify(quotaAdapter, never()).releaseGenerateQuota(any(), any(), any());
+  }
+
+  @Test
+  void quotaCommitFailureDoesNotMarkPackageReady() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeeded(
+                MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  512L);
+            });
+    when(objectStorageClient.createDownloadUrl("packages/" + workId + ".json"))
+        .thenReturn(
+            new ObjectStorageDownloadUrl(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(false, "quota commit rejected"));
+    when(quotaAdapter.releaseGenerateQuota("user-1", "lock-1", "QUOTA_COMMIT_FAILED"))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result = workflowWith(musicProvider).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.QUOTA_COMMIT_FAILED.name());
+    verify(workRepository, never()).upsertPublishPackage(any());
+    verify(workRepository, never()).markPackageReady(any(), any(), any(), eq(true), eq(true));
+    verify(workRepository)
+        .markFailure(workId, FailureCode.QUOTA_COMMIT_FAILED, "quota commit rejected", false);
+    verify(workRepository)
+        .completeGenerationJob(
+            jobId,
+            "FAILED",
+            GenerationStage.FAILED,
+            FailureCode.QUOTA_COMMIT_FAILED,
+            "quota commit rejected");
   }
 
   @Test
@@ -512,12 +576,11 @@ class MockSongProductionWorkflowTest {
     verify(objectStorageClient, org.mockito.Mockito.times(3)).putObject(storagePut.capture());
     ObjectStoragePutRequest defaultCoverPut =
         storagePut.getAllValues().stream()
-            .filter(request -> request.objectKey().equals("covers/" + workId + "-default.svg"))
+            .filter(request -> request.objectKey().equals("covers/" + workId + "-default.png"))
             .findFirst()
             .orElseThrow();
-    assertThat(defaultCoverPut.contentType()).isEqualTo("image/svg+xml");
-    assertThat(new String(defaultCoverPut.content(), java.nio.charset.StandardCharsets.UTF_8))
-        .contains("Default cover fallback");
+    assertThat(defaultCoverPut.contentType()).isEqualTo("image/png");
+    assertThat(defaultCoverPut.content().length).isGreaterThan(100);
 
     ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
     verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
@@ -526,8 +589,8 @@ class MockSongProductionWorkflowTest {
             .filter(asset -> "COVER".equals(asset.assetType()))
             .findFirst()
             .orElseThrow();
-    assertThat(coverAsset.objectKey()).isEqualTo("covers/" + workId + "-default.svg");
-    assertThat(coverAsset.mimeType()).isEqualTo("image/svg+xml");
+    assertThat(coverAsset.objectKey()).isEqualTo("covers/" + workId + "-default.png");
+    assertThat(coverAsset.mimeType()).isEqualTo("image/png");
     assertThat(coverAsset.metadataJson()).contains("\"provider\":\"default-cover\"");
     assertThat(coverAsset.metadataJson()).contains("\"fallback\":true");
     assertThat(coverAsset.metadataJson()).contains("<url-redacted>");
@@ -1401,7 +1464,7 @@ class MockSongProductionWorkflowTest {
             workId,
             FailureCode.PACKAGE_BUILD_FAILED,
             "Package quality gate failed: video asset is not 16:9",
-            true);
+            false);
     verify(workRepository)
         .completeGenerationJob(
             jobId,
@@ -1533,7 +1596,7 @@ class MockSongProductionWorkflowTest {
         .insertQuotaTransaction(
             workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
     verify(workRepository)
-        .markFailure(workId, FailureCode.PACKAGE_BUILD_FAILED, "video render unavailable", true);
+        .markFailure(workId, FailureCode.PACKAGE_BUILD_FAILED, "video render unavailable", false);
     verify(workRepository)
         .completeGenerationJob(
             jobId,

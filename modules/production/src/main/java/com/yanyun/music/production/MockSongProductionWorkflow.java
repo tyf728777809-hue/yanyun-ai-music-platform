@@ -301,7 +301,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.PACKAGE_BUILD_FAILED,
           firstNonBlank(exception.getMessage(), "Media asset generation failed"),
-          true,
+          false,
           input.userId(),
           lock.lockId());
     }
@@ -319,7 +319,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.PACKAGE_BUILD_FAILED,
           firstNonBlank(exception.getMessage(), "Package quality evaluation failed"),
-          true,
+          false,
           input.userId(),
           lock.lockId());
     }
@@ -329,7 +329,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.PACKAGE_BUILD_FAILED,
           packageQualityFailureMessage(packageQuality),
-          packageQuality.retryable(),
+          false,
           input.userId(),
           lock.lockId());
     }
@@ -347,7 +347,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           jobId,
           FailureCode.PACKAGE_BUILD_FAILED,
           "Publish package preparation failed",
-          true,
+          false,
           input.userId(),
           lock.lockId());
     }
@@ -387,6 +387,25 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
 
+    QuotaCommit commit = quotaAdapter.commitGenerateQuota(input.userId(), lock.lockId());
+    workRepository.insertQuotaTransaction(
+        workId,
+        input.userId(),
+        lock.lockId(),
+        "COMMIT_GENERATE",
+        commit.committed() ? "COMMITTED" : "FAILED",
+        commit.message());
+    if (!commit.committed()) {
+      return fail(
+          workId,
+          jobId,
+          FailureCode.QUOTA_COMMIT_FAILED,
+          firstNonBlank(commit.message(), "Quota commit failed"),
+          false,
+          input.userId(),
+          lock.lockId());
+    }
+
     workRepository.upsertPublishPackage(
         new PublishPackageRow(
             UUID.randomUUID(),
@@ -400,9 +419,6 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             null,
             null));
 
-    QuotaCommit commit = quotaAdapter.commitGenerateQuota(input.userId(), lock.lockId());
-    workRepository.insertQuotaTransaction(
-        workId, input.userId(), lock.lockId(), "COMMIT_GENERATE", "COMMITTED", commit.message());
     workRepository.markPackageReady(
         workId, input.songTitle(), input.songSummary(), true, commit.committed());
     workRepository.completeGenerationJob(
@@ -1019,11 +1035,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
   private MediaAssetDescriptor defaultCoverAsset(
       UUID workId, CoverPromptResult coverPrompt, RuntimeException cause) {
-    byte[] content = defaultCoverSvg().getBytes(StandardCharsets.UTF_8);
-    String objectKey = "covers/" + workId + "-default.svg";
+    byte[] content = mockCoverPng(coverPrompt.width(), coverPrompt.height());
+    String objectKey = "covers/" + workId + "-default.png";
     StoredObject storedCover =
-        objectStorageClient.putObject(
-            new ObjectStoragePutRequest(objectKey, "image/svg+xml", content));
+        objectStorageClient.putObject(new ObjectStoragePutRequest(objectKey, "image/png", content));
     Map<String, Object> metadata = new LinkedHashMap<>();
     metadata.put("provider", "default-cover");
     metadata.put("fallback", true);
@@ -1048,19 +1063,6 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         coverPrompt.height(),
         null,
         metadata);
-  }
-
-  private String defaultCoverSvg() {
-    return """
-        <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-          <rect width="1920" height="1080" fill="#16181f"/>
-          <rect x="96" y="96" width="1728" height="888" fill="none" stroke="#c6a35b" stroke-width="8"/>
-          <path d="M240 760 C520 560 720 620 960 460 C1210 295 1430 350 1680 220" fill="none" stroke="#7f8f99" stroke-width="18" opacity="0.72"/>
-          <circle cx="1480" cy="260" r="88" fill="#c6a35b" opacity="0.78"/>
-          <text x="160" y="205" font-family="serif" font-size="72" fill="#e9dfc3">Yanyun AI Music</text>
-          <text x="160" y="300" font-family="serif" font-size="40" fill="#aeb7bb">Default cover fallback</text>
-        </svg>
-        """;
   }
 
   private String firstStackFrame(RuntimeException cause) {

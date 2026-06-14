@@ -172,6 +172,25 @@ class WorkStateMachineTest {
   }
 
   @Test
+  void quotaCommitFailureNeverAllowsRetryEvenIfMarkedRetryable() {
+    WorkSnapshot work =
+        new WorkSnapshot(
+            WorkStatus.FAILED,
+            GenerationStage.FAILED,
+            PackageStatus.PACKAGE_NOT_READY,
+            FailureCode.QUOTA_COMMIT_FAILED,
+            true,
+            2);
+
+    List<AvailableAction> actions = WorkStateMachine.availableActions(work);
+
+    assertFalse(actions.contains(AvailableAction.RETRY_MUSIC));
+    assertTrue(actions.contains(AvailableAction.CONTACT_SUPPORT));
+    assertTrue(actions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertFalse(WorkStateMachine.canRetryMusic(work));
+  }
+
+  @Test
   void lyricsQualityFailureReturnsToEditWithoutMusicRetry() {
     WorkSnapshot work =
         new WorkSnapshot(
