@@ -20,9 +20,9 @@ import java.util.Map;
 public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluationAgent {
 
   private static final String AGENT_NAME = "QualityEvaluationAgent";
-  private static final String AGENT_VERSION = "v0.5";
-  private static final String TEMPLATE_KEY = "quality.evaluation.v5";
-  private static final int TEMPLATE_VERSION = 5;
+  private static final String AGENT_VERSION = "v0.6";
+  private static final String TEMPLATE_KEY = "quality.evaluation.v6";
+  private static final int TEMPLATE_VERSION = 6;
 
   private final DeepSeekJsonChatClient client;
   private final ObjectMapper objectMapper;
@@ -308,13 +308,16 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
 
         重点规则：
         1. LYRICS：歌词必须有《燕云十六声》大世界归属感，不得写其他 IP，不能只是泛古风；但不要求出现“燕云”“十六声”等字面关键词。
-        2. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
-        3. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
-        4. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
-        5. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        6. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
-        7. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
-        8. 只输出 JSON object。
+        2. LYRICS：必须检查歌词音乐性，包括副歌主韵脚、整首是否几乎无韵、句长是否适合中文人声演唱、核心 hook 是否有声音记忆点。
+        3. LYRICS：故事清楚但不像歌、只像分行叙事文本、缺少副歌韵脚或 hook 弱时，不能给高分；严重时应返回 REWRITE。
+        4. LYRICS：不要求格律诗式押韵，允许自然近韵、换韵和口语化表达；但为了押韵而硬凑、倒装、变土，也不能 PASS 高分。
+        5. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
+        6. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
+        7. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
+        8. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
+        9. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
+        10. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        11. 只输出 JSON object。
 
         输出字段：
         {

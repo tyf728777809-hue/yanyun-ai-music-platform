@@ -58,7 +58,11 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("世界级中文作词家"));
     assertTrue(systemPrompt.contains("不编造官方设定"));
     assertTrue(systemPrompt.contains("核心 hook"));
+    assertTrue(systemPrompt.contains("主韵脚"));
+    assertTrue(systemPrompt.contains("整首歌不得完全无韵"));
+    assertTrue(systemPrompt.contains("7-14 字短句"));
     assertTrue(systemPrompt.contains("具体动作、物件或场景"));
+    assertTrue(systemPrompt.contains("叙事流水账"));
     assertTrue(systemPrompt.contains("禁止只靠“酒、剑、月、风”"));
     assertTrue(systemPrompt.contains("只输出 JSON object"));
     assertTrue(systemPrompt.contains("0.90-1.00"));

@@ -20,9 +20,9 @@ import java.util.Set;
 public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent {
 
   private static final String AGENT_NAME = "CreativeBriefAgent";
-  private static final String AGENT_VERSION = "v0.5";
-  private static final String TEMPLATE_KEY = "creative.brief.v5";
-  private static final int TEMPLATE_VERSION = 5;
+  private static final String AGENT_VERSION = "v0.6";
+  private static final String TEMPLATE_KEY = "creative.brief.v6";
+  private static final int TEMPLATE_VERSION = 6;
   private static final Set<String> OTHER_IP_TERMS =
       Set.of("高达", "gundam", "原神", "genshin", "星穹", "崩坏", "鸣潮", "王者荣耀", "火影", "海贼王");
   private static final Set<String> YANYUN_TERMS =
@@ -205,7 +205,9 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         4. 如果用户请求完全无关，例如高达主题歌、其他游戏主题歌，domain_decision 必须为 REJECT。
         5. 如果用户表达的情绪可转成燕云世界，domain_decision 为 REWRITE_TO_YANYUN。
         6. 普通江湖、门派、侠义、乱世、小人物、同行、奇术、寻声、地域、角色歌都可以属于燕云创作域。
-        7. 只输出 JSON object，不输出 Markdown 或解释。
+        7. 在 narrative_viewpoint 中同时给出语言口吻建议，例如市井、少年、悲怆、燃向、温柔、冷峻；不要新增字段。
+        8. 普通玩家故事优先保留用户原始视角，不强行改成官方角色歌或救世英雄叙事。
+        9. 只输出 JSON object，不输出 Markdown 或解释。
 
         输出字段：
         {
@@ -213,7 +215,7 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
           "creative_intent": "用户真实想表达什么",
           "theme": "开放式主题摘要，不是固定分类",
           "mood_tags": ["情绪标签"],
-          "narrative_viewpoint": "叙事视角",
+          "narrative_viewpoint": "叙事视角和语言口吻，例如市井小人物第一人称、少年感旁白、悲怆叙事或燃向副歌",
           "music_direction": "用户风格偏好的安全泛化描述",
           "yanyun_references": ["可用的燕云气质线索，没有则空数组"],
           "constraints": ["必须遵守的创作边界"],

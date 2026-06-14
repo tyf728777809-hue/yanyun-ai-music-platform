@@ -74,7 +74,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertEquals(CreativeDomainDecision.REJECT, result.domainDecision());
     assertEquals(0, requestCount.get());
     assertEquals("CreativeBriefAgent", records.getFirst().agentName());
-    assertEquals("v0.5", records.getFirst().agentVersion());
+    assertEquals("v0.6", records.getFirst().agentVersion());
   }
 
   @Test
@@ -127,6 +127,64 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(result.yanyunReferences().contains("雁门关外风雪"));
     assertTrue(result.yanyunReferences().contains("燕云十六声玩家故事"));
     assertTrue(result.yanyunReferences().contains("江湖游侠心境"));
+  }
+
+  @Test
+  void creativeBriefPromptGuidesLanguageToneWithoutChangingSchema() throws IOException {
+    AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
+    server =
+        startServer(
+            exchange -> {
+              capturedBody.set(
+                  objectMapper.readTree(
+                      new String(
+                          exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8)));
+              respondJson(
+                  exchange,
+                  200,
+                  chatResponse(
+                      Map.of(
+                          "domain_decision",
+                          "PASS",
+                          "creative_intent",
+                          "普通玩家想写市井里仍愿出手的小人物。",
+                          "theme",
+                          "市井小侠",
+                          "mood_tags",
+                          List.of("克制", "热血"),
+                          "narrative_viewpoint",
+                          "市井小人物第一人称",
+                          "music_direction",
+                          "国风流行",
+                          "yanyun_references",
+                          List.of("开封夜市"),
+                          "constraints",
+                          List.of("preserve user story"),
+                          "risk_notes",
+                          List.of(),
+                          "freeform_opportunities",
+                          List.of())));
+            });
+    RealDeepSeekCreativeBriefAgent agent =
+        new RealDeepSeekCreativeBriefAgent(client(), new ArrayList<AgentRunRecord>()::add);
+
+    agent.generate(
+        new CreativeBriefRequest(
+            "user-1",
+            "work-1",
+            "INSPIRATION",
+            "一个普通小摊贩遇到不平事还是会出手",
+            null,
+            null,
+            null,
+            "国风流行",
+            null,
+            List.of("开封夜市")));
+
+    String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
+    assertTrue(systemPrompt.contains("语言口吻"));
+    assertTrue(systemPrompt.contains("不要新增字段"));
+    assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
   }
 
   @Test
@@ -433,6 +491,65 @@ class RealDeepSeekCreativeAgentsTest {
                     "cover_prompt_seed", "moonlit river and lone boat")));
 
     assertEquals(QualityDecision.PASS, result.decision());
+  }
+
+  @Test
+  void qualityAgentLyricsPromptChecksRhymeLineLengthAndHook() throws IOException {
+    AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
+    server =
+        startServer(
+            exchange -> {
+              capturedBody.set(
+                  objectMapper.readTree(
+                      new String(
+                          exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8)));
+              respondJson(
+                  exchange,
+                  200,
+                  chatResponse(
+                      Map.of(
+                          "gate",
+                          "LYRICS",
+                          "decision",
+                          "PASS",
+                          "score",
+                          86,
+                          "reasons",
+                          List.of(),
+                          "recommended_action",
+                          "PASS",
+                          "retryable",
+                          false)));
+            });
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    agent.evaluate(
+        new QualityEvaluationRequest(
+            "work-1",
+            QualityGate.LYRICS,
+            "我还会出手",
+            "[Chorus]\n别问我为何还不肯收手\n锈剑在腰间 也算旧友",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            Map.of("context", "lyrics quality smoke")));
+
+    String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
+    assertTrue(systemPrompt.contains("副歌主韵脚"));
+    assertTrue(systemPrompt.contains("整首是否几乎无韵"));
+    assertTrue(systemPrompt.contains("句长是否适合中文人声演唱"));
+    assertTrue(systemPrompt.contains("核心 hook 是否有声音记忆点"));
+    assertTrue(systemPrompt.contains("故事清楚但不像歌"));
   }
 
   @Test
