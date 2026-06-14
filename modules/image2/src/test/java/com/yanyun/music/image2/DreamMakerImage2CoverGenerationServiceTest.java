@@ -50,6 +50,9 @@ class DreamMakerImage2CoverGenerationServiceTest {
     assertEquals(
         "https://cdn.example.test/cover.png",
         result.asset().metadata().get(CoverGenerationService.SOURCE_URL_METADATA_KEY));
+    assertEquals("controlled_title_text", result.asset().metadata().get("text_policy"));
+    assertTrue(!result.asset().metadata().containsKey("prompt_source"));
+    assertTrue(!result.asset().metadata().containsKey("raw_provider_knob"));
     assertEquals(1, dreamMakerClient.submitCount.get());
   }
 
@@ -113,7 +116,13 @@ class DreamMakerImage2CoverGenerationServiceTest {
         "现代城市，真实人物肖像",
         1920,
         1080,
-        Map.of("prompt_source", "cover-prompt-agent"));
+        Map.of(
+            "prompt_source",
+            "cover-prompt-agent",
+            "text_policy",
+            "controlled_title_text",
+            "raw_provider_knob",
+            "do-not-persist"));
   }
 
   private static final class CapturingDreamMakerClient implements DreamMakerClient {

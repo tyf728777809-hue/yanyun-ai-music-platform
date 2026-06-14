@@ -114,7 +114,7 @@ public final class DreamMakerImage2CoverGenerationService implements CoverGenera
     metadata.put("quality", properties.getQuality());
     metadata.put("output_format", format);
     metadata.put(SOURCE_URL_METADATA_KEY, image.get().url());
-    metadata.putAll(request.providerOptions());
+    metadata.putAll(CoverMetadataSanitizer.safeProviderOptions(request.providerOptions()));
     return new CoverGenerationResult(
         new MediaAssetDescriptor(
             "COVER",

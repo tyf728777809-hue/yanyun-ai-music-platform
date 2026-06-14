@@ -51,6 +51,9 @@ class WellApiImage2CoverGenerationServiceTest {
     assertEquals(
         "https://cdn.example.test/cover.jpeg",
         result.asset().metadata().get(CoverGenerationService.SOURCE_URL_METADATA_KEY));
+    assertEquals("controlled_title_text", result.asset().metadata().get("text_policy"));
+    assertTrue(!result.asset().metadata().containsKey("prompt_source"));
+    assertTrue(!result.asset().metadata().containsKey("raw_provider_knob"));
   }
 
   @Test
@@ -154,7 +157,13 @@ class WellApiImage2CoverGenerationServiceTest {
         "modern city, realistic portrait",
         2048,
         1152,
-        Map.of("prompt_source", "cover-prompt-agent"));
+        Map.of(
+            "prompt_source",
+            "cover-prompt-agent",
+            "text_policy",
+            "controlled_title_text",
+            "raw_provider_knob",
+            "do-not-persist"));
   }
 
   private String baseUrl() {

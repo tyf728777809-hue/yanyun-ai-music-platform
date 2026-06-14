@@ -7,6 +7,7 @@ import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
+import com.yanyun.music.creativeagent.CreativeBoundaryTerms;
 import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
@@ -15,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent {
 
@@ -23,11 +23,6 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
   private static final String AGENT_VERSION = "v0.7";
   private static final String TEMPLATE_KEY = "creative.brief.v7";
   private static final int TEMPLATE_VERSION = 7;
-  private static final Set<String> OTHER_IP_TERMS =
-      Set.of("高达", "gundam", "原神", "genshin", "星穹", "崩坏", "鸣潮", "王者荣耀", "火影", "海贼王");
-  private static final Set<String> YANYUN_TERMS =
-      Set.of("燕云", "十六声", "江湖", "武学", "奇术", "门派", "乱世", "家国", "寻声", "侠", "边城", "雁门");
-
   private final DeepSeekJsonChatClient client;
   private final AgentRunRecorder agentRunRecorder;
 
@@ -178,11 +173,8 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
                 + " "
                 + request.yanyunReferences())
             .toLowerCase(Locale.ROOT);
-    boolean mentionsOtherIp =
-        OTHER_IP_TERMS.stream()
-            .anyMatch(term -> normalized.contains(term.toLowerCase(Locale.ROOT)));
-    boolean mentionsYanyun =
-        YANYUN_TERMS.stream().anyMatch(term -> normalized.contains(term.toLowerCase(Locale.ROOT)));
+    boolean mentionsOtherIp = CreativeBoundaryTerms.containsOtherIpTerm(normalized);
+    boolean mentionsYanyun = CreativeBoundaryTerms.containsYanyunTerm(normalized);
     if (mentionsOtherIp && !mentionsYanyun) {
       return CreativeDomainDecision.REJECT;
     }

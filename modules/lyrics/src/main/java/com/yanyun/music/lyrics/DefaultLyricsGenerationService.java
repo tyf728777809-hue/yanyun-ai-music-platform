@@ -5,6 +5,7 @@ import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
+import com.yanyun.music.creativeagent.CreativeBoundaryTerms;
 import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
@@ -179,12 +180,33 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private CreativeBriefResult fallbackCreativeBrief(
       LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
     List<String> references = yanyunReferenceLabels(knowledge);
+    String boundaryText =
+        String.join(
+            " ",
+            firstNonBlank(request.userInput(), ""),
+            firstNonBlank(request.currentLyrics(), ""),
+            firstNonBlank(request.instruction(), ""),
+            firstNonBlank(request.requestedTitle(), ""),
+            references.toString());
+    CreativeDomainDecision fallbackDecision = CreativeDomainDecision.PASS;
+    String userFacingMessage = null;
+    String rewriteSuggestion = null;
+    if (CreativeBoundaryTerms.containsOtherIpTerm(boundaryText)) {
+      if (CreativeBoundaryTerms.containsYanyunTerm(boundaryText)) {
+        fallbackDecision = CreativeDomainDecision.REWRITE_TO_YANYUN;
+        rewriteSuggestion = "删除其他 IP 专属名词，只保留用户想要的情绪、结构或音乐能量，并转成燕云十六声语境。";
+      } else {
+        fallbackDecision = CreativeDomainDecision.REJECT;
+        userFacingMessage = "当前只支持燕云十六声相关创作。可以改成燕云里的江湖、武学、奇术、乱世同行或寻声记忆方向。";
+        rewriteSuggestion = "请把主题改为燕云十六声相关内容。";
+      }
+    }
     String theme =
         firstNonBlank(
             request.requestedTitle(),
             firstNonBlank(request.userInput(), firstNonBlank(request.instruction(), "燕云玩家故事")));
     return new CreativeBriefResult(
-        CreativeDomainDecision.PASS,
+        fallbackDecision,
         "Creative brief agent unavailable; continue from user request and retrieved Yanyun context.",
         trimToLength(theme, 80),
         List.of("user-directed"),
@@ -196,8 +218,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             "preserve user instruction",
             "ground named entities in retrieved knowledge when available"),
         List.of("creative_brief_agent_fallback"),
-        null,
-        null,
+        userFacingMessage,
+        rewriteSuggestion,
         List.of("use current lyrics and user edit instruction as the primary source"),
         "Use the user's current lyric or story core as the creative core.",
         "Enter through the user's requested change instead of inventing a new plot.",
@@ -337,6 +359,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry("knowledge_resolved_entities", entityLabels(knowledge)),
                 Map.entry("knowledge_reference_names", referenceNames(knowledge)),
                 Map.entry("knowledge_reference_summaries", referenceSummaries(knowledge)),
+                Map.entry("knowledge_reference_fact_levels", referenceFactLevels(knowledge)),
+                Map.entry("knowledge_reference_source_classes", referenceSourceClasses(knowledge)),
                 Map.entry(
                     "knowledge_reference_ids",
                     knowledge == null
@@ -657,6 +681,22 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     }
     return knowledge.references().stream()
         .map(reference -> reference.displayName() + ": " + trimToLength(reference.content(), 320))
+        .toList();
+  }
+
+  private List<String> referenceFactLevels(KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null) {
+      return List.of();
+    }
+    return knowledge.references().stream().map(KnowledgeReference::factLevel).toList();
+  }
+
+  private List<String> referenceSourceClasses(KnowledgeRetrievalResult knowledge) {
+    if (knowledge == null) {
+      return List.of();
+    }
+    return knowledge.references().stream()
+        .map(reference -> reference.sourceClass().name())
         .toList();
   }
 

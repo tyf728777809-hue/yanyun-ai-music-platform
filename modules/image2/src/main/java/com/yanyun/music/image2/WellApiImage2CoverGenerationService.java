@@ -92,7 +92,7 @@ public final class WellApiImage2CoverGenerationService implements CoverGeneratio
     if (inlineBase64 != null) {
       metadata.put(INLINE_BASE64_METADATA_KEY, inlineBase64);
     }
-    metadata.putAll(request.providerOptions());
+    metadata.putAll(CoverMetadataSanitizer.safeProviderOptions(request.providerOptions()));
     return new CoverGenerationResult(
         new MediaAssetDescriptor(
             "COVER",

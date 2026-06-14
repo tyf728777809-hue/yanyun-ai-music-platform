@@ -7,6 +7,7 @@ import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunRecorder;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.agentruntime.NoopAgentRunRecorder;
+import com.yanyun.music.creativeagent.CreativeBoundaryTerms;
 import com.yanyun.music.creativeagent.QualityDecision;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.creativeagent.QualityEvaluationRequest;
@@ -110,12 +111,15 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       QualityDecision modelDecision,
       java.util.List<String> modelReasons) {
     String joined = (request.lyricsText() + " " + request.context()).toLowerCase();
-    if (request.gate() == QualityGate.LYRICS
-        && (joined.contains("高达") || joined.contains("gundam") || joined.contains("原神"))) {
+    if (request.gate() == QualityGate.LYRICS && CreativeBoundaryTerms.containsOtherIpTerm(joined)) {
       return QualityDecision.REWRITE;
     }
     if (request.gate() == QualityGate.LYRICS && usesCorrectedEntityTypoAsOfficialName(request)) {
       modelReasons.add("歌词使用了知识库已纠正的错字或非标准称呼，需要改为标准实体名后重写。");
+      return QualityDecision.REWRITE;
+    }
+    if (request.gate() == QualityGate.LYRICS && misusesPendingCluesAsConfirmed(request)) {
+      modelReasons.add("歌词把待核线索写成官方定论，需要改成暗线、传闻、心境或留白表达。");
       return QualityDecision.REWRITE;
     }
     if (request.gate() == QualityGate.MUSIC
@@ -164,6 +168,27 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
     }
     return false;
+  }
+
+  private boolean misusesPendingCluesAsConfirmed(QualityEvaluationRequest request) {
+    String context = normalize(request.context());
+    if (!context.contains("pending_clues")) {
+      return false;
+    }
+    String output =
+        normalize(
+            String.join(
+                "\n",
+                nullToEmpty(request.songTitle()),
+                nullToEmpty(request.lyricsText()),
+                String.valueOf(request.context().getOrDefault("song_summary", ""))));
+    return output.contains("官方")
+        || output.contains("已确认")
+        || output.contains("实锤")
+        || output.contains("定论")
+        || output.contains("确定是")
+        || output.contains("明确是")
+        || output.contains("最终结局");
   }
 
   private java.util.List<String> entityLabels(Object labels) {
@@ -375,14 +400,15 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         11. LYRICS：点名角色但歌词只是泛江湖、泛燕云、无关任务氛围，必须 REWRITE；点名剧情但没有对应核心冲突或场景，也必须 REWRITE。
         12. LYRICS：如果歌词、标题或摘要把用户错字/非标准称呼当成正式名字输出，而 context 已给出 canonical name，必须 REWRITE。
         13. LYRICS：如果歌词引入未被用户输入或知识库上下文支撑的核心人物、剧情或组织作为主轴，必须 REWRITE 或 MANUAL_REVIEW。
-        14. LYRICS：recommended_action 必须优先使用这些值之一：rewrite_angle、rewrite_cliche、rewrite_voice、rewrite_memory_point、rewrite_singability、rewrite_grounding。不要发明接口状态。
-        15. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
-        16. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
-        17. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
-        18. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        19. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
-        20. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
-        21. 只输出 JSON object。
+        14. LYRICS：如果 context.knowledge_reference_source_classes 包含 PENDING_CLUES，这些内容只能作为暗线、传闻、意象、心境或留白使用，不能写成官方已确认事实、明确结局或人物关系定论。
+        15. LYRICS：recommended_action 必须优先使用这些值之一：rewrite_angle、rewrite_cliche、rewrite_voice、rewrite_memory_point、rewrite_singability、rewrite_grounding。不要发明接口状态。
+        16. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
+        17. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
+        18. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
+        19. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
+        20. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
+        21. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        22. 只输出 JSON object。
 
         输出字段：
         {

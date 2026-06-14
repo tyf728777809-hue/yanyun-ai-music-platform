@@ -1,5 +1,6 @@
 package com.yanyun.music.api.error;
 
+import com.yanyun.music.agentruntime.AgentRunSanitizer;
 import com.yanyun.music.api.idempotency.IdempotencyConflictException;
 import com.yanyun.music.lyrics.LyricsCreativeDomainException;
 import com.yanyun.music.lyrics.LyricsQualityException;
@@ -65,8 +66,7 @@ public class ApiExceptionHandler {
         requestId,
         request.getRequestURI(),
         exception.getClass().getSimpleName(),
-        sanitize(exception.getMessage()),
-        exception);
+        sanitize(exception.getMessage()));
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(errorResponse("INTERNAL_ERROR", "Internal server error", request, requestId));
   }
@@ -98,7 +98,8 @@ public class ApiExceptionHandler {
     if (message == null || message.isBlank()) {
       return "";
     }
-    String sanitized = message.replaceAll("[\\r\\n\\t]+", " ").trim();
+    String sanitized = AgentRunSanitizer.sanitizeFailureMessage(message);
+    sanitized = sanitized == null ? "" : sanitized.replaceAll("[\\r\\n\\t]+", " ").trim();
     return sanitized.length() <= 240 ? sanitized : sanitized.substring(0, 240);
   }
 

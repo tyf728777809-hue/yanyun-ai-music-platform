@@ -18,7 +18,7 @@ public final class MockCoverGenerationService implements CoverGenerationService 
                 "cover-prompt-agent"));
     metadata.put("visual_prompt", request.visualPrompt());
     metadata.put("negative_prompt", request.negativePrompt());
-    metadata.putAll(request.providerOptions());
+    metadata.putAll(CoverMetadataSanitizer.safeProviderOptions(request.providerOptions()));
     return new CoverGenerationResult(
         new MediaAssetDescriptor(
             "COVER",
