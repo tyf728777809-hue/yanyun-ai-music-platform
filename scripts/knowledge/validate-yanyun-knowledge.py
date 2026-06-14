@@ -90,6 +90,7 @@ def validate(payload, strict=False):
     entities = payload.get("entities", [])
     chunks = payload.get("chunks", [])
     entity_keys = {}
+    entity_canonical_owner = {}
     alias_owner = {}
     chunk_ids = set()
 
@@ -106,6 +107,17 @@ def validate(payload, strict=False):
       if key in entity_keys:
           fail(errors, f"duplicate entity key: {key}")
       entity_keys[key] = entity
+      canonical_identity = (entity.get("entity_type"), normalize(entity.get("canonical_name")))
+      previous_canonical_owner = entity_canonical_owner.get(canonical_identity)
+      if previous_canonical_owner and previous_canonical_owner != key:
+          fail(
+              errors,
+              (
+                  f"duplicate entity canonical_name for type {entity.get('entity_type')}: "
+                  f"{entity.get('canonical_name')} ({previous_canonical_owner} vs {key})"
+              ),
+          )
+      entity_canonical_owner[canonical_identity] = key
       if entity.get("source_type") == "raw_community_thread":
           fail(errors, f"raw community thread cannot enter knowledge base directly: {key}")
       if entity.get("source_type") not in ALLOWED_SOURCE_TYPES:

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,16 +38,46 @@ class JdbcKnowledgeServiceTest {
     assertTrue(!jdbcTemplate.sqlStatements.get(2).contains("pending_clues"));
   }
 
+  @Test
+  void spreadsEntityReferencesAcrossMatchedEntities() {
+    CapturingJdbcTemplate jdbcTemplate = new CapturingJdbcTemplate("entity-a", "entity-b");
+    KnowledgeProperties properties = new KnowledgeProperties();
+    properties.setRetrievalMode("pgvector");
+    properties.setKbVersion("kb-test");
+    properties.setMaxReferences(4);
+    properties.setEntityLimit(2);
+
+    JdbcKnowledgeService service =
+        new JdbcKnowledgeService(
+            jdbcTemplate, properties, new DeterministicKnowledgeEmbeddingService());
+
+    service.retrieve(new KnowledgeRetrievalRequest("寒香寻 神仙渡", List.of(), 4));
+
+    assertEquals(4, jdbcTemplate.sqlStatements.size());
+    assertEquals(2, jdbcTemplate.args.get(1)[2]);
+    assertEquals(2, jdbcTemplate.args.get(2)[2]);
+  }
+
   private static final class CapturingJdbcTemplate extends JdbcTemplate {
 
     private final List<String> sqlStatements = new ArrayList<>();
+    private final List<Object[]> args = new ArrayList<>();
+    private final List<String> matchedEntityIds;
+
+    private CapturingJdbcTemplate(String... matchedEntityIds) {
+      this.matchedEntityIds = Arrays.asList(matchedEntityIds);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
       sqlStatements.add(sql);
+      this.args.add(args);
       if (sql.contains("knowledge_entity_aliases")) {
-        return List.of((T) "entity-id");
+        if (matchedEntityIds.isEmpty()) {
+          return List.of((T) "entity-id");
+        }
+        return matchedEntityIds.stream().map(entityId -> (T) entityId).toList();
       }
       return List.of();
     }

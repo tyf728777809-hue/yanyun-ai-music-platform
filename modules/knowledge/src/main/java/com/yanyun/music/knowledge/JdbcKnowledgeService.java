@@ -65,11 +65,12 @@ public final class JdbcKnowledgeService implements KnowledgeService {
     }
     String sql =
         """
-        SELECT DISTINCT e.id::text AS id, length(a.normalized_alias) AS alias_length
+        SELECT e.id::text AS id, max(length(a.normalized_alias)) AS alias_length
         FROM knowledge_entity_aliases a
         JOIN knowledge_entities e ON e.id = a.entity_id
         WHERE e.kb_version = ?
           AND ? LIKE '%' || a.normalized_alias || '%'
+        GROUP BY e.id
         ORDER BY alias_length DESC
         LIMIT ?
         """;
@@ -107,7 +108,7 @@ public final class JdbcKnowledgeService implements KnowledgeService {
         ORDER BY c.chunk_index ASC
         LIMIT ?
         """;
-    int perEntityLimit = Math.max(1, limit);
+    int perEntityLimit = Math.max(1, (int) Math.ceil((double) limit / entityIds.size()));
     for (String entityId : entityIds) {
       references.addAll(
           jdbcTemplate.query(

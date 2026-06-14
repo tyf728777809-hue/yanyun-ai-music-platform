@@ -71,6 +71,9 @@ def sql_for_payload(payload):
     sql = [
         "BEGIN;",
         "CREATE EXTENSION IF NOT EXISTS vector;",
+        f"DELETE FROM knowledge_chunks WHERE kb_version = {quote(kb_version)};",
+        f"DELETE FROM knowledge_documents WHERE kb_version = {quote(kb_version)};",
+        f"DELETE FROM knowledge_entities WHERE kb_version = {quote(kb_version)};",
         (
             "INSERT INTO knowledge_kb_versions "
             "(kb_version, title, content_as_of, source_policy, notes) VALUES "
