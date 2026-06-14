@@ -1,0 +1,3024 @@
+{
+  "summary": {
+    "ab_version": "yanyun-kb-retrieval-ab-v0.1",
+    "generated_at": "2026-06-14T03:58:46.761973+00:00",
+    "kb_version": "yanyun-commercial-kb-2026-06-13-v1",
+    "sample_count": 48,
+    "a_disabled_reference_count": 0,
+    "b_pgvector_any_hit_rate": 1.0,
+    "b_pgvector_all_hit_rate": 0.6875,
+    "b_pgvector_p50_latency_ms": 248.46,
+    "b_pgvector_p95_latency_ms": 329.5,
+    "b_pgvector_max_latency_ms": 404.76,
+    "target_p50_ms": 500,
+    "target_p95_ms": 1500,
+    "real_model_ab_executed": false,
+    "real_model_ab_blocker": "DEEPSEEK_API_KEY is not present in current shell; retrieval/context A/B executed only."
+  },
+  "cases": [
+    {
+      "id": "eval-character-hanxiangxun-001",
+      "input": "以寒香寻的人生经历写一首歌，想要少年游和不羡仙的感觉",
+      "expected_entities": [
+        "character-hanxiangxun",
+        "place-buxianxian",
+        "place-shenxiandu"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "place-buxianxian",
+          "place-buxianxian",
+          "place-buxianxian"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/剧情整合人物传",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/褚清泉旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/不羡仙与少东家",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "place-buxianxian",
+            "entity_name": "不羡仙",
+            "heading_path": "场景/不羡仙/酒馆灯火",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "place-buxianxian",
+            "entity_name": "不羡仙",
+            "heading_path": "地域/不羡仙/一张热桌",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "place-buxianxian",
+            "entity_name": "不羡仙",
+            "heading_path": "地域/不羡仙/空后的回声",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 250.27,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-ayinuer-001",
+      "input": "写一首阿依努尔的角色歌，主题是故乡和身份",
+      "expected_entities": [
+        "character-ayinuer",
+        "region-liangzhou",
+        "story-yulu-weixiang"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-ayinuer",
+          "character-ayinuer",
+          "character-ayinuer",
+          "character-ayinuer",
+          "character-ayinuer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依努尔/身份与归属",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依努尔/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依努尔/玉露与故乡",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依奴/亲人离散",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依奴/故乡歌谣",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 270.67,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-xunxin-001",
+      "input": "帮我写寻心线的歌，空灵一点",
+      "expected_entities": [
+        "character-xunxin",
+        "story-ruoshui-xunxin",
+        "place-ruoshui-an"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "story-ruoshui-xunxin",
+          "story-ruoshui-xunxin",
+          "story-ruoshui-xunxin",
+          "character-xunxin",
+          "character-xunxin",
+          "character-xunxin"
+        ],
+        "top_references": [
+          {
+            "entity_key": "story-ruoshui-xunxin",
+            "entity_name": "弱水岸寻心",
+            "heading_path": "剧情/弱水岸寻心/记忆",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-ruoshui-xunxin",
+            "entity_name": "弱水岸寻心",
+            "heading_path": "剧情/弱水岸寻心/古井入口",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-ruoshui-xunxin",
+            "entity_name": "弱水岸寻心",
+            "heading_path": "剧情/弱水岸寻心/洛神笔迹",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-xunxin",
+            "entity_name": "寻心",
+            "heading_path": "人物/寻心/记忆线索",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-xunxin",
+            "entity_name": "寻心",
+            "heading_path": "人物/寻心/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-xunxin",
+            "entity_name": "寻心",
+            "heading_path": "人物/寻心/身份镜像",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 235.27,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-tianying-001",
+      "input": "田英这个角色写成对手感很强的歌",
+      "expected_entities": [
+        "character-tianying"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-tianying",
+          "character-tianying",
+          "character-tianying",
+          "character-tianying",
+          "character-tianying"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-tianying",
+            "entity_name": "田英",
+            "heading_path": "人物/田英/强者与对峙",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-tianying",
+            "entity_name": "田英",
+            "heading_path": "人物/田英/冲突写法",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-tianying",
+            "entity_name": "田英",
+            "heading_path": "人物/田英/传奇刺客与镇守压迫",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-tianying",
+            "entity_name": "田英",
+            "heading_path": "人物/田英/冷硬职责",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-tianying",
+            "entity_name": "田英",
+            "heading_path": "人物/田英/动机留白",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 217.1,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-qianye-001",
+      "input": "千夜主题，夜行和孤独",
+      "expected_entities": [
+        "character-qianye"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-qianye",
+          "character-qianye",
+          "character-qianye",
+          "character-qianye",
+          "character-qianye"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/夜色与隐秘",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/伪装与夜行",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/绣金楼暗线",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/与寒香寻旧债",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 242.63,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-ayinuer-alias-001",
+      "input": "阿依奴的歌，写玉露台和月光酒，不要写得猎奇",
+      "expected_entities": [
+        "character-ayinuer",
+        "story-yulu-weixiang"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "region-yulutai",
+          "region-yulutai",
+          "character-ayinuer",
+          "character-ayinuer",
+          "boundary-sensitive-content",
+          "character-li-jiaojiao"
+        ],
+        "top_references": [
+          {
+            "entity_key": "region-yulutai",
+            "entity_name": "玉露台",
+            "heading_path": "地域/玉露台/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-yulutai",
+            "entity_name": "玉露台",
+            "heading_path": "地域/玉露台/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依努尔/身份与归属",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ayinuer",
+            "entity_name": "阿依努尔",
+            "heading_path": "人物/阿依努尔/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "boundary-sensitive-content",
+            "entity_name": "暴力血腥与低俗限制",
+            "heading_path": "禁区/表达安全/克制",
+            "fact_level": "creative_boundary"
+          },
+          {
+            "entity_key": "character-li-jiaojiao",
+            "entity_name": "李蕉蕉",
+            "heading_path": "人物/李蕉蕉/禁写误区",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 404.76,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-ye-wanshan-001",
+      "input": "叶万山，北地守城名将那种沉默背负",
+      "expected_entities": [
+        "character-ye-wanshan",
+        "region-yanmen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-ye-wanshan",
+          "character-ye-wanshan",
+          "character-ye-wanshan",
+          "character-ye-wanshan",
+          "character-ye-wanshan"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/山河与旧义",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/气质",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/北地名将",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/城池重量",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/传闻边界",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 259.64,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-lucky-seventeen-001",
+      "input": "小十七，少年感但不要太幼稚",
+      "expected_entities": [
+        "character-lucky-seventeen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-group-kaifeng-fanlou-goldstreet"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/少年与幸运",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/明亮反差",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/守护者与锻甲",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/明亮守护",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/受伤与成长",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-group-kaifeng-fanlou-goldstreet",
+            "entity_name": "开封樊楼金街群像",
+            "heading_path": "人物/开封樊楼金街群像/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 240.23,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-dao-lord-001",
+      "input": "道主和九流门地下规矩，想要神秘一点",
+      "expected_entities": [
+        "character-dao-lord",
+        "faction-jiuliumen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "faction-jiuliumen",
+          "faction-jiuliumen",
+          "faction-jiuliumen",
+          "character-dao-lord",
+          "character-dao-lord",
+          "character-dao-lord"
+        ],
+        "top_references": [
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/暗线与奇谋",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/歌词气质",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/冲突角度",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-dao-lord",
+            "entity_name": "道主",
+            "heading_path": "人物/道主/权威与信念",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-dao-lord",
+            "entity_name": "道主",
+            "heading_path": "人物/道主/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-dao-lord",
+            "entity_name": "道主",
+            "heading_path": "人物/道主/地下秩序",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 255.88,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-void-king-001",
+      "input": "无相皇，写突破血脉限制却被力量吞掉",
+      "expected_entities": [
+        "character-void-king"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-void-king",
+          "character-void-king",
+          "character-void-king",
+          "character-void-king",
+          "character-void-king"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-void-king",
+            "entity_name": "无相皇",
+            "heading_path": "人物/无相皇/面具与权力",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-void-king",
+            "entity_name": "无相皇",
+            "heading_path": "人物/无相皇/冲突",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-void-king",
+            "entity_name": "无相皇",
+            "heading_path": "人物/无相皇/血脉限制",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-void-king",
+            "entity_name": "无相皇",
+            "heading_path": "人物/无相皇/早期试炼",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-void-king",
+            "entity_name": "无相皇",
+            "heading_path": "人物/无相皇/无相与失形",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 221.97,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-jiangwulang-001",
+      "input": "写江叔带着少东家在清河长大的感觉",
+      "expected_entities": [
+        "character-jiangwulang",
+        "region-qinghe",
+        "place-buxianxian"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-homestead-buxianxian",
+          "gameplay-homestead-buxianxian",
+          "region-qinghe",
+          "region-qinghe",
+          "character-jiangwulang",
+          "character-jiangwulang"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-homestead-buxianxian",
+            "entity_name": "家业与不羡仙重建",
+            "heading_path": "玩法/家业与不羡仙重建/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-homestead-buxianxian",
+            "entity_name": "家业与不羡仙重建",
+            "heading_path": "玩法/家业与不羡仙重建/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-qinghe",
+            "entity_name": "清河",
+            "heading_path": "地域/清河/初入江湖",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-qinghe",
+            "entity_name": "清河",
+            "heading_path": "地域/清河/第一眼山水",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-jiangwulang",
+            "entity_name": "江无浪",
+            "heading_path": "人物/江无浪/养父与远行",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-jiangwulang",
+            "entity_name": "江无浪",
+            "heading_path": "人物/江无浪/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 314.14,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-chuqingquan-001",
+      "input": "写褚清泉和寒姨那种家国私情被撕开的歌",
+      "expected_entities": [
+        "character-chuqingquan",
+        "character-hanxiangxun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-chuqingquan",
+          "character-chuqingquan",
+          "character-chuqingquan",
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-hanxiangxun"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-chuqingquan",
+            "entity_name": "褚清泉",
+            "heading_path": "人物/褚清泉/边塞永别",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-chuqingquan",
+            "entity_name": "褚清泉",
+            "heading_path": "人物/褚清泉/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-chuqingquan",
+            "entity_name": "褚清泉",
+            "heading_path": "人物/褚清泉/边塞旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/剧情整合人物传",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/褚清泉旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/不羡仙与少东家",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 242.46,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-hongxian-001",
+      "input": "红线和少东家少年同行，想要轻快但后劲酸",
+      "expected_entities": [
+        "character-hongxian",
+        "place-shenxiandu"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-hongxian",
+          "character-hongxian",
+          "character-hongxian",
+          "gameplay-homestead-buxianxian",
+          "gameplay-homestead-buxianxian",
+          "gameplay-homestead-buxianxian"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-hongxian",
+            "entity_name": "红线",
+            "heading_path": "人物/红线/少年同行",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hongxian",
+            "entity_name": "红线",
+            "heading_path": "人物/红线/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hongxian",
+            "entity_name": "红线",
+            "heading_path": "人物/红线/明亮同行",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-homestead-buxianxian",
+            "entity_name": "家业与不羡仙重建",
+            "heading_path": "玩法/家业与不羡仙重建/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-homestead-buxianxian",
+            "entity_name": "家业与不羡仙重建",
+            "heading_path": "玩法/家业与不羡仙重建/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-homestead-buxianxian",
+            "entity_name": "家业与不羡仙重建",
+            "heading_path": "玩法/家业与不羡仙重建/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 228.22,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-yidao-001",
+      "input": "伊刀作为寒姨故人出现，写旧案回潮",
+      "expected_entities": [
+        "character-yidao",
+        "character-hanxiangxun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-yidao",
+          "character-yidao",
+          "character-yidao",
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-hanxiangxun"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-yidao",
+            "entity_name": "伊刀",
+            "heading_path": "人物/伊刀/寒姨故人",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-yidao",
+            "entity_name": "伊刀",
+            "heading_path": "人物/伊刀/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-yidao",
+            "entity_name": "伊刀",
+            "heading_path": "人物/伊刀/旧案触发",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/剧情整合人物传",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/褚清泉旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/不羡仙与少东家",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 232.09,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-tianbushou-001",
+      "input": "天不收和寒姨旧信，写一首低声叙事歌",
+      "expected_entities": [
+        "character-tianbushou",
+        "character-hanxiangxun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-tianbushou",
+          "character-tianbushou",
+          "character-tianbushou",
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-hanxiangxun"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-tianbushou",
+            "entity_name": "天不收",
+            "heading_path": "人物/天不收/旧信与旧友",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-tianbushou",
+            "entity_name": "天不收",
+            "heading_path": "人物/天不收/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-tianbushou",
+            "entity_name": "天不收",
+            "heading_path": "人物/天不收/知情沉默",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/剧情整合人物传",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/褚清泉旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/不羡仙与少东家",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 244.56,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-zheng-e-001",
+      "input": "郑鄂常平一炬，写一个从救世到厌世的人",
+      "expected_entities": [
+        "character-zheng-e"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "character-zheng-e",
+          "character-zheng-e",
+          "character-zheng-e",
+          "character-zheng-e",
+          "character-zheng-e"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-zheng-e",
+            "entity_name": "郑鄂",
+            "heading_path": "人物/郑鄂/常平一炬",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zheng-e",
+            "entity_name": "郑鄂",
+            "heading_path": "人物/郑鄂/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zheng-e",
+            "entity_name": "郑鄂",
+            "heading_path": "人物/郑鄂/常平初心",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zheng-e",
+            "entity_name": "郑鄂",
+            "heading_path": "人物/郑鄂/常平一炬",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zheng-e",
+            "entity_name": "郑鄂",
+            "heading_path": "人物/郑鄂/故人边界",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 228.74,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-story-guishizi-001",
+      "input": "鬼市子和开封地下鬼市，想写悬疑一点",
+      "expected_entities": [
+        "story-kaifeng-guishizi-underworld",
+        "story-kaifeng-night-market"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "story-kaifeng-guishizi-underworld",
+          "story-kaifeng-guishizi-underworld",
+          "region-kaifeng",
+          "region-kaifeng",
+          "story-kaifeng-night-market",
+          "story-kaifeng-night-market"
+        ],
+        "top_references": [
+          {
+            "entity_key": "story-kaifeng-guishizi-underworld",
+            "entity_name": "鬼市子",
+            "heading_path": "剧情/开封鬼市/鬼市子身份壳",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-kaifeng-guishizi-underworld",
+            "entity_name": "鬼市子",
+            "heading_path": "剧情/开封鬼市/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-kaifeng",
+            "entity_name": "开封",
+            "heading_path": "地域/开封/繁华与暗面",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-kaifeng",
+            "entity_name": "开封",
+            "heading_path": "地域/开封/人声之城",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-kaifeng-night-market",
+            "entity_name": "开封夜市与鬼市",
+            "heading_path": "剧情/开封夜市与鬼市/繁华暗面",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-kaifeng-night-market",
+            "entity_name": "开封夜市与鬼市",
+            "heading_path": "剧情/开封夜市与鬼市/昼夜对照",
+            "fact_level": "official_public_seed"
+          }
+        ],
+        "latency_ms": 316.15,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-region-kaifeng-001",
+      "input": "开封夜市很热闹但我觉得很孤独，写首歌",
+      "expected_entities": [
+        "region-kaifeng",
+        "story-kaifeng-night-market"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "story-kaifeng-night-market",
+          "story-kaifeng-night-market",
+          "story-kaifeng-night-market",
+          "region-kaifeng",
+          "region-kaifeng",
+          "region-kaifeng"
+        ],
+        "top_references": [
+          {
+            "entity_key": "story-kaifeng-night-market",
+            "entity_name": "开封夜市与鬼市",
+            "heading_path": "剧情/开封夜市与鬼市/繁华暗面",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-kaifeng-night-market",
+            "entity_name": "开封夜市与鬼市",
+            "heading_path": "剧情/开封夜市与鬼市/昼夜对照",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-kaifeng-night-market",
+            "entity_name": "开封夜市与鬼市",
+            "heading_path": "剧情/开封夜市与鬼市/交易与假名",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-kaifeng",
+            "entity_name": "开封",
+            "heading_path": "地域/开封/繁华与暗面",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-kaifeng",
+            "entity_name": "开封",
+            "heading_path": "地域/开封/人声之城",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-kaifeng",
+            "entity_name": "开封",
+            "heading_path": "地域/开封/城下暗面",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 231.91,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-region-yanmen-001",
+      "input": "雁门风雪，守城的小兵",
+      "expected_entities": [
+        "region-yanmen",
+        "faction-guiyijun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "region-yanmen",
+          "region-yanmen",
+          "region-yanmen",
+          "character-companion-yangfeng-goose",
+          "faction-palace-institutions"
+        ],
+        "top_references": [
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/边塞风雪",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/边塞风雪",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/普通守城人",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-companion-yangfeng-goose",
+            "entity_name": "扬风鹅",
+            "heading_path": "人物/扬风鹅/资料补齐",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-palace-institutions",
+            "entity_name": "开封宫城机构",
+            "heading_path": "势力/开封宫城机构/创作转译",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 232.85,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-region-qingzhou-001",
+      "input": "青州文津馆，书卷气和旧案",
+      "expected_entities": [
+        "region-qingzhou",
+        "faction-wenjinguan",
+        "story-qingzhou-pengshan"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "faction-wenjinguan",
+          "faction-wenjinguan",
+          "region-qingzhou",
+          "region-qingzhou",
+          "character-qing-moshandao",
+          "character-qing-moshandao"
+        ],
+        "top_references": [
+          {
+            "entity_key": "faction-wenjinguan",
+            "entity_name": "文津馆",
+            "heading_path": "势力/文津馆/书卷与求索",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-wenjinguan",
+            "entity_name": "文津馆",
+            "heading_path": "势力/文津馆/歌词气质",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "region-qingzhou",
+            "entity_name": "青州",
+            "heading_path": "地域/青州/蓬山文津",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-qingzhou",
+            "entity_name": "青州",
+            "heading_path": "地域/青州/书卷山水",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-qing-moshandao",
+            "entity_name": "青",
+            "heading_path": "人物/青/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qing-moshandao",
+            "entity_name": "青",
+            "heading_path": "人物/青/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 310.57,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-story-faction-fall-001",
+      "input": "我想写一个天赋平平的弟子，师门没了，但他还是想行侠",
+      "expected_entities": [
+        "story-faction-fall",
+        "character-player-wanderer"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "story-faction-fall",
+          "story-faction-fall",
+          "story-faction-fall",
+          "character-player-wanderer",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "story-faction-fall",
+            "entity_name": "门派倾覆",
+            "heading_path": "剧情/门派倾覆/普通弟子",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-faction-fall",
+            "entity_name": "门派倾覆",
+            "heading_path": "剧情/门派倾覆/倾覆后重建",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-faction-fall",
+            "entity_name": "门派倾覆",
+            "heading_path": "剧情/门派倾覆/师友记忆",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通人江湖",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 250.8,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-story-small-justice-001",
+      "input": "写一个路见不平的小故事，不要太宏大",
+      "expected_entities": [
+        "story-small-injustice",
+        "gameplay-injustice"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-injustice",
+          "gameplay-injustice",
+          "gameplay-injustice",
+          "story-wuyou-dong",
+          "story-small-injustice",
+          "character-ni-laoshan"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-injustice",
+            "entity_name": "不平事",
+            "heading_path": "玩法/不平事/小侠义",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-injustice",
+            "entity_name": "不平事",
+            "heading_path": "玩法/不平事/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-injustice",
+            "entity_name": "不平事",
+            "heading_path": "玩法/不平事/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-wuyou-dong",
+            "entity_name": "无忧洞",
+            "heading_path": "剧情/无忧洞/道主与小福",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-small-injustice",
+            "entity_name": "小人物不平事",
+            "heading_path": "剧情/小人物不平事/眼前人",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-ni-laoshan",
+            "entity_name": "倪老山",
+            "heading_path": "人物/倪老山/创作转译",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 257.8,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-gameplay-steal-001",
+      "input": "偷师百家，从笨拙到自成一派",
+      "expected_entities": [
+        "gameplay-steal-learning",
+        "gameplay-martial-mix"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 4,
+        "retrieved_entities": [
+          "gameplay-steal-learning",
+          "gameplay-steal-learning",
+          "gameplay-steal-learning",
+          "story-faction-fall"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-steal-learning",
+            "entity_name": "偷师百家",
+            "heading_path": "玩法/偷师百家/成长",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-steal-learning",
+            "entity_name": "偷师百家",
+            "heading_path": "玩法/偷师百家/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-steal-learning",
+            "entity_name": "偷师百家",
+            "heading_path": "玩法/偷师百家/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-faction-fall",
+            "entity_name": "门派倾覆",
+            "heading_path": "剧情/门派倾覆/普通弟子",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 244.6,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-gameplay-qishu-001",
+      "input": "用点穴和摄星拿月写一点武侠浪漫",
+      "expected_entities": [
+        "gameplay-qishu"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-qishu",
+          "gameplay-qishu",
+          "gameplay-qishu",
+          "character-jiangwulang",
+          "character-companion-duxia-cat",
+          "faction-palace-institutions"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/武侠想象",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-jiangwulang",
+            "entity_name": "江无浪",
+            "heading_path": "人物/江无浪/带婴逃亡",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-companion-duxia-cat",
+            "entity_name": "独侠猫",
+            "heading_path": "人物/独侠猫/资料补齐",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-palace-institutions",
+            "entity_name": "开封宫城机构",
+            "heading_path": "势力/开封宫城机构/资料补齐",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 232.82,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-gameplay-puzzle-001",
+      "input": "中式解谜，机关鸟，叶子戏，写得神秘一点",
+      "expected_entities": [
+        "gameplay-puzzle"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 4,
+        "retrieved_entities": [
+          "gameplay-puzzle",
+          "gameplay-puzzle",
+          "gameplay-puzzle",
+          "character-moshandao-bird-yu"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-puzzle",
+            "entity_name": "中式解谜",
+            "heading_path": "玩法/中式解谜/机关与民俗",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-puzzle",
+            "entity_name": "中式解谜",
+            "heading_path": "玩法/中式解谜/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-puzzle",
+            "entity_name": "中式解谜",
+            "heading_path": "玩法/中式解谜/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-moshandao-bird-yu",
+            "entity_name": "鹬",
+            "heading_path": "人物/鹬/创作转译",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 236.21,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-boundary-commercial-001",
+      "input": "写一首参加活动一定能中奖的宣传歌",
+      "expected_entities": [
+        "boundary-commercial-claims"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "boundary-commercial-claims",
+          "place-buxianxian",
+          "character-zhang-yanlin",
+          "character-bai-chuyu",
+          "story-kaifeng-tiandi-ronglu",
+          "story-wuming-jianpu"
+        ],
+        "top_references": [
+          {
+            "entity_key": "boundary-commercial-claims",
+            "entity_name": "商业权益不承诺",
+            "heading_path": "禁区/商业权益/不承诺",
+            "fact_level": "creative_boundary"
+          },
+          {
+            "entity_key": "place-buxianxian",
+            "entity_name": "不羡仙",
+            "heading_path": "地域/不羡仙/一张热桌",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-zhang-yanlin",
+            "entity_name": "张彦霖",
+            "heading_path": "人物/张彦霖/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-bai-chuyu",
+            "entity_name": "柏楚玉",
+            "heading_path": "人物/柏楚玉/组织内外关系",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-kaifeng-tiandi-ronglu",
+            "entity_name": "开封主章·天地熔炉",
+            "heading_path": "剧情/开封主章·天地熔炉/禁写边界",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-wuming-jianpu",
+            "entity_name": "无名剑谱",
+            "heading_path": "剧情/无名剑谱/旧谱传闻",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 250.43,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-heavy-character-007-lucky17-growth",
+      "input": "小十七从少年感到被迫成长，写轻快但有痛感",
+      "expected_entities": [
+        "character-lucky-seventeen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-lucky-seventeen",
+          "character-zhao-guangyi-jinzhongyuan"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/少年与幸运",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/明亮反差",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/守护者与锻甲",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/明亮守护",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-lucky-seventeen",
+            "entity_name": "小十七",
+            "heading_path": "人物/小十七/受伤与成长",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-zhao-guangyi-jinzhongyuan",
+            "entity_name": "赵光义/晋中原",
+            "heading_path": "人物/赵光义与晋中原/开封宫城",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 248.46,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-heavy-story-003-jiuliu-common",
+      "input": "九流门局中局，但主角是一个普通小摊贩",
+      "expected_entities": [
+        "story-jiuliu-huoqi",
+        "faction-jiuliumen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "faction-jiuliumen",
+          "faction-jiuliumen",
+          "faction-jiuliumen",
+          "character-player-wanderer",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/暗线与奇谋",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/歌词气质",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-jiuliumen",
+            "entity_name": "九流门",
+            "heading_path": "势力/九流门/冲突角度",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通人江湖",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 237.46,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-heavy-region-005-yanmen-soldier",
+      "input": "雁门普通守城小兵，不想当英雄但不能退",
+      "expected_entities": [
+        "region-yanmen"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "region-yanmen",
+          "region-yanmen",
+          "region-yanmen",
+          "story-fengxue-daishan",
+          "story-wenjinguan-pengshan-split",
+          "character-ye-wanshan"
+        ],
+        "top_references": [
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/边塞风雪",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/边塞风雪",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "region-yanmen",
+            "entity_name": "雁门",
+            "heading_path": "地域/雁门/普通守城人",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-fengxue-daishan",
+            "entity_name": "风雪岱山",
+            "heading_path": "剧情/风雪岱山/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-wenjinguan-pengshan-split",
+            "entity_name": "文津馆与蓬山",
+            "heading_path": "剧情/文津馆与蓬山/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-ye-wanshan",
+            "entity_name": "叶万山",
+            "heading_path": "人物/叶万山/北地名将",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 221.7,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-heavy-faction-007-chilong-fire",
+      "input": "赤龙堂，义气像火也会烧伤人",
+      "expected_entities": [
+        "faction-chilongtang"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "retrieved_entities": [
+          "faction-chilongtang",
+          "faction-chilongtang",
+          "faction-chilongtang",
+          "character-group-kaifeng-baijie",
+          "character-companion-daoba-cat"
+        ],
+        "top_references": [
+          {
+            "entity_key": "faction-chilongtang",
+            "entity_name": "赤龙堂",
+            "heading_path": "势力/赤龙堂/热血与冲突",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-chilongtang",
+            "entity_name": "赤龙堂",
+            "heading_path": "势力/赤龙堂/歌词气质",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-chilongtang",
+            "entity_name": "赤龙堂",
+            "heading_path": "势力/赤龙堂/冲突角度",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-group-kaifeng-baijie",
+            "entity_name": "开封坊巷百业群像",
+            "heading_path": "人物/开封坊巷百业群像/群像定位",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-companion-daoba-cat",
+            "entity_name": "刀疤猫",
+            "heading_path": "人物/刀疤猫/创作转译",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 231.68,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-heavy-gameplay-006-livelihood-stall",
+      "input": "我在燕云摆摊营生，只想写小日子",
+      "expected_entities": [
+        "gameplay-livelihood"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-livelihood",
+          "gameplay-livelihood",
+          "gameplay-livelihood",
+          "character-companion-zhujin-goose",
+          "region-shanmiaozhou",
+          "place-shenxiandu"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-livelihood",
+            "entity_name": "营生",
+            "heading_path": "玩法/营生/市井烟火",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-livelihood",
+            "entity_name": "营生",
+            "heading_path": "玩法/营生/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-livelihood",
+            "entity_name": "营生",
+            "heading_path": "玩法/营生/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-companion-zhujin-goose",
+            "entity_name": "逐金鹅",
+            "heading_path": "人物/逐金鹅/创作转译",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "region-shanmiaozhou",
+            "entity_name": "善妙洲",
+            "heading_path": "地域/善妙洲/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "place-shenxiandu",
+            "entity_name": "神仙渡",
+            "heading_path": "地域/神仙渡/偷来半日",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 242.44,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-heavy-boundary-008-plot-certain",
+      "input": "千夜一定是寒香寻亲人，就这么写",
+      "expected_entities": [
+        "boundary-unconfirmed-plot",
+        "character-qianye",
+        "character-hanxiangxun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-hanxiangxun",
+          "character-qianye",
+          "character-qianye",
+          "character-qianye"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/剧情整合人物传",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/褚清泉旧情",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-hanxiangxun",
+            "entity_name": "寒香寻",
+            "heading_path": "人物/寒香寻/不羡仙与少东家",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/夜色与隐秘",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/歌曲角度",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "character-qianye",
+            "entity_name": "千夜",
+            "heading_path": "人物/千夜/伪装与夜行",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 248.71,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-heavy-mixed-010-qishu-love",
+      "input": "用点穴和摄星拿月写一首轻快情歌，但还是燕云",
+      "expected_entities": [
+        "gameplay-qishu"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-qishu",
+          "gameplay-qishu",
+          "gameplay-qishu",
+          "gameplay-companion",
+          "story-companion-first-season",
+          "current-storyline-028"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/武侠想象",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-qishu",
+            "entity_name": "奇术",
+            "heading_path": "玩法/奇术/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-companion",
+            "entity_name": "伙伴同行",
+            "heading_path": "玩法/伙伴同行/可分享瞬间",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "story-companion-first-season",
+            "entity_name": "伙伴系统首期剧情",
+            "heading_path": "剧情/伙伴系统首期剧情/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "current-storyline-028",
+            "entity_name": "同行伙伴补充拆分",
+            "heading_path": "剧情/同行伙伴/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 230.14,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-zhang-yanlin-001",
+      "input": "以张彦霖和河神祠写一首悼亡感的歌",
+      "expected_entities": [
+        "character-zhang-yanlin",
+        "region-kaifeng"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 4,
+        "retrieved_entities": [
+          "character-zhang-yanlin",
+          "character-zhang-yanlin",
+          "character-zhang-yanlin",
+          "character-jiangwulang"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-zhang-yanlin",
+            "entity_name": "张彦霖",
+            "heading_path": "人物/张彦霖/河神祠与牌位",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zhang-yanlin",
+            "entity_name": "张彦霖",
+            "heading_path": "人物/张彦霖/未竟之约",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zhang-yanlin",
+            "entity_name": "张彦霖",
+            "heading_path": "人物/张彦霖/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-jiangwulang",
+            "entity_name": "江无浪",
+            "heading_path": "人物/江无浪/带婴逃亡",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 235.68,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-li-zuo-001",
+      "input": "写李祚和绣金楼暗线，要危险但不要像黑帮片",
+      "expected_entities": [
+        "character-li-zuo"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "faction-xiujinlou",
+          "faction-xiujinlou",
+          "faction-xiujinlou",
+          "character-li-zuo",
+          "character-li-zuo",
+          "character-li-zuo"
+        ],
+        "top_references": [
+          {
+            "entity_key": "faction-xiujinlou",
+            "entity_name": "绣金楼",
+            "heading_path": "势力/绣金楼/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "faction-xiujinlou",
+            "entity_name": "绣金楼",
+            "heading_path": "势力/绣金楼/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "faction-xiujinlou",
+            "entity_name": "绣金楼",
+            "heading_path": "势力/绣金楼/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-li-zuo",
+            "entity_name": "李祚",
+            "heading_path": "人物/李祚/绣金楼与开封暗线",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-li-zuo",
+            "entity_name": "李祚",
+            "heading_path": "人物/李祚/人生时间线留白",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-li-zuo",
+            "entity_name": "李祚",
+            "heading_path": "人物/李祚/关系网络",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 245.41,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-liu-qingyi-001",
+      "input": "写柳青衣，一身青衣在组织命令和自己心声之间",
+      "expected_entities": [
+        "character-liu-qingyi"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-liu-qingyi",
+          "character-liu-qingyi",
+          "character-liu-qingyi",
+          "character-qing-moshandao",
+          "character-qing-moshandao",
+          "character-qing-moshandao"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-liu-qingyi",
+            "entity_name": "柳青衣",
+            "heading_path": "人物/柳青衣/青衣与江湖组织感",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-liu-qingyi",
+            "entity_name": "柳青衣",
+            "heading_path": "人物/柳青衣/组织与个人",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-liu-qingyi",
+            "entity_name": "柳青衣",
+            "heading_path": "人物/柳青衣/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qing-moshandao",
+            "entity_name": "青",
+            "heading_path": "人物/青/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qing-moshandao",
+            "entity_name": "青",
+            "heading_path": "人物/青/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-qing-moshandao",
+            "entity_name": "青",
+            "heading_path": "人物/青/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 259.2,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-character-zhang-huaishen-001",
+      "input": "写张淮深的歌，要有归义军后续历史的感觉",
+      "expected_entities": [
+        "character-zhang-huaishen",
+        "region-liangzhou",
+        "faction-guiyijun"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-zhang-huaishen",
+          "character-zhang-huaishen",
+          "character-zhang-huaishen",
+          "faction-guiyijun",
+          "faction-guiyijun",
+          "faction-guiyijun"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-zhang-huaishen",
+            "entity_name": "张淮深",
+            "heading_path": "人物/张淮深/基础身份与创作定位",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zhang-huaishen",
+            "entity_name": "张淮深",
+            "heading_path": "人物/张淮深/关系网络与可接场景",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-zhang-huaishen",
+            "entity_name": "张淮深",
+            "heading_path": "人物/张淮深/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "faction-guiyijun",
+            "entity_name": "归义军",
+            "heading_path": "势力/归义军/边地守护",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-guiyijun",
+            "entity_name": "归义军",
+            "heading_path": "势力/归义军/歌词气质",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "faction-guiyijun",
+            "entity_name": "归义军",
+            "heading_path": "势力/归义军/冲突角度",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 250.95,
+        "hit_count": 2,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-character-fubao-001",
+      "input": "写福宝的歌，要有伙伴/福气意象的感觉",
+      "expected_entities": [
+        "character-fubao",
+        "character-companion-four-cats-three-geese"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-companion-split",
+          "gameplay-companion-split",
+          "gameplay-companion-split",
+          "character-fubao",
+          "character-fubao",
+          "character-fubao"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-companion-split",
+            "entity_name": "伙伴系统细分",
+            "heading_path": "玩法/伙伴系统细分/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-companion-split",
+            "entity_name": "伙伴系统细分",
+            "heading_path": "玩法/伙伴系统细分/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-companion-split",
+            "entity_name": "伙伴系统细分",
+            "heading_path": "玩法/伙伴系统细分/禁写误区",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-fubao",
+            "entity_name": "福宝",
+            "heading_path": "人物/福宝/基础身份与创作定位",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-fubao",
+            "entity_name": "福宝",
+            "heading_path": "人物/福宝/关系网络与可接场景",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-fubao",
+            "entity_name": "福宝",
+            "heading_path": "人物/福宝/歌曲角度",
+            "fact_level": "accepted_story_synthesis"
+          }
+        ],
+        "latency_ms": 239.24,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": false
+      }
+    },
+    {
+      "id": "eval-recall-character-li-jiaojiao",
+      "input": "以李蕉蕉为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "character-li-jiaojiao"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-li-jiaojiao",
+          "character-li-jiaojiao",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-li-jiaojiao",
+            "entity_name": "李蕉蕉",
+            "heading_path": "人物/李蕉蕉/资料补齐",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-li-jiaojiao",
+            "entity_name": "李蕉蕉",
+            "heading_path": "人物/李蕉蕉/创作转译",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 308.9,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-character-moshandao-bird-bei",
+      "input": "以鵯为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "character-moshandao-bird-bei"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-player-wanderer",
+          "character-player-wanderer",
+          "character-moshandao-bird-bei",
+          "character-moshandao-bird-bei"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-moshandao-bird-bei",
+            "entity_name": "鵯",
+            "heading_path": "人物/鵯/资料补齐",
+            "fact_level": "pending_clues"
+          },
+          {
+            "entity_key": "character-moshandao-bird-bei",
+            "entity_name": "鵯",
+            "heading_path": "人物/鵯/创作转译",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 302.88,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-character-group-qinghe-family-neighbors",
+      "input": "以清河村居亲缘群像为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "character-group-qinghe-family-neighbors"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "character-group-qinghe-family-neighbors",
+          "character-group-qinghe-family-neighbors",
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "character-group-qinghe-family-neighbors",
+            "entity_name": "清河村居亲缘群像",
+            "heading_path": "人物/清河村居亲缘群像/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-group-qinghe-family-neighbors",
+            "entity_name": "清河村居亲缘群像",
+            "heading_path": "人物/清河村居亲缘群像/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 316.64,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-current-gameplay-060",
+      "input": "以镇守首领为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "gameplay-boss"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-boss",
+          "gameplay-boss",
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-boss",
+            "entity_name": "镇守首领",
+            "heading_path": "玩法/镇守首领/挑战与失败",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "gameplay-boss",
+            "entity_name": "镇守首领",
+            "heading_path": "玩法/镇守首领/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 311.59,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-character-lv-xingshi",
+      "input": "以吕行世为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "character-lv-xingshi"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-lv-xingshi",
+          "character-lv-xingshi",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-lv-xingshi",
+            "entity_name": "吕行世",
+            "heading_path": "人物/吕行世/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-lv-xingshi",
+            "entity_name": "吕行世",
+            "heading_path": "人物/吕行世/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 337.43,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-story-puti-kuhai",
+      "input": "以菩提苦海为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "story-puti-kuhai"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "story-puti-kuhai",
+          "story-puti-kuhai",
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "story-puti-kuhai",
+            "entity_name": "菩提苦海",
+            "heading_path": "剧情/菩提苦海/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "story-puti-kuhai",
+            "entity_name": "菩提苦海",
+            "heading_path": "剧情/菩提苦海/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 329.5,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-region-hexi",
+      "input": "以河西为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "region-hexi"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "region-hexi",
+          "region-hexi",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "region-hexi",
+            "entity_name": "河西",
+            "heading_path": "地域/河西/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-hexi",
+            "entity_name": "河西",
+            "heading_path": "地域/河西/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 323.54,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-region-wenjinguan-school",
+      "input": "以文津馆学斋/校舍/藏书阁为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "region-wenjinguan-school"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "region-wenjinguan-school",
+          "region-wenjinguan-school",
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "faction-wenjinguan",
+          "faction-wenjinguan"
+        ],
+        "top_references": [
+          {
+            "entity_key": "region-wenjinguan-school",
+            "entity_name": "文津馆学斋/校舍/藏书阁",
+            "heading_path": "地域/文津馆学斋/校舍/藏书阁/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-wenjinguan-school",
+            "entity_name": "文津馆学斋/校舍/藏书阁",
+            "heading_path": "地域/文津馆学斋/校舍/藏书阁/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "faction-wenjinguan",
+            "entity_name": "文津馆",
+            "heading_path": "势力/文津馆/书卷与求索",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "faction-wenjinguan",
+            "entity_name": "文津馆",
+            "heading_path": "势力/文津馆/歌词气质",
+            "fact_level": "pending_clues"
+          }
+        ],
+        "latency_ms": 317.93,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-region-zhulin-jiuju",
+      "input": "以竹林旧居为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "region-zhulin-jiuju"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "region-zhulin-jiuju",
+          "region-zhulin-jiuju",
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "region-zhulin-jiuju",
+            "entity_name": "竹林旧居",
+            "heading_path": "地域/竹林旧居/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "region-zhulin-jiuju",
+            "entity_name": "竹林旧居",
+            "heading_path": "地域/竹林旧居/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 319.92,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    },
+    {
+      "id": "eval-recall-faction-qingjiao-tang",
+      "input": "以青蛟堂为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
+      "expected_entities": [
+        "faction-qingjiao-tang"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "retrieved_entities": []
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "retrieved_entities": [
+          "gameplay-xunsheng",
+          "gameplay-xunsheng",
+          "faction-qingjiao-tang",
+          "faction-qingjiao-tang",
+          "character-player-wanderer",
+          "character-player-wanderer"
+        ],
+        "top_references": [
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/记忆与故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "gameplay-xunsheng",
+            "entity_name": "寻声",
+            "heading_path": "玩法/寻声/玩家情绪",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "faction-qingjiao-tang",
+            "entity_name": "青蛟堂",
+            "heading_path": "势力/青蛟堂/资料补齐",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "faction-qingjiao-tang",
+            "entity_name": "青蛟堂",
+            "heading_path": "势力/青蛟堂/创作转译",
+            "fact_level": "accepted_story_synthesis"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/普通玩家故事",
+            "fact_level": "creative_guidance"
+          },
+          {
+            "entity_key": "character-player-wanderer",
+            "entity_name": "玩家游侠",
+            "heading_path": "人物/玩家游侠/创意自由",
+            "fact_level": "creative_guidance"
+          }
+        ],
+        "latency_ms": 308.24,
+        "hit_count": 1,
+        "any_hit": true,
+        "all_hit": true
+      }
+    }
+  ]
+}

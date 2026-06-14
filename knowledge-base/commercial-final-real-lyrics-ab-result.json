@@ -1,0 +1,310 @@
+{
+  "summary": {
+    "ab_version": "yanyun-kb-real-lyrics-ab-v0.1",
+    "generated_at": "2026-06-14T04:29:57.090160+00:00",
+    "kb_version": "yanyun-commercial-kb-2026-06-13-v1",
+    "model": "deepseek-v4-pro",
+    "sample_count": 4,
+    "a_disabled": "no knowledge context",
+    "b_pgvector": "pgvector knowledge context",
+    "b_wins": 3,
+    "a_wins": 1,
+    "ties": 0,
+    "avg_a_overall": 6.83,
+    "avg_b_overall": 8.45,
+    "avg_a_world_fit": 6.25,
+    "avg_b_world_fit": 8.0,
+    "full_lyrics_persisted": false
+  },
+  "cases": [
+    {
+      "id": "eval-character-hanxiangxun-001",
+      "input": "以寒香寻的人生经历写一首歌，想要少年游和不羡仙的感觉",
+      "expected_entities": [
+        "character-hanxiangxun",
+        "place-buxianxian",
+        "place-shenxiandu"
+      ],
+      "b_retrieved_entities": [
+        "character-hanxiangxun",
+        "character-hanxiangxun",
+        "character-hanxiangxun",
+        "place-buxianxian",
+        "place-buxianxian",
+        "place-buxianxian"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "elapsed_ms": 14379.34,
+        "output": {
+          "song_title": "不羡仙踪",
+          "song_summary": "少年游侠寒香寻，踏遍江湖不问归期，只羡人间快意，不留恋神仙长生。",
+          "quality_score": 0.9,
+          "lyrics_hash": "2214617f7e6f15f2cbe9420a772ac826b552e11f78c312becbdad9614dd11d5e",
+          "lyrics_line_count": 34,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "elapsed_ms": 27774.84,
+        "output": {
+          "song_title": "少年不羡仙",
+          "song_summary": "她以易容和刀术换得乱世一寸安稳，将神仙渡的灯火点成家，为一个人留一碗热汤。",
+          "quality_score": 0.92,
+          "lyrics_hash": "ea2c85ca897616fce3755a081f8dcffdca187914d79951cd598c869c269733f5",
+          "lyrics_line_count": 45,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "judge": {
+        "winner": "B",
+        "a_scores": {
+          "world_fit": 3,
+          "user_story_preservation": 2,
+          "accuracy": 4,
+          "singability": 7,
+          "hook": 6,
+          "generic_wuxia_penalty": 8,
+          "overall": 4
+        },
+        "b_scores": {
+          "world_fit": 9,
+          "user_story_preservation": 9,
+          "accuracy": 9,
+          "singability": 8,
+          "hook": 8,
+          "generic_wuxia_penalty": 2,
+          "overall": 9
+        },
+        "reasons": [
+          "A组歌词泛古风堆砌严重，缺乏寒香寻专属故事细节",
+          "B组精准融入易容、少东家、不羡仙、神仙渡等核心设定，世界归属感强",
+          "B组副歌‘我建一座不羡仙’具有独特记忆点，紧扣主题",
+          "A组少年游侠意象可套用任何角色，丧失用户故事的保真度"
+        ],
+        "b_improvement_summary": "B组通过具体场景和人物关系构建叙事，将燕云世界的地点与寒香寻的人生经历完美融合，同时自然带出少年游和不羡仙的情感内核。",
+        "recommended_next_action": "建议在音乐制作中强化副歌的温暖画面感，让‘一碗汤’的意象成为贯穿全曲的记忆钩子。"
+      },
+      "judge_elapsed_ms": 61424.42
+    },
+    {
+      "id": "eval-character-ayinuer-001",
+      "input": "写一首阿依努尔的角色歌，主题是故乡和身份",
+      "expected_entities": [
+        "character-ayinuer",
+        "region-liangzhou",
+        "story-yulu-weixiang"
+      ],
+      "b_retrieved_entities": [
+        "character-ayinuer",
+        "character-ayinuer",
+        "character-ayinuer",
+        "character-ayinuer",
+        "character-ayinuer"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "elapsed_ms": 15637.7,
+        "output": {
+          "song_title": "月出天山",
+          "song_summary": "一曲关于西域少女在燕云大地寻找身份认同，遥望故乡却不再归去的苍茫心绪。",
+          "quality_score": 0.88,
+          "lyrics_hash": "f240c839ab63ed0bb1d72f95baee82343d564c9f9c629f22cf0a215037cd2f41",
+          "lyrics_line_count": 31,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "b_pgvector": {
+        "reference_count": 5,
+        "elapsed_ms": 20804.71,
+        "output": {
+          "song_title": "月光酒",
+          "song_summary": "一首远行者在月光下追忆葡萄园与离散亲人的边地歌谣，温柔嗓音中压着归乡的痛感和身份的追问。",
+          "quality_score": 0.92,
+          "lyrics_hash": "b34bc248a7a91a7dd8f8aa9782ac30108678cd91ae7eb400a33c80a56e683047",
+          "lyrics_line_count": 26,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "judge": {
+        "winner": "B",
+        "a_scores": {
+          "world_fit": 6,
+          "user_story_preservation": 8,
+          "accuracy": 5,
+          "singability": 8,
+          "hook": 8,
+          "generic_wuxia_penalty": 7,
+          "overall": 6.5
+        },
+        "b_scores": {
+          "world_fit": 8,
+          "user_story_preservation": 9,
+          "accuracy": 9,
+          "singability": 8,
+          "hook": 7,
+          "generic_wuxia_penalty": 9,
+          "overall": 8.3
+        },
+        "reasons": [
+          "A组天山意象偏泛西域，未明显锚定凉州或燕云具体地标；B组通过‘凉州城墙’‘玉露台’‘葡萄根’准确呼应角色背景。",
+          "B组用‘离散的人’‘葡萄酿’等细节更贴近阿依努尔的身世与回忆，故事保真度更高。",
+          "A组副歌‘月出天山’记忆点强，但不如B组重复叩问‘何处是家’更贴合身份追问主题。",
+          "A组‘旧经卷’‘失传的母语’有轻微泛古风嫌疑；B组意象具体（葡萄园、酒盏）更生活化，减少架空感。"
+        ],
+        "b_improvement_summary": "B组通过加入凉州、玉露台、葡萄酿酒等精准的地域与角色元素，使家乡与身份的追问更具燕云世界的归属感，同时避免了A组中部分泛西域古风的笼统表达。",
+        "recommended_next_action": "可将B组作为基础，强化副歌旋律性的同时，保留‘何处是家’的叩问钩子，并确保编曲中融入边地民谣元素以突出凉州风情。"
+      },
+      "judge_elapsed_ms": 38648.85
+    },
+    {
+      "id": "eval-story-faction-fall-001",
+      "input": "我想写一个天赋平平的弟子，师门没了，但他还是想行侠",
+      "expected_entities": [
+        "story-faction-fall",
+        "character-player-wanderer"
+      ],
+      "b_retrieved_entities": [
+        "story-faction-fall",
+        "story-faction-fall",
+        "story-faction-fall",
+        "character-player-wanderer",
+        "character-player-wanderer",
+        "character-player-wanderer"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "elapsed_ms": 15982.89,
+        "output": {
+          "song_title": "无锋剑",
+          "song_summary": "讲述一个天赋平平的弟子，在师门覆灭后仍独自践行侠义的故事，充满坚韧与孤独的微光。",
+          "quality_score": 0.92,
+          "lyrics_hash": "47655b25ff4c7cf5f0a4b07598c9b50e109e002e012f730756187c432c08f192",
+          "lyrics_line_count": 30,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "elapsed_ms": 15724.41,
+        "output": {
+          "song_title": "庸徒行",
+          "song_summary": "一个天赋平平的弟子在师门覆灭后，怀揣旧日教导，笨拙却坚定地独自踏上江湖路。",
+          "quality_score": 0.0,
+          "lyrics_hash": "4597b79c1498cc9be24fc30c8b21c87ffa5c3416ecd0f33fe3dd06f330d490ac",
+          "lyrics_line_count": 35,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "judge": {
+        "winner": "B",
+        "a_scores": {
+          "world_fit": 7,
+          "user_story_preservation": 8,
+          "accuracy": 9,
+          "singability": 9,
+          "hook": 9,
+          "generic_wuxia_penalty": -1,
+          "overall": 8
+        },
+        "b_scores": {
+          "world_fit": 8,
+          "user_story_preservation": 9,
+          "accuracy": 9,
+          "singability": 8,
+          "hook": 7,
+          "generic_wuxia_penalty": 0,
+          "overall": 9
+        },
+        "reasons": [
+          "B 的歌词用具体场景（挨打、剑脱手、师父教握剑）更生动刻画‘天赋平平’，比 A 的抽象隐喻更贴合用户所求。",
+          "B 的 hook 记忆点虽不如 A 的‘无锋剑’意象鲜明，但情感真实度更高，易引发共鸣。",
+          "A 的泛古风辞藻（残垣、旧匾、墨迹洇断篇）稍显堆砌，B 偏口语化更自然。",
+          "B 的结尾‘平凡地行侠，慢慢到老’直接回扣用户‘仍想行侠’的核心，收束完整。"
+        ],
+        "b_improvement_summary": "B 组通过更白描的叙事、生活化细节和直抒胸臆的表达，强化了天赋平平弟子的笨拙与坚守，整体更贴合用户故事，减少了泛古风痕迹。",
+        "recommended_next_action": "可进一步打磨副歌旋律记忆点，例如将‘我记得那天黄昏…’精简为更凝练的 hook 句，同时在间奏保留燕云世界听觉标识。"
+      },
+      "judge_elapsed_ms": 64596.73
+    },
+    {
+      "id": "eval-heavy-story-003-jiuliu-common",
+      "input": "九流门局中局，但主角是一个普通小摊贩",
+      "expected_entities": [
+        "story-jiuliu-huoqi",
+        "faction-jiuliumen"
+      ],
+      "b_retrieved_entities": [
+        "faction-jiuliumen",
+        "faction-jiuliumen",
+        "faction-jiuliumen",
+        "character-player-wanderer",
+        "character-player-wanderer",
+        "character-player-wanderer"
+      ],
+      "a_disabled": {
+        "reference_count": 0,
+        "elapsed_ms": 10946.72,
+        "output": {
+          "song_title": "巷口局外人",
+          "song_summary": "一个市集小贩被卷入江湖九流门暗局，在刀光与炊烟间看清人心与自身的渺小。",
+          "quality_score": 8.5,
+          "lyrics_hash": "94db516ebac57918edde4b13fafb5b51f72e90dfaaf026e24b4e65359d0f8912",
+          "lyrics_line_count": 39,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "b_pgvector": {
+        "reference_count": 6,
+        "elapsed_ms": 13175.13,
+        "output": {
+          "song_title": "摊前暗局",
+          "song_summary": "一个普通小摊贩无意间卷入九流门的局中局，在市井烟火里挣扎于身份、良知与生存之间。",
+          "quality_score": 0.9,
+          "lyrics_hash": "2bb5afca5e643b2dd633119cb45cdaff13870fd33760335e7a9b90f67f89f0f9",
+          "lyrics_line_count": 35,
+          "has_chorus": true,
+          "risk_notes_count": 0
+        }
+      },
+      "judge": {
+        "winner": "A",
+        "a_scores": {
+          "world_fit": 9,
+          "user_story_preservation": 9,
+          "accuracy": 9,
+          "singability": 9,
+          "hook": 8,
+          "generic_wuxia_penalty": 0,
+          "overall": 8.8
+        },
+        "b_scores": {
+          "world_fit": 7,
+          "user_story_preservation": 8,
+          "accuracy": 8,
+          "singability": 8,
+          "hook": 7,
+          "generic_wuxia_penalty": -1,
+          "overall": 7.5
+        },
+        "reasons": [
+          "A组的市井细节（说书人醒木、玉佩暗号、护城河）更贴近燕云十六声的江湖日常，B组偏泛武侠",
+          "A组副歌‘我卖炊饼也卖了一阵心跳’记忆点强，B组‘棋子还是执棋的手’较直白",
+          "A组始终坚守小摊贩的平凡视角，B组结尾改摊名‘不二’略有跳跃，弱化普通人叙事",
+          "B组出现‘火漆烙着旧约’‘江湖煮成一锅鲜’等泛古风比喻，缺乏燕云特有质感"
+        ],
+        "b_improvement_summary": "B组未能有效利用燕云知识库，歌词偏向泛武侠套路，市井身份塑造不如A组深入，副歌记忆点较弱。",
+        "recommended_next_action": "建议B组强化燕云世界独有的九流门暗语、市井行当细节，避免抽象比喻，保持小摊贩的平凡感与被动卷入的宿命感。"
+      },
+      "judge_elapsed_ms": 15989.34
+    }
+  ]
+}
