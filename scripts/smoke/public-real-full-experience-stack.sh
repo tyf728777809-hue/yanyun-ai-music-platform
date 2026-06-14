@@ -632,6 +632,7 @@ run_frontend_handoff_check() {
     cd "${REPO_ROOT}/prototypes/Claude-web-v1"
     FRONTEND_URL="$FRONTEND_URL" \
     WORK_ID="$WORK_ID" \
+    MOCK_USER="$MOCK_USER" \
     SMOKE_TIMEOUT_MS="$SMOKE_TIMEOUT_MS" \
     HEADLESS="${HEADLESS:-true}" \
       node <<'NODE'
@@ -639,6 +640,7 @@ import { chromium } from 'playwright';
 
 const frontendUrl = process.env.FRONTEND_URL;
 const workId = process.env.WORK_ID;
+const mockUser = process.env.MOCK_USER ?? 'mock_user_001';
 const timeout = Number(process.env.SMOKE_TIMEOUT_MS ?? 30000);
 const headless = process.env.HEADLESS !== 'false';
 const frontendOrigin = new URL(frontendUrl).origin;
@@ -694,6 +696,14 @@ async function clickButtonWhenReady(page, name, label) {
   throw new Error(`button not ready ${label ?? name}: ${lastError?.message ?? 'timeout'}`);
 }
 
+async function isTextVisible(page, text) {
+  try {
+    return await page.getByText(text).first().isVisible();
+  } catch {
+    return false;
+  }
+}
+
 const browser = await chromium.launch({ headless });
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -715,6 +725,11 @@ try {
     if (message.type() === 'error') consoleErrors.push(message.text());
   });
 
+  await page.goto(frontendUrl, { waitUntil: 'domcontentloaded' });
+  await page.evaluate((userId) => {
+    window.localStorage.setItem('yanyun-proto-run-mode', 'real');
+    window.localStorage.setItem('yanyun-proto-mock-user-id', userId);
+  }, mockUser);
   await page.goto(`${frontendUrl}/#/work/${workId}`, { waitUntil: 'networkidle' });
   await waitForAnyText(page, ['交给社区发布', '作品已交接给社区发布流程。'], 'finished handoff page');
   await waitForAnyText(page, ['作品素材'], 'handoff assets');
@@ -728,10 +743,14 @@ try {
   }));
   assert(overflow.scrollWidth <= overflow.viewportWidth + 1, `mobile overflow: ${JSON.stringify(overflow)}`);
 
-  await clickIfVisible(page, '刷新下载链接');
-  await waitForAnyText(page, ['作品素材'], 'refreshed handoff assets');
-  await clickButtonWhenReady(page, '标记已交接', 'mark package fetched');
-  await waitForAnyText(page, ['作品已交接给社区发布流程。'], 'package fetched state');
+  if (await isTextVisible(page, '作品已交接给社区发布流程。')) {
+    console.log('[public-real-ui] package already fetched; skipping mark-fetched click');
+  } else {
+    await clickIfVisible(page, '刷新下载链接');
+    await waitForAnyText(page, ['作品素材'], 'refreshed handoff assets');
+    await clickButtonWhenReady(page, '标记已交接', 'mark package fetched');
+    await waitForAnyText(page, ['作品已交接给社区发布流程。'], 'package fetched state');
+  }
 
   await page.setViewportSize({ width: 1440, height: 900 });
   const desktopOverflow = await page.evaluate(() => ({

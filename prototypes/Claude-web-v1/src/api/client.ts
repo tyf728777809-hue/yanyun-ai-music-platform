@@ -10,7 +10,7 @@ export function getMockUserId(): string {
   }
   try {
     const saved = window.localStorage?.getItem(MOCK_USER_ID_STORAGE_KEY);
-    if (saved && /^mock_user_[a-z0-9_-]{8,64}$/i.test(saved)) {
+    if (saved && /^mock_user_[a-z0-9_-]{3,64}$/i.test(saved)) {
       return saved;
     }
     const random =
