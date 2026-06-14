@@ -46,6 +46,11 @@ docker compose -f deploy/docker-compose.yml ps
 - OpenSearch: `http://localhost:9200`（遗留可选；当前写词链路不依赖）
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
+- Claude Web v1 开发默认端口：`http://localhost:5273`
+- Claude Web v1 自动化 smoke 默认端口：`http://127.0.0.1:5274`
+- 当前手动真实测试常用端口：`http://127.0.0.1:5275`
+
+端口口径：`5273` 用于普通本地前端开发，`5274` 由 smoke 脚本临时占用，`5275` 用于用户手动真实测试或公网临时 tunnel 的前端进程。朋友公网测试必须使用 `OBJECT_STORAGE_PROVIDER=s3`、可公网访问的 `S3_PUBLIC_ENDPOINT` 和 `RENDER_WORKER_MODE=album-ffmpeg`；不要用 `local` 对象存储模式冒充可交付媒体链接。
 
 ## Yanyun Creative Knowledge Base
 
@@ -190,8 +195,9 @@ TARGET=public-real-full-experience MODE=execute \
   scripts/smoke/real-model-controlled-smoke.sh
 ```
 
-底层脚本要求端口 `8080`、`8081` 和默认前端端口 `5274` 空闲；凭据只允许来自当前 shell 或交互式静默输入，
-不会读取凭据文件。输出只记录脱敏摘要：`work_id`、最终状态、失败码、provider trace 是否存在、
+底层脚本要求端口 `8080`、`8081` 和默认前端端口 `5274` 空闲，并强制 `OBJECT_STORAGE_PROVIDER=s3`、
+`RENDER_WORKER_MODE=album-ffmpeg` 和 `S3_PUBLIC_ENDPOINT` 存在，避免生成朋友公网无法播放的 `local` 媒体链接。
+凭据只允许来自当前 shell 或交互式静默输入，不会读取凭据文件。输出只记录脱敏摘要：`work_id`、最终状态、失败码、provider trace 是否存在、
 媒体是否导入对象存储和发布素材交接状态。
 
 生成编排默认保持同步 Mock 模式；要验证 Outbox local 异步启动边界：

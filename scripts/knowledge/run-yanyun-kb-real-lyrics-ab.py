@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 import sys
+import textwrap
 import time
 import urllib.error
 import urllib.request
@@ -26,6 +27,9 @@ DEFAULT_SAMPLE_IDS = [
     "eval-story-faction-fall-001",
     "eval-heavy-story-003-jiuliu-common",
 ]
+PRODUCTION_LYRICS_CLIENT = (
+    ROOT / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsClient.java"
+)
 
 
 def load_retrieval_module():
@@ -121,7 +125,26 @@ def deepseek_chat_json(system_prompt, user_prompt, temperature=0.55, max_tokens=
     raise last_error or RuntimeError("DeepSeek request failed")
 
 
+def extract_java_text_block(path, method_signature):
+    if not path.exists():
+        return ""
+    source = path.read_text(encoding="utf-8")
+    marker = source.find(method_signature)
+    if marker < 0:
+        return ""
+    start = source.find('"""', marker)
+    if start < 0:
+        return ""
+    end = source.find('"""', start + 3)
+    if end < 0:
+        return ""
+    return textwrap.dedent(source[start + 3 : end]).strip()
+
+
 def lyrics_system_prompt():
+    production_prompt = extract_java_text_block(PRODUCTION_LYRICS_CLIENT, "private String systemPrompt()")
+    if production_prompt:
+        return production_prompt
     return """
 你是燕云十六声 AI 作曲平台的顶级中文作词 Agent。
 

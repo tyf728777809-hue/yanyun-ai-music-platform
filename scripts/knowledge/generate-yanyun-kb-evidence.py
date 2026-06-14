@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -26,6 +27,7 @@ OTHER_IP_TERMS = [
 ]
 ABSOLUTE_CLAIM_TERMS = ["官方定论", "已确认", "最终", "必然"]
 SENSITIVE_PATTERNS = ["sk-", "Bearer ", "AccessKey", "SecretKey", "Authorization:", "X-Access-Token"]
+FUTURE_CONTENT_TERMS = ["江南", "杭州", "未上线", "预告"]
 
 
 def grouped_counts(items, key):
@@ -100,6 +102,42 @@ def scan_text(text, terms):
     return [term for term in terms if term in text]
 
 
+def slugify_heading(value):
+    text = value.strip().lower()
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"[^\w\u4e00-\u9fff\s-]", "", text)
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text.strip("-")
+
+
+def markdown_anchors(path):
+    if not path.exists():
+        return set()
+    anchors = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("#"):
+            continue
+        heading = line.lstrip("#").strip()
+        if heading:
+            anchors.add(slugify_heading(heading))
+    return anchors
+
+
+def source_ref_issue(source_ref):
+    if not source_ref or source_ref.startswith(("http://", "https://")):
+        return None
+    path_part, _, anchor = source_ref.partition("#")
+    if not path_part.startswith("docs/"):
+        return None
+    target = ROOT / path_part
+    if not target.exists():
+        return "source_ref_file_missing"
+    if anchor and anchor not in markdown_anchors(target):
+        return "source_ref_anchor_missing"
+    return None
+
+
 def build_pollution_audit(payload, inventory):
     entity_findings = []
     chunk_findings = []
@@ -128,6 +166,17 @@ def build_pollution_audit(payload, inventory):
         sensitive_hits = scan_text(text, SENSITIVE_PATTERNS)
         if sensitive_hits:
             sensitive_findings.append({"scope": "entity", "key": entity["key"], "terms": sensitive_hits})
+        issue = source_ref_issue(entity.get("source_ref"))
+        if issue:
+            entity_findings.append(
+                {
+                    "severity": "P1",
+                    "entity_key": entity["key"],
+                    "issue": issue,
+                    "source_ref": entity.get("source_ref"),
+                    "recommended_action": "修复 source_ref 文件路径或 Markdown 锚点，保证来源可追溯。",
+                }
+            )
 
     for chunk in payload["chunks"]:
         prompt_text = " ".join(
@@ -150,6 +199,37 @@ def build_pollution_audit(payload, inventory):
                         "recommended_action": "改为暗线、传闻、旧事、可能、未明等口径。",
                     }
                 )
+        source_issue = source_ref_issue(chunk.get("source_ref"))
+        if source_issue:
+            chunk_findings.append(
+                {
+                    "severity": "P1",
+                    "chunk_id": chunk["id"],
+                    "issue": source_issue,
+                    "source_ref": chunk.get("source_ref"),
+                    "recommended_action": "修复 chunk source_ref 文件路径或 Markdown 锚点。",
+                }
+            )
+        if "。，" in prompt_text or "。。" in prompt_text or "，，" in prompt_text:
+            chunk_findings.append(
+                {
+                    "severity": "P3",
+                    "chunk_id": chunk["id"],
+                    "issue": "bad_punctuation",
+                    "recommended_action": "清理重复标点或坏句，避免污染 prompt 语感。",
+                }
+            )
+        future_hits = scan_text(prompt_text, FUTURE_CONTENT_TERMS)
+        if future_hits and chunk.get("story_phase") != "needs_recording":
+            chunk_findings.append(
+                {
+                    "severity": "P2",
+                    "chunk_id": chunk["id"],
+                    "issue": "possible_future_or_preview_content_in_live_prompt",
+                    "terms": future_hits,
+                    "recommended_action": "确认是否已上线；未上线预告应移入 future/watchlist 或 pending_clues。",
+                }
+            )
         if not chunk.get("avoid_claims") or len(chunk.get("avoid_claims", [])) < 2:
             chunk_findings.append(
                 {

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
 import unicodedata
 from pathlib import Path
@@ -73,6 +74,8 @@ FACT_STORY_PHASES = {
 }
 PENDING_FACT_LEVELS = {"needs_ingame_recording", "pending_clues"}
 DETERMINISTIC_CLAIM_TERMS = ["已确认", "官方定论", "就是", "最终", "必然"]
+ROOT = Path(__file__).resolve().parents[2]
+ANCHOR_CACHE = {}
 
 
 def normalize(value):
@@ -81,6 +84,49 @@ def normalize(value):
 
 def fail(errors, message):
     errors.append(message)
+
+
+def slugify_heading(value):
+    text = value.strip().lower()
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"[^\w\u4e00-\u9fff\s-]", "", text)
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text.strip("-")
+
+
+def markdown_anchors(path):
+    cached = ANCHOR_CACHE.get(path)
+    if cached is not None:
+        return cached
+    anchors = set()
+    if not path.exists():
+        ANCHOR_CACHE[path] = anchors
+        return anchors
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("#"):
+            continue
+        heading = line.lstrip("#").strip()
+        if heading:
+            anchors.add(slugify_heading(heading))
+    ANCHOR_CACHE[path] = anchors
+    return anchors
+
+
+def validate_source_ref(errors, owner, source_ref):
+    if not source_ref or not isinstance(source_ref, str):
+        return
+    if source_ref.startswith(("http://", "https://")):
+        return
+    path_part, _, anchor = source_ref.partition("#")
+    if not path_part.startswith("docs/"):
+        return
+    target = ROOT / path_part
+    if not target.exists():
+        fail(errors, f"{owner} source_ref file does not exist: {source_ref}")
+        return
+    if anchor and anchor not in markdown_anchors(target):
+        fail(errors, f"{owner} source_ref anchor does not exist: {source_ref}")
 
 
 def validate(payload, strict=False):
@@ -120,6 +166,7 @@ def validate(payload, strict=False):
       entity_canonical_owner[canonical_identity] = key
       if entity.get("source_type") == "raw_community_thread":
           fail(errors, f"raw community thread cannot enter knowledge base directly: {key}")
+      validate_source_ref(errors, f"entity {key}", entity.get("source_ref"))
       if entity.get("source_type") not in ALLOWED_SOURCE_TYPES:
           fail(errors, f"entity {key} has unsupported source_type: {entity.get('source_type')}")
       if entity.get("fact_level") not in ALLOWED_FACT_LEVELS:
@@ -162,6 +209,11 @@ def validate(payload, strict=False):
             fail(errors, f"chunk {chunk_label} references missing entity: {chunk.get('entity_key')}")
         entity = entity_keys.get(chunk.get("entity_key"), {})
         fact_level = chunk.get("fact_level") or entity.get("fact_level")
+        validate_source_ref(
+            errors,
+            f"chunk {chunk_label}",
+            chunk.get("source_ref") or entity.get("source_ref"),
+        )
         story_phase = chunk.get("story_phase")
         if fact_level not in ALLOWED_FACT_LEVELS:
             fail(errors, f"chunk {chunk_label} has unsupported fact_level: {fact_level}")

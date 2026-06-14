@@ -522,7 +522,7 @@ cd prototypes/Claude-web-v1
 npx playwright install chromium
 ```
 
-对象存储默认走本地文件模式：
+对象存储默认走本地文件模式，仅适合后端单测、Mock smoke 和本机开发排查：
 
 ```text
 build/local-object-storage/yanyun-works-local/yanyun-ai-music/local/{yyyy}/{MM}/{dd}/{work_id}/package/publish-package.json
@@ -541,6 +541,9 @@ apps/music-api/build/local-object-storage/yanyun-works-local/yanyun-ai-music/loc
 `package_url_expires_at`，并用本地文件检查 package JSON 内容。刷新链接接口会复用数据库中的
 `package_object_key`，不会重新猜测文件路径。
 
+真实用户手动测试、朋友公网测试或任何需要浏览器播放音频/视频的链路，必须使用 S3/MinIO 兼容模式和可被浏览器访问的
+`S3_PUBLIC_ENDPOINT`。不要把 `local` provider 返回的本地文件 URL 当成可交付媒体地址；它在公网环境通常无法打开。
+
 如需验证 Docker Compose 内置 MinIO，可用 S3 兼容模式启动 API：
 
 ```bash
@@ -554,6 +557,7 @@ S3_PATH_STYLE_ENABLED=true \
 S3_AUTO_CREATE_BUCKET=true \
 MUSIC_PROVIDER=mock \
 DREAMMAKER_REAL_CALLS_ENABLED=false \
+RENDER_WORKER_MODE=album-ffmpeg \
 ./gradlew :apps:music-api:bootRun
 ```
 

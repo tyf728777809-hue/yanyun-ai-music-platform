@@ -3,8 +3,11 @@ set -euo pipefail
 
 API_BASE_URL="${API_BASE_URL:-http://localhost:8080/api/v1}"
 API_HEALTH_URL="${API_HEALTH_URL:-http://localhost:8080/health}"
+API_READINESS_URL="${API_READINESS_URL:-http://localhost:8080/internal/integration-readiness}"
 OPENAPI_FILE="${OPENAPI_FILE:-docs/api/openapi-v0.1.yaml}"
 MOCK_USER_ID="${MOCK_USER_ID:-contract_user_$(date +%s)_$RANDOM}"
+OPENAPI_CONTRACT_STATIC_ONLY="${OPENAPI_CONTRACT_STATIC_ONLY:-false}"
+OPENAPI_CONTRACT_ALLOW_REAL_API="${OPENAPI_CONTRACT_ALLOW_REAL_API:-false}"
 
 fail() {
   printf '[contract] ERROR: %s\n' "$*" >&2
@@ -103,7 +106,7 @@ expected_enums = {
   "GenerationStage" => %w[NONE USER_INPUT_PRECHECK LYRICS_GENERATING LYRICS_PRECHECK WAITING_CONFIRM QUOTA_LOCKING MUSIC_GENERATING COVER_GENERATING TIMELINE_BUILDING VIDEO_RENDERING PACKAGE_BUILDING PACKAGE_PRECHECK PACKAGE_READY FAILED],
   "PackageStatus" => %w[PACKAGE_NOT_READY PACKAGE_READY PACKAGE_FETCHED PACKAGE_EXPIRED PACKAGE_BLOCKED],
   "AvailableAction" => %w[POLISH_LYRICS CONTINUE_LYRICS CONFIRM_WORK RETRY_LYRICS RETRY_MUSIC RETRY_COVER RERENDER_VIDEO REFRESH_PACKAGE_URL MARK_PACKAGE_FETCHED RETURN_TO_EDIT CONTACT_SUPPORT],
-  "FailureCode" => %w[USER_INPUT_BLOCKED LYRICS_GENERATION_FAILED LYRICS_PRECHECK_FAILED LYRICS_QUALITY_FAILED QUOTA_LOCK_FAILED MUSIC_GENERATION_FAILED MUSIC_QUALITY_FAILED COVER_GENERATION_FAILED VIDEO_RENDER_FAILED PACKAGE_BUILD_FAILED PACKAGE_BLOCKED PROVIDER_AUTH_FAILED PROVIDER_ACCOUNT_LIMIT PROVIDER_TIMEOUT RATE_LIMITED UNKNOWN_ERROR],
+  "FailureCode" => %w[USER_INPUT_BLOCKED LYRICS_GENERATION_FAILED LYRICS_PRECHECK_FAILED LYRICS_QUALITY_FAILED QUOTA_LOCK_FAILED QUOTA_COMMIT_FAILED MUSIC_GENERATION_FAILED MUSIC_QUALITY_FAILED COVER_GENERATION_FAILED VIDEO_RENDER_FAILED PACKAGE_BUILD_FAILED PACKAGE_BLOCKED PROVIDER_AUTH_FAILED PROVIDER_ACCOUNT_LIMIT PROVIDER_TIMEOUT RATE_LIMITED UNKNOWN_ERROR],
   "ErrorCode" => %w[VALIDATION_ERROR UNAUTHORIZED FORBIDDEN NOT_FOUND CONFLICT IDEMPOTENCY_CONFLICT RATE_LIMITED PROVIDER_UNAVAILABLE INTERNAL_ERROR]
 }
 
@@ -113,6 +116,34 @@ expected_enums.each do |schema, values|
   assert(missing.empty?, "schema #{schema} missing enum values: #{missing.join(", ")}")
 end
 RUBY
+}
+
+assert_runtime_safe_for_dynamic_contract() {
+  if [[ "$OPENAPI_CONTRACT_ALLOW_REAL_API" == "true" || "$OPENAPI_CONTRACT_ALLOW_REAL_API" == "1" ]]; then
+    log "WARNING: OPENAPI_CONTRACT_ALLOW_REAL_API enabled; dynamic contract may call real providers"
+    return
+  fi
+
+  local readiness_file="${TMP_DIR}/readiness.json"
+  local readiness_status
+  readiness_status="$(curl -sS -o "$readiness_file" -w "%{http_code}" "$API_READINESS_URL" || true)"
+  [[ "$readiness_status" == "200" ]] \
+    || fail "cannot inspect integration readiness at ${API_READINESS_URL}; set OPENAPI_CONTRACT_STATIC_ONLY=true or OPENAPI_CONTRACT_ALLOW_REAL_API=1 if this is intentional"
+
+  local unsafe_components
+  unsafe_components="$(
+    jq -r '
+      .components[]
+      | select(
+          (.configured_mode | tostring | test("real-calls-enabled|suno/|wellapi|yunwu"; "i"))
+          or (.component == "music_provider" and (.configured_mode | tostring) != "mock")
+          or (.component == "render_worker" and (.configured_mode | tostring) != "mock")
+        )
+      | "\(.component)=\(.configured_mode)"
+    ' "$readiness_file"
+  )"
+  [[ -z "$unsafe_components" ]] \
+    || fail "dynamic OpenAPI contract refuses non-mock runtime: ${unsafe_components//$'\n'/, }. Start a mock API or set OPENAPI_CONTRACT_STATIC_ONLY=true."
 }
 
 request() {
@@ -197,6 +228,13 @@ assert_json '.status == "OK"' "API health did not return status OK"
 
 log "checking static OpenAPI contract"
 static_openapi_check
+
+if [[ "$OPENAPI_CONTRACT_STATIC_ONLY" == "true" || "$OPENAPI_CONTRACT_STATIC_ONLY" == "1" ]]; then
+  log "PASS static OpenAPI contract"
+  exit 0
+fi
+
+assert_runtime_safe_for_dynamic_contract
 
 log "checking /me"
 status="$(request GET "/me")"

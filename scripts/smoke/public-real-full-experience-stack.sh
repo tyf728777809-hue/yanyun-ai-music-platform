@@ -63,6 +63,18 @@ export_object_storage_env() {
   export OBJECT_STORAGE_URL_TTL="${OBJECT_STORAGE_URL_TTL:-24h}"
 }
 
+assert_deliverable_media_env() {
+  if [ "${OBJECT_STORAGE_PROVIDER:-}" != "s3" ]; then
+    fail "public real full experience requires OBJECT_STORAGE_PROVIDER=s3; local storage URLs are not deliverable to external testers"
+  fi
+  if [ "${RENDER_WORKER_MODE:-}" != "album-ffmpeg" ]; then
+    fail "public real full experience requires RENDER_WORKER_MODE=album-ffmpeg; mock render output is not a real MP4 deliverable"
+  fi
+  if [ -z "${S3_PUBLIC_ENDPOINT:-}" ]; then
+    fail "public real full experience requires S3_PUBLIC_ENDPOINT so browser/media URLs are reachable"
+  fi
+}
+
 print_logs_hint() {
   if [ -n "${WORKER_LOG:-}" ] || [ -n "${API_LOG:-}" ] || [ -n "${FRONTEND_LOG:-}" ]; then
     printf '[public-real-full] logs:\n'
@@ -819,6 +831,7 @@ main() {
   export TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
   export RENDER_WORKER_MODE=album-ffmpeg
   export_object_storage_env
+  assert_deliverable_media_env
 
   mkdir -p "$LOG_DIR"
   log "logs will be written under $LOG_DIR"

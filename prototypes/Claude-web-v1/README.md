@@ -17,6 +17,12 @@ npm install
 npm run dev      # 本地 http://localhost:5273
 ```
 
+端口约定：
+
+- `5273`：前端开发默认端口。
+- `5274`：`npm run smoke:real-backend` 自动启动的临时验证端口。
+- `5275`：当前手动真实测试常用端口，可用 `npm run dev -- --host 127.0.0.1 --port 5275` 启动。
+
 ### 两种运行模式
 
 顶栏右上角可切换：
@@ -97,6 +103,9 @@ npm run smoke:real-backend
 
 脚本会临时启动 Vite 到 `http://127.0.0.1:5274`，用 Playwright 覆盖灵感成歌、润色/续写、
 第三次改词 409 友好提示、确认出歌、发布交接、作品列表，以及失败页重试恢复。
+
+手动真实出歌或朋友公网测试不要使用演示模式，也不要让后端回落到 `local` 对象存储。后端应使用
+`OBJECT_STORAGE_PROVIDER=s3`、可访问的 `S3_PUBLIC_ENDPOINT` 和 `RENDER_WORKER_MODE=album-ffmpeg`，否则页面可能拿到看似存在但外部无法播放的音频/视频链接。
 
 首次运行如提示缺少 Chromium：
 
