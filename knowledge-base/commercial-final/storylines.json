@@ -858,7 +858,11 @@
       "aliases": [
         "门派倾覆",
         "门派覆灭",
-        "师门被毁"
+        "师门被毁",
+        "师门没了",
+        "师门没落",
+        "普通弟子师门没了",
+        "天赋平平的弟子"
       ],
       "summary": "用户常见原创故事模板：普通弟子面对门派倾覆、失去同门和重建自我。",
       "source_type": "official_public_curated",
@@ -1913,7 +1917,7 @@
     {
       "key": "current-storyline-021",
       "entity_type": "story",
-      "canonical_name": "九流祸起",
+      "canonical_name": "九流祸起补充拆分",
       "aliases": [
         "九流祸起创作素材",
         "九流祸起补齐卡"
@@ -2009,7 +2013,7 @@
     {
       "key": "current-storyline-023",
       "entity_type": "story",
-      "canonical_name": "开封夜市与鬼市",
+      "canonical_name": "开封夜市与鬼市补充拆分",
       "aliases": [
         "开封夜市与鬼市创作素材",
         "开封夜市与鬼市补齐卡"
@@ -2105,7 +2109,7 @@
     {
       "key": "current-storyline-024",
       "entity_type": "story",
-      "canonical_name": "青州蓬山文津",
+      "canonical_name": "青州蓬山文津补充拆分",
       "aliases": [
         "青州蓬山文津创作素材",
         "青州蓬山文津补齐卡"
@@ -2201,7 +2205,7 @@
     {
       "key": "current-storyline-028",
       "entity_type": "story",
-      "canonical_name": "同行伙伴",
+      "canonical_name": "同行伙伴补充拆分",
       "aliases": [
         "同行伙伴创作素材",
         "同行伙伴补齐卡"
@@ -2691,7 +2695,7 @@
     {
       "key": "story-guishizi-split",
       "entity_type": "story",
-      "canonical_name": "鬼市子",
+      "canonical_name": "鬼市子剧情拆分",
       "aliases": [
         "鬼市进入线",
         "阴兵借道",

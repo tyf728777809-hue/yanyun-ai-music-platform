@@ -963,7 +963,7 @@
     {
       "key": "current-gameplay-059",
       "entity_type": "gameplay",
-      "canonical_name": "伙伴同行",
+      "canonical_name": "伙伴同行补充拆分",
       "aliases": [
         "伙伴同行创作素材",
         "伙伴同行补齐卡"
@@ -1059,7 +1059,7 @@
     {
       "key": "current-gameplay-060",
       "entity_type": "gameplay",
-      "canonical_name": "镇守首领",
+      "canonical_name": "镇守首领补充拆分",
       "aliases": [
         "镇守首领创作素材",
         "镇守首领补齐卡"
@@ -1155,7 +1155,7 @@
     {
       "key": "current-gameplay-061",
       "entity_type": "gameplay",
-      "canonical_name": "侠迹残章",
+      "canonical_name": "侠迹残章补充拆分",
       "aliases": [
         "侠迹残章创作素材",
         "侠迹残章补齐卡"

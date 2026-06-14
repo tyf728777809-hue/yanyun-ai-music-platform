@@ -1886,7 +1886,7 @@
       "id": "eval-recall-current-storyline-021",
       "input": "以九流祸起为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-storyline-021"
+        "story-jiuliu-huoqi"
       ],
       "expected_behavior": "应召回九流祸起相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1894,7 +1894,7 @@
       "id": "eval-recall-current-storyline-023",
       "input": "以开封夜市与鬼市为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-storyline-023"
+        "story-kaifeng-night-market"
       ],
       "expected_behavior": "应召回开封夜市与鬼市相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1902,7 +1902,7 @@
       "id": "eval-recall-current-storyline-024",
       "input": "以青州蓬山文津为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-storyline-024"
+        "story-qingzhou-pengshan"
       ],
       "expected_behavior": "应召回青州蓬山文津相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1910,7 +1910,7 @@
       "id": "eval-recall-current-storyline-028",
       "input": "以同行伙伴为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-storyline-028"
+        "story-partner-journey"
       ],
       "expected_behavior": "应召回同行伙伴相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1918,7 +1918,7 @@
       "id": "eval-recall-current-faction-042",
       "input": "以文津馆为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-faction-042"
+        "faction-wenjinguan"
       ],
       "expected_behavior": "应召回文津馆相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1926,7 +1926,7 @@
       "id": "eval-recall-current-faction-045",
       "input": "以赤龙堂为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-faction-045"
+        "faction-chilongtang"
       ],
       "expected_behavior": "应召回赤龙堂相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1934,7 +1934,7 @@
       "id": "eval-recall-current-faction-051",
       "input": "以归义军为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-faction-051"
+        "faction-guiyijun"
       ],
       "expected_behavior": "应召回归义军相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1942,7 +1942,7 @@
       "id": "eval-recall-current-gameplay-059",
       "input": "以伙伴同行为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-gameplay-059"
+        "gameplay-companion"
       ],
       "expected_behavior": "应召回伙伴同行相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1950,7 +1950,7 @@
       "id": "eval-recall-current-gameplay-060",
       "input": "以镇守首领为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-gameplay-060"
+        "gameplay-boss"
       ],
       "expected_behavior": "应召回镇守首领相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
@@ -1958,7 +1958,7 @@
       "id": "eval-recall-current-gameplay-061",
       "input": "以侠迹残章为核心写一首燕云十六声相关歌曲，保留玩家自己的表达。",
       "expected_entities": [
-        "current-gameplay-061"
+        "gameplay-xiaji"
       ],
       "expected_behavior": "应召回侠迹残章相关资料，保留用户创意，不把资料写成百科；若是待核线索，只能作为暗线、传闻或意象使用。"
     },
