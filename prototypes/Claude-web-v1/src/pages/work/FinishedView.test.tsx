@@ -81,15 +81,15 @@ describe('FinishedView', () => {
     );
     expect(screen.getByRole('link', { name: '打开音频' })).toHaveAttribute(
       'href',
-      'https://cdn.local/audio.mp3',
+      'https://cdn.local/package-audio.mp3',
     );
     expect(screen.getByRole('link', { name: '打开视频' })).toHaveAttribute(
       'href',
-      'https://cdn.local/video.mp4',
+      'https://cdn.local/package-video.mp4',
     );
     expect(screen.getByRole('link', { name: '打开封面' })).toHaveAttribute(
       'href',
-      'https://cdn.local/cover.png',
+      'https://cdn.local/package-cover.png',
     );
     expect(screen.queryByText('https://cdn.local/package.zip')).not.toBeInTheDocument();
     expect(screen.queryByText('https://cdn.local/package-audio.mp3')).not.toBeInTheDocument();
@@ -288,5 +288,36 @@ describe('FinishedView', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '重新渲染画面' }));
     await waitFor(() => expect(rerenderVideo).toHaveBeenCalledWith('work-1'));
+  });
+
+  it('shows blocked reason from publish package when handoff is blocked', async () => {
+    vi.spyOn(service, 'getPublishPackage').mockResolvedValue({
+      work_id: 'work-1',
+      package_status: 'PACKAGE_BLOCKED',
+      package_url: null,
+      package_url_expires_at: null,
+      package_json: null,
+      available_actions: ['CONTACT_SUPPORT'],
+      blocked_reason: '审核预检暂未通过，请联系平台协助。',
+    });
+
+    render(
+      <ToastProvider>
+        <FinishedView
+          work={work({
+            package_status: 'PACKAGE_BLOCKED',
+            available_actions: ['CONTACT_SUPPORT'],
+            publish_handoff_hint: {
+              ready_for_handoff: false,
+              message: '作品暂不能交给社区发布。',
+            },
+          })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    expect(await screen.findByText('审核预检暂未通过，请联系平台协助。')).toBeInTheDocument();
   });
 });

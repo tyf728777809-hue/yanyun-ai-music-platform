@@ -102,20 +102,6 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
               </Button>
             );
           }
-          if (action === 'RETRY_LYRICS') {
-            return (
-              <Button
-                key={action}
-                tone="secondary"
-                block
-                loading={busyKey === action}
-                disabled={busyKey !== null}
-                onClick={() => void refresh()}
-              >
-                {actionLabel(action)}
-              </Button>
-            );
-          }
           if (action === 'RETRY_COVER') {
             return (
               <Button

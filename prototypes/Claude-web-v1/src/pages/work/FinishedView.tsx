@@ -92,6 +92,11 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
   const lyricsText =
     work.lyrics_draft?.lyrics_text?.trim() || pkg?.package_json?.lyrics?.text?.trim() || '';
   const hasLyrics = lyricsText.length > 0;
+  const packageAudioUrl = pkg?.package_json?.audio?.url ?? null;
+  const packageVideoUrl = pkg?.package_json?.video?.url ?? null;
+  const packageCoverUrl = pkg?.package_json?.cover?.url ?? null;
+  const blockedReason =
+    pkg?.blocked_reason || work.publish_handoff_hint?.message || '作品暂不能交给社区发布。';
 
   async function markFetched() {
     await run(
@@ -200,7 +205,7 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
         <Banner tone={blocked ? 'danger' : expired ? 'gold' : fetched ? 'gold' : 'success'}>
           {blocked
-            ? '作品暂不能交给社区发布。'
+            ? blockedReason
             : expired
               ? '作品链接已过期，请先刷新下载链接。'
               : fetched
@@ -249,41 +254,26 @@ export function FinishedView({ work, refresh, onBackToHome }: WorkViewProps) {
             )}
 
             <div className="handoff-assets" aria-label="作品交接内容">
-              {media?.audio_url && (
+              {packageAudioUrl && (
                 <div className="handoff-block">
                   <span className="handoff-block__label">音频</span>
-                  <a
-                    className="handoff-url"
-                    href={media.audio_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a className="handoff-url" href={packageAudioUrl} target="_blank" rel="noreferrer">
                     打开音频
                   </a>
                 </div>
               )}
-              {media?.video_url && (
+              {packageVideoUrl && (
                 <div className="handoff-block">
                   <span className="handoff-block__label">视频</span>
-                  <a
-                    className="handoff-url"
-                    href={media.video_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a className="handoff-url" href={packageVideoUrl} target="_blank" rel="noreferrer">
                     打开视频
                   </a>
                 </div>
               )}
-              {media?.cover_url && (
+              {packageCoverUrl && (
                 <div className="handoff-block">
                   <span className="handoff-block__label">封面</span>
-                  <a
-                    className="handoff-url"
-                    href={media.cover_url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a className="handoff-url" href={packageCoverUrl} target="_blank" rel="noreferrer">
                     打开封面
                   </a>
                 </div>

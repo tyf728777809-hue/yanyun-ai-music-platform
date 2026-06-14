@@ -5,15 +5,58 @@ import { Modal } from '../../components/Modal';
 import { Banner } from '../../components/Banner';
 import { TextAreaField } from '../../components/Field';
 import { PackagePill, StagePill, StatusPill } from '../../components/StatusPill';
+import { useToast } from '../../components/Toast';
 import { useAction } from '../../hooks/useAction';
 import { hasAction } from '../../api/workState';
 import { service } from '../../mock/service';
 
 type EditKind = 'polish' | 'continue';
 
+function copyTextWithTextarea(text: string): boolean {
+  if (typeof document === 'undefined' || !document.body) {
+    return false;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '0';
+  textarea.style.left = '-9999px';
+  textarea.style.width = '1px';
+  textarea.style.height = '1px';
+  textarea.style.opacity = '0';
+  textarea.style.pointerEvents = 'none';
+
+  document.body.appendChild(textarea);
+  textarea.focus({ preventScroll: true });
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  try {
+    return document.execCommand?.('copy') === true;
+  } finally {
+    textarea.remove();
+  }
+}
+
+async function writeClipboardText(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Embedded browsers may expose clipboard APIs but reject writes without permission.
+  }
+
+  return copyTextWithTextarea(text);
+}
+
 // 歌词确认 / 作品详情页。
 export function ConfirmView({ work, refresh }: WorkViewProps) {
   const { run, busyKey } = useAction(refresh);
+  const toast = useToast();
   const [editKind, setEditKind] = useState<EditKind | null>(null);
   const [instruction, setInstruction] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
@@ -24,6 +67,8 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
   const canContinue = hasAction(work, 'CONTINUE_LYRICS');
   const canConfirm = hasAction(work, 'CONFIRM_WORK');
   const editsUsedUp = remaining <= 0;
+  const lyricsText = draft?.lyrics_text?.trim() ?? '';
+  const hasLyrics = lyricsText.length > 0;
 
   function openEditor(kind: EditKind) {
     setEditKind(kind);
@@ -64,6 +109,16 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
     );
   }
 
+  async function copyLyrics() {
+    if (!hasLyrics) return;
+    const copied = await writeClipboardText(lyricsText);
+    if (copied) {
+      toast.success('歌词已复制');
+    } else {
+      toast.error('复制失败，请长按歌词手动复制');
+    }
+  }
+
   return (
     <div className="work-stage confirm-view">
       <header className="stage-head">
@@ -100,7 +155,14 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
       <section className="card lyrics-card">
         <div className="card__head">
           <h2 className="card__title">歌词</h2>
-          {draft && <span className="version-tag">第 {draft.version_no} 版</span>}
+          <div className="card__actions">
+            {draft && <span className="version-tag">第 {draft.version_no} 版</span>}
+            {hasLyrics && (
+              <Button tone="secondary" size="sm" onClick={copyLyrics}>
+                复制歌词
+              </Button>
+            )}
+          </div>
         </div>
         <pre className="lyrics-text">{draft?.lyrics_text || '歌词准备中…'}</pre>
       </section>

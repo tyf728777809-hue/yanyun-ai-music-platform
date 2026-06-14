@@ -103,6 +103,25 @@ describe('ConfirmView', () => {
     await waitFor(() => expect(textarea).toHaveFocus());
   });
 
+  it('copies lyrics from the confirm page with clipboard fallback support', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+
+    render(
+      <ToastProvider>
+        <ConfirmView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '复制歌词' }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('[主歌]\n提灯夜行'));
+    expect(await screen.findByText('歌词已复制')).toBeInTheDocument();
+  });
+
   it('shows a readable error when polish instruction only contains spaces', () => {
     render(
       <ToastProvider>

@@ -157,6 +157,10 @@ export const FAILURE_COPY: Record<FailureCode, { title: string; hint: string }> 
     title: '创作额度暂时锁定失败',
     hint: '稍等片刻再重试一次。',
   },
+  QUOTA_COMMIT_FAILED: {
+    title: '创作额度结算失败',
+    hint: '作品已生成但没能完成额度结算，请联系平台协助处理。',
+  },
   MUSIC_GENERATION_FAILED: {
     title: '旋律生成遇到了问题',
     hint: '重试生成通常可以恢复，歌词会保留。',

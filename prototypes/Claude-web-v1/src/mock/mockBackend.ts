@@ -249,9 +249,9 @@ function toDetail(w: MockWork): WorkDetail {
       ? {
           audio_url: audio,
           cover_url: cover,
-          video_url: audio, // 演示中用同一段音频占位视频源
-          video_duration_ms: 3000,
-          video_file_size_bytes: 1_280_000,
+          video_url: null,
+          video_duration_ms: null,
+          video_file_size_bytes: null,
         }
       : { audio_url: null, cover_url: null, video_url: null },
     polish_used_count: w.polishUsed,
@@ -323,11 +323,11 @@ function toPublishPackage(w: MockWork): PublishPackage {
     package_status: w.packageFetched ? 'PACKAGE_FETCHED' : 'PACKAGE_READY',
     package_url: packageUrl(w),
     package_url_expires_at: new Date((w.urlRefreshedAt ?? now) + 3600_000).toISOString(),
-    package_json: {
-      work_id: w.workId,
-      audio: { url: audio, mime_type: 'audio/wav', file_size_bytes: 64_000, checksum: 'demo' },
-      video: { url: audio, mime_type: 'video/mp4', file_size_bytes: 1_280_000, checksum: 'demo' },
-      cover: { url: cover, mime_type: 'image/svg+xml', file_size_bytes: 4_096, checksum: 'demo' },
+      package_json: {
+        work_id: w.workId,
+        audio: { url: audio, mime_type: 'audio/wav', file_size_bytes: 64_000, checksum: 'demo' },
+        video: null,
+        cover: { url: cover, mime_type: 'image/svg+xml', file_size_bytes: 4_096, checksum: 'demo' },
       lyrics: { text: w.lyricsText, timeline_url: `https://demo.local/${w.workId}/timeline.json` },
       metadata: {
         song_title: w.songTitle,

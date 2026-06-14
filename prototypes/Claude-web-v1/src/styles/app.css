@@ -298,6 +298,13 @@
   font-size: 17px;
   color: var(--text);
 }
+.card__actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
 
 /* ---- 状态药丸 ---- */
 .pill {

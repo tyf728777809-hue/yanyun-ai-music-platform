@@ -55,6 +55,7 @@ export type FailureCode =
   | 'LYRICS_PRECHECK_FAILED'
   | 'LYRICS_QUALITY_FAILED'
   | 'QUOTA_LOCK_FAILED'
+  | 'QUOTA_COMMIT_FAILED'
   | 'MUSIC_GENERATION_FAILED'
   | 'MUSIC_QUALITY_FAILED'
   | 'COVER_GENERATION_FAILED'
@@ -188,8 +189,8 @@ export interface PublishAsset {
 export interface PublishPackageJson {
   work_id: string;
   audio?: PublishAsset | null;
-  video: PublishAsset;
-  cover: PublishAsset;
+  video?: PublishAsset | null;
+  cover?: PublishAsset | null;
   lyrics: {
     text: string;
     timeline_url?: string | null;
