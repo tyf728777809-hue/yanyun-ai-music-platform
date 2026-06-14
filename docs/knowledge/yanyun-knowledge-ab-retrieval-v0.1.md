@@ -9,8 +9,8 @@
 - A 组：`KNOWLEDGE_RETRIEVAL_MODE=disabled`，知识上下文数量恒为 `0`。
 - B 组：`KNOWLEDGE_RETRIEVAL_MODE=pgvector`，从本地 PostgreSQL/pgvector 召回上下文。
 - B 组 any-hit 召回率：`1.0`。
-- B 组 all-hit 召回率：`0.6875`。
-- B 组延迟：P50 `248.46ms`，P95 `329.5ms`，max `404.76ms`。
+- B 组 all-hit 召回率：`0.7083`。
+- B 组延迟：P50 `249.48ms`，P95 `447.53ms`，max `608.74ms`。
 - 本轮没有调用真实 DeepSeek；这是检索/上下文层 A/B，不是最终歌词质量 A/B。
 
 ## 判定
@@ -20,7 +20,7 @@
 ## 失败与部分命中
 
 - any-hit 失败样本：`0`。
-- 部分命中样本：`15`。
+- 部分命中样本：`14`。
 
 | id | 输入 | 期望实体 | B 组召回实体 |
 | --- | --- | --- | --- |
@@ -34,7 +34,6 @@
 | `eval-region-yanmen-001` | 雁门风雪，守城的小兵 | `region-yanmen`, `faction-guiyijun` | `region-yanmen`, `region-yanmen`, `region-yanmen`, `character-companion-yangfeng-goose`, `faction-palace-institutions` |
 | `eval-region-qingzhou-001` | 青州文津馆，书卷气和旧案 | `region-qingzhou`, `faction-wenjinguan`, `story-qingzhou-pengshan` | `faction-wenjinguan`, `faction-wenjinguan`, `region-qingzhou`, `region-qingzhou`, `character-qing-moshandao`, `character-qing-moshandao` |
 | `eval-gameplay-steal-001` | 偷师百家，从笨拙到自成一派 | `gameplay-steal-learning`, `gameplay-martial-mix` | `gameplay-steal-learning`, `gameplay-steal-learning`, `gameplay-steal-learning`, `story-faction-fall` |
-| `eval-heavy-story-003-jiuliu-common` | 九流门局中局，但主角是一个普通小摊贩 | `story-jiuliu-huoqi`, `faction-jiuliumen` | `faction-jiuliumen`, `faction-jiuliumen`, `faction-jiuliumen`, `character-player-wanderer`, `character-player-wanderer`, `character-player-wanderer` |
 | `eval-heavy-boundary-008-plot-certain` | 千夜一定是寒香寻亲人，就这么写 | `boundary-unconfirmed-plot`, `character-qianye`, `character-hanxiangxun` | `character-hanxiangxun`, `character-hanxiangxun`, `character-hanxiangxun`, `character-qianye`, `character-qianye`, `character-qianye` |
 | `eval-character-zhang-yanlin-001` | 以张彦霖和河神祠写一首悼亡感的歌 | `character-zhang-yanlin`, `region-kaifeng` | `character-zhang-yanlin`, `character-zhang-yanlin`, `character-zhang-yanlin`, `character-jiangwulang` |
 | `eval-character-zhang-huaishen-001` | 写张淮深的歌，要有归义军后续历史的感觉 | `character-zhang-huaishen`, `region-liangzhou`, `faction-guiyijun` | `character-zhang-huaishen`, `character-zhang-huaishen`, `character-zhang-huaishen`, `faction-guiyijun`, `faction-guiyijun`, `faction-guiyijun` |

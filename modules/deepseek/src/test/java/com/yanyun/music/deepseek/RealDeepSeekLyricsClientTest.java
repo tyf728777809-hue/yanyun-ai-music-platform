@@ -57,6 +57,9 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("顶级中文作词 Agent"));
     assertTrue(systemPrompt.contains("世界级中文作词家"));
     assertTrue(systemPrompt.contains("不编造官方设定"));
+    assertTrue(systemPrompt.contains("核心 hook"));
+    assertTrue(systemPrompt.contains("具体动作、物件或场景"));
+    assertTrue(systemPrompt.contains("禁止只靠“酒、剑、月、风”"));
     assertTrue(systemPrompt.contains("只输出 JSON object"));
     assertTrue(systemPrompt.contains("0.90-1.00"));
     assertEquals("边城旧梦", response.songTitle());

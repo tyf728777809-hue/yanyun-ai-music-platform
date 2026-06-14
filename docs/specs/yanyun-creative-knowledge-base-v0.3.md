@@ -25,8 +25,9 @@
 
 ## Runtime Behavior
 
-- 默认 `KNOWLEDGE_RETRIEVAL_MODE=disabled`；显式设置为 `pgvector` 才启用真实知识检索。
+- 自动化测试和 CI 默认 `KNOWLEDGE_RETRIEVAL_MODE=disabled/mock`；本地真实写词体验和 `public-real-full-experience` smoke 默认使用 `pgvector`。
 - 点名角色、地域、门派、任务线时，先走实体别名命中，再取对应 chunk。
+- 真实用户常用说法可以作为关系桥接别名维护，例如“九流门局中局”“普通小摊贩”命中 `九流祸起` 剧情线，避免只召回门派百科卡。
 - 未点名实体时，使用 pgvector 按主题和情绪检索。
 - 运行时允许注入 `confirmed_facts`、`creative_materials` 和 `pending_clues`；其中 `pending_clues` 必须带内部口径提示，只能作为暗线、传闻、情绪或意象使用，不写成官方定论。
 - 每次注入 3-6 条短上下文，只包含摘要、情绪弧线、可用意象和禁写项，不塞官方原文大段文本。

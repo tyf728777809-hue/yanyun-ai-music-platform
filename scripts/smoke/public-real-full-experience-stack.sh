@@ -265,6 +265,8 @@ start_worker() {
     export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
     export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}"
     export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
+    export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
+    export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
     export DREAMMAKER_REAL_CALLS_ENABLED=false
     export TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE=legacy
     export RENDER_WORKER_MODE=album-ffmpeg
@@ -300,6 +302,8 @@ start_api() {
     export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
     export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}"
     export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
+    export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
+    export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
     export MUSIC_PROVIDER=suno
     export SUNO_BACKEND=yunwu
     export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
@@ -352,10 +356,10 @@ create_real_work() {
   log "creating one inspiration work with real DeepSeek lyrics"
   CREATE_RESPONSE="$(
     post_json "/works/inspiration" "$IDEMPOTENCY_PREFIX-create" '{
-      "story_input": "雁门关外风雪夜，少年与旧友重逢，想把江湖往事唱成一首温柔但有边塞鼓点的歌。",
-      "mood": "温柔、坚定、宿命感",
-      "scene": "边塞长亭、初雪、旧友重逢",
-      "music_style": "国风民谣，笛子，古筝，温暖女声"
+      "story_input": "我想写一个燕云十六声里的普通玩家故事：一个天赋平平的小弟子，师门没了，后来在开封夜市摆摊，但遇到不平事还是会出手。",
+      "mood": "市井、克制、热血、温柔",
+      "scene": "开封夜市、旧山门、雨后的摊灯",
+      "music_style": "国风流行，旋律性强，副歌有记忆点，温暖男声"
     }'
   )"
   WORK_ID="$(echo "$CREATE_RESPONSE" | jq -r '.work_id // empty')"
@@ -776,6 +780,8 @@ main() {
   export DEEPSEEK_REAL_CALLS_ENABLED=true
   export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
   export DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}"
+  export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
+  export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
   export SUNO_BACKEND=yunwu
   export YUNWU_BASE_URL="${YUNWU_BASE_URL:-https://yunwu.ai}"
   export YUNWU_REAL_CALLS_ENABLED=true

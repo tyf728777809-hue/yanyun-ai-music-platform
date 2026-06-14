@@ -1,7 +1,7 @@
 # ADR 0005: 燕云创作知识库边界
 
 日期：2026-06-11
-更新：2026-06-13
+更新：2026-06-14
 
 ## 状态
 
@@ -22,7 +22,7 @@
 - 知识库资料来源优先级：公司/官方资料包、公开官方资料、游戏内实录整理；社区资料只作为发现线索。
 - 知识库覆盖世界观、人物、剧情/任务线、地域、势力/门派、玩法体验和创作禁区。
 - 检索策略采用实体优先、pgvector 语义辅助：点名角色/地域/门派/任务线先走别名表和实体卡；模糊主题再走向量检索。
-- 主链路保留 `KnowledgeService` 边界，默认 `KNOWLEDGE_RETRIEVAL_MODE=disabled`；本地真实体验可显式开启 `pgvector`。
+- 主链路保留 `KnowledgeService` 边界；自动化测试和 CI 默认 `KNOWLEDGE_RETRIEVAL_MODE=disabled/mock`，本地真实写词体验和公网完整体验 smoke 默认使用 `pgvector`。
 - OpenAPI 中 `yanyun_references`、`knowledge_base_version` 字段继续保留，作为内部审计和兼容输出；普通用户侧不强制展示。
 - OpenSearch 不恢复为主路径；本地 PostgreSQL 使用 pgvector 扩展。
 

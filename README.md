@@ -49,13 +49,13 @@ docker compose -f deploy/docker-compose.yml ps
 
 ## Yanyun Creative Knowledge Base
 
-默认不启用知识库检索：
+自动化测试和普通 Mock 开发默认不启用知识库检索：
 
 ```bash
 KNOWLEDGE_RETRIEVAL_MODE=disabled
 ```
 
-本地真实写词体验可启用受控知识库：
+本地真实写词体验和 `public-real-full-experience` smoke 默认应启用受控知识库：
 
 ```bash
 KNOWLEDGE_RETRIEVAL_MODE=pgvector

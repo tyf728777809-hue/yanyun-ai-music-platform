@@ -1,15 +1,15 @@
 {
   "summary": {
     "ab_version": "yanyun-kb-retrieval-ab-v0.1",
-    "generated_at": "2026-06-14T03:58:46.761973+00:00",
+    "generated_at": "2026-06-14T05:07:46.772738+00:00",
     "kb_version": "yanyun-commercial-kb-2026-06-13-v1",
     "sample_count": 48,
     "a_disabled_reference_count": 0,
     "b_pgvector_any_hit_rate": 1.0,
-    "b_pgvector_all_hit_rate": 0.6875,
-    "b_pgvector_p50_latency_ms": 248.46,
-    "b_pgvector_p95_latency_ms": 329.5,
-    "b_pgvector_max_latency_ms": 404.76,
+    "b_pgvector_all_hit_rate": 0.7083,
+    "b_pgvector_p50_latency_ms": 249.48,
+    "b_pgvector_p95_latency_ms": 447.53,
+    "b_pgvector_max_latency_ms": 608.74,
     "target_p50_ms": 500,
     "target_p95_ms": 1500,
     "real_model_ab_executed": false,
@@ -76,7 +76,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 250.27,
+        "latency_ms": 265.02,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -135,7 +135,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 270.67,
+        "latency_ms": 238.94,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -201,7 +201,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 235.27,
+        "latency_ms": 249.48,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -258,7 +258,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 217.1,
+        "latency_ms": 233.66,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -315,7 +315,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 242.63,
+        "latency_ms": 232.03,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -380,7 +380,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 404.76,
+        "latency_ms": 380.95,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -438,7 +438,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 259.64,
+        "latency_ms": 229.17,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -502,7 +502,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 240.23,
+        "latency_ms": 231.96,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -567,7 +567,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 255.88,
+        "latency_ms": 233.96,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -624,7 +624,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 221.97,
+        "latency_ms": 229.83,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -690,7 +690,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 314.14,
+        "latency_ms": 314.69,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -755,7 +755,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 242.46,
+        "latency_ms": 248.03,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -820,7 +820,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 228.22,
+        "latency_ms": 269.02,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -885,7 +885,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 232.09,
+        "latency_ms": 233.64,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -950,7 +950,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 244.56,
+        "latency_ms": 230.49,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -1007,7 +1007,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 228.74,
+        "latency_ms": 217.94,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1072,7 +1072,7 @@
             "fact_level": "official_public_seed"
           }
         ],
-        "latency_ms": 316.15,
+        "latency_ms": 301.72,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -1137,7 +1137,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 231.91,
+        "latency_ms": 225.17,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -1195,7 +1195,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 232.85,
+        "latency_ms": 221.84,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -1261,7 +1261,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 310.57,
+        "latency_ms": 316.01,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -1326,7 +1326,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 250.8,
+        "latency_ms": 232.92,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -1391,7 +1391,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 257.8,
+        "latency_ms": 231.52,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": true
@@ -1442,7 +1442,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 244.6,
+        "latency_ms": 246.88,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -1506,7 +1506,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 232.82,
+        "latency_ms": 261.93,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1556,7 +1556,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 236.21,
+        "latency_ms": 237.44,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1620,7 +1620,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 250.43,
+        "latency_ms": 247.03,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1684,7 +1684,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 248.46,
+        "latency_ms": 238.12,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1704,14 +1704,26 @@
       "b_pgvector": {
         "reference_count": 6,
         "retrieved_entities": [
+          "story-jiuliu-huoqi",
+          "story-jiuliu-huoqi",
           "faction-jiuliumen",
           "faction-jiuliumen",
-          "faction-jiuliumen",
-          "character-player-wanderer",
           "character-player-wanderer",
           "character-player-wanderer"
         ],
         "top_references": [
+          {
+            "entity_key": "story-jiuliu-huoqi",
+            "entity_name": "九流祸起",
+            "heading_path": "剧情/九流祸起/局中局",
+            "fact_level": "official_public_seed"
+          },
+          {
+            "entity_key": "story-jiuliu-huoqi",
+            "entity_name": "九流祸起",
+            "heading_path": "剧情/九流祸起/鬼市入口",
+            "fact_level": "accepted_story_synthesis"
+          },
           {
             "entity_key": "faction-jiuliumen",
             "entity_name": "九流门",
@@ -1725,12 +1737,6 @@
             "fact_level": "pending_clues"
           },
           {
-            "entity_key": "faction-jiuliumen",
-            "entity_name": "九流门",
-            "heading_path": "势力/九流门/冲突角度",
-            "fact_level": "pending_clues"
-          },
-          {
             "entity_key": "character-player-wanderer",
             "entity_name": "玩家游侠",
             "heading_path": "人物/玩家游侠/普通玩家故事",
@@ -1741,18 +1747,12 @@
             "entity_name": "玩家游侠",
             "heading_path": "人物/玩家游侠/创意自由",
             "fact_level": "creative_guidance"
-          },
-          {
-            "entity_key": "character-player-wanderer",
-            "entity_name": "玩家游侠",
-            "heading_path": "人物/玩家游侠/普通人江湖",
-            "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 237.46,
-        "hit_count": 1,
+        "latency_ms": 306.84,
+        "hit_count": 2,
         "any_hit": true,
-        "all_hit": false
+        "all_hit": true
       }
     },
     {
@@ -1813,7 +1813,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 221.7,
+        "latency_ms": 249.06,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1870,7 +1870,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 231.68,
+        "latency_ms": 360.36,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -1934,7 +1934,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 242.44,
+        "latency_ms": 249.41,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2000,7 +2000,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 248.71,
+        "latency_ms": 244.95,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -2064,7 +2064,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 230.14,
+        "latency_ms": 524.07,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2115,7 +2115,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 235.68,
+        "latency_ms": 321.46,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -2179,7 +2179,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 245.41,
+        "latency_ms": 374.64,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2243,7 +2243,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 259.2,
+        "latency_ms": 288.89,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2309,7 +2309,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 250.95,
+        "latency_ms": 247.77,
         "hit_count": 2,
         "any_hit": true,
         "all_hit": false
@@ -2374,7 +2374,7 @@
             "fact_level": "accepted_story_synthesis"
           }
         ],
-        "latency_ms": 239.24,
+        "latency_ms": 251.02,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": false
@@ -2438,7 +2438,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 308.9,
+        "latency_ms": 360.78,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2502,7 +2502,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 302.88,
+        "latency_ms": 327.45,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2566,7 +2566,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 316.64,
+        "latency_ms": 447.53,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2630,7 +2630,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 311.59,
+        "latency_ms": 400.64,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2694,7 +2694,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 337.43,
+        "latency_ms": 320.53,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2758,7 +2758,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 329.5,
+        "latency_ms": 340.99,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2822,7 +2822,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 323.54,
+        "latency_ms": 302.43,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2886,7 +2886,7 @@
             "fact_level": "pending_clues"
           }
         ],
-        "latency_ms": 317.93,
+        "latency_ms": 298.07,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -2950,7 +2950,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 319.92,
+        "latency_ms": 308.89,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
@@ -3014,7 +3014,7 @@
             "fact_level": "creative_guidance"
           }
         ],
-        "latency_ms": 308.24,
+        "latency_ms": 608.74,
         "hit_count": 1,
         "any_hit": true,
         "all_hit": true
