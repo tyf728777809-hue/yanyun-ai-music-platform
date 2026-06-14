@@ -16,6 +16,7 @@ public final class JdbcKnowledgeService implements KnowledgeService {
   private final JdbcTemplate jdbcTemplate;
   private final KnowledgeProperties properties;
   private final KnowledgeEmbeddingService embeddingService;
+  private final KnowledgeEntityResolver entityResolver = new KnowledgeEntityResolver();
 
   public JdbcKnowledgeService(
       JdbcTemplate jdbcTemplate,
@@ -37,7 +38,14 @@ public final class JdbcKnowledgeService implements KnowledgeService {
     }
     try {
       Map<String, KnowledgeReference> references = new LinkedHashMap<>();
-      List<String> entityIds = entityIds(request);
+      List<ResolvedKnowledgeEntity> resolvedEntities = resolveEntities(request);
+      List<String> entityIds =
+          resolvedEntities.stream()
+              .filter(ResolvedKnowledgeEntity::usableForRetrieval)
+              .map(ResolvedKnowledgeEntity::entityId)
+              .distinct()
+              .limit(properties.getEntityLimit())
+              .toList();
       for (KnowledgeReference reference : entityReferences(entityIds, request.limit())) {
         references.put(reference.chunkId(), reference);
       }
@@ -52,34 +60,87 @@ public final class JdbcKnowledgeService implements KnowledgeService {
           properties.getKbVersion(),
           references.values().stream()
               .limit(Math.min(request.limit(), properties.getMaxReferences()))
-              .toList());
+              .toList(),
+          resolvedEntities);
     } catch (DataAccessException exception) {
       return new KnowledgeRetrievalResult(properties.getKbVersion() + ":unavailable", List.of());
     }
   }
 
-  private List<String> entityIds(KnowledgeRetrievalRequest request) {
+  private List<ResolvedKnowledgeEntity> resolveEntities(KnowledgeRetrievalRequest request) {
     String normalizedQuery = DeterministicKnowledgeEmbeddingService.normalize(request.query());
     if (normalizedQuery.isBlank()) {
       return List.of();
     }
+    return entityResolver.resolve(
+        normalizedQuery,
+        directEntityMatches(normalizedQuery),
+        aliasCandidates(),
+        properties.getEntityLimit());
+  }
+
+  private List<ResolvedKnowledgeEntity> directEntityMatches(String normalizedQuery) {
     String sql =
         """
-        SELECT e.id::text AS id, max(length(a.normalized_alias)) AS alias_length
+        SELECT e.id::text AS id,
+               e.canonical_name,
+               e.entity_type,
+               a.alias,
+               a.normalized_alias
         FROM knowledge_entity_aliases a
         JOIN knowledge_entities e ON e.id = a.entity_id
         WHERE e.kb_version = ?
           AND ? LIKE '%' || a.normalized_alias || '%'
-        GROUP BY e.id
-        ORDER BY alias_length DESC
+        ORDER BY length(a.normalized_alias) DESC
         LIMIT ?
         """;
     return jdbcTemplate.query(
         sql,
-        (rs, rowNum) -> rs.getString("id"),
+        (rs, rowNum) -> {
+          String normalizedAlias = rs.getString("normalized_alias");
+          KnowledgeEntityMatchKind matchKind =
+              Objects.equals(
+                      normalizedAlias,
+                      DeterministicKnowledgeEmbeddingService.normalize(
+                          rs.getString("canonical_name")))
+                  ? KnowledgeEntityMatchKind.EXACT
+                  : KnowledgeEntityMatchKind.ALIAS;
+          return new ResolvedKnowledgeEntity(
+              rs.getString("id"),
+              rs.getString("canonical_name"),
+              rs.getString("entity_type"),
+              rs.getString("alias"),
+              matchKind,
+              1.0d,
+              false);
+        },
         properties.getKbVersion(),
         normalizedQuery,
         properties.getEntityLimit());
+  }
+
+  private List<KnowledgeAliasCandidate> aliasCandidates() {
+    String sql =
+        """
+        SELECT e.id::text AS id,
+               e.canonical_name,
+               e.entity_type,
+               a.alias,
+               a.normalized_alias
+        FROM knowledge_entity_aliases a
+        JOIN knowledge_entities e ON e.id = a.entity_id
+        WHERE e.kb_version = ?
+        """;
+    return jdbcTemplate.query(
+        sql,
+        (rs, rowNum) ->
+            new KnowledgeAliasCandidate(
+                rs.getString("id"),
+                rs.getString("canonical_name"),
+                rs.getString("entity_type"),
+                rs.getString("alias"),
+                rs.getString("normalized_alias")),
+        properties.getKbVersion());
   }
 
   private List<KnowledgeReference> entityReferences(List<String> entityIds, int limit) {

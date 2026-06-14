@@ -507,6 +507,29 @@
       "expected_behavior": "写机关、造舰、叛离旧规，不混入机甲 IP。"
     },
     {
+      "id": "eval-entity-correction-001-jiangwulang-typo",
+      "input": "我要以燕云十六声中姜无浪的人生经历创作一首歌",
+      "expected_entities": [
+        "character-jiangwulang"
+      ],
+      "expected_behavior": "姜无浪应纠正为江无浪，歌词围绕江叔、少东家、竹林、不羡仙、带婴逃亡和远行，不写成泛江湖或无关据点任务。"
+    },
+    {
+      "id": "eval-entity-correction-002-ruoshui-variant",
+      "input": "以若水岸寻心剧情写一首悬疑感的歌",
+      "expected_entities": [
+        "story-ruoshui-xunxin",
+        "place-ruoshui-an"
+      ],
+      "expected_behavior": "若水岸应纠正并召回弱水岸寻心与弱水岸场景，写记忆、倒影、古井和身份追问，不写成普通江湖夜行。"
+    },
+    {
+      "id": "eval-entity-correction-003-short-ambiguous-xun",
+      "input": "寻",
+      "expected_entities": [],
+      "expected_behavior": "单字短输入不得强行命中寻心；应按普通灵感不足处理或等待用户补充。"
+    },
+    {
       "id": "eval-heavy-story-001-qinghe-first",
       "input": "我第一天进燕云，在清河乱逛，想写不是大侠也能走江湖",
       "expected_entities": [

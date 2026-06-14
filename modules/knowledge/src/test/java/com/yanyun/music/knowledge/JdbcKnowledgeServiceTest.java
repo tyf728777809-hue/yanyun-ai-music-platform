@@ -29,13 +29,14 @@ class JdbcKnowledgeServiceTest {
         service.retrieve(new KnowledgeRetrievalRequest("寻心 弱水岸", List.of(), 3));
 
     assertEquals("kb-test", result.kbVersion());
-    assertEquals(3, jdbcTemplate.sqlStatements.size());
+    assertEquals(4, jdbcTemplate.sqlStatements.size());
     assertTrue(jdbcTemplate.sqlStatements.get(0).contains("knowledge_entity_aliases"));
+    assertEquals(1, result.resolvedEntities().size());
     assertTrue(!jdbcTemplate.sqlStatements.get(0).contains("e.fact_level NOT IN"));
-    assertTrue(jdbcTemplate.sqlStatements.get(1).contains("c.fact_level"));
-    assertTrue(!jdbcTemplate.sqlStatements.get(1).contains("needs_ingame_recording"));
     assertTrue(jdbcTemplate.sqlStatements.get(2).contains("c.fact_level"));
-    assertTrue(!jdbcTemplate.sqlStatements.get(2).contains("pending_clues"));
+    assertTrue(!jdbcTemplate.sqlStatements.get(2).contains("needs_ingame_recording"));
+    assertTrue(jdbcTemplate.sqlStatements.get(3).contains("c.fact_level"));
+    assertTrue(!jdbcTemplate.sqlStatements.get(3).contains("pending_clues"));
   }
 
   @Test
@@ -53,9 +54,9 @@ class JdbcKnowledgeServiceTest {
 
     service.retrieve(new KnowledgeRetrievalRequest("寒香寻 神仙渡", List.of(), 4));
 
-    assertEquals(4, jdbcTemplate.sqlStatements.size());
-    assertEquals(2, jdbcTemplate.args.get(1)[2]);
+    assertEquals(5, jdbcTemplate.sqlStatements.size());
     assertEquals(2, jdbcTemplate.args.get(2)[2]);
+    assertEquals(2, jdbcTemplate.args.get(3)[2]);
   }
 
   private static final class CapturingJdbcTemplate extends JdbcTemplate {
@@ -73,13 +74,30 @@ class JdbcKnowledgeServiceTest {
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
       sqlStatements.add(sql);
       this.args.add(args);
-      if (sql.contains("knowledge_entity_aliases")) {
+      if (sql.contains("knowledge_entity_aliases") && sql.contains("LIKE '%'")) {
         if (matchedEntityIds.isEmpty()) {
-          return List.of((T) "entity-id");
+          return List.of((T) entity("entity-id", "寻心", "character", "寻心"));
         }
-        return matchedEntityIds.stream().map(entityId -> (T) entityId).toList();
+        return matchedEntityIds.stream()
+            .map(entityId -> (T) entity(entityId, entityId, "character", entityId))
+            .toList();
+      }
+      if (sql.contains("knowledge_entity_aliases")) {
+        return List.of();
       }
       return List.of();
+    }
+
+    private ResolvedKnowledgeEntity entity(
+        String entityId, String canonicalName, String category, String matchedText) {
+      return new ResolvedKnowledgeEntity(
+          entityId,
+          canonicalName,
+          category,
+          matchedText,
+          KnowledgeEntityMatchKind.EXACT,
+          1.0d,
+          false);
     }
   }
 }
