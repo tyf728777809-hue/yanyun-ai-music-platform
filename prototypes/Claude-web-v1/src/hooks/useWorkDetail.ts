@@ -23,22 +23,37 @@ export function useWorkDetail(workId: string | null): PollState {
   const [error, setError] = useState<ApiError | null>(null);
   const timer = useRef<number | null>(null);
   const abort = useRef<AbortController | null>(null);
+  const requestSeq = useRef(0);
 
   const fetchOnce = useCallback(async () => {
-    if (!workId) return;
+    if (!workId) {
+      requestSeq.current += 1;
+      setWork(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     abort.current?.abort();
     const controller = new AbortController();
+    const seq = requestSeq.current + 1;
+    requestSeq.current = seq;
     abort.current = controller;
+    const isCurrentRequest = () => requestSeq.current === seq && abort.current === controller;
     try {
       const detail = await service.getWork(workId, controller.signal);
-      setWork(detail);
-      setError(null);
+      if (isCurrentRequest()) {
+        setWork(detail);
+        setError(null);
+      }
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') return;
+      if (!isCurrentRequest()) return;
       if (err instanceof ApiError) setError(err);
       else setError(new ApiError(0, 'UNKNOWN', '加载作品失败'));
     } finally {
-      setLoading(false);
+      if (isCurrentRequest()) {
+        setLoading(false);
+      }
     }
   }, [workId]);
 
