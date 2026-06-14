@@ -63,6 +63,8 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("7-14 字短句"));
     assertTrue(systemPrompt.contains("具体动作、物件或场景"));
     assertTrue(systemPrompt.contains("叙事流水账"));
+    assertTrue(systemPrompt.contains("万能诗性词连续堆叠"));
+    assertTrue(systemPrompt.contains("3 个以上万能词"));
     assertTrue(systemPrompt.contains("禁止只靠“酒、剑、月、风”"));
     assertTrue(systemPrompt.contains("只输出 JSON object"));
     assertTrue(systemPrompt.contains("0.90-1.00"));

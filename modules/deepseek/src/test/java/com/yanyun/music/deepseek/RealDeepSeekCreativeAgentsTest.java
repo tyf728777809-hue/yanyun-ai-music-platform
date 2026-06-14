@@ -550,6 +550,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("句长是否适合中文人声演唱"));
     assertTrue(systemPrompt.contains("核心 hook 是否有声音记忆点"));
     assertTrue(systemPrompt.contains("故事清楚但不像歌"));
+    assertTrue(systemPrompt.contains("连续堆叠成填充词"));
   }
 
   @Test
