@@ -565,6 +565,14 @@ components:
           anyOf:
             - $ref: "#/components/schemas/FailureInfo"
             - type: "null"
+        active_lyrics_job:
+          anyOf:
+            - $ref: "#/components/schemas/ActiveLyricsJob"
+            - type: "null"
+        last_lyrics_edit_failure:
+          anyOf:
+            - $ref: "#/components/schemas/LyricsEditFailure"
+            - type: "null"
         available_actions:
           type: array
           items:
@@ -607,6 +615,52 @@ components:
           type: array
           items:
             type: string
+    ActiveLyricsJob:
+      type: object
+      required: [job_id, operation, status]
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        operation:
+          type: string
+          enum: [POLISH, CONTINUE]
+        status:
+          type: string
+          enum: [QUEUED, RUNNING, SUCCEEDED, FAILED, CANCELLED]
+        message:
+          type: [string, "null"]
+        source_version_no:
+          type: [integer, "null"]
+          minimum: 1
+        started_at:
+          type: [string, "null"]
+          format: date-time
+        created_at:
+          type: [string, "null"]
+          format: date-time
+        updated_at:
+          type: [string, "null"]
+          format: date-time
+    LyricsEditFailure:
+      type: object
+      required: [job_id, operation, failure_message, retryable]
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        operation:
+          type: string
+          enum: [POLISH, CONTINUE]
+        failure_code:
+          type: [string, "null"]
+        failure_message:
+          type: string
+        retryable:
+          type: boolean
+        completed_at:
+          type: [string, "null"]
+          format: date-time
     MediaAssets:
       type: object
       properties:

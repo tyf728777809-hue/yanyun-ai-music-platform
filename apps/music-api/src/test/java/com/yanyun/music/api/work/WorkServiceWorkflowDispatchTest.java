@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
 import com.yanyun.music.api.work.WorkDtos.JobAcceptedResponse;
+import com.yanyun.music.api.work.WorkDtos.LyricsContinueRequest;
+import com.yanyun.music.api.work.WorkDtos.LyricsPolishRequest;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
@@ -35,6 +37,7 @@ import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.LyricsDraftRow;
+import com.yanyun.music.workpersistence.WorkRepository.LyricsEditJobRow;
 import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
@@ -58,6 +61,81 @@ class WorkServiceWorkflowDispatchTest {
   private final SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
   private final WorkflowOutboxService workflowOutboxService = mock(WorkflowOutboxService.class);
   private final ObjectMapper objectMapper = new ObjectMapper();
+
+  @Test
+  void polishLyricsEnqueuesAsyncJobWithoutCallingDeepSeekSynchronously() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow work = work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM);
+    LyricsEditJobRow activeJob = lyricsEditJob(UUID.randomUUID(), workId, "POLISH", "QUEUED");
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(work))
+        .thenReturn(Optional.of(work));
+    when(workRepository.findActiveLyricsEditJob(workId))
+        .thenReturn(Optional.empty())
+        .thenReturn(Optional.of(activeJob));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    JobAcceptedResponse response =
+        service(syncProperties()).polishLyrics("user-1", workId, new LyricsPolishRequest("更押韵一点"));
+
+    assertThat(response.status()).isEqualTo(WorkStatus.LYRICS_READY);
+    assertThat(response.generationStage()).isEqualTo(GenerationStage.WAITING_CONFIRM);
+    assertThat(response.jobId()).isNotNull();
+    assertThat(response.availableActions())
+        .doesNotContain(
+            com.yanyun.music.workdomain.AvailableAction.POLISH_LYRICS,
+            com.yanyun.music.workdomain.AvailableAction.CONTINUE_LYRICS,
+            com.yanyun.music.workdomain.AvailableAction.CONFIRM_WORK);
+    ArgumentCaptor<LyricsEditJobRow> job = ArgumentCaptor.forClass(LyricsEditJobRow.class);
+    verify(workRepository).insertLyricsEditJob(job.capture());
+    assertThat(job.getValue().operation()).isEqualTo("POLISH");
+    assertThat(job.getValue().instruction()).isEqualTo("更押韵一点");
+    assertThat(job.getValue().status()).isEqualTo("QUEUED");
+    assertThat(job.getValue().sourceLyricsDraftId()).isEqualTo(draftId);
+    verify(lyricsGenerationService, never()).generate(any());
+  }
+
+  @Test
+  void continueLyricsUsesDefaultInstructionAndEnqueuesAsyncJob() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow work = work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(work))
+        .thenReturn(Optional.of(work));
+    when(workRepository.findActiveLyricsEditJob(workId)).thenReturn(Optional.empty());
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+
+    JobAcceptedResponse response =
+        service(syncProperties()).continueLyrics("user-1", workId, new LyricsContinueRequest(""));
+
+    assertThat(response.jobId()).isNotNull();
+    ArgumentCaptor<LyricsEditJobRow> job = ArgumentCaptor.forClass(LyricsEditJobRow.class);
+    verify(workRepository).insertLyricsEditJob(job.capture());
+    assertThat(job.getValue().operation()).isEqualTo("CONTINUE");
+    assertThat(job.getValue().instruction()).isEqualTo("Continue current lyrics.");
+    verify(lyricsGenerationService, never()).generate(any());
+  }
+
+  @Test
+  void confirmWorkRejectsWhileLyricsEditJobIsActive() {
+    UUID workId = UUID.randomUUID();
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(
+            Optional.of(work(workId, WorkStatus.LYRICS_READY, GenerationStage.WAITING_CONFIRM)));
+    when(workRepository.findActiveLyricsEditJob(workId))
+        .thenReturn(Optional.of(lyricsEditJob(UUID.randomUUID(), workId, "POLISH", "RUNNING")));
+
+    assertThatThrownBy(() -> service(syncProperties()).confirmWork("user-1", workId, null))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("AI lyrics edit is still running");
+
+    verify(workRepository, never()).findCurrentLyricsDraft(any(), any());
+    verify(workRepository, never()).reserveSongProduction(any(), any(), anyInt());
+  }
 
   @Test
   void confirmWorkKeepsSynchronousDispatchByDefault() {
@@ -745,6 +823,29 @@ class WorkServiceWorkflowDispatchTest {
         null,
         "mock-yanyun-kb-v0",
         "{}",
+        OffsetDateTime.now());
+  }
+
+  private LyricsEditJobRow lyricsEditJob(UUID jobId, UUID workId, String operation, String status) {
+    return new LyricsEditJobRow(
+        jobId,
+        workId,
+        "user-1",
+        operation,
+        "更押韵一点",
+        UUID.randomUUID(),
+        1,
+        status,
+        null,
+        null,
+        false,
+        0,
+        2,
+        null,
+        null,
+        null,
+        null,
+        OffsetDateTime.now(),
         OffsetDateTime.now());
   }
 }

@@ -77,6 +77,8 @@ public final class WorkDtos {
       int polishRemainingCount,
       QuotaHint quotaHint,
       FailureInfo failure,
+      LyricsEditJob activeLyricsJob,
+      LyricsEditFailure lastLyricsEditFailure,
       List<AvailableAction> availableActions,
       PublishHandoffHint publishHandoffHint,
       OffsetDateTime createdAt,
@@ -99,6 +101,24 @@ public final class WorkDtos {
       String videoUrl,
       Integer videoDurationMs,
       Long videoFileSizeBytes) {}
+
+  public record LyricsEditJob(
+      UUID jobId,
+      String operation,
+      String status,
+      String message,
+      Integer sourceVersionNo,
+      OffsetDateTime startedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt) {}
+
+  public record LyricsEditFailure(
+      UUID jobId,
+      String operation,
+      String failureCode,
+      String failureMessage,
+      boolean retryable,
+      OffsetDateTime completedAt) {}
 
   public record PublishPackage(
       UUID workId,

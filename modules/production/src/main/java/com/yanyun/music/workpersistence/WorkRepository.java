@@ -8,6 +8,7 @@ import com.yanyun.music.workdomain.WorkStatus;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -293,6 +294,184 @@ public class WorkRepository {
         ORDER BY created_at, step_name
         """,
         this::mapGenerationJobStep,
+        jobId);
+  }
+
+  public void insertLyricsEditJob(LyricsEditJobRow job) {
+    jdbcTemplate.update(
+        """
+        INSERT INTO lyrics_edit_jobs (
+          id,
+          work_id,
+          user_id,
+          operation,
+          instruction,
+          source_lyrics_draft_id,
+          source_version_no,
+          status,
+          max_attempts
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        job.id(),
+        job.workId(),
+        job.userId(),
+        job.operation(),
+        job.instruction(),
+        job.sourceLyricsDraftId(),
+        job.sourceVersionNo(),
+        job.status(),
+        job.maxAttempts());
+  }
+
+  public Optional<LyricsEditJobRow> findLyricsEditJob(UUID jobId) {
+    try {
+      return Optional.of(
+          jdbcTemplate.queryForObject(
+              "SELECT * FROM lyrics_edit_jobs WHERE id = ?", this::mapLyricsEditJob, jobId));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
+  public Optional<LyricsEditJobRow> findActiveLyricsEditJob(UUID workId) {
+    try {
+      return Optional.of(
+          jdbcTemplate.queryForObject(
+              """
+              SELECT *
+              FROM lyrics_edit_jobs
+              WHERE work_id = ?
+                AND status IN ('QUEUED', 'RUNNING')
+              ORDER BY created_at DESC
+              LIMIT 1
+              """,
+              this::mapLyricsEditJob,
+              workId));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
+  public Optional<LyricsEditJobRow> findLatestLyricsEditFailure(UUID workId) {
+    try {
+      return Optional.of(
+          jdbcTemplate.queryForObject(
+              """
+              SELECT *
+              FROM lyrics_edit_jobs
+              WHERE work_id = ?
+                AND status = 'FAILED'
+              ORDER BY completed_at DESC NULLS LAST, updated_at DESC
+              LIMIT 1
+              """,
+              this::mapLyricsEditJob,
+              workId));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
+  public List<LyricsEditJobRow> claimDueLyricsEditJobs(
+      int limit, String lockedBy, Duration lockTimeout) {
+    long lockTimeoutSeconds =
+        Math.max(1L, safeDuration(lockTimeout, Duration.ofSeconds(60)).toSeconds());
+    return jdbcTemplate.query(
+        """
+        WITH candidates AS (
+          SELECT id
+          FROM lyrics_edit_jobs
+          WHERE status = 'QUEUED'
+             OR (
+               status = 'RUNNING'
+               AND locked_at IS NOT NULL
+               AND locked_at < now() - (? * interval '1 second')
+             )
+          ORDER BY created_at ASC
+          LIMIT ?
+          FOR UPDATE SKIP LOCKED
+        )
+        UPDATE lyrics_edit_jobs
+        SET status = 'RUNNING',
+            attempt_count = attempt_count + 1,
+            started_at = COALESCE(started_at, now()),
+            locked_at = now(),
+            locked_by = ?,
+            updated_at = now()
+        FROM candidates
+        WHERE lyrics_edit_jobs.id = candidates.id
+        RETURNING lyrics_edit_jobs.*
+        """,
+        this::mapLyricsEditJob,
+        lockTimeoutSeconds,
+        Math.max(1, limit),
+        lockedBy);
+  }
+
+  public void markLyricsEditJobSucceeded(UUID jobId) {
+    jdbcTemplate.update(
+        """
+        UPDATE lyrics_edit_jobs
+        SET status = 'SUCCEEDED',
+            failure_code = NULL,
+            failure_message = NULL,
+            retryable = FALSE,
+            locked_at = NULL,
+            locked_by = NULL,
+            completed_at = now(),
+            updated_at = now()
+        WHERE id = ?
+        """,
+        jobId);
+  }
+
+  public void markLyricsEditJobCancelled(UUID jobId, String failureCode, String failureMessage) {
+    jdbcTemplate.update(
+        """
+        UPDATE lyrics_edit_jobs
+        SET status = 'CANCELLED',
+            failure_code = ?,
+            failure_message = ?,
+            retryable = FALSE,
+            locked_at = NULL,
+            locked_by = NULL,
+            completed_at = now(),
+            updated_at = now()
+        WHERE id = ?
+        """,
+        sanitize(failureCode),
+        sanitize(failureMessage),
+        jobId);
+  }
+
+  public void markLyricsEditJobFailed(
+      UUID jobId, String failureCode, String failureMessage, boolean retryable) {
+    jdbcTemplate.update(
+        """
+        UPDATE lyrics_edit_jobs
+        SET status =
+              CASE
+                WHEN ? IS TRUE AND attempt_count < max_attempts THEN 'QUEUED'
+                ELSE 'FAILED'
+              END,
+            failure_code = ?,
+            failure_message = ?,
+            retryable = ?,
+            locked_at = NULL,
+            locked_by = NULL,
+            completed_at =
+              CASE
+                WHEN ? IS TRUE AND attempt_count < max_attempts THEN NULL
+                ELSE now()
+              END,
+            updated_at = now()
+        WHERE id = ?
+        """,
+        retryable,
+        sanitize(failureCode),
+        sanitize(failureMessage),
+        retryable,
+        retryable,
         jobId);
   }
 
@@ -1045,6 +1224,29 @@ public class WorkRepository {
         resultSet.getObject("updated_at", OffsetDateTime.class));
   }
 
+  private LyricsEditJobRow mapLyricsEditJob(ResultSet resultSet, int rowNum) throws SQLException {
+    return new LyricsEditJobRow(
+        resultSet.getObject("id", UUID.class),
+        resultSet.getObject("work_id", UUID.class),
+        resultSet.getString("user_id"),
+        resultSet.getString("operation"),
+        resultSet.getString("instruction"),
+        resultSet.getObject("source_lyrics_draft_id", UUID.class),
+        resultSet.getInt("source_version_no"),
+        resultSet.getString("status"),
+        resultSet.getString("failure_code"),
+        resultSet.getString("failure_message"),
+        resultSet.getBoolean("retryable"),
+        resultSet.getInt("attempt_count"),
+        resultSet.getInt("max_attempts"),
+        resultSet.getObject("locked_at", OffsetDateTime.class),
+        resultSet.getString("locked_by"),
+        resultSet.getObject("started_at", OffsetDateTime.class),
+        resultSet.getObject("completed_at", OffsetDateTime.class),
+        resultSet.getObject("created_at", OffsetDateTime.class),
+        resultSet.getObject("updated_at", OffsetDateTime.class));
+  }
+
   private IdempotencyRecord mapIdempotencyRecord(ResultSet resultSet, int rowNum)
       throws SQLException {
     return new IdempotencyRecord(
@@ -1075,6 +1277,18 @@ public class WorkRepository {
   private String jsonText(ResultSet resultSet, String columnName) throws SQLException {
     Object object = resultSet.getObject(columnName);
     return object == null ? "[]" : object.toString();
+  }
+
+  private Duration safeDuration(Duration value, Duration fallback) {
+    return value == null || value.isNegative() || value.isZero() ? fallback : value;
+  }
+
+  private String sanitize(String value) {
+    if (value == null || value.isBlank()) {
+      return null;
+    }
+    String sanitized = value.replaceAll("[\\r\\n\\t]+", " ").trim();
+    return sanitized.length() <= 500 ? sanitized : sanitized.substring(0, 500);
   }
 
   public record WorkRow(
@@ -1138,6 +1352,27 @@ public class WorkRepository {
       String packageUrl,
       OffsetDateTime packageUrlExpiresAt,
       OffsetDateTime fetchedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt) {}
+
+  public record LyricsEditJobRow(
+      UUID id,
+      UUID workId,
+      String userId,
+      String operation,
+      String instruction,
+      UUID sourceLyricsDraftId,
+      int sourceVersionNo,
+      String status,
+      String failureCode,
+      String failureMessage,
+      boolean retryable,
+      int attemptCount,
+      int maxAttempts,
+      OffsetDateTime lockedAt,
+      String lockedBy,
+      OffsetDateTime startedAt,
+      OffsetDateTime completedAt,
       OffsetDateTime createdAt,
       OffsetDateTime updatedAt) {}
 

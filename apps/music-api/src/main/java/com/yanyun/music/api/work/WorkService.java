@@ -11,6 +11,8 @@ import com.yanyun.music.api.work.WorkDtos.JobAcceptedResponse;
 import com.yanyun.music.api.work.WorkDtos.LyricsContinueRequest;
 import com.yanyun.music.api.work.WorkDtos.LyricsCreateRequest;
 import com.yanyun.music.api.work.WorkDtos.LyricsDraft;
+import com.yanyun.music.api.work.WorkDtos.LyricsEditFailure;
+import com.yanyun.music.api.work.WorkDtos.LyricsEditJob;
 import com.yanyun.music.api.work.WorkDtos.LyricsPolishRequest;
 import com.yanyun.music.api.work.WorkDtos.MediaAssets;
 import com.yanyun.music.api.work.WorkDtos.Pagination;
@@ -51,6 +53,7 @@ import com.yanyun.music.workflow.SongProductionWorkflowInput;
 import com.yanyun.music.workflow.SongProductionWorkflowResult;
 import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.LyricsDraftRow;
+import com.yanyun.music.workpersistence.WorkRepository.LyricsEditJobRow;
 import com.yanyun.music.workpersistence.WorkRepository.MediaAssetRow;
 import com.yanyun.music.workpersistence.WorkRepository.PublishPackageRow;
 import com.yanyun.music.workpersistence.WorkRepository.WorkRow;
@@ -65,6 +68,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +79,7 @@ public class WorkService {
 
   private static final int POLISH_LIMIT = 2;
   private static final int MUSIC_RETRY_LIMIT = 2;
+  private static final int LYRICS_EDIT_MAX_ATTEMPTS = 2;
   private static final TypeReference<List<String>> STRING_LIST = new TypeReference<>() {};
   private static final TypeReference<Map<String, Object>> JSON_OBJECT = new TypeReference<>() {};
 
@@ -236,35 +241,21 @@ public class WorkService {
   @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse polishLyrics(String userId, UUID workId, LyricsPolishRequest request) {
     requireText(request == null ? null : request.instruction(), "instruction is required");
-    WorkRow work = getRequiredWork(workId, userId);
-    if (!WorkStateMachine.canEditLyrics(work.status())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Current work cannot edit lyrics");
-    }
-    if (work.polishUsedCount() >= POLISH_LIMIT) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "No remaining polish attempts");
-    }
-
-    LyricsDraftRow latest = getRequiredLyricsDraft(workId);
-    LyricsGenerationResult lyrics =
-        lyricsGenerationService.generate(
-            new LyricsGenerationRequest(
-                userId,
-                workId.toString(),
-                LyricsOperation.POLISH,
-                null,
-                latest.lyricsText(),
-                request.instruction(),
-                latest.songTitle(),
-                latest.musicPrompt(),
-                null));
-    UUID jobId = replaceLyricsDraft(work, lyrics, "LYRICS_POLISH", true);
-    WorkRow updated = getRequiredWork(workId, userId);
-    return accepted(updated, jobId);
+    return enqueueLyricsEdit(userId, workId, "POLISH", request.instruction().trim());
   }
 
   @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse continueLyrics(
       String userId, UUID workId, LyricsContinueRequest request) {
+    String instruction =
+        request == null || request.instruction() == null || request.instruction().isBlank()
+            ? "Continue current lyrics."
+            : request.instruction().trim();
+    return enqueueLyricsEdit(userId, workId, "CONTINUE", instruction);
+  }
+
+  private JobAcceptedResponse enqueueLyricsEdit(
+      String userId, UUID workId, String operation, String instruction) {
     WorkRow work = getRequiredWork(workId, userId);
     if (!WorkStateMachine.canEditLyrics(work.status())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Current work cannot edit lyrics");
@@ -272,27 +263,39 @@ public class WorkService {
     if (work.polishUsedCount() >= POLISH_LIMIT) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "No remaining AI edit attempts");
     }
+    if (workRepository.findActiveLyricsEditJob(workId).isPresent()) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "AI lyrics edit is already running");
+    }
 
     LyricsDraftRow latest = getRequiredLyricsDraft(workId);
-    String instruction =
-        request == null || request.instruction() == null || request.instruction().isBlank()
-            ? "Continue current lyrics."
-            : request.instruction().trim();
-    LyricsGenerationResult lyrics =
-        lyricsGenerationService.generate(
-            new LyricsGenerationRequest(
-                userId,
-                workId.toString(),
-                LyricsOperation.CONTINUE,
-                null,
-                latest.lyricsText(),
-                instruction,
-                latest.songTitle(),
-                latest.musicPrompt(),
-                null));
-    UUID jobId = replaceLyricsDraft(work, lyrics, "LYRICS_CONTINUE", true);
-    WorkRow updated = getRequiredWork(workId, userId);
-    return accepted(updated, jobId);
+    UUID jobId = UUID.randomUUID();
+    try {
+      workRepository.insertLyricsEditJob(
+          new LyricsEditJobRow(
+              jobId,
+              workId,
+              userId,
+              operation,
+              instruction,
+              latest.id(),
+              latest.versionNo(),
+              "QUEUED",
+              null,
+              null,
+              false,
+              0,
+              LYRICS_EDIT_MAX_ATTEMPTS,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null));
+    } catch (DataIntegrityViolationException exception) {
+      throw new ResponseStatusException(
+          HttpStatus.CONFLICT, "AI lyrics edit is already running", exception);
+    }
+    return accepted(getRequiredWork(workId, userId), jobId);
   }
 
   @Transactional(noRollbackFor = ResponseStatusException.class)
@@ -301,6 +304,9 @@ public class WorkService {
     if (!WorkStateMachine.canConfirm(work.status())) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Only lyrics-ready works can be confirmed");
+    }
+    if (workRepository.findActiveLyricsEditJob(workId).isPresent()) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "AI lyrics edit is still running");
     }
     LyricsDraftRow draft = getRequiredCurrentLyricsDraft(workId, request);
 
@@ -778,8 +784,14 @@ public class WorkService {
   }
 
   private WorkDetail toDetail(WorkRow work) {
-    LyricsDraft lyricsDraft =
-        workRepository.findLatestLyricsDraft(work.id()).map(this::toLyricsDraft).orElse(null);
+    Optional<LyricsDraftRow> latestDraft = workRepository.findLatestLyricsDraft(work.id());
+    LyricsDraft lyricsDraft = latestDraft.map(this::toLyricsDraft).orElse(null);
+    Optional<LyricsEditJobRow> activeLyricsJob = workRepository.findActiveLyricsEditJob(work.id());
+    Optional<LyricsEditFailure> lastLyricsEditFailure =
+        workRepository
+            .findLatestLyricsEditFailure(work.id())
+            .filter(job -> shouldShowLyricsEditFailure(job, latestDraft.orElse(null)))
+            .map(this::toLyricsEditFailure);
     return new WorkDetail(
         work.id(),
         work.workCode(),
@@ -795,11 +807,48 @@ public class WorkService {
         Math.max(0, POLISH_LIMIT - work.polishUsedCount()),
         quotaHint(work),
         failureInfo(work),
-        availableActions(work),
+        activeLyricsJob.map(this::toLyricsEditJob).orElse(null),
+        lastLyricsEditFailure.orElse(null),
+        availableActions(work, activeLyricsJob.isPresent()),
         publishHandoffHint(work),
         work.createdAt(),
         work.updatedAt(),
         work.generatedAt());
+  }
+
+  private boolean shouldShowLyricsEditFailure(LyricsEditJobRow job, LyricsDraftRow latestDraft) {
+    if (job.completedAt() == null || latestDraft == null || latestDraft.createdAt() == null) {
+      return true;
+    }
+    return !job.completedAt().isBefore(latestDraft.createdAt());
+  }
+
+  private LyricsEditJob toLyricsEditJob(LyricsEditJobRow job) {
+    String message =
+        switch (job.operation()) {
+          case "POLISH" -> "AI 正在润色歌词，原歌词会保留。";
+          case "CONTINUE" -> "AI 正在续写歌词，原歌词会保留。";
+          default -> "AI 正在处理歌词，原歌词会保留。";
+        };
+    return new LyricsEditJob(
+        job.id(),
+        job.operation(),
+        job.status(),
+        message,
+        job.sourceVersionNo(),
+        job.startedAt(),
+        job.createdAt(),
+        job.updatedAt());
+  }
+
+  private LyricsEditFailure toLyricsEditFailure(LyricsEditJobRow job) {
+    return new LyricsEditFailure(
+        job.id(),
+        job.operation(),
+        job.failureCode(),
+        firstNonBlank(job.failureMessage(), "这次 AI 改词没有成功，原歌词已保留。"),
+        job.retryable(),
+        job.completedAt());
   }
 
   private LyricsDraft toLyricsDraft(LyricsDraftRow draft) {
@@ -947,7 +996,21 @@ public class WorkService {
   }
 
   private List<AvailableAction> availableActions(WorkRow work) {
-    return WorkStateMachine.availableActions(workSnapshot(work));
+    return availableActions(work, workRepository.findActiveLyricsEditJob(work.id()).isPresent());
+  }
+
+  private List<AvailableAction> availableActions(WorkRow work, boolean hasActiveLyricsEditJob) {
+    List<AvailableAction> actions = WorkStateMachine.availableActions(workSnapshot(work));
+    if (!hasActiveLyricsEditJob) {
+      return actions;
+    }
+    return actions.stream()
+        .filter(
+            action ->
+                action != AvailableAction.POLISH_LYRICS
+                    && action != AvailableAction.CONTINUE_LYRICS
+                    && action != AvailableAction.CONFIRM_WORK)
+        .toList();
   }
 
   private List<AvailableAction> availableActions(WorkRow work, PackageStatus packageStatus) {
