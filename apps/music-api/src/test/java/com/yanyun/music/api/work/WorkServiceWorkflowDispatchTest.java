@@ -286,6 +286,46 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   @Test
+  void regenerateCoverEnqueuesPackageRetryWithExistingAudio() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow failed = packageBuildFailedWork(workId);
+    WorkRow queued = work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(failed))
+        .thenReturn(Optional.of(queued));
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(audioAsset(workId)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.reservePackageBuildRetry(workId, "user-1", failed.version()))
+        .thenReturn(true);
+
+    JobAcceptedResponse response =
+        service(temporalOutboxProperties()).regenerateCover("user-1", workId);
+
+    assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
+    assertThat(response.generationStage()).isEqualTo(GenerationStage.QUOTA_LOCKING);
+    assertThat(response.jobId()).isNotNull();
+    verify(workRepository).reservePackageBuildRetry(workId, "user-1", failed.version());
+    verify(workRepository)
+        .insertGenerationJob(
+            eq(response.jobId()),
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull());
+    ArgumentCaptor<SongProductionWorkflowInput> input =
+        ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
+    verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
+    assertThat(input.getValue().reuseExistingAudio()).isTrue();
+    assertThat(input.getValue().workId()).isEqualTo(workId.toString());
+    assertThat(input.getValue().jobId()).isEqualTo(response.jobId().toString());
+    verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
   void refreshPublishPackageUrlUsesPersistedPackageObjectKey() {
     UUID workId = UUID.randomUUID();
     WorkRow generated = work(workId, WorkStatus.GENERATED, GenerationStage.PACKAGE_READY);
@@ -648,6 +688,46 @@ class WorkServiceWorkflowDispatchTest {
         OffsetDateTime.now(),
         null,
         3);
+  }
+
+  private WorkRow packageBuildFailedWork(UUID workId) {
+    return new WorkRow(
+        workId,
+        "YYM-20260605-ABCDEF",
+        "user-1",
+        CreationMode.LYRICS,
+        WorkStatus.FAILED,
+        GenerationStage.FAILED,
+        PackageStatus.PACKAGE_NOT_READY,
+        "Mock title",
+        "Mock summary",
+        0,
+        0,
+        FailureCode.PACKAGE_BUILD_FAILED,
+        "Cover prompt quality gate failed",
+        false,
+        OffsetDateTime.now(),
+        false,
+        false,
+        0,
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
+        null,
+        3);
+  }
+
+  private MediaAssetRow audioAsset(UUID workId) {
+    return new MediaAssetRow(
+        workId,
+        "AUDIO",
+        "audio/" + workId + ".mp3",
+        "audio/mpeg",
+        4_810_374L,
+        "audio-checksum",
+        null,
+        null,
+        213_520,
+        "{}");
   }
 
   private LyricsDraftRow draft(UUID workId, UUID draftId) {

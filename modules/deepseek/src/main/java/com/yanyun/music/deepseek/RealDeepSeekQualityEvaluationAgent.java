@@ -130,7 +130,8 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       if (containsUnsafeCoverInstruction(request.context())) {
         return QualityDecision.BLOCK;
       }
-      if (isControlledTitleCoverPrompt(request.context())) {
+      if (isControlledTitleCoverPrompt(request.context())
+          || reasonsOnlyDescribeControlledTitlePolicy(modelReasons)) {
         return QualityDecision.PASS;
       }
       if (containsPositiveCoverTextInstruction(request.context())) {
@@ -279,21 +280,42 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
             && !joined.contains("no_text_in_image");
   }
 
+  private boolean reasonsOnlyDescribeControlledTitlePolicy(java.util.List<String> reasons) {
+    if (reasons == null || reasons.isEmpty()) {
+      return false;
+    }
+    String joined = normalize(reasons);
+    if (coverQualityRiskInReasons(joined)) {
+      return false;
+    }
+    boolean titleMentioned =
+        joined.contains("song title")
+            || joined.contains("exact title")
+            || joined.contains("title typography")
+            || joined.contains("main cover title")
+            || joined.contains("歌名")
+            || joined.contains("主标题")
+            || joined.contains("标题字");
+    boolean controlled =
+        joined.contains("only")
+            || joined.contains("unique")
+            || joined.contains("single")
+            || joined.contains("controlled")
+            || joined.contains("仅允许")
+            || joined.contains("只允许")
+            || joined.contains("唯一")
+            || joined.contains("无违规")
+            || joined.contains("符合规则")
+            || joined.contains("符合规范");
+    return titleMentioned && controlled;
+  }
+
   private boolean reasonsOnlyDescribeNoTextPolicy(java.util.List<String> reasons) {
     if (reasons == null || reasons.isEmpty()) {
       return true;
     }
     String joined = normalize(reasons);
-    if (joined.contains("low quality")
-        || joined.contains("cheap")
-        || joined.contains("unrelated")
-        || joined.contains("not yanyun")
-        || joined.contains("copyright risk")
-        || joined.contains("低质")
-        || joined.contains("廉价")
-        || joined.contains("跑题")
-        || joined.contains("无关")
-        || joined.contains("版权风险")) {
+    if (coverQualityRiskInReasons(joined)) {
       return false;
     }
     return joined.contains("no text")
@@ -306,6 +328,49 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         || (joined.contains("不包含") && joined.contains("文字"))
         || joined.contains("无文字")
         || joined.contains("符合规范");
+  }
+
+  private boolean coverQualityRiskInReasons(String joined) {
+    for (String segment : joined.split("[\\n;；。.]")) {
+      if (isNegativeConstraintSegment(segment)) {
+        continue;
+      }
+      if (containsCoverQualityRiskTerm(segment)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean containsCoverQualityRiskTerm(String segment) {
+    return segment.contains("low quality")
+        || segment.contains("cheap")
+        || segment.contains("unrelated")
+        || segment.contains("not yanyun")
+        || segment.contains("copyright risk")
+        || segment.contains("fake singer")
+        || segment.contains("fake artist")
+        || segment.contains("fake copyright")
+        || segment.contains("fake label")
+        || segment.contains("watermark")
+        || segment.contains("qr code")
+        || segment.contains("garbled")
+        || segment.contains("extra text")
+        || segment.contains("random small text")
+        || segment.contains("低质")
+        || segment.contains("廉价")
+        || segment.contains("跑题")
+        || segment.contains("无关")
+        || segment.contains("版权风险")
+        || segment.contains("假歌手")
+        || segment.contains("假厂牌")
+        || segment.contains("假版权")
+        || segment.contains("水印")
+        || segment.contains("二维码")
+        || segment.contains("乱码")
+        || segment.contains("额外文字")
+        || segment.contains("多余文字")
+        || segment.contains("随机小字");
   }
 
   private boolean containsUnsafeCoverInstructionText(String value) {
@@ -363,6 +428,7 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         || segment.contains("without")
         || segment.contains("do not")
         || segment.contains("don't")
+        || segment.contains("disallow")
         || segment.contains("avoid")
         || segment.contains("exclude")
         || segment.contains("negative prompt")
@@ -371,6 +437,7 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         || segment.contains("不要")
         || segment.contains("禁止")
         || segment.contains("不允许")
+        || segment.contains("未要求")
         || segment.contains("避免")
         || segment.contains("无")
         || segment.contains("没有");

@@ -272,6 +272,96 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void reuseExistingAudioSkipsMusicProviderAndBuildsPackage() throws Exception {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    MediaAssetRow existingAudio =
+        new MediaAssetRow(
+            workId,
+            "AUDIO",
+            "audio/" + workId + ".mp3",
+            "audio/mpeg",
+            4_810_374L,
+            "existing-audio-checksum",
+            null,
+            null,
+            213_520,
+            "{\"provider\":\"suno\"}");
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(existingAudio));
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider).produce(inputReusingAudio(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    verify(musicProvider, never()).submit(any());
+    verifyNoInteractions(remoteObjectImporter);
+
+    ArgumentCaptor<GenerationStage> stageCaptor = ArgumentCaptor.forClass(GenerationStage.class);
+    verify(workRepository, org.mockito.Mockito.times(4))
+        .markGenerationStage(eq(workId), eq(jobId), stageCaptor.capture());
+    assertThat(stageCaptor.getAllValues())
+        .containsExactly(
+            GenerationStage.COVER_GENERATING,
+            GenerationStage.VIDEO_RENDERING,
+            GenerationStage.PACKAGE_BUILDING,
+            GenerationStage.PACKAGE_PRECHECK);
+
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient, org.mockito.Mockito.times(2)).putObject(storagePut.capture());
+    assertThat(storagePut.getAllValues())
+        .extracting(ObjectStoragePutRequest::objectKey)
+        .containsExactlyInAnyOrder("covers/" + workId + ".png", "packages/" + workId + ".json");
+
+    ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
+    verify(workRepository, org.mockito.Mockito.times(4)).upsertMediaAsset(mediaAsset.capture());
+    MediaAssetRow audioAsset =
+        mediaAsset.getAllValues().stream()
+            .filter(asset -> "AUDIO".equals(asset.assetType()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(audioAsset.objectKey()).isEqualTo(existingAudio.objectKey());
+    assertThat(audioAsset.fileSizeBytes()).isEqualTo(existingAudio.fileSizeBytes());
+    assertThat(audioAsset.checksum()).isEqualTo(existingAudio.checksum());
+    assertThat(audioAsset.metadataJson()).contains("\"source\":\"existing-audio\"");
+
+    verify(workRepository).markPackageReady(workId, "Mock title", "Mock summary", true, true);
+    verify(workRepository)
+        .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
+  }
+
+  @Test
   void quotaCommitFailureDoesNotMarkPackageReady() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -1824,5 +1914,22 @@ class MockSongProductionWorkflowTest {
         "AUTO",
         musicProvider,
         musicRetryAllowedAfterFailure);
+  }
+
+  private SongProductionWorkflowInput inputReusingAudio(UUID workId) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        "user-1",
+        UUID.randomUUID().toString(),
+        "Mock title",
+        "Mock summary",
+        "Mock lyrics",
+        "Mock prompt",
+        "Mock cover seed",
+        "AUTO",
+        null,
+        false,
+        null,
+        true);
   }
 }

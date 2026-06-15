@@ -572,6 +572,45 @@ public class WorkRepository {
     return updated == 1;
   }
 
+  public boolean reservePackageBuildRetry(UUID workId, String userId, int expectedVersion) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET status = ?,
+                generation_stage = ?,
+                package_status = ?,
+                failure_code = NULL,
+                failure_message = NULL,
+                retryable = NULL,
+                failed_at = NULL,
+                quota_locked = FALSE,
+                quota_committed = FALSE,
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND user_id = ?
+              AND version = ?
+              AND status = ?
+              AND failure_code = ?
+              AND EXISTS (
+                SELECT 1
+                FROM media_assets
+                WHERE work_id = works.id
+                  AND asset_type = 'AUDIO'
+              )
+            """,
+            WorkStatus.GENERATING.name(),
+            GenerationStage.QUOTA_LOCKING.name(),
+            PackageStatus.PACKAGE_NOT_READY.name(),
+            workId,
+            userId,
+            expectedVersion,
+            WorkStatus.FAILED.name(),
+            FailureCode.PACKAGE_BUILD_FAILED.name());
+    return updated == 1;
+  }
+
   public void upsertMediaAsset(MediaAssetRow asset) {
     jdbcTemplate.update(
         """

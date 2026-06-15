@@ -12,7 +12,8 @@ public record SongProductionWorkflowInput(
     String vocalPreference,
     String musicProvider,
     boolean musicRetryAllowedAfterFailure,
-    String jobId) {
+    String jobId,
+    boolean reuseExistingAudio) {
 
   public SongProductionWorkflowInput(
       String workId,
@@ -37,7 +38,8 @@ public record SongProductionWorkflowInput(
         vocalPreference,
         musicProvider,
         musicRetryAllowedAfterFailure,
-        null);
+        null,
+        false);
   }
 
   public SongProductionWorkflowInput(
@@ -64,7 +66,8 @@ public record SongProductionWorkflowInput(
         vocalPreference,
         musicProvider,
         musicRetryAllowedAfterFailure,
-        null);
+        null,
+        false);
   }
 
   public SongProductionWorkflowInput(
@@ -91,6 +94,7 @@ public record SongProductionWorkflowInput(
         vocalPreference,
         musicProvider,
         musicRetryAllowedAfterFailure,
-        jobId);
+        jobId,
+        false);
   }
 }

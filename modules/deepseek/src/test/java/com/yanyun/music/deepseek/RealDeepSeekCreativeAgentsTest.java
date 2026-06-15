@@ -772,6 +772,62 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
+  void qualityAgentLocalSafetyAllowsControlledCoverTitleReasonWhenModelRewrites()
+      throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "COVER",
+                            "decision",
+                            "REWRITE",
+                            "score",
+                            65,
+                            "reasons",
+                            List.of("封面提示词仅允许作品歌名主标题，无违规文本元素，符合规则"),
+                            "recommended_action",
+                            "REWRITE_AGENT_OUTPUT",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.COVER,
+                "宫灯看剑",
+                "lyrics",
+                null,
+                null,
+                null,
+                null,
+                1920,
+                1080,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "visual_prompt",
+                    "premium cinematic album cover with clear Chinese title typography",
+                    "negative_prompt",
+                    "low quality, fake singer name, fake label, fake copyright, watermark, UI, garbled text")));
+
+    assertEquals(QualityDecision.PASS, result.decision());
+    assertEquals(80, result.score());
+    assertFalse(result.retryable());
+  }
+
+  @Test
   void qualityAgentLocalSafetyAllowsNoTextCoverPolicyWhenModelFlagsItAsRewrite()
       throws IOException {
     server =

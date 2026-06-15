@@ -378,11 +378,28 @@ public class WorkService {
       LyricsDraftRow draft,
       String selectedMusicProvider,
       boolean musicRetryAllowedAfterFailure) {
+    return enqueueReservedSongProduction(
+        workId, userId, draft, selectedMusicProvider, musicRetryAllowedAfterFailure, false);
+  }
+
+  private JobAcceptedResponse enqueueReservedSongProduction(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String selectedMusicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      boolean reuseExistingAudio) {
     UUID jobId = insertSongProductionJob(workId);
     workflowOutboxService.enqueueSongProduction(
         workId,
         workflowInput(
-            workId, userId, draft, selectedMusicProvider, musicRetryAllowedAfterFailure, jobId));
+            workId,
+            userId,
+            draft,
+            selectedMusicProvider,
+            musicRetryAllowedAfterFailure,
+            jobId,
+            reuseExistingAudio));
     return accepted(getRequiredWork(workId, userId), jobId);
   }
 
@@ -402,6 +419,27 @@ public class WorkService {
   @Transactional(noRollbackFor = ResponseStatusException.class)
   public JobAcceptedResponse regenerateCover(String userId, UUID workId) {
     WorkRow work = getRequiredWork(workId, userId);
+    if (canRetryPackageBuildFromExistingAudio(work)) {
+      LyricsDraftRow draft = getRequiredLyricsDraft(workId);
+      String selectedMusicProvider = musicProvider(null);
+      requireSafeRealMusicDispatch(selectedMusicProvider);
+      if (!workRepository.reservePackageBuildRetry(workId, userId, work.version())) {
+        throw new ResponseStatusException(
+            HttpStatus.CONFLICT, "Package retry is already running or audio asset is missing");
+      }
+      if (workflowDispatchProperties.outboxMode()) {
+        return enqueueReservedSongProduction(
+            workId, userId, draft, selectedMusicProvider, false, true);
+      }
+      UUID jobId = insertSongProductionJob(workId);
+      SongProductionWorkflowResult workflowResult =
+          songProductionWorkflow.produce(
+              workflowInput(workId, userId, draft, selectedMusicProvider, false, jobId, true));
+      if (!workflowResult.packageReady()) {
+        throw workflowFailure(workflowResult);
+      }
+      return accepted(getRequiredWork(workId, userId), UUID.fromString(workflowResult.jobId()));
+    }
     if (work.status() != WorkStatus.GENERATED) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "Only generated works can regenerate cover");
@@ -433,6 +471,17 @@ public class WorkService {
   public JobAcceptedResponse rerenderVideo(String userId, UUID workId) {
     getRequiredWork(workId, userId);
     throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "视频重渲染暂未开放。");
+  }
+
+  private boolean canRetryPackageBuildFromExistingAudio(WorkRow work) {
+    return work.status() == WorkStatus.FAILED
+        && work.failureCode() == FailureCode.PACKAGE_BUILD_FAILED
+        && hasMediaAsset(work.id(), "AUDIO");
+  }
+
+  private boolean hasMediaAsset(UUID workId, String assetType) {
+    return workRepository.findMediaAssets(workId).stream()
+        .anyMatch(asset -> assetType.equals(asset.assetType()));
   }
 
   @Transactional(readOnly = true)
@@ -502,7 +551,8 @@ public class WorkService {
       LyricsDraftRow draft,
       String musicProvider,
       boolean musicRetryAllowedAfterFailure) {
-    return workflowInput(workId, userId, draft, musicProvider, musicRetryAllowedAfterFailure, null);
+    return workflowInput(
+        workId, userId, draft, musicProvider, musicRetryAllowedAfterFailure, null, false);
   }
 
   private SongProductionWorkflowInput workflowInput(
@@ -512,6 +562,18 @@ public class WorkService {
       String musicProvider,
       boolean musicRetryAllowedAfterFailure,
       UUID jobId) {
+    return workflowInput(
+        workId, userId, draft, musicProvider, musicRetryAllowedAfterFailure, jobId, false);
+  }
+
+  private SongProductionWorkflowInput workflowInput(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      UUID jobId,
+      boolean reuseExistingAudio) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         userId,
@@ -524,7 +586,8 @@ public class WorkService {
         "AUTO",
         musicProvider,
         musicRetryAllowedAfterFailure,
-        jobId == null ? null : jobId.toString());
+        jobId == null ? null : jobId.toString(),
+        reuseExistingAudio);
   }
 
   private String musicProvider(String requestedProvider) {
