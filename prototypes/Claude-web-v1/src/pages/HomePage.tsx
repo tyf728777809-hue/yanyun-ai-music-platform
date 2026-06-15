@@ -116,7 +116,7 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
         >
           <span className="segmented__icon" aria-hidden="true">✎</span>
           <span className="segmented__label">填词成歌</span>
-          <span className="segmented__desc">已有词，直接谱成曲</span>
+          <span className="segmented__desc">已有词，先整理歌词草稿</span>
         </button>
       </div>
 
@@ -215,7 +215,7 @@ export function HomePage({ onWorkCreated, onOpenWorks }: HomePageProps) {
           disabled={!canSubmit}
           onClick={handleSubmit}
         >
-          {mode === 'inspiration' ? '生成歌词' : '开始谱曲'}
+          {mode === 'inspiration' ? '生成歌词' : '整理歌词草稿'}
         </Button>
         {!canSubmit && (
           <p className="form-foot-hint">

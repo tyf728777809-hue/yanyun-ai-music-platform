@@ -1,8 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ToastProvider } from '../components/Toast';
 import { service } from '../mock/service';
 import type { WorkDetail } from '../api/types';
+import { ApiError } from '../api/client';
 import { WorkPage } from './WorkPage';
 
 function work(overrides: Partial<WorkDetail> = {}): WorkDetail {
@@ -59,7 +60,39 @@ function renderWorkPage(workId: string) {
 
 describe('WorkPage', () => {
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
+  });
+
+  it('polls while initial lyrics are generating and then shows the confirm view', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(service, 'getWork')
+      .mockResolvedValueOnce(
+        work({
+          status: 'LYRICS_GENERATING',
+          generation_stage: 'LYRICS_GENERATING',
+          lyrics_draft: null,
+          available_actions: [],
+        }),
+      )
+      .mockResolvedValueOnce(work({ work_id: 'work-2' }));
+
+    renderWorkPage('work-2');
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByText('正在为你谱写歌词')).toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1500);
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByText('旧雨新词')).toBeInTheDocument();
+    expect(service.getWork).toHaveBeenCalledTimes(2);
   });
 
   it('keeps the loading view when a stale aborted request settles during work switching', async () => {
@@ -90,5 +123,54 @@ describe('WorkPage', () => {
 
     expect(await screen.findByText('旧雨新词')).toBeInTheDocument();
     expect(screen.queryByText('作品状态无法识别')).not.toBeInTheDocument();
+  });
+
+  it('shows and recovers connection interruptions on the confirm view', async () => {
+    vi.useFakeTimers();
+    const recoveredWork = work({
+      song_title: '重连后的新词',
+      lyrics_draft: {
+        ...work().lyrics_draft!,
+        song_title: '重连后的新词',
+      },
+    });
+    vi.spyOn(service, 'getWork')
+      .mockResolvedValueOnce(work())
+      .mockRejectedValueOnce(
+        new ApiError(0, 'NETWORK_ERROR', '作曲服务连接中断，请稍后重试。'),
+      )
+      .mockResolvedValueOnce(recoveredWork);
+    vi.spyOn(service, 'confirmWork').mockResolvedValue({
+      work_id: 'work-2',
+      status: 'GENERATING',
+      generation_stage: 'QUOTA_LOCKING',
+      job_id: 'job-1',
+      available_actions: [],
+    });
+
+    renderWorkPage('work-2');
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByText('旧雨新词')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '确认出歌' }));
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(screen.getByText('连接短暂中断，正在重连')).toBeInTheDocument();
+    expect(screen.getByText('作曲服务连接中断，请稍后重试。')).toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1500);
+    });
+
+    expect(screen.getByText('重连后的新词')).toBeInTheDocument();
+    expect(screen.queryByText('连接短暂中断，正在重连')).not.toBeInTheDocument();
+    expect(service.getWork).toHaveBeenCalledTimes(3);
   });
 });

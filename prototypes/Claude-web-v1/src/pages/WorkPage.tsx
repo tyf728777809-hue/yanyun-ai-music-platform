@@ -60,28 +60,46 @@ export function WorkPage({ workId, onBackToHome }: WorkPageProps) {
 
   const shared = { work, refresh, onBackToHome };
   const reconnecting = error && work;
+  const reconnectingBanner = reconnecting ? (
+    <ReconnectingBanner error={error} refresh={refresh} />
+  ) : null;
 
   switch (phase) {
     case 'LYRICS_GENERATING':
       return (
         <>
-          {reconnecting && <ReconnectingBanner error={error} refresh={refresh} />}
+          {reconnectingBanner}
           <LyricsGeneratingView {...shared} />
         </>
       );
     case 'CONFIRM':
-      return <ConfirmView {...shared} />;
+      return (
+        <>
+          {reconnectingBanner}
+          <ConfirmView {...shared} />
+        </>
+      );
     case 'GENERATING':
       return (
         <>
-          {reconnecting && <ReconnectingBanner error={error} refresh={refresh} />}
+          {reconnectingBanner}
           <GeneratingView {...shared} />
         </>
       );
     case 'FAILED':
-      return <FailedView {...shared} />;
+      return (
+        <>
+          {reconnectingBanner}
+          <FailedView {...shared} />
+        </>
+      );
     case 'FINISHED':
-      return <FinishedView {...shared} />;
+      return (
+        <>
+          {reconnectingBanner}
+          <FinishedView {...shared} />
+        </>
+      );
     default:
       return null;
   }

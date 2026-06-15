@@ -68,19 +68,13 @@ export function useWorkDetail(workId: string | null): PollState {
     };
   }, [fetchOnce]);
 
-  // 根据当前阶段决定是否继续轮询。
+  // 根据当前阶段决定是否继续轮询；已有作品拉取失败时也持续恢复，避免只在生成态重连。
   useEffect(() => {
     if (!work) return;
-    if (work.active_lyrics_job) {
-      timer.current = window.setTimeout(() => {
-        void fetchOnce();
-      }, POLL_INTERVAL);
-      return () => {
-        if (timer.current) window.clearTimeout(timer.current);
-      };
-    }
     const phase = deriveViewPhase(work);
-    if (!POLLING_PHASES.has(phase)) return;
+    const shouldPoll =
+      Boolean(error) || Boolean(work.active_lyrics_job) || POLLING_PHASES.has(phase);
+    if (!shouldPoll) return;
     timer.current = window.setTimeout(() => {
       void fetchOnce();
     }, POLL_INTERVAL);
