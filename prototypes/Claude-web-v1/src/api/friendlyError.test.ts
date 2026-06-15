@@ -15,10 +15,20 @@ describe('userFriendlyErrorMessage', () => {
 
   it('keeps network guidance actionable for local development', () => {
     const message = userFriendlyErrorMessage(
-      new ApiError(0, 'NETWORK_ERROR', '连不上作曲服务，请确认本地后端已启动。'),
+      new ApiError(0, 'NETWORK_ERROR', '作曲服务连接中断，请稍后重试。'),
     );
 
     expect(message).toContain('作曲服务');
     expect(message).toContain('演示模式');
+    expect(message).not.toContain('localhost');
+  });
+
+  it('turns stale lyrics draft confirmation into a refresh hint', () => {
+    const message = userFriendlyErrorMessage(
+      new ApiError(409, 'CONFLICT', 'Lyrics draft is not the current confirmable draft'),
+    );
+
+    expect(message).toBe('歌词已更新，请重新确认出歌。');
+    expect(message).not.toContain('Lyrics draft');
   });
 });

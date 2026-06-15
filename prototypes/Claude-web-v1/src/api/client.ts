@@ -105,7 +105,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     throw new ApiError(
       0,
       'NETWORK_ERROR',
-      '连不上作曲服务，请确认本地后端已启动（http://localhost:8080）。',
+      '作曲服务连接中断，请稍后重试。',
     );
   }
 

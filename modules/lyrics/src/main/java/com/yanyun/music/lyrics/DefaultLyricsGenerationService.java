@@ -420,8 +420,16 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       return response;
     } catch (RuntimeException exception) {
       recordAgentRun(request, prompt, deepSeekRequest, null, startedAt, exception);
-      throw exception;
+      throw new LyricsGenerationTransientException(transientFailureMessage(request), exception);
     }
+  }
+
+  private String transientFailureMessage(LyricsGenerationRequest request) {
+    return switch (request.operation()) {
+      case POLISH -> "AI 润色暂时失败，本次未消耗改词次数，请稍后重试。";
+      case CONTINUE -> "AI 续写暂时失败，本次未消耗改词次数，请稍后重试。";
+      case LYRICS, INSPIRATION -> "AI 写词暂时失败，本次未创建作品，请稍后重试。";
+    };
   }
 
   private void recordAgentRun(

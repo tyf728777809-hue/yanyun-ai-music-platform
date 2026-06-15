@@ -291,10 +291,13 @@ class DefaultLyricsGenerationServiceTest {
         new DefaultLyricsGenerationService(
             knowledgeService(), promptService(), deepSeek, records::add);
 
-    assertThrows(
-        IllegalStateException.class, () -> service.generate(baseRequest(LyricsOperation.LYRICS)));
+    LyricsGenerationTransientException exception =
+        assertThrows(
+            LyricsGenerationTransientException.class,
+            () -> service.generate(baseRequest(LyricsOperation.LYRICS)));
 
     assertEquals(3, records.size());
+    assertTrue(exception.getMessage().contains("AI 写词暂时失败"));
     assertEquals("KnowledgeRetrieve", records.get(0).agentName());
     assertEquals("CreativeBriefAgent", records.get(1).agentName());
     AgentRunRecord record = records.get(2);
@@ -303,6 +306,23 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(record.failureMessage().contains("Bearer [REDACTED]"));
     assertTrue(record.failureMessage().contains("SecretKey=[REDACTED]"));
     assertFalse(record.failureMessage().contains("dummy-value"));
+  }
+
+  @Test
+  void failedPolishReturnsTransientRetryableMessage() {
+    DeepSeekLyricsClient deepSeek =
+        request -> {
+          throw new IllegalStateException("DeepSeek response content JSON is invalid");
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(knowledgeService(), promptService(), deepSeek);
+
+    LyricsGenerationTransientException exception =
+        assertThrows(
+            LyricsGenerationTransientException.class,
+            () -> service.generate(baseRequest(LyricsOperation.POLISH)));
+
+    assertEquals("AI 润色暂时失败，本次未消耗改词次数，请稍后重试。", exception.getMessage());
   }
 
   @Test

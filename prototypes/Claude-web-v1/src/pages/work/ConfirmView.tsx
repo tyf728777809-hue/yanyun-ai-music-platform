@@ -55,7 +55,7 @@ async function writeClipboardText(text: string): Promise<boolean> {
 
 // 歌词确认 / 作品详情页。
 export function ConfirmView({ work, refresh }: WorkViewProps) {
-  const { run, busyKey } = useAction(refresh);
+  const { run, busyKey } = useAction();
   const toast = useToast();
   const [editKind, setEditKind] = useState<EditKind | null>(null);
   const [instruction, setInstruction] = useState('');
@@ -91,7 +91,10 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
       {
         successMsg: kind === 'polish' ? '已为你润色歌词' : '已为你续写歌词',
         conflictMsg: '改词次数已用完，本次未生效',
-        onSuccess: () => setEditKind(null),
+        onSuccess: async () => {
+          await refresh();
+          setEditKind(null);
+        },
         onError: setEditError,
       },
     );
@@ -105,7 +108,15 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           lyrics_draft_id: draft?.lyrics_draft_id,
           user_confirmed_at: new Date().toISOString(),
         }),
-      { successMsg: '已确认，开始出歌' },
+      {
+        successMsg: '已确认，开始出歌',
+        onSuccess: refresh,
+        onError: async (message) => {
+          if (message.includes('歌词已更新')) {
+            await refresh();
+          }
+        },
+      },
     );
   }
 

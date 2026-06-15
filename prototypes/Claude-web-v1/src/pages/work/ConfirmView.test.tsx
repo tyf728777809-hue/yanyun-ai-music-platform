@@ -163,6 +163,69 @@ describe('ConfirmView', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('请求编号：req-1');
   });
 
+  it('waits for refreshed work detail before leaving the polish flow', async () => {
+    vi.spyOn(service, 'polishLyrics').mockResolvedValue({
+      work_id: 'work-1',
+      status: 'LYRICS_READY',
+      generation_stage: 'WAITING_CONFIRM',
+      job_id: 'job-1',
+      available_actions: ['CONFIRM_WORK'],
+    });
+    let resolveRefresh: () => void = () => {};
+    const refresh = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveRefresh = resolve;
+        }),
+    );
+
+    render(
+      <ToastProvider>
+        <ConfirmView
+          work={work({ polish_used_count: 0, polish_remaining_count: 2 })}
+          refresh={refresh}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '更押韵一点' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '开始润色' }));
+
+    await waitFor(() => expect(refresh).toHaveBeenCalled());
+    expect(screen.getByRole('button', { name: '确认出歌' })).toBeDisabled();
+    expect(screen.getByRole('dialog', { name: 'AI 润色歌词' })).toBeInTheDocument();
+
+    resolveRefresh();
+
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'AI 润色歌词' })).not.toBeInTheDocument(),
+    );
+    expect(screen.getByRole('button', { name: '确认出歌' })).not.toBeDisabled();
+  });
+
+  it('refreshes and shows a friendly hint when confirming a stale lyrics draft', async () => {
+    vi.spyOn(service, 'confirmWork').mockRejectedValue(
+      new ApiError(409, 'CONFLICT', 'Lyrics draft is not the current confirmable draft', 'req-2'),
+    );
+    const refresh = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <ToastProvider>
+        <ConfirmView work={work()} refresh={refresh} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '确认出歌' }));
+
+    expect(await screen.findByText(/歌词已更新，请重新确认出歌/)).toBeInTheDocument();
+    expect(screen.getByText(/请求编号：req-2/)).toBeInTheDocument();
+    await waitFor(() => expect(refresh).toHaveBeenCalled());
+  });
+
   it('confirms work without forcing mock music provider in real mode', async () => {
     const confirmWork = vi.spyOn(service, 'confirmWork').mockResolvedValue({
       work_id: 'work-1',

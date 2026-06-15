@@ -3,6 +3,7 @@ package com.yanyun.music.api.error;
 import com.yanyun.music.agentruntime.AgentRunSanitizer;
 import com.yanyun.music.api.idempotency.IdempotencyConflictException;
 import com.yanyun.music.lyrics.LyricsCreativeDomainException;
+import com.yanyun.music.lyrics.LyricsGenerationTransientException;
 import com.yanyun.music.lyrics.LyricsQualityException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
@@ -56,6 +57,13 @@ public class ApiExceptionHandler {
       LyricsQualityException exception, HttpServletRequest request) {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(errorResponse("LYRICS_QUALITY_FAILED", exception.getMessage(), request));
+  }
+
+  @ExceptionHandler(LyricsGenerationTransientException.class)
+  ResponseEntity<ApiErrorResponse> handleLyricsGenerationTransient(
+      LyricsGenerationTransientException exception, HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+        .body(errorResponse("LYRICS_PROVIDER_TEMPORARY_FAILURE", exception.getMessage(), request));
   }
 
   @ExceptionHandler(Exception.class)

@@ -2,11 +2,17 @@ import { ApiError } from './client';
 
 export function userFriendlyErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.code === 'NETWORK_ERROR') {
+      return `${error.message} 如果只是想体验流程，可以切换到「演示模式」。`;
+    }
+    if (
+      error.httpStatus === 409
+      && /Lyrics draft is not the current confirmable draft/i.test(error.message)
+    ) {
+      return '歌词已更新，请重新确认出歌。';
+    }
     if (error.isQuotaConflict) {
       return '改词次数已用完。你仍可以确认当前歌词出歌，或返回编辑重新开始。';
-    }
-    if (error.code === 'NETWORK_ERROR') {
-      return `${error.message} 如果只是想体验流程，可以打开右上角「演示模式」。`;
     }
     if (error.code === 'LYRICS_QUALITY_FAILED') {
       return error.message || '歌词不够贴合燕云十六声，请调整灵感后重试。';

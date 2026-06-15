@@ -274,7 +274,8 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
     String message = exception.getMessage();
     return message != null
         && (message.startsWith("DeepSeek response content")
-            || message.startsWith("DeepSeek response did not include choices"));
+            || message.startsWith("DeepSeek response did not include choices")
+            || message.startsWith("DeepSeek lyrics_text is empty"));
   }
 
   private DeepSeekLyricsResponse parseContent(String content, DeepSeekLyricsRequest request) {
