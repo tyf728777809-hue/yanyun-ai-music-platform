@@ -11,6 +11,7 @@ import com.yanyun.music.lyrics.LyricsGenerationRequest;
 import com.yanyun.music.lyrics.LyricsGenerationResult;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.lyrics.LyricsGenerationTransientException;
+import com.yanyun.music.production.lyrics.LyricsEditJobProcessor;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.GenerationStage;
 import com.yanyun.music.workdomain.PackageStatus;
@@ -105,6 +106,85 @@ class LyricsEditJobProcessorTest {
             eq(jobId), eq("LYRICS_GENERATION_TRANSIENT"), eq("provider timeout"), eq(true));
   }
 
+  @Test
+  void writesInitialDraftAndMarksWorkReadyWhenLyricsCreationCompletes() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    WorkRow work =
+        new WorkRow(
+            workId,
+            "YYM-20260615-ABCDEF",
+            "user-1",
+            CreationMode.INSPIRATION,
+            WorkStatus.LYRICS_GENERATING,
+            GenerationStage.LYRICS_GENERATING,
+            PackageStatus.PACKAGE_NOT_READY,
+            "正在写词",
+            "AI 正在根据你的灵感创作歌词。",
+            0,
+            0,
+            null,
+            null,
+            null,
+            null,
+            false,
+            false,
+            0,
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
+            null,
+            1);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(work))
+        .thenReturn(Optional.of(work));
+    when(lyricsGenerationService.generate(any(LyricsGenerationRequest.class)))
+        .thenReturn(
+            new LyricsGenerationResult(
+                "初稿",
+                "初稿摘要",
+                "[Verse]\n初稿歌词",
+                "music prompt",
+                "cover seed",
+                List.of(),
+                List.of("清河"),
+                "kb-v1",
+                Map.of("lyrics", 7),
+                BigDecimal.valueOf(0.9)));
+    when(workRepository.markLyricsReadyFromGeneration(workId, "user-1", "初稿", "初稿摘要"))
+        .thenReturn(true);
+    when(workRepository.nextLyricsVersion(workId)).thenReturn(1);
+
+    processor.process(
+        new LyricsEditJobRow(
+            jobId,
+            workId,
+            "user-1",
+            "CREATE_INSPIRATION",
+            null,
+            null,
+            null,
+            "RUNNING",
+            null,
+            null,
+            false,
+            1,
+            2,
+            null,
+            null,
+            OffsetDateTime.now(),
+            null,
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
+            "{\"story_input\":\"清河小路上的少年\",\"music_style\":\"R&B\"}"));
+
+    verify(workRepository)
+        .markGenerationJobRunning(jobId, workId, GenerationStage.LYRICS_GENERATING);
+    verify(workRepository).insertLyricsDraft(any(LyricsDraftRow.class));
+    verify(workRepository)
+        .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.WAITING_CONFIRM, null, null);
+    verify(workRepository).markLyricsEditJobSucceeded(jobId);
+  }
+
   private WorkRow work(UUID workId) {
     return new WorkRow(
         workId,
@@ -169,7 +249,8 @@ class LyricsEditJobProcessorTest {
         OffsetDateTime.now(),
         null,
         OffsetDateTime.now(),
-        OffsetDateTime.now());
+        OffsetDateTime.now(),
+        "{}");
   }
 
   private static final class NoopTransactionManager implements PlatformTransactionManager {

@@ -188,9 +188,9 @@ assert_error_response() {
 
 assert_create_work_response() {
   assert_json '.work_id and .work_code and .status and .generation_stage and .job_id and .quota_hint and (.available_actions | type == "array")' "CreateWorkResponse required fields missing"
-  assert_json '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM"' "created work status mismatch"
+  assert_json '.status == "LYRICS_GENERATING" and .generation_stage == "LYRICS_GENERATING"' "created work status mismatch"
   assert_json '.quota_hint.commit_timing == "ON_PACKAGE_READY"' "quota_hint.commit_timing mismatch"
-  assert_json '(.available_actions | index("CONFIRM_WORK")) != null' "CONFIRM_WORK action missing"
+  assert_json '(.available_actions | index("CONFIRM_WORK")) == null' "CONFIRM_WORK should not be available while lyrics are generating"
 }
 
 assert_job_response() {
@@ -206,6 +206,20 @@ assert_work_detail_base() {
 assert_lyrics_draft() {
   assert_json '.lyrics_draft.lyrics_draft_id and (.lyrics_draft.version_no | type == "number") and (.lyrics_draft.lyrics_text | length > 0) and (.lyrics_draft.music_prompt | length > 0)' "LyricsDraft required fields missing"
   assert_json '.lyrics_draft.yanyun_references | type == "array"' "LyricsDraft.yanyun_references missing"
+}
+
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local attempts="${2:-45}"
+  for _ in $(seq 1 "$attempts"); do
+    status="$(request GET "/works/${work_id}")"
+    assert_status "$status" "200"
+    if jq -e '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM"' >/dev/null <"$RESULT_BODY"; then
+      return 0
+    fi
+    sleep 1
+  done
+  fail "work ${work_id} did not become LYRICS_READY"
 }
 
 assert_publish_package_ready() {
@@ -269,7 +283,7 @@ work_id="$(jq -er '.work_id' <"$RESULT_BODY")"
 log "created work_id=${work_id}"
 
 status="$(request GET "/works/${work_id}")"
-assert_status "$status" "200"
+wait_for_lyrics_ready "$work_id"
 assert_work_detail_base
 assert_lyrics_draft
 assert_json '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM" and .package_status == "PACKAGE_NOT_READY"' "initial WorkDetail state mismatch"
@@ -349,8 +363,7 @@ log "checking controlled music failure and retry contract"
 status="$(request POST "/works/lyrics" '{"song_title":"失败契约 Smoke","lyrics_input":"先失败，再重试"}' "$(idempotency_key failure-create)")"
 assert_status "$status" "202"
 failure_work_id="$(jq -er '.work_id' <"$RESULT_BODY")"
-status="$(request GET "/works/${failure_work_id}")"
-assert_status "$status" "200"
+wait_for_lyrics_ready "$failure_work_id"
 failure_lyrics_draft_id="$(jq -er '.lyrics_draft.lyrics_draft_id' <"$RESULT_BODY")"
 status="$(request POST "/works/${failure_work_id}/confirm" "{\"lyrics_draft_id\":\"${failure_lyrics_draft_id}\",\"music_provider\":\"suno\"}" "$(idempotency_key failure-confirm)")"
 assert_status "$status" "409"

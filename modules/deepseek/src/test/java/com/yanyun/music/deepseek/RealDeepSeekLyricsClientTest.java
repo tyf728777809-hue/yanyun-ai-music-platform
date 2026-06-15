@@ -285,6 +285,7 @@ class RealDeepSeekLyricsClientTest {
         null,
         null,
         "边城旧梦",
+        "孤独但热血",
         "国风民谣",
         "FEMALE",
         List.of("清河", "不羡仙"));

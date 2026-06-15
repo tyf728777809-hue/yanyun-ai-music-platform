@@ -69,6 +69,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -269,6 +272,75 @@ class MockSongProductionWorkflowTest {
     verify(workRepository)
         .completeGenerationJob(jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
     verify(quotaAdapter, never()).releaseGenerateQuota(any(), any(), any());
+  }
+
+  @Test
+  void startsCoverGenerationWhileMusicProviderIsStillRunningWhenParallelEnabled() throws Exception {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    CountDownLatch coverPromptStarted = new CountDownLatch(1);
+    AtomicBoolean coverStartedBeforeMusicReturned = new AtomicBoolean(false);
+    MusicProvider musicProvider = mockMusicProvider();
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenAnswer(
+            invocation -> {
+              assertThat(coverPromptStarted.await(2, TimeUnit.SECONDS)).isTrue();
+              coverStartedBeforeMusicReturned.set(true);
+              return MusicGenerationResult.succeeded(
+                  MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok");
+            });
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+    CoverPromptAgent coverPromptAgent =
+        request -> {
+          coverPromptStarted.countDown();
+          return new MockCoverPromptAgent().generate(request);
+        };
+
+    SongProductionWorkflowResult result =
+        workflowWithParallelMedia(musicProvider, coverPromptAgent).produce(input(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    assertThat(coverStartedBeforeMusicReturned.get()).isTrue();
+    ArgumentCaptor<WorkRepository.GenerationJobStepRow> stepCaptor =
+        ArgumentCaptor.forClass(WorkRepository.GenerationJobStepRow.class);
+    verify(workRepository, org.mockito.Mockito.atLeastOnce())
+        .upsertGenerationJobStep(stepCaptor.capture());
+    assertThat(stepCaptor.getAllValues())
+        .extracting(WorkRepository.GenerationJobStepRow::stepName)
+        .contains(
+            GenerationStage.MUSIC_GENERATING.name(),
+            GenerationStage.COVER_GENERATING.name(),
+            GenerationStage.VIDEO_RENDERING.name(),
+            GenerationStage.PACKAGE_BUILDING.name());
   }
 
   @Test
@@ -713,7 +785,7 @@ class MockSongProductionWorkflowTest {
             MusicGenerationResult.succeeded(
                 MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
     when(quotaAdapter.releaseGenerateQuota(
-            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+            "user-1", "lock-1", FailureCode.COVER_GENERATION_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
 
     List<AgentRunRecord> agentRuns = new ArrayList<>();
@@ -753,19 +825,19 @@ class MockSongProductionWorkflowTest {
             .produce(input(workId));
 
     assertThat(result.packageReady()).isFalse();
-    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(result.failureCode()).isEqualTo(FailureCode.COVER_GENERATION_FAILED.name());
     assertThat(agentRuns).hasSize(2);
     assertThat(agentRuns.get(1).agentName()).isEqualTo("CoverPromptAgent");
     assertThat(agentRuns.get(1).status()).isEqualTo(AgentRunStatus.FAILED);
     verify(coverGenerationService, never()).generateCover(any());
     verify(quotaAdapter)
-        .releaseGenerateQuota("user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name());
+        .releaseGenerateQuota("user-1", "lock-1", FailureCode.COVER_GENERATION_FAILED.name());
     verify(workRepository)
         .completeGenerationJob(
             jobId,
             "FAILED",
             GenerationStage.FAILED,
-            FailureCode.PACKAGE_BUILD_FAILED,
+            FailureCode.COVER_GENERATION_FAILED,
             "cover prompt failed");
   }
 
@@ -1206,7 +1278,7 @@ class MockSongProductionWorkflowTest {
     when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
         .thenReturn(new QuotaCommit(true, "committed"));
     when(quotaAdapter.releaseGenerateQuota(
-            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+            "user-1", "lock-1", FailureCode.VIDEO_RENDER_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
     VideoRenderService localProcessStyleRenderer =
         request -> {
@@ -1662,7 +1734,7 @@ class MockSongProductionWorkflowTest {
             MusicGenerationResult.succeeded(
                 MusicProviderType.MOCK, "task-1", "audio/" + workId + ".mp3", 123_000, "ok"));
     when(quotaAdapter.releaseGenerateQuota(
-            "user-1", "lock-1", FailureCode.PACKAGE_BUILD_FAILED.name()))
+            "user-1", "lock-1", FailureCode.VIDEO_RENDER_FAILED.name()))
         .thenReturn(new QuotaRelease(true, "released"));
     VideoRenderService failingVideoRenderer =
         request -> {
@@ -1674,7 +1746,7 @@ class MockSongProductionWorkflowTest {
             .produce(input(workId));
 
     assertThat(result.packageReady()).isFalse();
-    assertThat(result.failureCode()).isEqualTo(FailureCode.PACKAGE_BUILD_FAILED.name());
+    assertThat(result.failureCode()).isEqualTo(FailureCode.VIDEO_RENDER_FAILED.name());
     assertThat(result.failureMessage()).isEqualTo("video render unavailable");
 
     ArgumentCaptor<MediaAssetRow> mediaAsset = ArgumentCaptor.forClass(MediaAssetRow.class);
@@ -1686,13 +1758,13 @@ class MockSongProductionWorkflowTest {
         .insertQuotaTransaction(
             workId, "user-1", "lock-1", "RELEASE_GENERATE", "RELEASED", "released");
     verify(workRepository)
-        .markFailure(workId, FailureCode.PACKAGE_BUILD_FAILED, "video render unavailable", false);
+        .markFailure(workId, FailureCode.VIDEO_RENDER_FAILED, "video render unavailable", false);
     verify(workRepository)
         .completeGenerationJob(
             jobId,
             "FAILED",
             GenerationStage.FAILED,
-            FailureCode.PACKAGE_BUILD_FAILED,
+            FailureCode.VIDEO_RENDER_FAILED,
             "video render unavailable");
     verify(quotaAdapter, never()).commitGenerateQuota(any(), any());
     verify(workRepository, never()).upsertPublishPackage(any());
@@ -1860,6 +1932,30 @@ class MockSongProductionWorkflowTest {
         coverGenerationService,
         videoRenderer,
         objectMapper);
+  }
+
+  private MockSongProductionWorkflow workflowWithParallelMedia(
+      MusicProvider musicProvider, CoverPromptAgent coverPromptAgent) {
+    stubObjectStorageDownloadUrls();
+    when(workRepository.markGenerationStage(any(), any(), any())).thenReturn(true);
+    return new MockSongProductionWorkflow(
+        workRepository,
+        quotaAdapter,
+        moderationAdapter,
+        publishAdapter,
+        new MusicProviderRegistry(List.of(musicProvider)),
+        new MusicProviderSelection(MusicProviderType.MOCK),
+        objectStorageClient,
+        remoteObjectImporter,
+        new MockMusicPromptAgent(),
+        new MockModerationAgent(),
+        coverPromptAgent,
+        new MockQualityEvaluationAgent(),
+        new MockCoverGenerationService(),
+        new MockVideoRenderService(),
+        objectMapper,
+        true,
+        2);
   }
 
   private void stubObjectStorageDownloadUrls() {

@@ -15,6 +15,9 @@ public class CompanyIntegrationProperties {
   private String workflowDispatchMode = "sync";
   private String workflowDispatchTarget = "local";
   private String temporalTarget = "localhost:7233";
+  private boolean lyricsEditDispatcherEnabled;
+  private boolean songProductionParallelMediaEnabled = true;
+  private int songProductionMediaParallelism = 2;
   private boolean agentRealCallsEnabled;
   private boolean deepseekRealCallsEnabled;
   private String deepseekBaseUrl = "";
@@ -130,6 +133,30 @@ public class CompanyIntegrationProperties {
 
   public void setTemporalTarget(String temporalTarget) {
     this.temporalTarget = temporalTarget;
+  }
+
+  public boolean isLyricsEditDispatcherEnabled() {
+    return lyricsEditDispatcherEnabled;
+  }
+
+  public void setLyricsEditDispatcherEnabled(boolean lyricsEditDispatcherEnabled) {
+    this.lyricsEditDispatcherEnabled = lyricsEditDispatcherEnabled;
+  }
+
+  public boolean isSongProductionParallelMediaEnabled() {
+    return songProductionParallelMediaEnabled;
+  }
+
+  public void setSongProductionParallelMediaEnabled(boolean songProductionParallelMediaEnabled) {
+    this.songProductionParallelMediaEnabled = songProductionParallelMediaEnabled;
+  }
+
+  public int getSongProductionMediaParallelism() {
+    return songProductionMediaParallelism;
+  }
+
+  public void setSongProductionMediaParallelism(int songProductionMediaParallelism) {
+    this.songProductionMediaParallelism = songProductionMediaParallelism;
   }
 
   public boolean isAgentRealCallsEnabled() {

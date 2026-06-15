@@ -309,9 +309,10 @@ public class WorkRepository {
           source_lyrics_draft_id,
           source_version_no,
           status,
-          max_attempts
+          max_attempts,
+          request_payload_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb)
         """,
         job.id(),
         job.workId(),
@@ -321,7 +322,8 @@ public class WorkRepository {
         job.sourceLyricsDraftId(),
         job.sourceVersionNo(),
         job.status(),
-        job.maxAttempts());
+        job.maxAttempts(),
+        job.requestPayloadJson() == null ? "{}" : job.requestPayloadJson());
   }
 
   public Optional<LyricsEditJobRow> findLyricsEditJob(UUID jobId) {
@@ -444,9 +446,9 @@ public class WorkRepository {
         jobId);
   }
 
-  public void markLyricsEditJobFailed(
+  public String markLyricsEditJobFailed(
       UUID jobId, String failureCode, String failureMessage, boolean retryable) {
-    jdbcTemplate.update(
+    return jdbcTemplate.queryForObject(
         """
         UPDATE lyrics_edit_jobs
         SET status =
@@ -466,13 +468,99 @@ public class WorkRepository {
               END,
             updated_at = now()
         WHERE id = ?
+        RETURNING status
         """,
+        String.class,
         retryable,
         sanitize(failureCode),
         sanitize(failureMessage),
         retryable,
         retryable,
         jobId);
+  }
+
+  public boolean markLyricsReadyFromGeneration(
+      UUID workId, String userId, String title, String summary) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET status = ?,
+                generation_stage = ?,
+                song_title = ?,
+                song_summary = ?,
+                failure_code = NULL,
+                failure_message = NULL,
+                retryable = NULL,
+                failed_at = NULL,
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND user_id = ?
+              AND status = ?
+            """,
+            WorkStatus.LYRICS_READY.name(),
+            GenerationStage.WAITING_CONFIRM.name(),
+            title,
+            summary,
+            workId,
+            userId,
+            WorkStatus.LYRICS_GENERATING.name());
+    return updated == 1;
+  }
+
+  public boolean markLyricsGenerationFailed(
+      UUID workId,
+      String userId,
+      FailureCode failureCode,
+      String failureMessage,
+      boolean retryable) {
+    int updated =
+        jdbcTemplate.update(
+            """
+            UPDATE works
+            SET status = ?,
+                generation_stage = ?,
+                package_status = ?,
+                failure_code = ?,
+                failure_message = ?,
+                retryable = ?,
+                failed_at = now(),
+                updated_at = now(),
+                version = version + 1
+            WHERE id = ?
+              AND user_id = ?
+              AND status = ?
+            """,
+            WorkStatus.LYRICS_FAILED.name(),
+            GenerationStage.FAILED.name(),
+            PackageStatus.PACKAGE_NOT_READY.name(),
+            failureCode.name(),
+            sanitize(failureMessage),
+            retryable,
+            workId,
+            userId,
+            WorkStatus.LYRICS_GENERATING.name());
+    return updated == 1;
+  }
+
+  public void markGenerationJobRunning(UUID jobId, UUID workId, GenerationStage stage) {
+    jdbcTemplate.update(
+        """
+        UPDATE generation_jobs
+        SET status = ?,
+            stage = ?,
+            started_at = COALESCE(started_at, now()),
+            updated_at = now()
+        WHERE id = ?
+          AND work_id = ?
+          AND status = ?
+        """,
+        "RUNNING",
+        stage.name(),
+        jobId,
+        workId,
+        "QUEUED");
   }
 
   public Optional<WorkRow> findWorkForUser(UUID workId, String userId) {
@@ -1232,7 +1320,7 @@ public class WorkRepository {
         resultSet.getString("operation"),
         resultSet.getString("instruction"),
         resultSet.getObject("source_lyrics_draft_id", UUID.class),
-        resultSet.getInt("source_version_no"),
+        nullableInteger(resultSet, "source_version_no"),
         resultSet.getString("status"),
         resultSet.getString("failure_code"),
         resultSet.getString("failure_message"),
@@ -1244,7 +1332,8 @@ public class WorkRepository {
         resultSet.getObject("started_at", OffsetDateTime.class),
         resultSet.getObject("completed_at", OffsetDateTime.class),
         resultSet.getObject("created_at", OffsetDateTime.class),
-        resultSet.getObject("updated_at", OffsetDateTime.class));
+        resultSet.getObject("updated_at", OffsetDateTime.class),
+        jsonObjectText(resultSet, "request_payload_json"));
   }
 
   private IdempotencyRecord mapIdempotencyRecord(ResultSet resultSet, int rowNum)
@@ -1277,6 +1366,11 @@ public class WorkRepository {
   private String jsonText(ResultSet resultSet, String columnName) throws SQLException {
     Object object = resultSet.getObject(columnName);
     return object == null ? "[]" : object.toString();
+  }
+
+  private String jsonObjectText(ResultSet resultSet, String columnName) throws SQLException {
+    Object object = resultSet.getObject(columnName);
+    return object == null ? "{}" : object.toString();
   }
 
   private Duration safeDuration(Duration value, Duration fallback) {
@@ -1362,7 +1456,7 @@ public class WorkRepository {
       String operation,
       String instruction,
       UUID sourceLyricsDraftId,
-      int sourceVersionNo,
+      Integer sourceVersionNo,
       String status,
       String failureCode,
       String failureMessage,
@@ -1374,7 +1468,8 @@ public class WorkRepository {
       OffsetDateTime startedAt,
       OffsetDateTime completedAt,
       OffsetDateTime createdAt,
-      OffsetDateTime updatedAt) {}
+      OffsetDateTime updatedAt,
+      String requestPayloadJson) {}
 
   public record ProviderCallRow(
       UUID workId,

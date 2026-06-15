@@ -392,6 +392,7 @@ class DefaultLyricsGenerationServiceTest {
         "[Verse]\nOld lyrics",
         "Make it warmer",
         "Requested",
+        "warm and hopeful",
         "folk pop",
         "female vocal");
   }

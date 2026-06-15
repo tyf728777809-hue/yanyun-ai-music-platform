@@ -151,6 +151,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.userInput(),
             request.currentLyrics(),
             request.instruction(),
+            request.mood(),
             request.musicStyle(),
             request.vocalPreference(),
             knowledge.references().stream().map(KnowledgeReference::content).toList()));
@@ -167,6 +168,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.currentLyrics(),
             request.instruction(),
             request.requestedTitle(),
+            request.mood(),
             request.musicStyle(),
             request.vocalPreference(),
             yanyunReferenceLabels(knowledge));
@@ -243,6 +245,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         appendInstruction(
             request.instruction(), creativeBriefInstruction(creativeBrief, knowledge)),
         request.requestedTitle(),
+        request.mood(),
         firstNonBlank(request.musicStyle(), creativeBrief.musicDirection()),
         request.vocalPreference());
   }
@@ -410,6 +413,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.currentLyrics(),
             request.instruction(),
             request.requestedTitle(),
+            request.mood(),
             request.musicStyle(),
             request.vocalPreference(),
             yanyunReferenceLabels(knowledge));
@@ -535,6 +539,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         nullToEmpty(request.currentLyrics()),
         nullToEmpty(request.instruction()),
         nullToEmpty(request.requestedTitle()),
+        nullToEmpty(request.mood()),
         nullToEmpty(request.musicStyle()),
         nullToEmpty(request.vocalPreference()),
         String.join(",", request.yanyunReferences()));
@@ -562,6 +567,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         request.currentLyrics(),
         appendInstruction(request.instruction(), rewriteInstruction(quality)),
         request.requestedTitle(),
+        request.mood(),
         request.musicStyle(),
         request.vocalPreference());
   }

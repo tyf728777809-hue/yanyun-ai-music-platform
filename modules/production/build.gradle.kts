@@ -16,6 +16,7 @@ dependencies {
     api(project(":modules:media"))
     implementation(project(":modules:dreammaker"))
     implementation(project(":modules:moderation"))
+    implementation(project(":modules:lyrics"))
     implementation(project(":modules:music-provider"))
     implementation(project(":modules:publish"))
     implementation(project(":modules:quota"))
@@ -24,6 +25,7 @@ dependencies {
     implementation(project(":modules:workflow"))
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("org.springframework.boot:spring-boot")
+    implementation("org.springframework.boot:spring-boot-autoconfigure")
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-jdbc")
 }

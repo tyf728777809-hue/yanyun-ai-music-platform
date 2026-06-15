@@ -70,6 +70,7 @@ class RealDeepSeekCreativeAgentsTest {
                 null,
                 null,
                 null,
+                null,
                 List.of()));
 
     assertEquals(CreativeDomainDecision.REJECT, result.domainDecision());
@@ -132,6 +133,7 @@ class RealDeepSeekCreativeAgentsTest {
                 "work-1",
                 "INSPIRATION",
                 "我是燕云十六声玩家，想写一首雁门风雪里无名游侠埋刀归来的歌。",
+                null,
                 null,
                 null,
                 null,
@@ -209,6 +211,7 @@ class RealDeepSeekCreativeAgentsTest {
             null,
             null,
             null,
+            "侠义热血",
             "国风流行",
             null,
             List.of("开封夜市")));

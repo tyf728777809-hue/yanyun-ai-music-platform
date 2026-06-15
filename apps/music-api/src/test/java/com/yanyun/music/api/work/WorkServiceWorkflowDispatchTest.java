@@ -13,6 +13,8 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.api.work.WorkDtos.ConfirmWorkRequest;
+import com.yanyun.music.api.work.WorkDtos.CreateWorkResponse;
+import com.yanyun.music.api.work.WorkDtos.InspirationCreateRequest;
 import com.yanyun.music.api.work.WorkDtos.JobAcceptedResponse;
 import com.yanyun.music.api.work.WorkDtos.LyricsContinueRequest;
 import com.yanyun.music.api.work.WorkDtos.LyricsPolishRequest;
@@ -21,8 +23,10 @@ import com.yanyun.music.api.workflow.WorkflowOutboxService;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.moderation.ModerationAdapter;
+import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
 import com.yanyun.music.quota.QuotaAdapter;
+import com.yanyun.music.quota.QuotaDecision;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
@@ -61,6 +65,58 @@ class WorkServiceWorkflowDispatchTest {
   private final SongProductionWorkflow songProductionWorkflow = mock(SongProductionWorkflow.class);
   private final WorkflowOutboxService workflowOutboxService = mock(WorkflowOutboxService.class);
   private final ObjectMapper objectMapper = new ObjectMapper();
+
+  @Test
+  void createFromInspirationEnqueuesLyricsGenerationWithoutCallingDeepSeekSynchronously() {
+    when(moderationAdapter.preCheckUserInput("user-1", "清河小路上的少年"))
+        .thenReturn(new ModerationDecision(true, null, null));
+    when(quotaAdapter.getHint("user-1", 0))
+        .thenReturn(new QuotaDecision(false, "PACKAGE_READY", 999, 2, "ok"));
+    when(workRepository.findWorkForUser(any(UUID.class), eq("user-1")))
+        .thenAnswer(
+            invocation -> {
+              UUID workId = invocation.getArgument(0);
+              return Optional.of(
+                  new WorkRow(
+                      workId,
+                      "YYM-20260615-ABCDEF",
+                      "user-1",
+                      CreationMode.INSPIRATION,
+                      WorkStatus.LYRICS_GENERATING,
+                      GenerationStage.LYRICS_GENERATING,
+                      PackageStatus.PACKAGE_NOT_READY,
+                      "正在写词",
+                      "AI 正在根据你的灵感创作歌词。",
+                      0,
+                      0,
+                      null,
+                      null,
+                      null,
+                      null,
+                      false,
+                      false,
+                      0,
+                      OffsetDateTime.now(),
+                      OffsetDateTime.now(),
+                      null,
+                      0));
+            });
+
+    CreateWorkResponse response =
+        service(syncProperties())
+            .createFromInspiration(
+                "user-1", new InspirationCreateRequest("清河小路上的少年", "轻快", "R&B", "男声主唱"));
+
+    assertThat(response.status()).isEqualTo(WorkStatus.LYRICS_GENERATING);
+    assertThat(response.generationStage()).isEqualTo(GenerationStage.LYRICS_GENERATING);
+    assertThat(response.jobId()).isNotNull();
+    ArgumentCaptor<LyricsEditJobRow> job = ArgumentCaptor.forClass(LyricsEditJobRow.class);
+    verify(workRepository).insertLyricsEditJob(job.capture());
+    assertThat(job.getValue().operation()).isEqualTo("CREATE_INSPIRATION");
+    assertThat(job.getValue().sourceLyricsDraftId()).isNull();
+    assertThat(job.getValue().requestPayloadJson()).contains("清河小路上的少年");
+    verify(lyricsGenerationService, never()).generate(any());
+  }
 
   @Test
   void polishLyricsEnqueuesAsyncJobWithoutCallingDeepSeekSynchronously() {
@@ -846,6 +902,7 @@ class WorkServiceWorkflowDispatchTest {
         null,
         null,
         OffsetDateTime.now(),
-        OffsetDateTime.now());
+        OffsetDateTime.now(),
+        "{}");
   }
 }

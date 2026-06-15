@@ -71,13 +71,22 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MockSongProductionWorkflow implements SongProductionWorkflow {
+public class MockSongProductionWorkflow implements SongProductionWorkflow, DisposableBean {
 
   private static final Pattern BEARER_TOKEN_PATTERN =
       Pattern.compile("(?i)bearer\\s+[a-z0-9._~+/=-]+");
@@ -106,6 +115,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
   private final CoverGenerationService coverGenerationService;
   private final VideoRenderService videoRenderService;
   private final ObjectMapper objectMapper;
+  private final boolean parallelMediaEnabled;
+  private final ExecutorService mediaExecutor;
 
   public MockSongProductionWorkflow(
       WorkRepository workRepository,
@@ -123,6 +134,45 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       CoverGenerationService coverGenerationService,
       VideoRenderService videoRenderService,
       ObjectMapper objectMapper) {
+    this(
+        workRepository,
+        quotaAdapter,
+        moderationAdapter,
+        publishAdapter,
+        musicProviderRegistry,
+        musicProviderSelection,
+        objectStorageClient,
+        remoteObjectImporter,
+        musicPromptAgent,
+        moderationAgent,
+        coverPromptAgent,
+        qualityEvaluationAgent,
+        coverGenerationService,
+        videoRenderService,
+        objectMapper,
+        false,
+        2);
+  }
+
+  @Autowired
+  public MockSongProductionWorkflow(
+      WorkRepository workRepository,
+      QuotaAdapter quotaAdapter,
+      ModerationAdapter moderationAdapter,
+      PublishAdapter publishAdapter,
+      MusicProviderRegistry musicProviderRegistry,
+      MusicProviderSelection musicProviderSelection,
+      ObjectStorageClient objectStorageClient,
+      RemoteObjectImporter remoteObjectImporter,
+      MusicPromptAgent musicPromptAgent,
+      ModerationAgent moderationAgent,
+      CoverPromptAgent coverPromptAgent,
+      QualityEvaluationAgent qualityEvaluationAgent,
+      CoverGenerationService coverGenerationService,
+      VideoRenderService videoRenderService,
+      ObjectMapper objectMapper,
+      @Value("${yanyun.song-production.parallel-media-enabled:true}") boolean parallelMediaEnabled,
+      @Value("${yanyun.song-production.media-parallelism:2}") int mediaParallelism) {
     this.workRepository = workRepository;
     this.quotaAdapter = quotaAdapter;
     this.moderationAdapter = moderationAdapter;
@@ -138,6 +188,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
     this.coverGenerationService = coverGenerationService;
     this.videoRenderService = videoRenderService;
     this.objectMapper = objectMapper;
+    this.parallelMediaEnabled = parallelMediaEnabled;
+    this.mediaExecutor =
+        Executors.newFixedThreadPool(Math.max(1, mediaParallelism), mediaThreadFactory());
+  }
+
+  @Override
+  public void destroy() {
+    mediaExecutor.shutdownNow();
   }
 
   @Override
@@ -162,14 +220,19 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         workId, input.userId(), lock.lockId(), "LOCK_GENERATE", "LOCKED", lock.message());
 
     MusicProviderSelection selectedProvider = selectedProvider(input);
+    CompletableFuture<MediaAssetRow> coverFuture = null;
     MusicGenerationResult musicResult;
     if (input.reuseExistingAudio()) {
+      if (parallelMediaEnabled) {
+        coverFuture = startCoverGeneration(workId, jobId, input, true);
+      }
       musicResult = existingAudioMusicResult(workId, selectedProvider);
     } else {
       if (!markStage(workId, jobId, GenerationStage.MUSIC_GENERATING)) {
         releaseStaleQuota(workId, input.userId(), lock.lockId());
         return stale(workId, jobId, GenerationStage.MUSIC_GENERATING);
       }
+      recordStepRunning(workId, jobId, GenerationStage.MUSIC_GENERATING.name());
       MusicPromptResult musicPrompt;
       try {
         musicPrompt =
@@ -183,6 +246,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                     input.vocalPreference(),
                     selectedProvider.providerType().name()));
       } catch (RuntimeException exception) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            FailureCode.MUSIC_GENERATION_FAILED.name(),
+            exception.getMessage());
         return fail(
             workId,
             jobId,
@@ -196,6 +265,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       try {
         musicPromptQuality = evaluateMusicPromptQuality(input, selectedProvider, musicPrompt);
       } catch (RuntimeException exception) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            FailureCode.MUSIC_QUALITY_FAILED.name(),
+            exception.getMessage());
         return fail(
             workId,
             jobId,
@@ -207,6 +282,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       }
       if (musicPromptQuality.decision() != QualityDecision.PASS) {
         FailureCode failureCode = musicPromptQualityFailureCode(musicPromptQuality);
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            failureCode.name(),
+            qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality));
         return fail(
             workId,
             jobId,
@@ -220,6 +301,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       try {
         musicPromptModeration = preCheckMusicPrompt(input, selectedProvider, musicPrompt);
       } catch (RuntimeException exception) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            FailureCode.MUSIC_GENERATION_FAILED.name(),
+            exception.getMessage());
         return fail(
             workId,
             jobId,
@@ -230,6 +317,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             lock.lockId());
       }
       if (!musicPromptModeration.allowed()) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            FailureCode.MUSIC_GENERATION_FAILED.name(),
+            musicPromptModeration.message());
         return fail(
             workId,
             jobId,
@@ -246,6 +339,9 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
               musicPrompt.musicPrompt(),
               input.vocalPreference(),
               musicProviderOptions(input, musicPrompt));
+      if (parallelMediaEnabled) {
+        coverFuture = startCoverGeneration(workId, jobId, input, true);
+      }
       long providerStartedAt = System.nanoTime();
       try {
         musicResult =
@@ -261,6 +357,13 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             elapsedMillis(providerStartedAt),
             "PROVIDER_EXCEPTION",
             firstNonBlank(exception.getMessage(), "Music provider failed"));
+        cancelCoverFuture(coverFuture);
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            FailureCode.MUSIC_GENERATION_FAILED.name(),
+            exception.getMessage());
         return fail(
             workId,
             jobId,
@@ -282,6 +385,13 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           musicResult.failureMessage());
       if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
         FailureCode musicFailureCode = musicFailureCode(musicResult);
+        cancelCoverFuture(coverFuture);
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.MUSIC_GENERATING.name(),
+            musicFailureCode.name(),
+            musicResult.failureMessage());
         return fail(
             workId,
             jobId,
@@ -291,14 +401,24 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             input.userId(),
             lock.lockId());
       }
+      recordStepSucceeded(workId, jobId, GenerationStage.MUSIC_GENERATING.name());
     }
 
     GeneratedMediaAssets mediaAssets;
     try {
-      mediaAssets = createMediaAssets(workId, jobId, input, musicResult);
+      mediaAssets = createMediaAssets(workId, jobId, input, musicResult, coverFuture);
     } catch (StaleWorkflowException exception) {
       releaseStaleQuota(workId, input.userId(), lock.lockId());
       return stale(workId, jobId, exception.stage());
+    } catch (MediaStageException exception) {
+      return fail(
+          workId,
+          jobId,
+          exception.failureCode(),
+          firstNonBlank(exception.getMessage(), exception.failureCode().name()),
+          false,
+          input.userId(),
+          lock.lockId());
     } catch (RuntimeException exception) {
       return fail(
           workId,
@@ -312,12 +432,25 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     QualityEvaluationResult packageQuality;
     try {
+      recordStepRunning(workId, jobId, GenerationStage.PACKAGE_BUILDING.name());
       if (!markStage(workId, jobId, GenerationStage.PACKAGE_BUILDING)) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.PACKAGE_BUILDING.name(),
+            FailureCode.PROVIDER_TIMEOUT.name(),
+            "Work changed before package building");
         releaseStaleQuota(workId, input.userId(), lock.lockId());
         return stale(workId, jobId, GenerationStage.PACKAGE_BUILDING);
       }
       packageQuality = evaluatePackageQuality(input, selectedProvider, mediaAssets);
     } catch (RuntimeException exception) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.PACKAGE_BUILDING.name(),
+          FailureCode.PACKAGE_BUILD_FAILED.name(),
+          exception.getMessage());
       return fail(
           workId,
           jobId,
@@ -328,6 +461,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
           lock.lockId());
     }
     if (packageQuality.decision() != QualityDecision.PASS) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.PACKAGE_BUILDING.name(),
+          FailureCode.PACKAGE_BUILD_FAILED.name(),
+          packageQualityFailureMessage(packageQuality));
       return fail(
           workId,
           jobId,
@@ -381,6 +520,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
                   packageJson.getBytes(StandardCharsets.UTF_8)));
       packageDownloadUrl = objectStorageClient.createDownloadUrl(storedPackage.objectKey());
     } catch (RuntimeException exception) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.PACKAGE_BUILDING.name(),
+          FailureCode.PACKAGE_BUILD_FAILED.name(),
+          exception.getMessage());
       return fail(
           workId,
           jobId,
@@ -400,6 +545,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
         commit.committed() ? "COMMITTED" : "FAILED",
         commit.message());
     if (!commit.committed()) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.PACKAGE_BUILDING.name(),
+          FailureCode.QUOTA_COMMIT_FAILED.name(),
+          commit.message());
       return fail(
           workId,
           jobId,
@@ -425,6 +576,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     workRepository.markPackageReady(
         workId, input.songTitle(), input.songSummary(), true, commit.committed());
+    recordStepSucceeded(workId, jobId, GenerationStage.PACKAGE_BUILDING.name());
     workRepository.completeGenerationJob(
         jobId, "SUCCEEDED", GenerationStage.PACKAGE_READY, null, null);
 
@@ -434,6 +586,63 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
   private boolean markStage(UUID workId, UUID jobId, GenerationStage stage) {
     return workRepository.markGenerationStage(workId, jobId, stage);
+  }
+
+  private void recordStepRunning(UUID workId, UUID jobId, String stepName) {
+    recordStep(workId, jobId, stepName, "RUNNING", null, null, OffsetDateTime.now(), null);
+  }
+
+  private void recordStepSucceeded(UUID workId, UUID jobId, String stepName) {
+    recordStep(workId, jobId, stepName, "SUCCEEDED", null, null, null, OffsetDateTime.now());
+  }
+
+  private void recordStepFailed(
+      UUID workId, UUID jobId, String stepName, String failureCode, String failureMessage) {
+    recordStep(
+        workId,
+        jobId,
+        stepName,
+        "FAILED",
+        failureCode,
+        sanitizeProviderError(failureMessage),
+        null,
+        OffsetDateTime.now());
+  }
+
+  private void recordStep(
+      UUID workId,
+      UUID jobId,
+      String stepName,
+      String status,
+      String failureCode,
+      String failureMessage,
+      OffsetDateTime startedAt,
+      OffsetDateTime completedAt) {
+    workRepository.upsertGenerationJobStep(
+        new WorkRepository.GenerationJobStepRow(
+            UUID.randomUUID(),
+            jobId,
+            workId,
+            stepName,
+            jobId + ":" + stepName,
+            status,
+            1,
+            null,
+            failureCode,
+            failureMessage,
+            startedAt,
+            completedAt,
+            null,
+            null));
+  }
+
+  private ThreadFactory mediaThreadFactory() {
+    AtomicInteger counter = new AtomicInteger();
+    return runnable -> {
+      Thread thread = new Thread(runnable, "song-production-media-" + counter.incrementAndGet());
+      thread.setDaemon(true);
+      return thread;
+    };
   }
 
   private SongProductionWorkflowResult stale(UUID workId, UUID jobId, GenerationStage stage) {
@@ -557,7 +766,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
       UUID workId,
       UUID jobId,
       SongProductionWorkflowInput input,
-      MusicGenerationResult musicResult) {
+      MusicGenerationResult musicResult,
+      CompletableFuture<MediaAssetRow> coverFuture) {
     AudioObject audioObject = resolveAudioObject(workId, musicResult);
     MediaAssetRow audioAsset =
         new MediaAssetRow(
@@ -573,48 +783,165 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
             writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
 
-    if (!markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
+    CompletableFuture<MediaAssetRow> safeCoverFuture = coverFuture == null ? null : coverFuture;
+    if (safeCoverFuture == null) {
+      if (!markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
+        throw new StaleWorkflowException(GenerationStage.COVER_GENERATING);
+      }
+      safeCoverFuture = startCoverGeneration(workId, jobId, input, false);
+    } else if (!safeCoverFuture.isDone()
+        && !markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
       throw new StaleWorkflowException(GenerationStage.COVER_GENERATING);
     }
-    CoverPromptResult coverPrompt =
-        coverPromptAgent.generate(
-            new CoverPromptRequest(
-                workId.toString(),
-                input.songTitle(),
-                input.songSummary(),
-                input.lyricsText(),
-                input.musicPrompt(),
-                input.coverPromptSeed(),
-                1920,
-                1080));
-    QualityEvaluationResult coverPromptQuality = evaluateCoverPromptQuality(input, coverPrompt);
+    MediaAssetRow coverAsset = awaitCoverAsset(safeCoverFuture);
+
+    recordStepRunning(workId, jobId, GenerationStage.VIDEO_RENDERING.name());
+    if (!markStage(workId, jobId, GenerationStage.VIDEO_RENDERING)) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.VIDEO_RENDERING.name(),
+          FailureCode.PROVIDER_TIMEOUT.name(),
+          "Work changed before video rendering");
+      throw new StaleWorkflowException(GenerationStage.VIDEO_RENDERING);
+    }
+    VideoRenderResult videoResult;
+    try {
+      videoResult =
+          videoRenderService.renderVideo(
+              new VideoRenderRequest(
+                  workId.toString(),
+                  input.songTitle(),
+                  input.songSummary(),
+                  input.lyricsText(),
+                  audioAsset.objectKey(),
+                  audioAsset.mimeType(),
+                  coverAsset.objectKey(),
+                  audioAsset.durationMs()));
+    } catch (RuntimeException exception) {
+      recordStepFailed(
+          workId,
+          jobId,
+          GenerationStage.VIDEO_RENDERING.name(),
+          FailureCode.VIDEO_RENDER_FAILED.name(),
+          exception.getMessage());
+      throw new MediaStageException(
+          FailureCode.VIDEO_RENDER_FAILED,
+          firstNonBlank(exception.getMessage(), "Video render failed"),
+          exception);
+    }
+    MediaAssetRow videoAsset = toMediaAssetRow(workId, videoResult.videoAsset());
+    MediaAssetRow timelineAsset = toMediaAssetRow(workId, videoResult.timelineAsset());
+    workRepository.upsertMediaAsset(videoAsset);
+    workRepository.upsertMediaAsset(timelineAsset);
+    recordStepSucceeded(workId, jobId, GenerationStage.VIDEO_RENDERING.name());
+    return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
+  }
+
+  private MediaAssetRow createCoverAsset(
+      UUID workId, UUID jobId, SongProductionWorkflowInput input) {
+    CoverPromptResult coverPrompt;
+    try {
+      coverPrompt =
+          coverPromptAgent.generate(
+              new CoverPromptRequest(
+                  workId.toString(),
+                  input.songTitle(),
+                  input.songSummary(),
+                  input.lyricsText(),
+                  input.musicPrompt(),
+                  input.coverPromptSeed(),
+                  1920,
+                  1080));
+    } catch (RuntimeException exception) {
+      throw new MediaStageException(
+          FailureCode.COVER_GENERATION_FAILED,
+          firstNonBlank(exception.getMessage(), "Cover prompt generation failed"),
+          exception);
+    }
+    QualityEvaluationResult coverPromptQuality;
+    try {
+      coverPromptQuality = evaluateCoverPromptQuality(input, coverPrompt);
+    } catch (RuntimeException exception) {
+      throw new MediaStageException(
+          FailureCode.COVER_GENERATION_FAILED,
+          firstNonBlank(exception.getMessage(), "Cover prompt quality evaluation failed"),
+          exception);
+    }
     if (coverPromptQuality.decision() != QualityDecision.PASS) {
-      throw new IllegalStateException(
+      throw new MediaStageException(
+          FailureCode.COVER_GENERATION_FAILED,
           qualityFailureMessage("Cover prompt quality gate failed", coverPromptQuality));
     }
     MediaAssetDescriptor coverDescriptor = generateCoverOrDefault(workId, input, coverPrompt);
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
     workRepository.upsertMediaAsset(coverAsset);
+    return coverAsset;
+  }
 
-    if (!markStage(workId, jobId, GenerationStage.VIDEO_RENDERING)) {
-      throw new StaleWorkflowException(GenerationStage.VIDEO_RENDERING);
+  private CompletableFuture<MediaAssetRow> startCoverGeneration(
+      UUID workId, UUID jobId, SongProductionWorkflowInput input, boolean async) {
+    Runnable markRunning =
+        () -> recordStepRunning(workId, jobId, GenerationStage.COVER_GENERATING.name());
+    if (!async) {
+      markRunning.run();
+      try {
+        MediaAssetRow coverAsset = createCoverAsset(workId, jobId, input);
+        recordStepSucceeded(workId, jobId, GenerationStage.COVER_GENERATING.name());
+        return CompletableFuture.completedFuture(coverAsset);
+      } catch (RuntimeException exception) {
+        recordStepFailed(
+            workId,
+            jobId,
+            GenerationStage.COVER_GENERATING.name(),
+            FailureCode.COVER_GENERATION_FAILED.name(),
+            exception.getMessage());
+        throw exception;
+      }
     }
-    VideoRenderResult videoResult =
-        videoRenderService.renderVideo(
-            new VideoRenderRequest(
-                workId.toString(),
-                input.songTitle(),
-                input.songSummary(),
-                input.lyricsText(),
-                audioAsset.objectKey(),
-                audioAsset.mimeType(),
-                coverAsset.objectKey(),
-                audioAsset.durationMs()));
-    MediaAssetRow videoAsset = toMediaAssetRow(workId, videoResult.videoAsset());
-    MediaAssetRow timelineAsset = toMediaAssetRow(workId, videoResult.timelineAsset());
-    workRepository.upsertMediaAsset(videoAsset);
-    workRepository.upsertMediaAsset(timelineAsset);
-    return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
+    return CompletableFuture.supplyAsync(
+        () -> {
+          markRunning.run();
+          try {
+            MediaAssetRow coverAsset = createCoverAsset(workId, jobId, input);
+            recordStepSucceeded(workId, jobId, GenerationStage.COVER_GENERATING.name());
+            return coverAsset;
+          } catch (RuntimeException exception) {
+            recordStepFailed(
+                workId,
+                jobId,
+                GenerationStage.COVER_GENERATING.name(),
+                FailureCode.COVER_GENERATION_FAILED.name(),
+                exception.getMessage());
+            throw exception;
+          }
+        },
+        mediaExecutor);
+  }
+
+  private MediaAssetRow awaitCoverAsset(CompletableFuture<MediaAssetRow> coverFuture) {
+    try {
+      return coverFuture.join();
+    } catch (CompletionException exception) {
+      Throwable cause = exception.getCause() == null ? exception : exception.getCause();
+      if (cause instanceof MediaStageException mediaStageException) {
+        throw mediaStageException;
+      }
+      if (cause instanceof RuntimeException runtimeException) {
+        throw new MediaStageException(
+            FailureCode.COVER_GENERATION_FAILED,
+            firstNonBlank(runtimeException.getMessage(), "Cover generation failed"),
+            runtimeException);
+      }
+      throw new MediaStageException(
+          FailureCode.COVER_GENERATION_FAILED, "Cover generation failed", exception);
+    }
+  }
+
+  private void cancelCoverFuture(CompletableFuture<MediaAssetRow> coverFuture) {
+    if (coverFuture != null && !coverFuture.isDone()) {
+      coverFuture.cancel(true);
+    }
   }
 
   private MediaAssetDescriptor generateCoverOrDefault(
@@ -1322,6 +1649,24 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow {
 
     private GenerationStage stage() {
       return stage;
+    }
+  }
+
+  private static final class MediaStageException extends RuntimeException {
+    private final FailureCode failureCode;
+
+    private MediaStageException(FailureCode failureCode, String message) {
+      super(message);
+      this.failureCode = failureCode == null ? FailureCode.PACKAGE_BUILD_FAILED : failureCode;
+    }
+
+    private MediaStageException(FailureCode failureCode, String message, Throwable cause) {
+      super(message, cause);
+      this.failureCode = failureCode == null ? FailureCode.PACKAGE_BUILD_FAILED : failureCode;
+    }
+
+    private FailureCode failureCode() {
+      return failureCode;
     }
   }
 

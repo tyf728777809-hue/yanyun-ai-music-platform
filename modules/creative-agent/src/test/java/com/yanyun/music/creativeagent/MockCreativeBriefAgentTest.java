@@ -27,6 +27,7 @@ class MockCreativeBriefAgentTest {
                 null,
                 null,
                 null,
+                "热血",
                 "国风摇滚",
                 "AUTO",
                 List.of("雁门关")));
@@ -56,7 +57,7 @@ class MockCreativeBriefAgentTest {
         new MockCreativeBriefAgent()
             .generate(
                 new CreativeBriefRequest(
-                    "user-1", "work-1", "LYRICS", "", "旧词", "", null, null, null, List.of()));
+                    "user-1", "work-1", "LYRICS", "", "旧词", "", null, null, null, null, List.of()));
 
     assertEquals("ancient chinese folk pop", result.musicDirection());
     assertEquals(List.of(), result.yanyunReferences());
@@ -78,6 +79,7 @@ class MockCreativeBriefAgentTest {
                     null,
                     null,
                     null,
+                    null,
                     List.of()));
 
     assertEquals(CreativeDomainDecision.REJECT, rejected.domainDecision());
@@ -94,6 +96,7 @@ class MockCreativeBriefAgentTest {
                     null,
                     null,
                     null,
+                    "热血孤独",
                     "周杰伦风格",
                     null,
                     List.of()));

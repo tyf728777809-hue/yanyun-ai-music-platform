@@ -106,6 +106,14 @@ yanyun:
     namespace: ${TEMPORAL_NAMESPACE:default}
     task-queue: ${TEMPORAL_TASK_QUEUE:song-production-local}
     song-production-workflow-mode: ${TEMPORAL_SONG_PRODUCTION_WORKFLOW_MODE:legacy}
+  song-production:
+    parallel-media-enabled: ${SONG_PRODUCTION_PARALLEL_MEDIA_ENABLED:true}
+    media-parallelism: ${SONG_PRODUCTION_MEDIA_PARALLELISM:2}
+  lyrics-edit:
+    dispatcher-enabled: ${LYRICS_EDIT_DISPATCHER_ENABLED:true}
+    poll-interval-ms: ${LYRICS_EDIT_POLL_INTERVAL_MS:2000}
+    batch-size: ${LYRICS_EDIT_BATCH_SIZE:2}
+    lock-timeout: ${LYRICS_EDIT_LOCK_TIMEOUT:10m}
 ---
 spring:
   config:

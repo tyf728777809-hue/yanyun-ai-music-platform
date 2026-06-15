@@ -10,6 +10,7 @@ public record CreativeBriefRequest(
     String currentLyrics,
     String instruction,
     String requestedTitle,
+    String mood,
     String musicStyle,
     String vocalPreference,
     List<String> yanyunReferences) {

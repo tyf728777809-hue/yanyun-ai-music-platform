@@ -196,6 +196,7 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
     StringBuilder builder = new StringBuilder();
     builder.append(fieldLine("operation", request.operation()));
     builder.append(fieldLine("requested_title", request.requestedTitle()));
+    builder.append(fieldLine("mood", request.mood()));
     builder.append(fieldLine("music_style", request.musicStyle()));
     builder.append(fieldLine("vocal_preference", request.vocalPreference()));
     builder.append(fieldLine("user_input", request.userInput()));

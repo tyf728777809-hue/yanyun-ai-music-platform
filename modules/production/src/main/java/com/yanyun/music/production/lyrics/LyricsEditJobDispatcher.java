@@ -1,4 +1,4 @@
-package com.yanyun.music.api.work;
+package com.yanyun.music.production.lyrics;
 
 import com.yanyun.music.workpersistence.WorkRepository;
 import com.yanyun.music.workpersistence.WorkRepository.LyricsEditJobRow;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
     prefix = "yanyun.lyrics-edit",
     name = "dispatcher-enabled",
     havingValue = "true",
-    matchIfMissing = true)
+    matchIfMissing = false)
 public class LyricsEditJobDispatcher {
 
   private static final Logger log = LoggerFactory.getLogger(LyricsEditJobDispatcher.class);

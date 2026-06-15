@@ -55,6 +55,41 @@ class IntegrationReadinessServiceTest {
             .orElseThrow();
     assertEquals(IntegrationReadinessStatus.MOCK_ONLY, image2.status());
     assertEquals("MockCoverGenerationService", image2.implementation());
+
+    IntegrationComponentReadiness lyricsDispatcher =
+        report.components().stream()
+            .filter(component -> component.component().equals("lyrics_dispatcher"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, lyricsDispatcher.status());
+    assertEquals("api-dispatcher-disabled-worker-expected", lyricsDispatcher.configuredMode());
+
+    IntegrationComponentReadiness mediaParallelism =
+        report.components().stream()
+            .filter(component -> component.component().equals("media_parallelism"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.READY_FOR_LOCAL, mediaParallelism.status());
+    assertEquals("music-cover-parallel/2", mediaParallelism.configuredMode());
+  }
+
+  @Test
+  void apiLyricsDispatcherEnabledIsMarkedAsCompanyDeploymentRisk() {
+    CompanyIntegrationProperties properties = new CompanyIntegrationProperties();
+    properties.setEnvironment("production");
+    properties.setLyricsEditDispatcherEnabled(true);
+
+    IntegrationReadinessReport report =
+        new IntegrationReadinessService(properties, fixedClock).buildReport();
+
+    IntegrationComponentReadiness lyricsDispatcher =
+        report.components().stream()
+            .filter(component -> component.component().equals("lyrics_dispatcher"))
+            .findFirst()
+            .orElseThrow();
+    assertEquals(IntegrationReadinessStatus.MOCK_ONLY, lyricsDispatcher.status());
+    assertTrue(lyricsDispatcher.blocksCompanyDeployment());
+    assertEquals(IntegrationOverallStatus.BLOCKED_FOR_COMPANY_DEPLOYMENT, report.overallStatus());
   }
 
   @Test

@@ -257,6 +257,7 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         "current_lyrics=" + nullToEmpty(request.currentLyrics()),
         "instruction=" + nullToEmpty(request.instruction()),
         "requested_title=" + nullToEmpty(request.requestedTitle()),
+        "mood=" + nullToEmpty(request.mood()),
         "music_style=" + nullToEmpty(request.musicStyle()),
         "vocal_preference=" + nullToEmpty(request.vocalPreference()),
         "yanyun_references=" + request.yanyunReferences());

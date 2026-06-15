@@ -8,6 +8,7 @@ public record PromptRenderRequest(
     String userInput,
     String currentLyrics,
     String instruction,
+    String mood,
     String musicStyle,
     String vocalPreference,
     List<String> knowledgeReferences) {

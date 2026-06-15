@@ -56,7 +56,7 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
     CreativeDomainDecision domainDecision = domainDecision(seed, request);
     String theme = trimToLength(seed.replaceAll("[\\r\\n\\t]+", " "), 72);
     String musicDirection = firstNonBlank(request.musicStyle(), "ancient chinese folk pop");
-    List<String> moodTags = moodTags(musicDirection, seed);
+    List<String> moodTags = moodTags(firstNonBlank(request.mood(), musicDirection), seed);
     return new CreativeBriefResult(
         domainDecision,
         "Shape a song from " + trimToLength(seed.replaceAll("[\\r\\n\\t]+", " "), 96) + ".",

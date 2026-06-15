@@ -13,6 +13,7 @@ public final class MockPromptTemplateService implements PromptTemplateService {
         input=%s
         current_lyrics=%s
         instruction=%s
+        mood=%s
         music_style=%s
         vocal=%s
         references=%s
@@ -23,6 +24,7 @@ public final class MockPromptTemplateService implements PromptTemplateService {
                 safe(request.userInput()),
                 safe(request.currentLyrics()),
                 safe(request.instruction()),
+                safe(request.mood()),
                 safe(request.musicStyle()),
                 safe(request.vocalPreference()),
                 request.knowledgeReferences());

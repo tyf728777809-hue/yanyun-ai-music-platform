@@ -26,10 +26,8 @@ import com.yanyun.music.api.work.WorkDtos.WorkSummary;
 import com.yanyun.music.api.workflow.WorkflowDispatchProperties;
 import com.yanyun.music.api.workflow.WorkflowOutboxService;
 import com.yanyun.music.dreammaker.DreamMakerProperties;
-import com.yanyun.music.lyrics.LyricsGenerationRequest;
 import com.yanyun.music.lyrics.LyricsGenerationResult;
 import com.yanyun.music.lyrics.LyricsGenerationService;
-import com.yanyun.music.lyrics.LyricsOperation;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
 import com.yanyun.music.musicprovider.MusicProviderSelection;
@@ -80,6 +78,7 @@ public class WorkService {
   private static final int POLISH_LIMIT = 2;
   private static final int MUSIC_RETRY_LIMIT = 2;
   private static final int LYRICS_EDIT_MAX_ATTEMPTS = 2;
+  private static final int LYRICS_CREATE_MAX_ATTEMPTS = 2;
   private static final TypeReference<List<String>> STRING_LIST = new TypeReference<>() {};
   private static final TypeReference<Map<String, Object>> JSON_OBJECT = new TypeReference<>() {};
 
@@ -133,27 +132,14 @@ public class WorkService {
     requireAllowed(decision, FailureCode.USER_INPUT_BLOCKED);
 
     UUID workId = UUID.randomUUID();
-    UUID draftId = UUID.randomUUID();
-    LyricsGenerationResult lyrics =
-        lyricsGenerationService.generate(
-            new LyricsGenerationRequest(
-                userId,
-                workId.toString(),
-                LyricsOperation.INSPIRATION,
-                request.storyInput(),
-                null,
-                null,
-                null,
-                request.musicStyle(),
-                request.vocalPreference()));
     UUID jobId =
-        createWorkWithDraft(
+        createQueuedLyricsWork(
             workId,
-            draftId,
             userId,
             CreationMode.INSPIRATION,
-            lyrics,
+            "CREATE_INSPIRATION",
             request.storyInput(),
+            null,
             null,
             request.mood(),
             null,
@@ -179,28 +165,15 @@ public class WorkService {
     requireAllowed(decision, FailureCode.LYRICS_PRECHECK_FAILED);
 
     UUID workId = UUID.randomUUID();
-    UUID draftId = UUID.randomUUID();
-    LyricsGenerationResult lyrics =
-        lyricsGenerationService.generate(
-            new LyricsGenerationRequest(
-                userId,
-                workId.toString(),
-                LyricsOperation.LYRICS,
-                request.lyricsInput(),
-                null,
-                null,
-                request.songTitle(),
-                request.musicStyle(),
-                request.vocalPreference()));
     UUID jobId =
-        createWorkWithDraft(
+        createQueuedLyricsWork(
             workId,
-            draftId,
             userId,
             CreationMode.LYRICS,
-            lyrics,
+            "CREATE_LYRICS",
             null,
             request.lyricsInput(),
+            request.songTitle(),
             null,
             null,
             null,
@@ -290,7 +263,8 @@ public class WorkService {
               null,
               null,
               null,
-              null));
+              null,
+              "{}"));
     } catch (DataIntegrityViolationException exception) {
       throw new ResponseStatusException(
           HttpStatus.CONFLICT, "AI lyrics edit is already running", exception);
@@ -654,14 +628,14 @@ public class WorkService {
     return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
   }
 
-  private UUID createWorkWithDraft(
+  private UUID createQueuedLyricsWork(
       UUID workId,
-      UUID draftId,
       String userId,
       CreationMode creationMode,
-      LyricsGenerationResult lyrics,
+      String operation,
       String storyInput,
       String lyricsInput,
+      String songTitle,
       String mood,
       String scene,
       String relationship,
@@ -673,11 +647,11 @@ public class WorkService {
             generateWorkCode(),
             userId,
             creationMode,
-            WorkStatus.LYRICS_READY,
-            GenerationStage.WAITING_CONFIRM,
+            WorkStatus.LYRICS_GENERATING,
+            GenerationStage.LYRICS_GENERATING,
             PackageStatus.PACKAGE_NOT_READY,
-            firstNonBlank(lyrics.songTitle(), "Yanyun Lyrics"),
-            firstNonBlank(lyrics.songSummary(), "Yanyun lyrics draft."),
+            firstNonBlank(null, "正在写词"),
+            firstNonBlank(null, "AI 正在根据你的灵感创作歌词。"),
             0,
             0,
             null,
@@ -696,6 +670,8 @@ public class WorkService {
     inputSnapshot.put("creation_mode", creationMode.name());
     inputSnapshot.put("story_input", storyInput);
     inputSnapshot.put("lyrics_input", lyricsInput);
+    inputSnapshot.put("song_title", songTitle);
+    inputSnapshot.put("mood", mood);
     inputSnapshot.put("music_style", musicStyle);
     inputSnapshot.put("vocal_preference", vocalPreference);
 
@@ -709,29 +685,38 @@ public class WorkService {
         musicStyle,
         vocalPreference,
         writeJson(inputSnapshot));
-    workRepository.insertLyricsDraft(
-        new LyricsDraftRow(
-            draftId,
-            workId,
-            1,
-            firstNonBlank(lyrics.songTitle(), "Yanyun Lyrics"),
-            firstNonBlank(lyrics.songSummary(), "Yanyun lyrics draft."),
-            lyrics.lyricsText(),
-            lyrics.musicPrompt(),
-            writeJson(lyrics.riskNotes()),
-            writeJson(lyrics.yanyunReferences()),
-            lyrics.coverPromptSeed(),
-            lyrics.qualityScore(),
-            lyrics.knowledgeBaseVersion(),
-            writeJson(lyrics.promptTemplateVersions()),
-            null));
-    return workRepository.insertGenerationJob(
+    UUID jobId = UUID.randomUUID();
+    workRepository.insertGenerationJob(
+        jobId,
         workId,
         creationMode == CreationMode.INSPIRATION ? "LYRICS_GENERATION" : "LYRICS_PROCESSING",
-        "SUCCEEDED",
-        GenerationStage.WAITING_CONFIRM,
-        OffsetDateTime.now(),
-        OffsetDateTime.now());
+        "QUEUED",
+        GenerationStage.LYRICS_GENERATING,
+        null,
+        null);
+    workRepository.insertLyricsEditJob(
+        new LyricsEditJobRow(
+            jobId,
+            workId,
+            userId,
+            operation,
+            null,
+            null,
+            null,
+            "QUEUED",
+            null,
+            null,
+            false,
+            0,
+            LYRICS_CREATE_MAX_ATTEMPTS,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            writeJson(inputSnapshot)));
+    return jobId;
   }
 
   private UUID replaceLyricsDraft(
@@ -826,9 +811,10 @@ public class WorkService {
   private LyricsEditJob toLyricsEditJob(LyricsEditJobRow job) {
     String message =
         switch (job.operation()) {
+          case "CREATE_INSPIRATION", "CREATE_LYRICS" -> "AI 正在创作歌词，稍后会自动刷新。";
           case "POLISH" -> "AI 正在润色歌词，原歌词会保留。";
           case "CONTINUE" -> "AI 正在续写歌词，原歌词会保留。";
-          default -> "AI 正在处理歌词，原歌词会保留。";
+          default -> "AI 正在处理歌词，稍后会自动刷新。";
         };
     return new LyricsEditJob(
         job.id(),

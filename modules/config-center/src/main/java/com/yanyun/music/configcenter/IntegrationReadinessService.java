@@ -103,6 +103,8 @@ public final class IntegrationReadinessService {
     components.add(renderWorkerComponent());
     components.add(objectStorageComponent());
     components.add(workflowComponent());
+    components.add(lyricsDispatcherComponent());
+    components.add(mediaParallelismComponent());
     components.add(deepSeekComponent());
     components.add(image2Component());
     components.add(yunwuComponent());
@@ -281,6 +283,39 @@ public final class IntegrationReadinessService {
         temporal
             ? "已配置 API outbox 到 Temporal worker 的启动边界。"
             : "本地 sync/local 模式可开发；公司部署建议使用 outbox + temporal。");
+  }
+
+  private IntegrationComponentReadiness lyricsDispatcherComponent() {
+    boolean apiDispatcherEnabled = properties.isLyricsEditDispatcherEnabled();
+    return new IntegrationComponentReadiness(
+        "lyrics_dispatcher",
+        apiDispatcherEnabled ? "api-dispatcher-enabled" : "api-dispatcher-disabled-worker-expected",
+        apiDispatcherEnabled ? "LyricsEditJobDispatcher(API)" : "LyricsEditJobDispatcher(worker)",
+        apiDispatcherEnabled
+            ? IntegrationReadinessStatus.MOCK_ONLY
+            : IntegrationReadinessStatus.READY_FOR_LOCAL,
+        apiDispatcherEnabled,
+        List.of(
+            "LYRICS_EDIT_DISPATCHER_ENABLED",
+            "LYRICS_EDIT_POLL_INTERVAL_MS",
+            "LYRICS_EDIT_BATCH_SIZE",
+            "LYRICS_EDIT_LOCK_TIMEOUT"),
+        apiDispatcherEnabled
+            ? "API 进程仍会承接歌词任务；长期商用建议 API=false、worker=true，避免真实 LLM 慢请求拖垮 API。"
+            : "API 只创建歌词任务并返回状态；歌词首轮、润色、续写应由 music-worker 承接。");
+  }
+
+  private IntegrationComponentReadiness mediaParallelismComponent() {
+    boolean enabled = properties.isSongProductionParallelMediaEnabled();
+    int parallelism = Math.max(1, properties.getSongProductionMediaParallelism());
+    return new IntegrationComponentReadiness(
+        "media_parallelism",
+        enabled ? "music-cover-parallel/" + parallelism : "music-cover-serial",
+        "SongProductionWorkflow media executor",
+        enabled ? IntegrationReadinessStatus.READY_FOR_LOCAL : IntegrationReadinessStatus.MOCK_ONLY,
+        false,
+        List.of("SONG_PRODUCTION_PARALLEL_MEDIA_ENABLED", "SONG_PRODUCTION_MEDIA_PARALLELISM"),
+        enabled ? "确认出歌后音乐和封面并行生成，视频等待两者完成后再合成。" : "音乐和封面仍串行生成；可运行但会拉长真实用户等待时间。");
   }
 
   private IntegrationComponentReadiness dreamMakerComponent() {
