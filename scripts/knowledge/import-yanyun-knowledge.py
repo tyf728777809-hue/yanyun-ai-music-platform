@@ -10,7 +10,7 @@ import unicodedata
 import uuid
 from pathlib import Path
 
-from yanyun_kb_loader import load_payload
+from yanyun_kb_loader import load_payload, summarize_payload
 
 
 VECTOR_DIMENSIONS = 64
@@ -217,13 +217,19 @@ def psql_command():
 def main():
     input_path = Path(sys.argv[1] if len(sys.argv) > 1 else "knowledge-base/commercial-final")
     payload = load_payload(input_path)
+    if os.environ.get("DRY_RUN_SQL") == "1":
+        print(sql_for_payload(payload))
+        return 0
+    if os.environ.get("DRY_RUN") == "1":
+        summary = summarize_payload(payload)
+        summary["input_path"] = str(input_path)
+        print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
+
     sql = sql_for_payload(payload)
     env = os.environ.copy()
     if os.environ.get("POSTGRES_PASSWORD"):
         env["PGPASSWORD"] = os.environ["POSTGRES_PASSWORD"]
-    if os.environ.get("DRY_RUN") == "1":
-        print(sql)
-        return 0
     subprocess.run(psql_command(), input=sql, text=True, env=env, check=True)
     print(f"Imported {payload['kb_version']} from {input_path}")
     return 0

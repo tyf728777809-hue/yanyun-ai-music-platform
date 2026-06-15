@@ -4,7 +4,7 @@
 
 ## Current Stage
 
-当前已完成本地商用级主链路基础：Mock 写词、Mock 音乐 Provider、发布包对象存储、Outbox/Temporal 编排边界、公司 Adapter readiness、render-worker album-ffmpeg MP4 成片边界均已落地。当前可验收前端位于 `prototypes/Claude-web-v1`，验收缺口已修复，并已完成真实后端模式 UI smoke 脚本化复验。公网真实完整体验已跑通 DeepSeek v4Pro + Yunwu Suno `chirp-fenix` + WellAPI Image 2 + album-ffmpeg MP4 + Claude Web v1 样本；DreamMaker 音乐和 DreamMaker Image 2 仍是正式生产目标。Yunwu timestamped lyrics 已验证但当前供应商路径阻塞，视频 v3.1 不把硬同步字幕作为默认通过条件。`apps/web` 仍是正式工程 scaffold，是否迁移原型或由公司前端重建需在交付前单独决策。真实模型和公司系统仍默认关闭或 Mock，只有显式 gate + 安全注入凭据时才会外呼。
+当前已完成本地商用级主链路基础：Mock 写词、Mock 音乐 Provider、发布包对象存储、Outbox/Temporal 编排边界、公司 Adapter readiness、render-worker album-ffmpeg MP4 成片边界均已落地。当前可验收前端位于 `prototypes/Claude-web-v1`，验收缺口已修复，并已完成真实后端模式 UI smoke 脚本化复验。公网真实完整体验已跑通 DeepSeek v4Pro + Yunwu Suno `chirp-fenix` + WellAPI Image 2 + album-ffmpeg MP4 + Claude Web v1 样本；DreamMaker 音乐和 DreamMaker Image 2 仍是正式生产目标。首轮写词、润色和续写已改为后台文本任务，API 默认只创建任务，worker 默认负责执行；确认出歌后音乐和封面可并行生成，视频仍等待音频和封面都完成后再渲染。Yunwu timestamped lyrics 已验证但当前供应商路径阻塞，默认视频不依赖硬同步字幕。`apps/web` 仍是正式工程 scaffold，是否迁移原型或由公司前端重建需在交付前单独决策。真实模型和公司系统仍默认关闭或 Mock，只有显式 gate + 安全注入凭据时才会外呼。
 
 ## Stack
 
@@ -52,6 +52,24 @@ docker compose -f deploy/docker-compose.yml ps
 
 端口口径：`5273` 用于普通本地前端开发，`5274` 由 smoke 脚本临时占用，`5275` 用于用户手动真实测试或公网临时 tunnel 的前端进程。朋友公网测试必须使用 `OBJECT_STORAGE_PROVIDER=s3`、可公网访问的 `S3_PUBLIC_ENDPOINT` 和 `RENDER_WORKER_MODE=album-ffmpeg`；不要用 `local` 对象存储模式冒充可交付媒体链接。
 
+## Runtime Defaults
+
+长期商用方向下，文本生成和媒体生成默认按后台任务运行：
+
+```bash
+# music-api
+LYRICS_EDIT_DISPATCHER_ENABLED=false
+
+# music-worker
+LYRICS_EDIT_DISPATCHER_ENABLED=true
+
+# song production
+SONG_PRODUCTION_PARALLEL_MEDIA_ENABLED=true
+SONG_PRODUCTION_MEDIA_PARALLELISM=2
+```
+
+API 负责创建作品、任务和返回状态；worker 负责首轮写词、AI 润色、AI 续写以及出歌 workflow。确认出歌后，音乐分支和封面分支可以并行执行；视频合成和发布包构建仍等待音频与封面都成功后再进入。
+
 ## Yanyun Creative Knowledge Base
 
 自动化测试和普通 Mock 开发默认不启用知识库检索：
@@ -69,7 +87,7 @@ STRICT_COMMERCIAL=1 python3 scripts/knowledge/validate-yanyun-knowledge.py knowl
 python3 scripts/knowledge/import-yanyun-knowledge.py knowledge-base/commercial-final
 ```
 
-导入脚本会优先使用本机 `psql`；如果未安装，会自动使用 `docker exec -i yanyun-postgres psql`。
+导入脚本会优先使用本机 `psql`；如果未安装，会自动使用 `docker exec -i yanyun-postgres psql`。设置 `DRY_RUN=1` 时默认只输出实体、chunk、eval case 等摘要；只有显式设置 `DRY_RUN_SQL=1` 时才输出完整 SQL，避免把大段语料或 embedding 误带进日志。
 
 知识库资料只使用受控文件导入，不联网搜索，不自由采集网页。当前种子资料位于
 `knowledge-base/commercial-final/`，按人物、剧情、地域、势力、玩法和创作禁区分域维护；
