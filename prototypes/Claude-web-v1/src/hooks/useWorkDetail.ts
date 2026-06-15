@@ -71,6 +71,14 @@ export function useWorkDetail(workId: string | null): PollState {
   // 根据当前阶段决定是否继续轮询。
   useEffect(() => {
     if (!work) return;
+    if (work.active_lyrics_job) {
+      timer.current = window.setTimeout(() => {
+        void fetchOnce();
+      }, POLL_INTERVAL);
+      return () => {
+        if (timer.current) window.clearTimeout(timer.current);
+      };
+    }
     const phase = deriveViewPhase(work);
     if (!POLLING_PHASES.has(phase)) return;
     timer.current = window.setTimeout(() => {

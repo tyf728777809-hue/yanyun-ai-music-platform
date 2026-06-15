@@ -17,6 +17,7 @@ export function useAction(onSettled?: () => void | Promise<void>) {
       conflictMsg?: string;
       onSuccess?: (r: T) => void | Promise<void>;
       onError?: (message: string) => void | Promise<void>;
+      suppressErrorToast?: boolean;
     },
   ): Promise<void> {
     if (busyKey) return;
@@ -36,7 +37,9 @@ export function useAction(onSettled?: () => void | Promise<void>) {
           message = suffix ? `${friendly} ${suffix}` : friendly;
         }
       }
-      toast.error(message);
+      if (!opts?.suppressErrorToast) {
+        toast.error(message);
+      }
       await opts?.onError?.(message);
     } finally {
       setBusyKey(null);

@@ -110,6 +110,26 @@ export interface FailureInfo {
   recommended_action?: AvailableAction | null;
 }
 
+export interface ActiveLyricsJob {
+  job_id: string;
+  operation: 'POLISH' | 'CONTINUE' | string;
+  status: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'CANCELLED' | string;
+  message?: string | null;
+  source_version_no?: number | null;
+  started_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface LyricsEditFailure {
+  job_id: string;
+  operation: 'POLISH' | 'CONTINUE' | string;
+  failure_code?: string | null;
+  failure_message: string;
+  retryable: boolean;
+  completed_at?: string | null;
+}
+
 export interface PublishHandoffHint {
   ready_for_handoff: boolean;
   message?: string | null;
@@ -130,6 +150,8 @@ export interface WorkDetail {
   polish_remaining_count: number;
   quota_hint?: QuotaHint | null;
   failure?: FailureInfo | null;
+  active_lyrics_job?: ActiveLyricsJob | null;
+  last_lyrics_edit_failure?: LyricsEditFailure | null;
   available_actions: AvailableAction[];
   publish_handoff_hint?: PublishHandoffHint | null;
   created_at: string;

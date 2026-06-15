@@ -12,6 +12,17 @@ import { service } from '../../mock/service';
 
 type EditKind = 'polish' | 'continue';
 
+const EDIT_RECOVERY_ATTEMPTS = 12;
+const EDIT_RECOVERY_INTERVAL_MS = 2000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function isConnectionInterrupted(message: string): boolean {
+  return message.includes('作曲服务连接中断');
+}
+
 function copyTextWithTextarea(text: string): boolean {
   if (typeof document === 'undefined' || !document.body) {
     return false;
@@ -69,6 +80,9 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
   const editsUsedUp = remaining <= 0;
   const lyricsText = draft?.lyrics_text?.trim() ?? '';
   const hasLyrics = lyricsText.length > 0;
+  const activeLyricsJob = work.active_lyrics_job;
+  const lyricsEditRunning = Boolean(activeLyricsJob);
+  const lastLyricsEditFailure = work.last_lyrics_edit_failure;
 
   function openEditor(kind: EditKind) {
     setEditKind(kind);
@@ -82,6 +96,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
     const trimmed = instruction.trim();
     if (kind === 'polish' && !trimmed) return;
     setEditError(null);
+    const previousVersion = draft?.version_no ?? 0;
     await run(
       kind,
       () =>
@@ -89,15 +104,47 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           ? service.polishLyrics(work.work_id, { instruction: trimmed })
           : service.continueLyrics(work.work_id, { instruction: trimmed || undefined }),
       {
-        successMsg: kind === 'polish' ? '已为你润色歌词' : '已为你续写歌词',
+        successMsg: kind === 'polish' ? '已开始润色歌词' : '已开始续写歌词',
         conflictMsg: '改词次数已用完，本次未生效',
         onSuccess: async () => {
           await refresh();
           setEditKind(null);
         },
-        onError: setEditError,
+        onError: async (message) => {
+          if (isConnectionInterrupted(message)) {
+            setEditError('请求可能仍在后台处理中，正在为你确认最新歌词…');
+            const recovered = await waitForRecoveredEdit(previousVersion);
+            if (recovered) {
+              setEditError(null);
+              setEditKind(null);
+              toast.success(kind === 'polish' ? '已获取润色后的歌词' : '已获取续写后的歌词');
+              return;
+            }
+          }
+          setEditError(message);
+        },
+        suppressErrorToast: true,
       },
     );
+  }
+
+  async function waitForRecoveredEdit(previousVersion: number): Promise<boolean> {
+    for (let attempt = 0; attempt < EDIT_RECOVERY_ATTEMPTS; attempt += 1) {
+      if (attempt > 0) {
+        await sleep(EDIT_RECOVERY_INTERVAL_MS);
+      }
+      try {
+        const latest = await service.getWork(work.work_id);
+        const latestVersion = latest.lyrics_draft?.version_no ?? 0;
+        if (latestVersion > previousVersion) {
+          await refresh();
+          return true;
+        }
+      } catch {
+        // Keep polling: the short follow-up GET may race with proxy reconnects.
+      }
+    }
+    return false;
   }
 
   async function confirm() {
@@ -144,6 +191,19 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           <p className="song-summary">{draft?.song_summary || work.song_summary}</p>
         )}
       </header>
+
+      {lyricsEditRunning && (
+        <Banner tone="info" title={activeLyricsJob?.operation === 'CONTINUE' ? 'AI 正在续写' : 'AI 正在润色'}>
+          <span>{activeLyricsJob?.message || 'AI 正在处理歌词，原歌词会保留。'}</span>
+          <span className="banner-line">完成后页面会自动刷新，请先不要确认出歌。</span>
+        </Banner>
+      )}
+
+      {!lyricsEditRunning && lastLyricsEditFailure && (
+        <Banner tone="gold" title="上一次 AI 改词没有完成">
+          <span>{lastLyricsEditFailure.failure_message || '原歌词已保留，你可以稍后再试。'}</span>
+        </Banner>
+      )}
 
       {/* 改词额度提示 */}
       <Banner tone={editsUsedUp ? 'gold' : 'info'}>
@@ -212,7 +272,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           <Button
             tone="secondary"
             loading={busyKey === 'polish'}
-            disabled={busyKey !== null}
+            disabled={busyKey !== null || lyricsEditRunning}
             onClick={() => openEditor('polish')}
           >
             AI 润色
@@ -222,7 +282,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           <Button
             tone="secondary"
             loading={busyKey === 'continue'}
-            disabled={busyKey !== null}
+            disabled={busyKey !== null || lyricsEditRunning}
             onClick={() => openEditor('continue')}
           >
             AI 续写
@@ -232,7 +292,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
           <Button
             tone="primary"
             loading={busyKey === 'confirm'}
-            disabled={busyKey !== null}
+            disabled={busyKey !== null || lyricsEditRunning}
             onClick={confirm}
           >
             确认出歌
@@ -280,7 +340,7 @@ function EditModal({
     <Modal
       open={kind !== null}
       title={isPolish ? 'AI 润色歌词' : 'AI 续写歌词'}
-      subtitle={`本次将消耗 1 次改词额度，还剩 ${remaining} 次`}
+      subtitle={`成功生成新版后消耗 1 次改词额度，还剩 ${remaining} 次`}
       onClose={busy ? () => {} : onCancel}
       footer={
         <>

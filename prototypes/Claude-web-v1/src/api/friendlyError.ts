@@ -11,6 +11,12 @@ export function userFriendlyErrorMessage(error: unknown): string {
     ) {
       return '歌词已更新，请重新确认出歌。';
     }
+    if (
+      error.httpStatus === 409
+      && /AI lyrics edit is (already|still) running/i.test(error.message)
+    ) {
+      return 'AI 正在处理歌词，请稍等完成后再操作。';
+    }
     if (error.isQuotaConflict) {
       return '改词次数已用完。你仍可以确认当前歌词出歌，或返回编辑重新开始。';
     }
