@@ -138,7 +138,13 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(renderedInstructions.getFirst().contains("voice_texture="));
     assertTrue(renderedInstructions.getFirst().contains("image_pool="));
     assertTrue(renderedInstructions.getFirst().contains("song_energy="));
+    assertTrue(renderedInstructions.getFirst().contains("song_thesis="));
+    assertTrue(renderedInstructions.getFirst().contains("central_tension="));
+    assertTrue(renderedInstructions.getFirst().contains("emotional_turn="));
+    assertTrue(renderedInstructions.getFirst().contains("chorus_function="));
+    assertTrue(renderedInstructions.getFirst().contains("memory_device="));
     assertTrue(renderedInstructions.getFirst().contains("songcraft_policy="));
+    assertTrue(renderedInstructions.getFirst().contains("polish_policy="));
   }
 
   @Test

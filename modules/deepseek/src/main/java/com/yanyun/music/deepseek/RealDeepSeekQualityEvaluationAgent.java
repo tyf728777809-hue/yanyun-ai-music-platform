@@ -482,20 +482,25 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
         6. LYRICS：必须检查歌词音乐性，包括副歌主韵脚或节奏回环、整首是否几乎无韵、句长是否适合中文人声演唱。
         7. LYRICS：故事清楚但不像歌、只像分行叙事文本、缺少声音记忆点时，不能给高分；严重时应返回 REWRITE。
         8. LYRICS：不要求格律诗式押韵，允许自然近韵、换韵和口语化表达；但为了押韵而硬凑、倒装、变土，也不能 PASS 高分。
-        9. LYRICS：允许使用“明月、山河、江湖、风烟、长夜、流浪、故乡”等词，但必须检查是否连续堆叠成填充词；如果没有具体动作、物件或场景支撑，应扣分或建议重写。
-        10. LYRICS：如果 context.knowledge_resolved_entities 显示用户点名的人物、剧情、地点、门派或玩法已映射到 canonical entity，歌词必须贴合该实体的核心经历、关系、冲突、场景或玩家体验。
-        11. LYRICS：点名角色但歌词只是泛江湖、泛燕云、无关任务氛围，必须 REWRITE；点名剧情但没有对应核心冲突或场景，也必须 REWRITE。
-        12. LYRICS：如果歌词、标题或摘要把用户错字/非标准称呼当成正式名字输出，而 context 已给出 canonical name，必须 REWRITE。
-        13. LYRICS：如果歌词引入未被用户输入或知识库上下文支撑的核心人物、剧情或组织作为主轴，必须 REWRITE 或 MANUAL_REVIEW。
-        14. LYRICS：如果 context.knowledge_reference_source_classes 包含 PENDING_CLUES，这些内容只能作为暗线、传闻、意象、心境或留白使用，不能写成官方已确认事实、明确结局或人物关系定论。
-        15. LYRICS：recommended_action 必须优先使用这些值之一：rewrite_angle、rewrite_cliche、rewrite_voice、rewrite_memory_point、rewrite_singability、rewrite_grounding。不要发明接口状态。
-        16. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
-        17. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
-        18. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
-        19. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
-        20. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
-        21. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
-        22. 只输出 JSON object。
+        9. LYRICS：必须判断主旨清晰度：歌词是否能让听众听懂“这首歌到底在唱什么”；如果段落各自好看但主线散乱，必须 REWRITE，recommended_action 用 rewrite_angle 或 rewrite_voice。
+        10. LYRICS：必须检查段落推进：Verse/Pre/Chorus/Bridge 是否有意义加深、视角推进或情绪转弯；如果只是同一种漂亮情绪反复堆叠，不能给高分。
+        11. LYRICS：必须检查视角一致：谁在唱、唱给谁、站在哪里是否稳定；如果第一/第二/旁白无意识漂移导致不清楚，建议 rewrite_voice。
+        12. LYRICS：必须检查副歌功能：副歌是否承担宣告、反问、安慰、爆发、重复执念、回收主题或反讽；如果副歌只是漂亮句子堆叠，建议 rewrite_memory_point 或 rewrite_angle。
+        13. LYRICS：POLISH 质量门必须检查是否真实润色：是否保留原歌核心、视角、主旨和主要可用句；如果变成另一首歌，应 REWRITE，recommended_action 用 rewrite_voice 或 rewrite_singability。
+        14. LYRICS：允许使用“明月、山河、江湖、风烟、长夜、流浪、故乡”等词，但必须检查是否连续堆叠成填充词；如果没有具体动作、物件或场景支撑，应扣分或建议重写。
+        15. LYRICS：如果 context.knowledge_resolved_entities 显示用户点名的人物、剧情、地点、门派或玩法已映射到 canonical entity，歌词必须贴合该实体的核心经历、关系、冲突、场景或玩家体验。
+        16. LYRICS：点名角色但歌词只是泛江湖、泛燕云、无关任务氛围，必须 REWRITE；点名剧情但没有对应核心冲突或场景，也必须 REWRITE。
+        17. LYRICS：如果歌词、标题或摘要把用户错字/非标准称呼当成正式名字输出，而 context 已给出 canonical name，必须 REWRITE。
+        18. LYRICS：如果歌词引入未被用户输入或知识库上下文支撑的核心人物、剧情或组织作为主轴，必须 REWRITE 或 MANUAL_REVIEW。
+        19. LYRICS：如果 context.knowledge_reference_source_classes 包含 PENDING_CLUES，这些内容只能作为暗线、传闻、意象、心境或留白使用，不能写成官方已确认事实、明确结局或人物关系定论。
+        20. LYRICS：recommended_action 必须优先使用这些值之一：rewrite_angle、rewrite_cliche、rewrite_voice、rewrite_memory_point、rewrite_singability、rewrite_grounding。不要发明接口状态。
+        21. MUSIC：音乐 prompt 可以保留开放风格，但不得残留真实歌手名、仿唱、声线模仿。
+        22. COVER：封面 prompt 可以要求高质量歌名主标题，且允许图片内出现唯一文本元素：作品歌名。
+        23. COVER：若 prompt 只允许作品歌名主标题，且没有要求假歌手、假版权、假厂牌、随机小字、乱码、UI、水印、排行榜或二维码，应判 PASS，不要因为标题字而要求重写或阻断。
+        24. PUBLISH_PACKAGE：只检查 audio/cover/video/timeline 元数据完整性，不审图片内容。
+        25. LYRICS：检查是否保留用户故事核心，是否避免把普通玩家故事强行写成官方角色或救世英雄。
+        26. 不要默认高分；reasons 不超过 5 条，每条简短可执行。
+        27. 只输出 JSON object。
 
         输出字段：
         {

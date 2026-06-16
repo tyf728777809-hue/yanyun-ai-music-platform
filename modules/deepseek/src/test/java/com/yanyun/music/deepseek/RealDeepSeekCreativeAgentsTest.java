@@ -227,6 +227,12 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("voice_texture"));
     assertTrue(systemPrompt.contains("image_pool"));
     assertTrue(systemPrompt.contains("song_energy"));
+    assertTrue(systemPrompt.contains("song_thesis"));
+    assertTrue(systemPrompt.contains("central_tension"));
+    assertTrue(systemPrompt.contains("emotional_turn"));
+    assertTrue(systemPrompt.contains("chorus_function"));
+    assertTrue(systemPrompt.contains("memory_device"));
+    assertTrue(systemPrompt.contains("这首歌到底在唱什么"));
     assertTrue(systemPrompt.contains("侠=自由、离别=月光、江湖=风雨、少年=逍遥"));
     assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
   }
@@ -594,6 +600,12 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("摆脱第一反应俗套"));
     assertTrue(systemPrompt.contains("声音记忆点不限定为金句"));
     assertTrue(systemPrompt.contains("完整但普通"));
+    assertTrue(systemPrompt.contains("主旨清晰度"));
+    assertTrue(systemPrompt.contains("这首歌到底在唱什么"));
+    assertTrue(systemPrompt.contains("段落推进"));
+    assertTrue(systemPrompt.contains("视角一致"));
+    assertTrue(systemPrompt.contains("副歌功能"));
+    assertTrue(systemPrompt.contains("真实润色"));
     assertTrue(systemPrompt.contains("每句都对但没有一处让人想再听"));
     assertTrue(systemPrompt.contains("副歌主韵脚或节奏回环"));
     assertTrue(systemPrompt.contains("连续堆叠成填充词"));

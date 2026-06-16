@@ -127,7 +127,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
             root.path("image_pool").isMissingNode()
                 ? root.path("imagePool")
                 : root.path("image_pool")),
-        DeepSeekAgentJson.text(root, "song_energy", "songEnergy"));
+        DeepSeekAgentJson.text(root, "song_energy", "songEnergy"),
+        DeepSeekAgentJson.text(root, "song_thesis", "songThesis"),
+        DeepSeekAgentJson.text(root, "pov", "point_of_view", "pointOfView"),
+        DeepSeekAgentJson.text(root, "central_tension", "centralTension"),
+        DeepSeekAgentJson.text(root, "emotional_turn", "emotionalTurn"),
+        DeepSeekAgentJson.text(root, "chorus_function", "chorusFunction"),
+        DeepSeekAgentJson.text(root, "memory_device", "memoryDevice"));
   }
 
   private List<String> fallbackYanyunReferences(CreativeBriefRequest request) {
@@ -221,7 +227,9 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         9. 普通玩家故事优先保留用户原始视角，不强行改成官方角色歌或救世英雄叙事。
         10. 你的重点是帮 LyricsAgent 避免第一反应俗套：例如“侠=自由、离别=月光、江湖=风雨、少年=逍遥”这种太容易写普通的入口。
         11. 可以建议叙事、意象、口语、重复、对白、独白、群像、反讽、留白、反差、反套路等任一路径，但不要要求全部使用。
-        12. 只输出 JSON object，不输出 Markdown 或解释。
+        12. 必须给出歌曲主线判断：这首歌到底在唱什么、谁在唱给谁听、核心张力是什么、情绪在哪里转弯、副歌承担什么功能、听众记住它靠什么声音装置。
+        13. 歌曲主线不是固定模板，而是 LyricsAgent 的判断骨架；字段必须清楚、单一、可唱，不能写成剧情百科摘要或资料条目。
+        14. 只输出 JSON object，不输出 Markdown 或解释。
 
         输出字段：
         {
@@ -243,7 +251,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
           "anti_cliche_strategy": "如何避开最容易写俗、写浅、写成泛江湖的表达",
           "voice_texture": "语言质感，例如市井、冷峻、轻盈、粗粝、温柔、克制、荒凉、戏谑",
           "image_pool": ["可用画面、动作或物件，不要求全部使用"],
-          "song_energy": "这首歌的能量走向，例如收束、爆发、游走、回环、低烧、明亮、压抑"
+          "song_energy": "这首歌的能量走向，例如收束、爆发、游走、回环、低烧、明亮、压抑",
+          "song_thesis": "一句话说明这首歌到底在唱什么，必须是歌曲命题，不是剧情摘要",
+          "pov": "谁在唱给谁听，或者这个声音站在哪里",
+          "central_tension": "这首歌的核心张力，例如想留下但必须走、想自由但仍有牵挂、想守护却不能解释",
+          "emotional_turn": "歌曲中情绪或意义发生转弯的位置和方式",
+          "chorus_function": "副歌在整首歌中承担的功能，例如宣告、反问、安慰、爆发、重复执念、反讽或回收主题",
+          "memory_device": "听众记住这首歌的声音装置，可以是重复句式、口头禅、意象回环、节奏短句、对白或声音动作"
         }
         """
         .trim();
@@ -316,7 +330,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         result.antiClicheStrategy(),
         result.voiceTexture(),
         result.imagePool().toString(),
-        result.songEnergy());
+        result.songEnergy(),
+        result.songThesis(),
+        result.pov(),
+        result.centralTension(),
+        result.emotionalTurn(),
+        result.chorusFunction(),
+        result.memoryDevice());
   }
 
   private int elapsedMs(long startedAt) {

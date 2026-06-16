@@ -63,6 +63,11 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("music_style 只影响语言声口"));
     assertTrue(systemPrompt.contains("避开第一反应俗套"));
     assertTrue(systemPrompt.contains("creative_core"));
+    assertTrue(systemPrompt.contains("song_thesis"));
+    assertTrue(systemPrompt.contains("这首歌到底在唱什么"));
+    assertTrue(systemPrompt.contains("视角必须稳定"));
+    assertTrue(systemPrompt.contains("副歌必须承担明确功能"));
+    assertTrue(systemPrompt.contains("真正的润色，不是重写"));
     assertTrue(systemPrompt.contains("主韵脚"));
     assertTrue(systemPrompt.contains("整首歌不得完全无韵"));
     assertTrue(systemPrompt.contains("canonical name"));

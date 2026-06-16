@@ -21,7 +21,61 @@ public record CreativeBriefResult(
     String antiClicheStrategy,
     String voiceTexture,
     List<String> imagePool,
-    String songEnergy) {
+    String songEnergy,
+    String songThesis,
+    String pov,
+    String centralTension,
+    String emotionalTurn,
+    String chorusFunction,
+    String memoryDevice) {
+
+  public CreativeBriefResult(
+      CreativeDomainDecision domainDecision,
+      String userIntentSummary,
+      String theme,
+      List<String> moodTags,
+      String narrativeViewpoint,
+      String musicDirection,
+      List<String> yanyunReferences,
+      List<String> constraints,
+      List<String> riskNotes,
+      String userFacingMessage,
+      String yanyunRewriteSuggestion,
+      List<String> freeformOpportunities,
+      String creativeCore,
+      String chosenAngle,
+      List<String> alternativeAngles,
+      String antiClicheStrategy,
+      String voiceTexture,
+      List<String> imagePool,
+      String songEnergy) {
+    this(
+        domainDecision,
+        userIntentSummary,
+        theme,
+        moodTags,
+        narrativeViewpoint,
+        musicDirection,
+        yanyunReferences,
+        constraints,
+        riskNotes,
+        userFacingMessage,
+        yanyunRewriteSuggestion,
+        freeformOpportunities,
+        creativeCore,
+        chosenAngle,
+        alternativeAngles,
+        antiClicheStrategy,
+        voiceTexture,
+        imagePool,
+        songEnergy,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
+  }
 
   public CreativeBriefResult(
       CreativeDomainDecision domainDecision,
@@ -55,6 +109,12 @@ public record CreativeBriefResult(
         null,
         null,
         List.of(),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null);
   }
 
@@ -86,6 +146,12 @@ public record CreativeBriefResult(
         null,
         null,
         List.of(),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null);
   }
 
@@ -123,6 +189,12 @@ public record CreativeBriefResult(
     voiceTexture = firstNonBlank(voiceTexture, narrativeViewpoint);
     imagePool = imagePool == null || imagePool.isEmpty() ? List.of() : List.copyOf(imagePool);
     songEnergy = firstNonBlank(songEnergy, String.join(", ", moodTags));
+    songThesis = firstNonBlank(songThesis, creativeCore);
+    pov = firstNonBlank(pov, narrativeViewpoint);
+    centralTension = firstNonBlank(centralTension, theme);
+    emotionalTurn = firstNonBlank(emotionalTurn, "from first feeling to a changed meaning");
+    chorusFunction = firstNonBlank(chorusFunction, "carry the song's main emotional argument");
+    memoryDevice = firstNonBlank(memoryDevice, "repeatable phrase, image loop, or rhythm hook");
   }
 
   private static String firstNonBlank(String value, String fallback) {

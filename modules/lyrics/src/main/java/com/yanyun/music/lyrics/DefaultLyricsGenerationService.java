@@ -229,7 +229,13 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         "Avoid generic wuxia phrasing; keep the requested edit concrete and singable.",
         "user-directed, natural, singable",
         references.isEmpty() ? List.of() : references,
-        "focused rewrite");
+        "focused rewrite",
+        "Keep one clear song argument from the user's request.",
+        "the user's existing lyric voice",
+        "what the user wants to change versus what must be preserved",
+        "make the requested edit deepen the same song rather than become a new song",
+        "make the chorus clarify and repeat the song's main emotional argument",
+        "one repeatable phrase, image loop, or rhythm hook from the original song");
   }
 
   private LyricsGenerationRequest withCreativeBrief(
@@ -270,9 +276,16 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         voice_texture=%s
         image_pool=%s
         song_energy=%s
+        song_thesis=%s
+        pov=%s
+        central_tension=%s
+        emotional_turn=%s
+        chorus_function=%s
+        memory_device=%s
         knowledge_policy=Knowledge references are optional creative material. Preserve the user's story core. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally. Do not turn lyrics into plot summary.
         entity_grounding_policy=If the user names a character, storyline, place, faction, or gameplay concept and resolved_entities maps it to a canonical Yanyun entity, use that canonical entity as the grounding source. Do not preserve user typos as official names. Character or storyline songs must use the core relationships, life events, conflicts, and scenes from the matched knowledge references instead of generic wuxia atmosphere.
-        songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, and song_energy as open creative guidance. Do not treat them as a rigid template. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
+        songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, song_energy, song_thesis, pov, central_tension, emotional_turn, chorus_function, and memory_device as open creative guidance. Do not treat them as a rigid template. Before writing, decide one clear song thesis and keep every verse, chorus, and bridge serving it. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
+        polish_policy=For POLISH, keep the original song title, point of view, thesis, emotional arc, and most usable lines unless the user explicitly asks to replace them. Improve diction, rhyme, singability, clarity, and requested weak spots; do not silently write a different song.
         """
         .formatted(
             creativeBrief.domainDecision(),
@@ -293,7 +306,13 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             creativeBrief.antiClicheStrategy(),
             creativeBrief.voiceTexture(),
             creativeBrief.imagePool(),
-            creativeBrief.songEnergy())
+            creativeBrief.songEnergy(),
+            creativeBrief.songThesis(),
+            creativeBrief.pov(),
+            creativeBrief.centralTension(),
+            creativeBrief.emotionalTurn(),
+            creativeBrief.chorusFunction(),
+            creativeBrief.memoryDevice())
         .trim();
   }
 
@@ -358,6 +377,23 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "song_energy",
                     creativeBrief == null ? "" : firstNonBlank(creativeBrief.songEnergy(), "")),
+                Map.entry(
+                    "song_thesis",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.songThesis(), "")),
+                Map.entry(
+                    "pov", creativeBrief == null ? "" : firstNonBlank(creativeBrief.pov(), "")),
+                Map.entry(
+                    "central_tension",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.centralTension(), "")),
+                Map.entry(
+                    "emotional_turn",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.emotionalTurn(), "")),
+                Map.entry(
+                    "chorus_function",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.chorusFunction(), "")),
+                Map.entry(
+                    "memory_device",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.memoryDevice(), "")),
                 Map.entry("knowledge_base_version", knowledge == null ? "" : knowledge.kbVersion()),
                 Map.entry("knowledge_resolved_entities", entityLabels(knowledge)),
                 Map.entry("knowledge_reference_names", referenceNames(knowledge)),
@@ -575,7 +611,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private String rewriteInstruction(QualityEvaluationResult quality) {
     String action = recommendedRewriteAction(quality == null ? null : quality.recommendedAction());
     String base =
-        "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion, music preference, and story core. Make the final lyrics feel like they belong inside the Yanyun Sixteen Sounds world through character choices, place atmosphere, wuxia actions, player experience, or emotional texture. If the request names a resolved Yanyun character, storyline, place, or faction, ground the rewrite in that canonical entity and do not output user typos as official names. Do not force official names or the words Yanyun/Sixteen Sounds. Do not over-heroize ordinary characters. Avoid generic wuxia phrasing and plot-summary writing.";
+        "Rewrite once because the previous lyrics did not pass the quality gate. Preserve the user's emotion, music preference, and story core. Keep one clear song thesis: the listener should understand what this song is singing about after one listen. Keep the point of view stable, make each section serve the same central tension, and make the chorus perform a real function rather than simply stacking pretty lines. Make the final lyrics feel like they belong inside the Yanyun Sixteen Sounds world through character choices, place atmosphere, wuxia actions, player experience, or emotional texture. If the request names a resolved Yanyun character, storyline, place, or faction, ground the rewrite in that canonical entity and do not output user typos as official names. Do not force official names or the words Yanyun/Sixteen Sounds. Do not over-heroize ordinary characters. Avoid generic wuxia phrasing and plot-summary writing. For POLISH, do not create a different song: keep the original thesis, POV, emotional arc, and most usable lines unless the user explicitly asked for a major rewrite.";
     String targeted =
         switch (action) {
           case "rewrite_angle" ->
