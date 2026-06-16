@@ -93,12 +93,15 @@ fi
 log "work_id=$WORK_ID"
 
 LYRICS_DRAFT_ID=""
+LYRICS_READY_REACHED="false"
 for _ in $(seq 1 30); do
   DETAIL_RESPONSE="$(curl -fsS "$API_BASE/works/$WORK_ID" -H "X-Mock-User-Id: $MOCK_USER")"
   STATUS="$(echo "$DETAIL_RESPONSE" | jq -r '.status')"
+  STAGE="$(echo "$DETAIL_RESPONSE" | jq -r '.generation_stage')"
   LYRICS_DRAFT_ID="$(echo "$DETAIL_RESPONSE" | jq -r '.lyrics_draft.lyrics_draft_id // empty')"
-  log "$(date '+%H:%M:%S') lyrics status=$STATUS draft=${LYRICS_DRAFT_ID:-empty}"
-  if [ -n "$LYRICS_DRAFT_ID" ]; then
+  log "$(date '+%H:%M:%S') lyrics status=$STATUS stage=$STAGE draft=${LYRICS_DRAFT_ID:-empty}"
+  if [ "$STATUS" = "LYRICS_READY" ] && [ "$STAGE" = "WAITING_CONFIRM" ] && [ -n "$LYRICS_DRAFT_ID" ]; then
+    LYRICS_READY_REACHED="true"
     break
   fi
   if [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "LYRICS_FAILED" ]; then
@@ -108,8 +111,8 @@ for _ in $(seq 1 30); do
   sleep 2
 done
 
-if [ -z "$LYRICS_DRAFT_ID" ]; then
-  fail "lyrics draft was not ready in time"
+if [ "$LYRICS_READY_REACHED" != "true" ]; then
+  fail "lyrics draft was not confirmable in time"
 fi
 
 log "confirming work with real provider=suno backend=yunwu"

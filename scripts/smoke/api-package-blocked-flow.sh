@@ -6,6 +6,8 @@ API_BASE_URL="${API_BASE_URL:-http://localhost:8080/api/v1}"
 API_HEALTH_URL="${API_HEALTH_URL:-http://localhost:8080/health}"
 MOCK_USER_ID="${MOCK_USER_ID:-mock_package_block_smoke}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-package-block-smoke-$(date +%s)}"
+LYRICS_READY_MAX_POLL_ATTEMPTS="${LYRICS_READY_MAX_POLL_ATTEMPTS:-60}"
+LYRICS_READY_POLL_INTERVAL_SECONDS="${LYRICS_READY_POLL_INTERVAL_SECONDS:-1}"
 
 fail() {
   printf '[package-block-smoke] ERROR: %s\n' "$*" >&2
@@ -53,6 +55,27 @@ assert_json() {
   jq -e "$expression" >/dev/null <"$RESULT_BODY" || fail "$message"
 }
 
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local status
+  local work_status
+  local stage
+  for _ in $(seq 1 "$LYRICS_READY_MAX_POLL_ATTEMPTS"); do
+    status="$(request GET "/works/${work_id}")"
+    assert_status "$status" "200"
+    work_status="$(jq -r '.status' "$RESULT_BODY")"
+    stage="$(jq -r '.generation_stage' "$RESULT_BODY")"
+    if [[ "$work_status" == "LYRICS_READY" && "$stage" == "WAITING_CONFIRM" ]]; then
+      return 0
+    fi
+    if [[ "$work_status" == "FAILED" || "$work_status" == "LYRICS_FAILED" ]]; then
+      fail "lyrics generation failed before package-block confirm"
+    fi
+    sleep "$LYRICS_READY_POLL_INTERVAL_SECONDS"
+  done
+  fail "work did not become LYRICS_READY / WAITING_CONFIRM in time: work_id=${work_id}"
+}
+
 need_command curl
 need_command jq
 
@@ -76,9 +99,10 @@ create_body="$(
 log "creating lyrics work for mock user ${MOCK_USER_ID}"
 status="$(request POST "/works/lyrics" "$create_body" "${IDEMPOTENCY_PREFIX}-lyrics")"
 assert_status "$status" "202"
-assert_json '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM"' "created work did not enter lyrics ready"
+assert_json '.status == "LYRICS_GENERATING" and .generation_stage == "LYRICS_GENERATING"' "created work did not enter lyrics generating"
 work_id="$(jq -er '.work_id' "$RESULT_BODY")"
 log "created work_id=${work_id}"
+wait_for_lyrics_ready "$work_id"
 
 log "confirming work; this should be blocked before publish handoff"
 confirm_body='{"music_provider":"mock"}'

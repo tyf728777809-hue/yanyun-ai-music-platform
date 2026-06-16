@@ -7,7 +7,7 @@ import { ConfirmView } from './work/ConfirmView';
 import { GeneratingView } from './work/GeneratingView';
 import { FailedView } from './work/FailedView';
 import { FinishedView } from './work/FinishedView';
-import { requestIdLine } from '../api/friendlyError';
+import { isRecoverableConnectionError, requestIdLine } from '../api/friendlyError';
 
 interface WorkPageProps {
   workId: string;
@@ -51,58 +51,93 @@ export function WorkPage({ workId, onBackToHome }: WorkPageProps) {
   if (!work || !phase) {
     return (
       <div className="page-center">
-        <Banner tone="danger" title="作品状态无法识别">
-          请刷新后重试。
+        <Spinner size={36} label="正在同步作品状态" />
+        <Banner
+          tone="info"
+          title="正在同步作品状态"
+          action={
+            <Button tone="secondary" size="sm" onClick={() => void refresh()}>
+              刷新
+            </Button>
+          }
+        >
+          作品状态正在更新，请稍候。
         </Banner>
       </div>
     );
   }
 
   const shared = { work, refresh, onBackToHome };
-  const reconnecting = error && work;
-  const reconnectingBanner = reconnecting ? (
-    <ReconnectingBanner error={error} refresh={refresh} />
+  const statusBanner = error ? (
+    isRecoverableConnectionError(error) ? (
+      <ReconnectingBanner error={error} refresh={refresh} />
+    ) : (
+      <WorkStateErrorBanner error={error} refresh={refresh} />
+    )
   ) : null;
 
   switch (phase) {
     case 'LYRICS_GENERATING':
       return (
         <>
-          {reconnectingBanner}
+          {statusBanner}
           <LyricsGeneratingView {...shared} />
         </>
       );
     case 'CONFIRM':
       return (
         <>
-          {reconnectingBanner}
+          {statusBanner}
           <ConfirmView {...shared} />
         </>
       );
     case 'GENERATING':
       return (
         <>
-          {reconnectingBanner}
+          {statusBanner}
           <GeneratingView {...shared} />
         </>
       );
     case 'FAILED':
       return (
         <>
-          {reconnectingBanner}
+          {statusBanner}
           <FailedView {...shared} />
         </>
       );
     case 'FINISHED':
       return (
         <>
-          {reconnectingBanner}
+          {statusBanner}
           <FinishedView {...shared} />
         </>
       );
     default:
       return null;
   }
+}
+
+function WorkStateErrorBanner({
+  error,
+  refresh,
+}: {
+  error: NonNullable<ReturnType<typeof useWorkDetail>['error']>;
+  refresh: () => Promise<void>;
+}) {
+  return (
+    <Banner
+      tone="danger"
+      title="作品状态需要刷新"
+      action={
+        <Button tone="secondary" size="sm" onClick={() => void refresh()}>
+          刷新
+        </Button>
+      }
+    >
+      <span>{error.message}</span>
+      {requestIdLine(error) && <span className="request-id">{requestIdLine(error)}</span>}
+    </Banner>
+  );
 }
 
 function ReconnectingBanner({

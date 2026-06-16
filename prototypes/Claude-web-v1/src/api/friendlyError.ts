@@ -33,6 +33,17 @@ export function userFriendlyErrorMessage(error: unknown): string {
   return '请求失败，请稍后再试。';
 }
 
+export function isRecoverableConnectionError(error: unknown): boolean {
+  if (!(error instanceof ApiError)) return false;
+  if (error.code === 'NETWORK_ERROR') return true;
+  return (
+    error.httpStatus === 0
+    || error.httpStatus === 502
+    || error.httpStatus === 503
+    || error.httpStatus === 504
+  );
+}
+
 export function requestIdLine(error: unknown): string | null {
   if (error instanceof ApiError && error.requestId) {
     return `请求编号：${error.requestId}`;

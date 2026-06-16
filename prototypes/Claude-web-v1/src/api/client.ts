@@ -41,7 +41,11 @@ export class ApiError extends Error {
 
   /** 改词/续写次数耗尽：后端返回 409 CONFLICT。 */
   get isQuotaConflict(): boolean {
-    return this.httpStatus === 409;
+    if (this.httpStatus !== 409) return false;
+    if (/QUOTA|POLISH_QUOTA|EDIT_LIMIT|ATTEMPTS_EXHAUSTED/i.test(this.code)) return true;
+    return /No remaining|remaining.*attempts|quota exhausted|次数已用完|额度已用完/i.test(
+      this.message,
+    );
   }
 }
 

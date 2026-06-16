@@ -9,6 +9,8 @@ IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-deepseek-real-lyrics-$(date +%s)}"
 POSTGRES_CONTAINER="${POSTGRES_CONTAINER:-yanyun-postgres}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_DB="${POSTGRES_DB:-yanyun_music}"
+LYRICS_READY_MAX_POLL_ATTEMPTS="${LYRICS_READY_MAX_POLL_ATTEMPTS:-120}"
+LYRICS_READY_POLL_INTERVAL_SECONDS="${LYRICS_READY_POLL_INTERVAL_SECONDS:-2}"
 
 fail() {
   printf '[deepseek-smoke] ERROR: %s\n' "$*" >&2
@@ -57,6 +59,32 @@ post_json() {
 get_json() {
   local path="$1"
   curl -fsS "$API_BASE$path" -H "X-Mock-User-Id: $MOCK_USER"
+}
+
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local detail
+  local status
+  local stage
+  local failure_code
+  for _ in $(seq 1 "$LYRICS_READY_MAX_POLL_ATTEMPTS"); do
+    detail="$(get_json "/works/$work_id")"
+    status="$(echo "$detail" | jq -r '.status')"
+    stage="$(echo "$detail" | jq -r '.generation_stage')"
+    failure_code="$(echo "$detail" | jq -r '.failure.failure_code // empty')"
+    printf '[deepseek-smoke] %s status=%s stage=%s failure=%s\n' \
+      "$(date '+%H:%M:%S')" "$status" "$stage" "${failure_code:-none}" >&2
+    if [ "$status" = "LYRICS_READY" ] && [ "$stage" = "WAITING_CONFIRM" ]; then
+      printf '%s\n' "$detail"
+      return 0
+    fi
+    if [ "$status" = "FAILED" ] || [ "$status" = "LYRICS_FAILED" ]; then
+      echo "$detail" | jq '{work_id, status, generation_stage, failure}' >&2
+      fail "work did not reach LYRICS_READY / WAITING_CONFIRM"
+    fi
+    sleep "$LYRICS_READY_POLL_INTERVAL_SECONDS"
+  done
+  fail "work did not reach LYRICS_READY / WAITING_CONFIRM in time"
 }
 
 if [ "${ALLOW_REAL_MODEL_SMOKE:-}" != "1" ]; then
@@ -150,7 +178,7 @@ fi
 
 log "work_id=$WORK_ID status=$STATUS stage=$STAGE job_id=${JOB_ID:-none}"
 
-DETAIL_RESPONSE="$(get_json "/works/$WORK_ID")"
+DETAIL_RESPONSE="$(wait_for_lyrics_ready "$WORK_ID")"
 DETAIL_STATUS="$(echo "$DETAIL_RESPONSE" | jq -r '.status')"
 DETAIL_STAGE="$(echo "$DETAIL_RESPONSE" | jq -r '.generation_stage')"
 LYRICS_DRAFT_ID="$(echo "$DETAIL_RESPONSE" | jq -r '.lyrics_draft.lyrics_draft_id // empty')"

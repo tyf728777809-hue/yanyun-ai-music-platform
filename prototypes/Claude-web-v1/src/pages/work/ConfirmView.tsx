@@ -11,6 +11,7 @@ import { hasAction } from '../../api/workState';
 import { service } from '../../mock/service';
 
 type EditKind = 'polish' | 'continue';
+type EditRecoveryResult = 'queued' | 'completed' | null;
 
 const EDIT_RECOVERY_ATTEMPTS = 12;
 const EDIT_RECOVERY_INTERVAL_MS = 2000;
@@ -112,12 +113,18 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         },
         onError: async (message) => {
           if (isConnectionInterrupted(message)) {
-            setEditError('请求可能仍在后台处理中，正在为你确认最新歌词…');
+            setEditError('请求可能仍在后台处理中，正在确认任务状态…');
             const recovered = await waitForRecoveredEdit(previousVersion);
-            if (recovered) {
+            if (recovered === 'completed') {
               setEditError(null);
               setEditKind(null);
               toast.success(kind === 'polish' ? '已获取润色后的歌词' : '已获取续写后的歌词');
+              return;
+            }
+            if (recovered === 'queued') {
+              setEditError(null);
+              setEditKind(null);
+              toast.show(kind === 'polish' ? 'AI 润色已进入后台处理' : 'AI 续写已进入后台处理');
               return;
             }
           }
@@ -128,7 +135,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
     );
   }
 
-  async function waitForRecoveredEdit(previousVersion: number): Promise<boolean> {
+  async function waitForRecoveredEdit(previousVersion: number): Promise<EditRecoveryResult> {
     for (let attempt = 0; attempt < EDIT_RECOVERY_ATTEMPTS; attempt += 1) {
       if (attempt > 0) {
         await sleep(EDIT_RECOVERY_INTERVAL_MS);
@@ -138,13 +145,17 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         const latestVersion = latest.lyrics_draft?.version_no ?? 0;
         if (latestVersion > previousVersion) {
           await refresh();
-          return true;
+          return 'completed';
+        }
+        if (latest.active_lyrics_job) {
+          await refresh();
+          return 'queued';
         }
       } catch {
         // Keep polling: the short follow-up GET may race with proxy reconnects.
       }
     }
-    return false;
+    return null;
   }
 
   async function confirm() {

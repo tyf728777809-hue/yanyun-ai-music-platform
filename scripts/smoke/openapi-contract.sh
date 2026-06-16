@@ -222,6 +222,28 @@ wait_for_lyrics_ready() {
   fail "work ${work_id} did not become LYRICS_READY"
 }
 
+wait_for_draft_version() {
+  local work_id="$1"
+  local expected_version="$2"
+  local attempts="${3:-45}"
+  local actual_version
+  local active_job_status
+  for _ in $(seq 1 "$attempts"); do
+    status="$(request GET "/works/${work_id}")"
+    assert_status "$status" "200"
+    actual_version="$(jq -r '.lyrics_draft.version_no // empty' <"$RESULT_BODY")"
+    active_job_status="$(jq -r '.active_lyrics_job.status // empty' <"$RESULT_BODY")"
+    if [[ "$actual_version" == "$expected_version" ]]; then
+      return 0
+    fi
+    if [[ "$active_job_status" == "FAILED" ]]; then
+      fail "lyrics edit job failed before draft version ${expected_version}"
+    fi
+    sleep 1
+  done
+  fail "work ${work_id} did not reach lyrics draft version ${expected_version}"
+}
+
 assert_publish_package_ready() {
   assert_json '.work_id and .package_status and (.available_actions | type == "array")' "PublishPackage required fields missing"
   assert_json '.package_status == "PACKAGE_READY"' "PublishPackage status is not PACKAGE_READY"
@@ -293,8 +315,7 @@ log "checking polish and continue contracts"
 status="$(request POST "/works/${work_id}/lyrics/polish" '{"instruction":"增强边塞画面感。"}' "$(idempotency_key polish)")"
 assert_status "$status" "202"
 assert_job_response
-status="$(request GET "/works/${work_id}")"
-assert_status "$status" "200"
+wait_for_draft_version "$work_id" "2"
 assert_work_detail_base
 assert_lyrics_draft
 assert_json '.lyrics_draft.version_no == 2 and .polish_used_count == 1 and .polish_remaining_count == 1' "polish did not update draft counters"
@@ -302,8 +323,7 @@ assert_json '.lyrics_draft.version_no == 2 and .polish_used_count == 1 and .poli
 status="$(request POST "/works/${work_id}/lyrics/continue" '{"instruction":"续写一段副歌。"}' "$(idempotency_key continue)")"
 assert_status "$status" "202"
 assert_job_response
-status="$(request GET "/works/${work_id}")"
-assert_status "$status" "200"
+wait_for_draft_version "$work_id" "3"
 assert_json '.lyrics_draft.version_no == 3 and .polish_used_count == 2 and .polish_remaining_count == 0' "continue did not exhaust edit counters"
 lyrics_draft_id="$(jq -er '.lyrics_draft.lyrics_draft_id' <"$RESULT_BODY")"
 

@@ -10,6 +10,8 @@ CHECK_DB="${CHECK_DB:-true}"
 CHECK_LOCAL_FILES="${CHECK_LOCAL_FILES:-true}"
 CHECK_MEDIA_URLS="${CHECK_MEDIA_URLS:-false}"
 LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
+LYRICS_READY_MAX_POLL_ATTEMPTS="${LYRICS_READY_MAX_POLL_ATTEMPTS:-60}"
+LYRICS_READY_POLL_INTERVAL_SECONDS="${LYRICS_READY_POLL_INTERVAL_SECONDS:-1}"
 
 fail() {
   printf '[smoke] ERROR: %s\n' "$*" >&2
@@ -78,6 +80,30 @@ assert_url_readable() {
   curl -sS -f -L -r 0-0 "$url" -o /dev/null || fail "${label} URL is not readable"
 }
 
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local detail
+  local status
+  local stage
+  local failure
+  for _ in $(seq 1 "$LYRICS_READY_MAX_POLL_ATTEMPTS"); do
+    detail="$(get_json "/works/${work_id}")"
+    status="$(jq -r '.status' <<<"$detail")"
+    stage="$(jq -r '.generation_stage' <<<"$detail")"
+    failure="$(jq -r '.failure.failure_code // empty' <<<"$detail")"
+    if [[ "$status" == "LYRICS_READY" && "$stage" == "WAITING_CONFIRM" ]]; then
+      printf '%s\n' "$detail"
+      return 0
+    fi
+    if [[ "$status" == "FAILED" || "$status" == "LYRICS_FAILED" ]]; then
+      jq '{work_id, status, generation_stage, failure}' <<<"$detail" >&2
+      fail "lyrics generation failed while waiting for confirmable draft: failure=${failure:-none}"
+    fi
+    sleep "$LYRICS_READY_POLL_INTERVAL_SECONDS"
+  done
+  fail "work did not become LYRICS_READY / WAITING_CONFIRM in time: work_id=${work_id}"
+}
+
 need_command curl
 need_command jq
 
@@ -94,11 +120,11 @@ create_body="$(
 
 log "creating lyrics work"
 create_response="$(post_json "/works/lyrics" "$(idempotency_key lyrics)" "$create_body")"
-assert_json "$create_response" '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM"' "work did not enter lyrics ready state"
+assert_json "$create_response" '.status == "LYRICS_GENERATING" and .generation_stage == "LYRICS_GENERATING"' "work did not enter lyrics generating state"
 work_id="$(jq -er '.work_id' <<<"$create_response")"
 log "created work_id=${work_id}"
 
-detail_response="$(get_json "/works/${work_id}")"
+detail_response="$(wait_for_lyrics_ready "$work_id")"
 assert_json "$detail_response" '.status == "LYRICS_READY" and .package_status == "PACKAGE_NOT_READY"' "work detail before confirm is invalid"
 assert_json "$detail_response" '(.available_actions | index("CONFIRM_WORK")) != null' "CONFIRM_WORK action is missing"
 

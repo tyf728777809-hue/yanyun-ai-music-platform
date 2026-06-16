@@ -8,6 +8,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 API_ROOT="${API_ROOT:-http://localhost:8080}"
 API_ROOT="${API_ROOT%/}"
 API_PORT="${API_PORT:-}"
+WORKER_PORT="${WORKER_PORT:-8081}"
 START_TIMEOUT_SECONDS="${START_TIMEOUT_SECONDS:-90}"
 STOP_TIMEOUT_SECONDS="${STOP_TIMEOUT_SECONDS:-60}"
 EXPECTED_DURATION_MS="${EXPECTED_DURATION_MS:-1000}"
@@ -15,6 +16,8 @@ LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/local-commercial-backend-acceptance
 
 API_PID=""
 API_LOG=""
+WORKER_PID=""
+WORKER_LOG=""
 
 fail() {
   printf '[backend-acceptance] ERROR: %s\n' "$*" >&2
@@ -53,11 +56,15 @@ print_logs_hint() {
   if [ -n "${API_LOG:-}" ]; then
     printf '[backend-acceptance] logs:\n'
     printf '  api: %s\n' "$API_LOG"
+    if [ -n "${WORKER_LOG:-}" ]; then
+      printf '  worker: %s\n' "$WORKER_LOG"
+    fi
   fi
 }
 
 cleanup() {
   set +e
+  stop_worker
   stop_api
 }
 
@@ -76,6 +83,16 @@ stop_api() {
   fi
 }
 
+stop_worker() {
+  if [ -n "${WORKER_PID:-}" ] && kill -0 "$WORKER_PID" >/dev/null 2>&1; then
+    log "stopping worker pid=$WORKER_PID"
+    kill "$WORKER_PID" >/dev/null 2>&1
+    wait "$WORKER_PID" >/dev/null 2>&1 || true
+  fi
+  WORKER_PID=""
+  wait_for_worker_port_free 10 || true
+}
+
 trap cleanup EXIT INT TERM
 
 ensure_java_home() {
@@ -88,6 +105,9 @@ ensure_java_home() {
 assert_port_free() {
   if lsof -nP -iTCP:"$API_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
     fail "port $API_PORT is already in use; stop the existing API before running this stack smoke"
+  fi
+  if lsof -nP -iTCP:"$WORKER_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+    fail "port $WORKER_PORT is already in use; stop the existing worker before running this stack smoke"
   fi
 }
 
@@ -102,6 +122,40 @@ wait_for_port_free() {
     sleep 1
   done
   return 1
+}
+
+wait_for_worker_port_free() {
+  local timeout_seconds="$1"
+  local deadline
+  deadline=$((SECONDS + timeout_seconds))
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    if ! lsof -nP -iTCP:"$WORKER_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 1
+  done
+  return 1
+}
+
+wait_for_worker() {
+  local deadline
+  local health
+  deadline=$((SECONDS + START_TIMEOUT_SECONDS))
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    if ! kill -0 "$WORKER_PID" >/dev/null 2>&1; then
+      tail -80 "$WORKER_LOG" >&2 || true
+      fail "worker process exited before health became ready"
+    fi
+    if health="$(curl -fsS "http://localhost:${WORKER_PORT}/actuator/health" 2>/dev/null)" \
+      && jq -e '.status == "UP"' >/dev/null 2>&1 <<<"$health"; then
+      log "worker is healthy: http://localhost:${WORKER_PORT}/actuator/health"
+      return
+    fi
+    sleep 2
+  done
+
+  tail -80 "$WORKER_LOG" >&2 || true
+  fail "worker did not become healthy within ${START_TIMEOUT_SECONDS}s"
 }
 
 stop_managed_api_listener() {
@@ -157,6 +211,7 @@ start_api() {
     export MUSIC_PROVIDER=mock
     export MUSIC_WORKFLOW_DISPATCH_MODE=sync
     export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false
+    export LYRICS_EDIT_DISPATCHER_ENABLED=false
     export RENDER_WORKER_MODE=mock
     export DREAMMAKER_REAL_CALLS_ENABLED=false
     export YUNWU_REAL_CALLS_ENABLED=false
@@ -169,6 +224,38 @@ start_api() {
   ) >"$API_LOG" 2>&1 &
   API_PID="$!"
   wait_for_api
+}
+
+start_worker() {
+  local phase="$1"
+  WORKER_LOG="${LOG_DIR}/${phase}-music-worker.log"
+  mkdir -p "$LOG_DIR"
+  log "starting worker phase=${phase}; log=${WORKER_LOG}"
+
+  (
+    cd "$REPO_ROOT"
+    if [ -n "${JAVA_HOME:-}" ]; then
+      export JAVA_HOME
+    fi
+    export PATH
+    export MUSIC_WORKER_PORT="$WORKER_PORT"
+    export MOCK_MUSIC_DURATION_MS="$EXPECTED_DURATION_MS"
+    export MUSIC_PROVIDER=mock
+    export MUSIC_WORKFLOW_DISPATCH_MODE=sync
+    export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false
+    export LYRICS_EDIT_DISPATCHER_ENABLED=true
+    export RENDER_WORKER_MODE=mock
+    export DREAMMAKER_REAL_CALLS_ENABLED=false
+    export YUNWU_REAL_CALLS_ENABLED=false
+    export AGENT_REAL_CALLS_ENABLED=false
+    export DEEPSEEK_REAL_CALLS_ENABLED=false
+    export IMAGE_REAL_CALLS_ENABLED=false
+    export MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS="${MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS:-}"
+    export MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS="${MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS:-}"
+    ./gradlew --no-daemon :apps:music-worker:bootRun
+  ) >"$WORKER_LOG" 2>&1 &
+  WORKER_PID="$!"
+  wait_for_worker
 }
 
 run_normal_smokes() {
@@ -210,13 +297,17 @@ main() {
   MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS="" \
   MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS="" \
   start_api "normal"
+  start_worker "normal"
   run_normal_smokes
+  stop_worker
   stop_api
 
   MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_USER_IDS="mock_package_block_smoke" \
   MOCK_MODERATION_PUBLISH_PACKAGE_BLOCKED_WORK_IDS="" \
   start_api "package-block"
+  start_worker "package-block"
   run_package_block_smoke
+  stop_worker
   stop_api
 
   assert_port_free

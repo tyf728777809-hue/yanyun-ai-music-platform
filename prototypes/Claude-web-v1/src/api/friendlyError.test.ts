@@ -13,6 +13,15 @@ describe('userFriendlyErrorMessage', () => {
     expect(message).not.toContain('No remaining');
   });
 
+  it('does not treat every 409 response as a quota conflict', () => {
+    const message = userFriendlyErrorMessage(
+      new ApiError(409, 'CONFLICT', '当前状态不能润色歌词'),
+    );
+
+    expect(message).toBe('当前状态不能润色歌词');
+    expect(message).not.toContain('改词次数已用完');
+  });
+
   it('keeps network guidance actionable for local development', () => {
     const message = userFriendlyErrorMessage(
       new ApiError(0, 'NETWORK_ERROR', '作曲服务连接中断，请稍后重试。'),

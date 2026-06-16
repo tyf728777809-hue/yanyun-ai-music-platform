@@ -195,6 +195,28 @@ describe('ConfirmView', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('请求编号：req-1');
   });
 
+  it('keeps non-quota conflicts visible without saying edit attempts are exhausted', async () => {
+    vi.spyOn(service, 'polishLyrics').mockRejectedValue(
+      new ApiError(409, 'CONFLICT', '当前状态不能润色歌词', 'req-3'),
+    );
+
+    render(
+      <ToastProvider>
+        <ConfirmView work={work()} refresh={async () => {}} onBackToHome={() => {}} />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '更克制一点' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '开始润色' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('当前状态不能润色歌词');
+    expect(screen.getByRole('alert')).not.toHaveTextContent('改词次数已用完');
+    expect(screen.getByRole('alert')).toHaveTextContent('请求编号：req-3');
+  });
+
   it('waits for refreshed work detail before leaving the polish flow', async () => {
     vi.spyOn(service, 'polishLyrics').mockResolvedValue({
       work_id: 'work-1',
@@ -275,7 +297,7 @@ describe('ConfirmView', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: '开始润色' }));
 
-    expect(await screen.findByText('请求可能仍在后台处理中，正在为你确认最新歌词…')).toBeInTheDocument();
+    expect(await screen.findByText('请求可能仍在后台处理中，正在确认任务状态…')).toBeInTheDocument();
     await waitFor(() => expect(service.getWork).toHaveBeenCalledWith('work-1'));
     resolveGetWork();
     await waitFor(() => expect(refresh).toHaveBeenCalled());
@@ -283,6 +305,43 @@ describe('ConfirmView', () => {
       expect(screen.queryByRole('dialog', { name: 'AI 润色歌词' })).not.toBeInTheDocument(),
     );
     expect(await screen.findByText('已获取润色后的歌词')).toBeInTheDocument();
+  });
+
+  it('returns to the page polling state when a disconnected edit request already created a backend job', async () => {
+    vi.spyOn(service, 'polishLyrics').mockRejectedValue(
+      new ApiError(0, 'NETWORK_ERROR', '作曲服务连接中断，请稍后重试。'),
+    );
+    const runningWork = work({ polish_used_count: 0, polish_remaining_count: 2 });
+    runningWork.active_lyrics_job = {
+      job_id: 'job-2',
+      operation: 'POLISH',
+      status: 'RUNNING',
+      message: 'AI 正在润色歌词',
+    };
+    vi.spyOn(service, 'getWork').mockResolvedValue(runningWork);
+    const refresh = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <ToastProvider>
+        <ConfirmView
+          work={work({ polish_used_count: 0, polish_remaining_count: 2 })}
+          refresh={refresh}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'AI 润色' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /想让 AI/ }), {
+      target: { value: '更押韵一点' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: '开始润色' }));
+
+    await waitFor(() => expect(refresh).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'AI 润色歌词' })).not.toBeInTheDocument(),
+    );
+    expect(await screen.findByText('AI 润色已进入后台处理')).toBeInTheDocument();
   });
 
   it('refreshes and shows a friendly hint when confirming a stale lyrics draft', async () => {

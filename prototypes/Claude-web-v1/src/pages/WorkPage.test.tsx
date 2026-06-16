@@ -173,4 +173,39 @@ describe('WorkPage', () => {
     expect(screen.queryByText('连接短暂中断，正在重连')).not.toBeInTheDocument();
     expect(service.getWork).toHaveBeenCalledTimes(3);
   });
+
+  it('does not treat non-recoverable status errors as temporary reconnecting', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(service, 'getWork')
+      .mockResolvedValueOnce(work())
+      .mockRejectedValueOnce(new ApiError(409, 'CONFLICT', '当前状态不能确认出歌', 'req-4'));
+    vi.spyOn(service, 'confirmWork').mockResolvedValue({
+      work_id: 'work-2',
+      status: 'GENERATING',
+      generation_stage: 'QUOTA_LOCKING',
+      job_id: 'job-1',
+      available_actions: [],
+    });
+
+    renderWorkPage('work-2');
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    fireEvent.click(screen.getByRole('button', { name: '确认出歌' }));
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(screen.getByText('作品状态需要刷新')).toBeInTheDocument();
+    expect(screen.getByText('当前状态不能确认出歌')).toBeInTheDocument();
+    expect(screen.queryByText('连接短暂中断，正在重连')).not.toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(3000);
+    });
+    expect(service.getWork).toHaveBeenCalledTimes(2);
+  });
 });

@@ -3,6 +3,7 @@ import { service } from '../mock/service';
 import { ApiError } from '../api/client';
 import type { WorkDetail } from '../api/types';
 import { deriveViewPhase, type WorkViewPhase } from '../api/workState';
+import { isRecoverableConnectionError } from '../api/friendlyError';
 
 interface PollState {
   work: WorkDetail | null;
@@ -73,7 +74,9 @@ export function useWorkDetail(workId: string | null): PollState {
     if (!work) return;
     const phase = deriveViewPhase(work);
     const shouldPoll =
-      Boolean(error) || Boolean(work.active_lyrics_job) || POLLING_PHASES.has(phase);
+      (Boolean(error) && isRecoverableConnectionError(error))
+      || Boolean(work.active_lyrics_job)
+      || POLLING_PHASES.has(phase);
     if (!shouldPoll) return;
     timer.current = window.setTimeout(() => {
       void fetchOnce();

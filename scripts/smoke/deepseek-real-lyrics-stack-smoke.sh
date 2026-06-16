@@ -4,11 +4,14 @@ set +x
 
 API_ROOT="${API_ROOT:-http://localhost:8080}"
 API_PORT="${API_PORT:-8080}"
+WORKER_PORT="${WORKER_PORT:-8081}"
 START_TIMEOUT_SECONDS="${START_TIMEOUT_SECONDS:-90}"
 LOG_DIR="${LOG_DIR:-build/smoke/deepseek-real-lyrics-stack-$(date +%Y%m%d%H%M%S)}"
 
 API_PID=""
 API_LOG=""
+WORKER_PID=""
+WORKER_LOG=""
 
 fail() {
   printf '[deepseek-stack] ERROR: %s\n' "$*" >&2
@@ -28,11 +31,19 @@ print_logs_hint() {
   if [ -n "${API_LOG:-}" ]; then
     printf '[deepseek-stack] logs:\n'
     printf '  api: %s\n' "$API_LOG"
+    if [ -n "${WORKER_LOG:-}" ]; then
+      printf '  worker: %s\n' "$WORKER_LOG"
+    fi
   fi
 }
 
 cleanup() {
   set +e
+  if [ -n "$WORKER_PID" ] && kill -0 "$WORKER_PID" >/dev/null 2>&1; then
+    log "stopping worker pid=$WORKER_PID"
+    kill "$WORKER_PID" >/dev/null 2>&1
+    wait "$WORKER_PID" >/dev/null 2>&1
+  fi
   if [ -n "$API_PID" ] && kill -0 "$API_PID" >/dev/null 2>&1; then
     log "stopping API pid=$API_PID"
     kill "$API_PID" >/dev/null 2>&1
@@ -97,6 +108,22 @@ wait_for_api() {
   fail "api did not become healthy within ${START_TIMEOUT_SECONDS}s: $API_ROOT/health"
 }
 
+wait_for_worker() {
+  local deadline=$((SECONDS + START_TIMEOUT_SECONDS))
+  while [ "$SECONDS" -lt "$deadline" ]; do
+    if ! kill -0 "$WORKER_PID" >/dev/null 2>&1; then
+      tail -80 "$WORKER_LOG" >&2 || true
+      fail "worker process exited before health became ready"
+    fi
+    if curl -fsS "http://localhost:${WORKER_PORT}/actuator/health" >/dev/null 2>&1; then
+      log "worker is healthy"
+      return
+    fi
+    sleep 2
+  done
+  fail "worker did not become healthy within ${START_TIMEOUT_SECONDS}s"
+}
+
 start_api() {
   log "starting music-api"
   AGENT_REAL_CALLS_ENABLED=true \
@@ -114,6 +141,7 @@ start_api() {
   YUNWU_REAL_CALLS_ENABLED=false \
   MUSIC_WORKFLOW_DISPATCH_MODE=sync \
   WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+  LYRICS_EDIT_DISPATCHER_ENABLED=false \
   RENDER_WORKER_MODE=mock \
   COMPANY_ACCOUNT_ADAPTER_MODE=mock \
   COMPANY_MODERATION_ADAPTER_MODE=mock \
@@ -123,6 +151,37 @@ start_api() {
   ./gradlew :apps:music-api:bootRun >"$API_LOG" 2>&1 &
   API_PID="$!"
   wait_for_api
+}
+
+start_worker() {
+  log "starting music-worker"
+  WORKER_LOG="$LOG_DIR/music-worker.log"
+  AGENT_REAL_CALLS_ENABLED=true \
+  DEEPSEEK_REAL_CALLS_ENABLED=true \
+  DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}" \
+  DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}" \
+  DEEPSEEK_TIMEOUT_MS="${DEEPSEEK_TIMEOUT_MS:-30000}" \
+  DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}" \
+  DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}" \
+  DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}" \
+  MUSIC_PROVIDER=mock \
+  IMAGE_PROVIDER=mock \
+  DREAMMAKER_REAL_CALLS_ENABLED=false \
+  IMAGE_REAL_CALLS_ENABLED=false \
+  YUNWU_REAL_CALLS_ENABLED=false \
+  MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+  WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+  LYRICS_EDIT_DISPATCHER_ENABLED=true \
+  RENDER_WORKER_MODE=mock \
+  MUSIC_WORKER_PORT="$WORKER_PORT" \
+  COMPANY_ACCOUNT_ADAPTER_MODE=mock \
+  COMPANY_MODERATION_ADAPTER_MODE=mock \
+  COMPANY_QUOTA_ADAPTER_MODE=mock \
+  COMPANY_PUBLISH_ADAPTER_MODE=mock \
+  COMPANY_SHARE_ADAPTER_MODE=mock \
+  ./gradlew :apps:music-worker:bootRun >"$WORKER_LOG" 2>&1 &
+  WORKER_PID="$!"
+  wait_for_worker
 }
 
 run_smoke() {
@@ -163,7 +222,9 @@ main() {
   log "logs will be written under $LOG_DIR"
 
   port_free "$API_PORT"
+  port_free "$WORKER_PORT"
   start_api
+  start_worker
   run_smoke
   log "PASS stack smoke provider=deepseek"
   print_logs_hint

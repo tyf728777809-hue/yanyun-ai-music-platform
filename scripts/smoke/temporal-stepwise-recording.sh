@@ -6,6 +6,8 @@ API_HEALTH_URL="${API_HEALTH_URL:-http://localhost:8080/health}"
 MOCK_USER_ID="${MOCK_USER_ID:-stepwise_smoke_$(date +%s)_$RANDOM}"
 EXPECTED_STEP_COUNT="${EXPECTED_STEP_COUNT:-13}"
 CHECK_DB="${CHECK_DB:-true}"
+LYRICS_READY_MAX_POLL_ATTEMPTS="${LYRICS_READY_MAX_POLL_ATTEMPTS:-60}"
+LYRICS_READY_POLL_INTERVAL_SECONDS="${LYRICS_READY_POLL_INTERVAL_SECONDS:-1}"
 
 fail() {
   printf '[stepwise-smoke] ERROR: %s\n' "$*" >&2
@@ -42,6 +44,33 @@ post_json() {
     -d "$body"
 }
 
+get_work() {
+  local work_id="$1"
+  curl -sS -f "${API_BASE_URL}/works/${work_id}" \
+    -H "X-Mock-User-Id: ${MOCK_USER_ID}"
+}
+
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local detail
+  local status
+  local stage
+  for _ in $(seq 1 "$LYRICS_READY_MAX_POLL_ATTEMPTS"); do
+    detail="$(get_work "$work_id")"
+    status="$(jq -r '.status' <<<"$detail")"
+    stage="$(jq -r '.generation_stage' <<<"$detail")"
+    if [[ "$status" == "LYRICS_READY" && "$stage" == "WAITING_CONFIRM" ]]; then
+      printf '%s\n' "$detail"
+      return 0
+    fi
+    if [[ "$status" == "FAILED" || "$status" == "LYRICS_FAILED" ]]; then
+      fail "work failed before lyrics ready: $(jq -c '{status, generation_stage, failure}' <<<"$detail")"
+    fi
+    sleep "$LYRICS_READY_POLL_INTERVAL_SECONDS"
+  done
+  fail "work did not become LYRICS_READY / WAITING_CONFIRM in time: work_id=${work_id}"
+}
+
 psql_query() {
   local sql="$1"
   docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc "$sql"
@@ -66,11 +95,13 @@ create_body="$(
 
 log "creating lyrics work"
 create_response="$(post_json "/works/lyrics" "$(idempotency_key lyrics)" "$create_body")"
-assert_json "$create_response" '.status == "LYRICS_READY" and .generation_stage == "WAITING_CONFIRM"' "work did not enter lyrics ready state"
+assert_json "$create_response" '.status == "LYRICS_GENERATING" and .generation_stage == "LYRICS_GENERATING"' "work did not enter lyrics generating state"
 work_id="$(jq -er '.work_id' <<<"$create_response")"
 log "created work_id=${work_id}"
+detail_response="$(wait_for_lyrics_ready "$work_id")"
+lyrics_draft_id="$(jq -er '.lyrics_draft.lyrics_draft_id' <<<"$detail_response")"
 
-confirm_body='{"music_provider":"mock"}'
+confirm_body="$(jq -n --arg lyricsDraftId "$lyrics_draft_id" '{music_provider:"mock", lyrics_draft_id:$lyricsDraftId}')"
 log "confirming work through outbox"
 confirm_response="$(post_json "/works/${work_id}/confirm" "$(idempotency_key confirm)" "$confirm_body")"
 assert_json "$confirm_response" '.status == "GENERATING" and .generation_stage == "QUOTA_LOCKING"' "confirm did not enter outbox generating state"

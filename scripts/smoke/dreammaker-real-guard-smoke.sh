@@ -9,6 +9,8 @@ CHECK_DB="${CHECK_DB:-true}"
 POSTGRES_CONTAINER="${POSTGRES_CONTAINER:-yanyun-postgres}"
 POSTGRES_USER="${POSTGRES_USER:-postgres}"
 POSTGRES_DB="${POSTGRES_DB:-yanyun_music}"
+LYRICS_READY_MAX_POLL_ATTEMPTS="${LYRICS_READY_MAX_POLL_ATTEMPTS:-60}"
+LYRICS_READY_POLL_INTERVAL_SECONDS="${LYRICS_READY_POLL_INTERVAL_SECONDS:-1}"
 
 fail() {
   printf '[dreammaker-guard] ERROR: %s\n' "$*" >&2
@@ -41,6 +43,32 @@ post_json() {
 psql_query() {
   local sql="$1"
   docker exec "$POSTGRES_CONTAINER" psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "$sql"
+}
+
+get_work() {
+  local work_id="$1"
+  curl -sS -f "$API_BASE/works/$work_id" -H "X-Mock-User-Id: $MOCK_USER"
+}
+
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  local detail
+  local status
+  local stage
+  for _ in $(seq 1 "$LYRICS_READY_MAX_POLL_ATTEMPTS"); do
+    detail="$(get_work "$work_id")"
+    status="$(jq -r '.status' <<<"$detail")"
+    stage="$(jq -r '.generation_stage' <<<"$detail")"
+    if [[ "$status" == "LYRICS_READY" && "$stage" == "WAITING_CONFIRM" ]]; then
+      printf '%s\n' "$detail"
+      return 0
+    fi
+    if [[ "$status" == "FAILED" || "$status" == "LYRICS_FAILED" ]]; then
+      fail "work failed before lyrics ready: $(jq -c '{status, generation_stage, failure}' <<<"$detail")"
+    fi
+    sleep "$LYRICS_READY_POLL_INTERVAL_SECONDS"
+  done
+  fail "work did not become LYRICS_READY / WAITING_CONFIRM in time: work_id=${work_id}"
 }
 
 need_command curl
@@ -88,7 +116,7 @@ CREATE_RESPONSE="$(
 WORK_ID="$(jq -er '.work_id' <<<"$CREATE_RESPONSE")"
 log "created work_id=$WORK_ID"
 
-DETAIL_RESPONSE="$(curl -sS -f "$API_BASE/works/$WORK_ID" -H "X-Mock-User-Id: $MOCK_USER")"
+DETAIL_RESPONSE="$(wait_for_lyrics_ready "$WORK_ID")"
 LYRICS_DRAFT_ID="$(jq -er '.lyrics_draft.lyrics_draft_id' <<<"$DETAIL_RESPONSE")"
 
 log "confirming with provider=$REAL_PROVIDER; expecting runtime guard HTTP 409"

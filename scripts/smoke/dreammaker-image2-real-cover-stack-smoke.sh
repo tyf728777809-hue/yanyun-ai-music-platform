@@ -3,10 +3,12 @@ set -euo pipefail
 set +x
 
 API_ROOT="${API_ROOT:-http://localhost:8080}"
+WORKER_PORT="${WORKER_PORT:-8081}"
 START_TIMEOUT_SECONDS="${START_TIMEOUT_SECONDS:-60}"
 LOG_DIR="${LOG_DIR:-build/smoke/dreammaker-image2-real-cover-stack-$(date +%Y%m%d%H%M%S)}"
 
 API_PID=""
+WORKER_PID=""
 
 fail() {
   printf '[dreammaker-image2-stack] ERROR: %s\n' "$*" >&2
@@ -26,11 +28,19 @@ print_logs_hint() {
   if [ -n "${API_LOG:-}" ]; then
     printf '[dreammaker-image2-stack] logs:\n'
     printf '  api: %s\n' "$API_LOG"
+    if [ -n "${WORKER_LOG:-}" ]; then
+      printf '  worker: %s\n' "$WORKER_LOG"
+    fi
   fi
 }
 
 cleanup() {
   set +e
+  if [ -n "$WORKER_PID" ] && kill -0 "$WORKER_PID" >/dev/null 2>&1; then
+    log "stopping worker pid=$WORKER_PID"
+    kill "$WORKER_PID" >/dev/null 2>&1
+    wait "$WORKER_PID" >/dev/null 2>&1
+  fi
   if [ -n "$API_PID" ] && kill -0 "$API_PID" >/dev/null 2>&1; then
     log "stopping API pid=$API_PID"
     kill "$API_PID" >/dev/null 2>&1
@@ -48,6 +58,10 @@ require_real_confirmation() {
   if [ "${ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE:-}" != "1" ]; then
     fail "refusing to run real provider smoke; set ALLOW_DREAMMAKER_IMAGE2_REAL_SMOKE=1"
   fi
+}
+
+wait_for_worker() {
+  wait_for_url "worker" "http://localhost:${WORKER_PORT}/actuator/health"
 }
 
 read_secret_if_needed() {
@@ -114,6 +128,7 @@ start_api() {
   YUNWU_REAL_CALLS_ENABLED=false \
   MUSIC_WORKFLOW_DISPATCH_MODE=sync \
   WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+  LYRICS_EDIT_DISPATCHER_ENABLED=false \
   RENDER_WORKER_MODE=mock \
   COMPANY_ACCOUNT_ADAPTER_MODE=mock \
   COMPANY_MODERATION_ADAPTER_MODE=mock \
@@ -123,6 +138,38 @@ start_api() {
   ./gradlew :apps:music-api:bootRun >"$API_LOG" 2>&1 &
   API_PID="$!"
   wait_for_url "api" "$API_ROOT/health"
+}
+
+start_worker() {
+  log "starting music-worker"
+  WORKER_LOG="$LOG_DIR/music-worker.log"
+  IMAGE_PROVIDER=image2 \
+  IMAGE2_BACKEND=dreammaker \
+  IMAGE_REAL_CALLS_ENABLED=true \
+  DREAMMAKER_REAL_CALLS_ENABLED=true \
+  DREAMMAKER_API_BASE_URL="${DREAMMAKER_API_BASE_URL:-https://api-all.dreammaker.netease.com}" \
+  IMAGE2_MODEL_NAME="${IMAGE2_MODEL_NAME:-gpt-image-2}" \
+  IMAGE2_SIZE="${IMAGE2_SIZE:-2048x1152}" \
+  IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}" \
+  IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}" \
+  MUSIC_PROVIDER=mock \
+  MOCK_MUSIC_DURATION_MS="${MOCK_MUSIC_DURATION_MS:-1000}" \
+  AGENT_REAL_CALLS_ENABLED=false \
+  DEEPSEEK_REAL_CALLS_ENABLED=false \
+  YUNWU_REAL_CALLS_ENABLED=false \
+  MUSIC_WORKFLOW_DISPATCH_MODE=sync \
+  WORKFLOW_OUTBOX_DISPATCHER_ENABLED=false \
+  LYRICS_EDIT_DISPATCHER_ENABLED=true \
+  RENDER_WORKER_MODE=mock \
+  MUSIC_WORKER_PORT="$WORKER_PORT" \
+  COMPANY_ACCOUNT_ADAPTER_MODE=mock \
+  COMPANY_MODERATION_ADAPTER_MODE=mock \
+  COMPANY_QUOTA_ADAPTER_MODE=mock \
+  COMPANY_PUBLISH_ADAPTER_MODE=mock \
+  COMPANY_SHARE_ADAPTER_MODE=mock \
+  ./gradlew :apps:music-worker:bootRun >"$WORKER_LOG" 2>&1 &
+  WORKER_PID="$!"
+  wait_for_worker
 }
 
 run_smoke() {
@@ -162,7 +209,9 @@ main() {
   log "logs will be written under $LOG_DIR"
 
   port_free 8080
+  port_free "$WORKER_PORT"
   start_api
+  start_worker
   run_smoke
   log "PASS stack smoke provider=image2 backend=dreammaker"
   print_logs_hint

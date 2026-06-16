@@ -50,6 +50,26 @@ get_json() {
   curl -fsS "$API_BASE$path" -H "X-Mock-User-Id: $MOCK_USER"
 }
 
+wait_for_lyrics_ready() {
+  local work_id="$1"
+  for _ in $(seq 1 "$MAX_POLL_ATTEMPTS"); do
+    DETAIL_RESPONSE="$(get_json "/works/$work_id")"
+    STATUS="$(echo "$DETAIL_RESPONSE" | jq -r '.status')"
+    STAGE="$(echo "$DETAIL_RESPONSE" | jq -r '.generation_stage')"
+    FAILURE_CODE="$(echo "$DETAIL_RESPONSE" | jq -r '.failure.failure_code // empty')"
+    log "$(date '+%H:%M:%S') lyrics status=$STATUS stage=$STAGE failure=${FAILURE_CODE:-none}"
+    if [ "$STATUS" = "LYRICS_READY" ] && [ "$STAGE" = "WAITING_CONFIRM" ]; then
+      return 0
+    fi
+    if [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "LYRICS_FAILED" ]; then
+      echo "$DETAIL_RESPONSE" | jq '{work_id, status, generation_stage, failure}' >&2
+      fail "lyrics generation failed before cover smoke"
+    fi
+    sleep "$POLL_INTERVAL_SECONDS"
+  done
+  fail "lyrics draft was not ready in time"
+}
+
 require_command curl
 require_command jq
 require_command docker
@@ -118,7 +138,7 @@ if [ -z "$WORK_ID" ] || [ "$WORK_ID" = "null" ]; then
 fi
 log "work_id=$WORK_ID"
 
-DETAIL_RESPONSE="$(get_json "/works/$WORK_ID")"
+wait_for_lyrics_ready "$WORK_ID"
 LYRICS_DRAFT_ID="$(echo "$DETAIL_RESPONSE" | jq -r '.lyrics_draft.lyrics_draft_id // empty')"
 if [ -z "$LYRICS_DRAFT_ID" ]; then
   echo "$DETAIL_RESPONSE" | jq '{work_id, status, generation_stage, package_status, failure_code: (.failure.failure_code? // null), request_id: (.error.request_id? // null)}' >&2
