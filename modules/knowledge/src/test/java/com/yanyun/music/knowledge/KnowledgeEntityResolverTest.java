@@ -42,6 +42,41 @@ class KnowledgeEntityResolverTest {
   }
 
   @Test
+  void doesNotFuzzyMatchGameplayConceptsToWorldTerms() {
+    List<KnowledgeAliasCandidate> aliases =
+        List.of(alias("gameplay-xunsheng", "寻声", "gameplay", "十六声"));
+
+    List<ResolvedKnowledgeEntity> result =
+        resolver.resolve("琴里藏着十六州每一座城的旧调", List.of(), aliases, 3);
+
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void preservesDirectGameplayMatchesWithoutFuzzyCorrection() {
+    ResolvedKnowledgeEntity direct =
+        new ResolvedKnowledgeEntity(
+            "gameplay-xunsheng",
+            "寻声",
+            "gameplay",
+            "十六声",
+            KnowledgeEntityMatchKind.ALIAS,
+            1.0d,
+            false);
+
+    List<ResolvedKnowledgeEntity> result =
+        resolver.resolve(
+            "燕云十六声里的寻声玩法",
+            List.of(direct),
+            List.of(alias("gameplay-xunsheng", "寻声", "gameplay", "十六声")),
+            3);
+
+    assertEquals(1, result.size());
+    assertEquals(KnowledgeEntityMatchKind.ALIAS, result.getFirst().matchKind());
+    assertEquals("十六声", result.getFirst().matchedText());
+  }
+
+  @Test
   void marksEquallyLikelyFuzzyMatchesAsAmbiguous() {
     List<KnowledgeAliasCandidate> aliases =
         List.of(

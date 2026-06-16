@@ -26,6 +26,7 @@ public final class KnowledgeEntityResolver {
     List<FuzzyMatch> matches =
         safeList(aliases).stream()
             .filter(alias -> !resolved.containsKey(alias.entityId()))
+            .filter(alias -> allowsFuzzyCorrection(alias.category()))
             .map(alias -> bestFuzzyMatch(normalizedQuery, alias))
             .filter(Objects::nonNull)
             .sorted(
@@ -39,6 +40,16 @@ public final class KnowledgeEntityResolver {
       resolved.putIfAbsent(entity.entityId(), entity);
     }
     return resolved.values().stream().limit(limit).toList();
+  }
+
+  private boolean allowsFuzzyCorrection(String category) {
+    if (category == null || category.isBlank()) {
+      return false;
+    }
+    return switch (category.trim().toLowerCase()) {
+      case "character", "story", "storyline", "region", "place", "faction" -> true;
+      default -> false;
+    };
   }
 
   private <T> List<T> safeList(List<T> values) {

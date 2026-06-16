@@ -726,6 +726,59 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
+  void qualityAgentLocalSafetyDoesNotRejectGameplayFuzzyWorldTerm() throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "LYRICS",
+                            "decision",
+                            "PASS",
+                            "score",
+                            90,
+                            "reasons",
+                            List.of(),
+                            "recommended_action",
+                            "PASS",
+                            "retryable",
+                            false))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.LYRICS,
+                "旧调",
+                "[Chorus]\n琴里藏着十六州每一座城的旧调",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "song_summary",
+                    "一个琴师把十六州的旧调唱给酒楼里的旅人。",
+                    "knowledge_resolved_entities",
+                    List.of("gameplay/寻声 matched=十六州 kind=fuzzy confidence=0.92"))));
+
+    assertEquals(QualityDecision.PASS, result.decision());
+  }
+
+  @Test
   void qualityAgentLocalSafetyAllowsControlledCoverTitleTypography() throws IOException {
     server =
         startServer(

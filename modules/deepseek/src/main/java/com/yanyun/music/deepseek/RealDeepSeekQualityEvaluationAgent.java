@@ -159,6 +159,10 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       if (!label.contains("kind=fuzzy")) {
         continue;
       }
+      String category = before(label, "/");
+      if (!allowsFuzzyTypoGuard(category)) {
+        continue;
+      }
       String canonical = between(label, "/", " matched=");
       String matched = between(label, "matched=", " kind=");
       if (!canonical.isBlank()
@@ -169,6 +173,24 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
       }
     }
     return false;
+  }
+
+  private boolean allowsFuzzyTypoGuard(String category) {
+    if (category == null || category.isBlank()) {
+      return false;
+    }
+    return switch (category.trim().toLowerCase(Locale.ROOT)) {
+      case "character", "story", "storyline", "region", "place", "faction" -> true;
+      default -> false;
+    };
+  }
+
+  private String before(String value, String marker) {
+    int end = value.indexOf(marker);
+    if (end < 0) {
+      return "";
+    }
+    return value.substring(0, end).trim();
   }
 
   private boolean misusesPendingCluesAsConfirmed(QualityEvaluationRequest request) {
