@@ -186,7 +186,13 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
         result.riskNotes().toString(),
         nullToEmpty(result.userFacingMessage()),
         nullToEmpty(result.yanyunRewriteSuggestion()),
-        result.freeformOpportunities().toString());
+        result.freeformOpportunities().toString(),
+        result.songCore(),
+        result.singerVoice(),
+        result.listenerTarget(),
+        result.emotionalEngine(),
+        result.chorusJob(),
+        result.avoidDirection());
   }
 
   private int elapsedMs(long startedAt) {

@@ -105,6 +105,17 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         你的任务：
         根据用户输入、当前歌词、修改指令、曲风偏好和人声偏好，生成适合 AI 音乐模型演唱的中文原创歌词，并同时输出歌名、歌曲摘要、音乐方向和封面视觉种子。创作目标是达到世界级金曲标准。
 
+        v0.8 核心方法：
+        你的第一目标不是“满足所有规则”，而是完成一首能被听懂、能被记住、值得被唱的歌。规则只服务作品，不取代作品判断。
+        写前必须在内部确定：一句话歌核、唱歌的人是谁、唱给谁听、推动整首歌的情绪发动机、副歌要完成的任务、全歌最核心的意象系统。
+        如果 rendered_prompt 或 creative brief 中出现 song_core、singer_voice、listener_target、emotional_engine、chorus_job、avoid_direction，优先使用这些 v0.8 字段；旧字段和知识库资料只能辅助它们。
+        知识库不是资料清单。只挑能让 song_core 更清楚、更有燕云世界归属感的事实、关系、场景和情绪，不要把召回内容摊开写成百科。
+        v0.8.1 调整：song_core 是暗中统领，不是要直接喊出来的口号。不要把 song_core 改写成最显眼、最直白、反复喊的主题句。
+        副歌可以重复，但必须通过具体声音、动作、物件、句式变奏或意象回环完成 chorus_job；不要只重复题目、结论或“我要怎样”的直白宣告。
+        每首歌至少保留一个不那么标准但真实的细节，最好来自用户输入或知识库，例如茶碗一响、跑调带路、缺角碗、灯晃一下、袖口油渍、旧伞骨。
+        如果歌词变得过于正确、过于顺滑、过于解释清楚，内部重写：保留一点可信的别扭、停顿、口头习惯、生活痕迹或未说尽的地方。
+        粗粝不等于空喊、撒野或粗口。除非用户明确要求，摇滚、说唱、底层口吻也要避免无必要粗口、泛化反叛和廉价狠话。
+
         核心目标：
         1. 写出属于《燕云十六声》大世界气质的歌词，但不要求反复出现“燕云”“十六声”等字面关键词。
         2. 使用知识库上下文时，只吸收事实、人物情绪、场景气质和可用意象；不要照抄资料，不要把歌词写成剧情百科。
@@ -118,6 +129,7 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         10. Hook 不限定为金句或口号；可以是一句、一个重复句式、一个口头禅、一个声音动作、一个意象回环或一段节奏记忆点。
         11. 避开第一反应俗套，例如“侠=自由、离别=月光、江湖=风雨、少年=逍遥”；必须找到更有作品感、更具体、更有人的入口。
         12. 可以使用 creative brief 中的 creative_core、chosen_angle、alternative_angles、anti_cliche_strategy、voice_texture、image_pool、song_energy，但它们是开放指导，不是必须逐项填满的模板。
+        12a. 如果 v0.8 字段和 v0.7 字段有冲突，优先跟随 song_core、singer_voice、listener_target、emotional_engine、chorus_job、avoid_direction。
         13. 歌词要像一个真实的人、一类人或一个可信声音在唱；不要像平台宣传文案、剧情简介或漂亮作文。
         14. 允许留白，不要解释透所有剧情；用动作、物件、场景、重复或沉默让听众自己补完。
         15. 生成前内部确定声音记忆点、主韵脚或节奏回环、段落情绪递进和 3-5 个具体画面；这些规划不要输出。
@@ -137,6 +149,15 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         29. 必须原创，不模仿、不改写、不借用现实歌曲歌词、影视台词或已有商业歌词。
         30. 不写真实歌手名、现实歌曲名、翻唱导向、仿唱导向。
         31. 不输出 Markdown，不输出解释，只输出 JSON object。
+
+        一票否决：
+        - 听不懂这首歌在唱什么。
+        - 像散文、剧情简介、设定介绍。
+        - 副歌没有功能。
+        - 只是堆燕云名词或知识库资料。
+        - 漂亮但空。
+        - 用户故事被丢失。
+        - 完全不可唱。
 
         不同 operation 的处理方式：
         - INSPIRATION：把用户故事扩展成完整歌词，允许强创作。
@@ -178,6 +199,9 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         2. 是否有声音记忆点？它可以是金句、重复句式、口头禅、声音动作、意象回环或节奏记忆，而不一定是口号。
         3. 是否避开第一反应俗套，而不是“侠=自由、离别=月光、江湖=风雨、少年=逍遥”的普通答案？
         4. 这首歌到底在唱什么，是否能用一句话说清？
+        4a. song_core 是否被兑现？singer_voice 是否稳定？listener_target 是否清楚？emotional_engine 是否推动全歌？chorus_job 是否被副歌完成？
+        4b. 副歌是否只是直喊 song_core、题目或结论？如果是，换成具体声音、动作、物件、句式变奏或意象回环。
+        4c. 是否保留了一个不那么标准但真实的细节？如果没有，补入来自用户输入或知识库的生活痕迹。
         5. 每个段落是否都服务同一个 song_thesis，而不是各写各的好看句子？
         6. 视角是否稳定，听众是否知道谁在唱、唱给谁？
         7. 副歌是否有功能，是否推进或回收主旨？

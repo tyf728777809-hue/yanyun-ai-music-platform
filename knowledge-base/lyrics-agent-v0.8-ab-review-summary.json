@@ -1,0 +1,177 @@
+{
+  "version": "lyrics-agent-v0.8-initial-batch-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "rubric": {
+    "total": 100,
+    "dimensions": {
+      "song_thesis": 12,
+      "narrative_pov": 10,
+      "emotional_truth": 12,
+      "distinctive_entry": 10,
+      "language_accuracy": 10,
+      "chorus_function": 10,
+      "memory_device": 10,
+      "singability_rhyme": 10,
+      "section_progression": 8,
+      "imagery_system": 6,
+      "yanyun_grounding": 8,
+      "original_sophistication": 4
+    }
+  },
+  "summary": {
+    "sample_count": 6,
+    "v08_wins": 1,
+    "v07_wins": 5,
+    "ties": 0,
+    "verdict": "v0.8 initial prompt is not ready to expand to 24 samples. It improves clarity and chorus explicitness, but too often turns the song core into a direct repeated slogan and loses the odd concrete details that make lyrics feel alive."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.7",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "c6349354f2d73ca0a3470f37dd193885abd897b6c0827146e8659ddc2cf7670f",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["chorus_long", "good_character_grounding", "clear_home_motif"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "0cbf78949788f1ea58c60f32aba6c3c9f691c1d04a925a16c6e54b2c8a0ced8c",
+          "score": 82,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["hook_too_literal", "character_texture_thinned", "simple_repetition"],
+          "failure_attribution": ["LyricsAgent 执行弱"]
+        }
+      ],
+      "review_note": "v0.8 的“等我回家”更像副歌，但过于直接，寒香寻/不羡仙的复杂性被削薄。"
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "37e4e0c0ddde789a82a78a8e1735accce02a91559d89ad18248058059b9426da",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": ["strong_sound_memory", "specific_player_memory", "chorus_has_device"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "bff5bc7e8e730e0ad3011d0fc3aa8b6ce61b327c39381e6024536c39664894fd",
+          "score": 80,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["direct_theme_statement", "less_unique_entry", "generic_homecoming"],
+          "failure_attribution": ["CreativeBrief 方向错误", "LyricsAgent 执行弱"]
+        }
+      ],
+      "review_note": "v0.7 的“我听见...”把怀念做成声音装置，v0.8 变成更常规的“我想回去”。"
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "d0622b874f100451b80f0ffea6e873b8eadaec06b09ebdd8cfd9d99511aed5eb",
+          "score": 87,
+          "conclusion": "金曲潜力",
+          "issue_tags": ["strong_hook", "human_scale", "specific_warmth"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "b304e58839e39626cfd6b07730b97f5ac744ffc3c45e2634fa5a135614f0b0fd",
+          "score": 76,
+          "conclusion": "不通过",
+          "issue_tags": ["slogan_like", "rock_cliche", "too_on_the_nose"],
+          "failure_attribution": ["LyricsAgent 执行弱", "LyricsAgent Prompt 规则过载"]
+        }
+      ],
+      "review_note": "v0.8 把“不厉害但出手”唱成口号，少了 v0.7 那种笨拙、温暖和真实人味。"
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "B_v0.8",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "ba8195d06923ec603fc25d8b8342e9085bcf24bcb159d5bf98e9f5ef91f8e2eb",
+          "score": 82,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["good_lamp_motif", "slightly_static", "repetition_safe"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "a75c7bb22c7bf4263e3f9f527caa02e955730d725db03cc41688c1278cd53d1d",
+          "score": 86,
+          "conclusion": "金曲潜力",
+          "issue_tags": ["clear_scene_voice", "specific_warmth", "good_chorus_job"],
+          "failure_attribution": []
+        }
+      ],
+      "review_note": "v0.8 这一条胜出：保留小场景，不宏大，且副歌完成了“暂放疲惫”的功能。"
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "A_v0.7",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "f98ab7497de64ec3e0699d4163bbed0062ed3a7497cdf4f0c06fffc23ea17bcc",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": ["excellent_memory_line", "real_contrast", "specific_friendship"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "ad85e47feeb1c0f5563736bf75c4875dd3a2e0ed67194a3dc4c88cfb829b8ee5",
+          "score": 87,
+          "conclusion": "金曲潜力",
+          "issue_tags": ["good_repeated_phrase", "clean_turn", "slightly_less_personal"],
+          "failure_attribution": []
+        }
+      ],
+      "review_note": "两版都强。v0.7 的“你跑调还敢带路”更独特，v0.8 的“没事的”更稳但稍常见。"
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "A_v0.7",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "b05e3a9995a9d7f7c36a6da2e79b7411e759450d9f5cb66f845df2f331d252e8",
+          "score": 85,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["strong_raw_texture", "good_rock_device", "controlled_messiness"],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8",
+          "lyrics_hash": "51e4368b21d94e75ce492e83a41cc6f98dc43d9a2937b6e078c89415ca13624b",
+          "score": 82,
+          "conclusion": "可用但不够顶",
+          "issue_tags": ["too_performative", "commercial_tone_risk", "vulgar_outro"],
+          "failure_attribution": ["LyricsAgent 执行弱"]
+        }
+      ],
+      "review_note": "v0.8 更冲，但有表演化和粗口风险；v0.7 更像可控的底层摇滚歌词。"
+    }
+  ],
+  "next_prompt_adjustments": [
+    "Keep v0.8 song_core, but forbid translating it into the most obvious repeated slogan.",
+    "Ask chorus_job to be completed through a concrete sound, action, object, or sentence shape, not necessarily a direct title phrase.",
+    "Require one odd but true detail from the user input or knowledge context to survive into the chorus or bridge.",
+    "When user input is light or intimate, explicitly avoid over-clarifying or over-explaining the emotion.",
+    "For rock/rough styles, preserve rawness but avoid empty shouting, generic rebellion, and unnecessary profanity."
+  ]
+}

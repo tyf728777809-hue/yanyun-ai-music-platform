@@ -51,7 +51,7 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
     assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
     assertEquals(7, result.promptTemplateVersions().get("lyrics.inspiration.v1"));
-    assertEquals(7, result.promptTemplateVersions().get("creative.brief.v7"));
+    assertEquals(8, result.promptTemplateVersions().get("creative.brief.v8"));
     assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
   }
 
@@ -132,6 +132,12 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(
         renderedInstructions.getFirst().contains("yanyun_references=[Mock Yanyun Reference]"));
     assertTrue(renderedInstructions.getFirst().contains("creative_core="));
+    assertTrue(renderedInstructions.getFirst().contains("song_core="));
+    assertTrue(renderedInstructions.getFirst().contains("singer_voice="));
+    assertTrue(renderedInstructions.getFirst().contains("listener_target="));
+    assertTrue(renderedInstructions.getFirst().contains("emotional_engine="));
+    assertTrue(renderedInstructions.getFirst().contains("chorus_job="));
+    assertTrue(renderedInstructions.getFirst().contains("avoid_direction="));
     assertTrue(renderedInstructions.getFirst().contains("chosen_angle="));
     assertTrue(renderedInstructions.getFirst().contains("alternative_angles="));
     assertTrue(renderedInstructions.getFirst().contains("anti_cliche_strategy="));
@@ -144,6 +150,7 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(renderedInstructions.getFirst().contains("chorus_function="));
     assertTrue(renderedInstructions.getFirst().contains("memory_device="));
     assertTrue(renderedInstructions.getFirst().contains("songcraft_policy="));
+    assertTrue(renderedInstructions.getFirst().contains("v08_policy="));
     assertTrue(renderedInstructions.getFirst().contains("polish_policy="));
   }
 
@@ -219,7 +226,7 @@ class DefaultLyricsGenerationServiceTest {
 
     assertEquals("[Verse]\nEdited lyrics", result.lyricsText());
     assertEquals(BigDecimal.valueOf(0.72), result.qualityScore());
-    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v7"));
+    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v8"));
     assertEquals(7, result.promptTemplateVersions().get("lyrics.polish.v1"));
     assertEquals(2, records.size());
     assertEquals("KnowledgeRetrieve", records.get(0).agentName());

@@ -76,7 +76,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertEquals(CreativeDomainDecision.REJECT, result.domainDecision());
     assertEquals(0, requestCount.get());
     assertEquals("CreativeBriefAgent", records.getFirst().agentName());
-    assertEquals("v0.7", records.getFirst().agentVersion());
+    assertEquals("v0.8", records.getFirst().agentVersion());
   }
 
   @Test
@@ -121,6 +121,18 @@ class RealDeepSeekCreativeAgentsTest {
                             List.of("埋刀", "雪线", "旧马蹄"),
                             "song_energy",
                             "收束后回响",
+                            "song_core",
+                            "一个人把刀埋下，不是认输，而是终于愿意放过自己。",
+                            "singer_voice",
+                            "归来的无名游侠低声自述",
+                            "listener_target",
+                            "曾经一起走过边城的人",
+                            "emotional_engine",
+                            "仍有旧梦但不再拔刀",
+                            "chorus_job",
+                            "把放下唱成一种仍有回声的选择",
+                            "avoid_direction",
+                            "避免写成边塞风雪和孤刀的普通古风画面",
                             "freeform_opportunities",
                             List.of()))));
     RealDeepSeekCreativeBriefAgent agent =
@@ -145,6 +157,8 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(result.yanyunReferences().contains("燕云十六声玩家故事"));
     assertTrue(result.yanyunReferences().contains("江湖游侠心境"));
     assertTrue(result.creativeCore().contains("无名游侠"));
+    assertTrue(result.songCore().contains("埋下"));
+    assertTrue(result.chorusJob().contains("放下"));
     assertTrue(result.alternativeAngles().contains("边关旧友"));
     assertTrue(result.imagePool().contains("埋刀"));
   }
@@ -196,6 +210,18 @@ class RealDeepSeekCreativeAgentsTest {
                           List.of("摊灯", "葱油饼", "袖口油渍"),
                           "song_energy",
                           "低烧后抬头",
+                          "song_core",
+                          "一个小摊贩不是突然成英雄，而是在害怕时还是伸手。",
+                          "singer_voice",
+                          "市井小人物第一人称",
+                          "listener_target",
+                          "同样普通但不想袖手旁观的人",
+                          "emotional_engine",
+                          "害怕和出手同时存在",
+                          "chorus_job",
+                          "把微小选择唱成能重复的勇气",
+                          "avoid_direction",
+                          "避免写成大侠降临或救世英雄",
                           "freeform_opportunities",
                           List.of())));
             });
@@ -227,13 +253,24 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("voice_texture"));
     assertTrue(systemPrompt.contains("image_pool"));
     assertTrue(systemPrompt.contains("song_energy"));
+    assertTrue(systemPrompt.contains("song_core"));
+    assertTrue(systemPrompt.contains("singer_voice"));
+    assertTrue(systemPrompt.contains("listener_target"));
+    assertTrue(systemPrompt.contains("emotional_engine"));
+    assertTrue(systemPrompt.contains("chorus_job"));
+    assertTrue(systemPrompt.contains("avoid_direction"));
+    assertTrue(systemPrompt.contains("不是替用户写剧情大纲"));
     assertTrue(systemPrompt.contains("song_thesis"));
     assertTrue(systemPrompt.contains("central_tension"));
     assertTrue(systemPrompt.contains("emotional_turn"));
     assertTrue(systemPrompt.contains("chorus_function"));
     assertTrue(systemPrompt.contains("memory_device"));
     assertTrue(systemPrompt.contains("这首歌到底在唱什么"));
-    assertTrue(systemPrompt.contains("侠=自由、离别=月光、江湖=风雨、少年=逍遥"));
+    assertTrue(systemPrompt.contains("不要建议 LyricsAgent 直接反复喊主题句"));
+    assertTrue(systemPrompt.contains("具体声音、动作、物件、句式变奏或意象回环"));
+    assertTrue(systemPrompt.contains("过度直白、口号化、把歌核讲破"));
+    assertTrue(systemPrompt.contains("不要把轻量灵感放大成宏大家国命题"));
+    assertTrue(systemPrompt.contains("不要把知识库资料摊成任务清单"));
     assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
   }
 

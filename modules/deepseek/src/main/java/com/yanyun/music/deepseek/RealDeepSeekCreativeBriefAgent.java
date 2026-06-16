@@ -20,9 +20,9 @@ import java.util.Locale;
 public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent {
 
   private static final String AGENT_NAME = "CreativeBriefAgent";
-  private static final String AGENT_VERSION = "v0.7";
-  private static final String TEMPLATE_KEY = "creative.brief.v7";
-  private static final int TEMPLATE_VERSION = 7;
+  private static final String AGENT_VERSION = "v0.8";
+  private static final String TEMPLATE_KEY = "creative.brief.v8";
+  private static final int TEMPLATE_VERSION = 8;
   private final DeepSeekJsonChatClient client;
   private final AgentRunRecorder agentRunRecorder;
 
@@ -133,7 +133,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         DeepSeekAgentJson.text(root, "central_tension", "centralTension"),
         DeepSeekAgentJson.text(root, "emotional_turn", "emotionalTurn"),
         DeepSeekAgentJson.text(root, "chorus_function", "chorusFunction"),
-        DeepSeekAgentJson.text(root, "memory_device", "memoryDevice"));
+        DeepSeekAgentJson.text(root, "memory_device", "memoryDevice"),
+        DeepSeekAgentJson.text(root, "song_core", "songCore"),
+        DeepSeekAgentJson.text(root, "singer_voice", "singerVoice"),
+        DeepSeekAgentJson.text(root, "listener_target", "listenerTarget"),
+        DeepSeekAgentJson.text(root, "emotional_engine", "emotionalEngine"),
+        DeepSeekAgentJson.text(root, "chorus_job", "chorusJob"),
+        DeepSeekAgentJson.text(root, "avoid_direction", "avoidDirection"));
   }
 
   private List<String> fallbackYanyunReferences(CreativeBriefRequest request) {
@@ -213,7 +219,7 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
   private String systemPrompt() {
     return """
         你是燕云十六声 AI 作曲平台的创作可能性判断 Agent。
-        你的任务不是写歌词，也不是套固定作词模板，而是判断用户请求是否属于《燕云十六声》创作域，并为 LyricsAgent 提供开放的世界级创作判断。
+        你的任务不是写歌词，也不是替用户写剧情大纲，而是判断用户请求是否属于《燕云十六声》创作域，并为 LyricsAgent 提供一首歌成立所需要的入口判断。
 
         硬规则：
         1. 歌词内容必须属于《燕云十六声》大世界，不得写其他 IP、现实明星应援或完全无关题材。
@@ -225,11 +231,15 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         7. 不按曲风套写法；音乐风格只作为声口、节奏、能量和语言松紧的参考，不决定创意路径。
         8. 不强制每首歌都有同一种结构，不强制一定有金句式 hook，不强制悲情、国风或大叙事。
         9. 普通玩家故事优先保留用户原始视角，不强行改成官方角色歌或救世英雄叙事。
-        10. 你的重点是帮 LyricsAgent 避免第一反应俗套：例如“侠=自由、离别=月光、江湖=风雨、少年=逍遥”这种太容易写普通的入口。
-        11. 可以建议叙事、意象、口语、重复、对白、独白、群像、反讽、留白、反差、反套路等任一路径，但不要要求全部使用。
-        12. 必须给出歌曲主线判断：这首歌到底在唱什么、谁在唱给谁听、核心张力是什么、情绪在哪里转弯、副歌承担什么功能、听众记住它靠什么声音装置。
-        13. 歌曲主线不是固定模板，而是 LyricsAgent 的判断骨架；字段必须清楚、单一、可唱，不能写成剧情百科摘要或资料条目。
-        14. 只输出 JSON object，不输出 Markdown 或解释。
+        10. 你的重点是把用户的一句话灵感收束成一首歌可以唱清楚的入口，不要把轻量灵感放大成宏大家国命题。
+        11. 不要把知识库资料摊成任务清单；只挑能服务歌曲主线的事实、关系、场景和情绪。
+        12. 可以建议叙事、意象、口语、重复、对白、独白、群像、反讽、留白、反差、反套路等任一路径，但不要要求全部使用。
+        13. 必须给出 v0.8 歌曲判断：song_core、singer_voice、listener_target、emotional_engine、chorus_job、avoid_direction。
+        14. v0.8 字段必须短、准、能直接指导写歌；不能写成剧情百科、设定摘要或资料条目。
+        15. 仍可输出 v0.7 兼容字段，但它们只能辅助 v0.8 歌核，不得取代 song_core。
+        16. chorus_job 不要建议 LyricsAgent 直接反复喊主题句、歌名或结论；优先建议用具体声音、动作、物件、句式变奏或意象回环完成副歌任务。
+        17. avoid_direction 必须提醒本题最容易失败的写法，尤其是过度直白、口号化、把歌核讲破、把情绪解释透。
+        18. 只输出 JSON object，不输出 Markdown 或解释。
 
         输出字段：
         {
@@ -245,6 +255,12 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
           "user_facing_message": "REJECT 时给用户看的友好说明，否则可为空",
           "yanyun_rewrite_suggestion": "REWRITE_TO_YANYUN 时给 LyricsAgent 的转译建议",
           "freeform_opportunities": ["可自由发挥的空间"],
+          "song_core": "这首歌一句话真正唱什么，必须是作品核，不是剧情梗概",
+          "singer_voice": "谁在唱、用什么声音质地唱，例如退坑后的玩家、清河旧游人、嘴硬的小人物、旁观群像",
+          "listener_target": "唱给谁听，可以是自己、一个旧友、某个角色、路过的人、玩家群体或未说出口的人",
+          "emotional_engine": "推动整首歌持续前进的情绪发动机，例如想回去但回不去、很轻快却突然发酸、不厉害却仍会出手",
+          "chorus_job": "副歌必须完成的任务，例如把执念唱出来、把轻快翻成酸楚、把小人物的选择变成可重复的声音；不要建议直接反复喊主题句",
+          "avoid_direction": "本题最该避开的失败方向，例如泛古风、剧情百科、宏大拔高、名词堆砌、漂亮但空、过度直白、口号化、把歌核讲破",
           "creative_core": "这首歌最值得写的东西，可以是人物、情绪、画面、命运、口气、反差或一种关系",
           "chosen_angle": "本次建议从哪个角度进入，不要求固定为叙事或抒情",
           "alternative_angles": ["2-3 个不采用但可参考的角度，用来帮助避开第一反应俗套"],
@@ -336,7 +352,13 @@ public final class RealDeepSeekCreativeBriefAgent implements CreativeBriefAgent 
         result.centralTension(),
         result.emotionalTurn(),
         result.chorusFunction(),
-        result.memoryDevice());
+        result.memoryDevice(),
+        result.songCore(),
+        result.singerVoice(),
+        result.listenerTarget(),
+        result.emotionalEngine(),
+        result.chorusJob(),
+        result.avoidDirection());
   }
 
   private int elapsedMs(long startedAt) {

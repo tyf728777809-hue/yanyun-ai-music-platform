@@ -38,8 +38,8 @@ import java.util.Set;
 public final class DefaultLyricsGenerationService implements LyricsGenerationService {
 
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.80);
-  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v7";
-  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 7;
+  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v8";
+  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 8;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
@@ -324,6 +324,12 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         yanyun_references=%s
         resolved_entities=%s
         constraints=%s
+        song_core=%s
+        singer_voice=%s
+        listener_target=%s
+        emotional_engine=%s
+        chorus_job=%s
+        avoid_direction=%s
         creative_core=%s
         chosen_angle=%s
         alternative_angles=%s
@@ -337,9 +343,10 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         emotional_turn=%s
         chorus_function=%s
         memory_device=%s
-        knowledge_policy=Knowledge references are optional creative material. Preserve the user's story core. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally. Do not turn lyrics into plot summary.
+        v08_policy=First complete song_core, singer_voice, emotional_engine, and chorus_job. If older creative fields conflict with these v0.8 fields, follow the v0.8 fields. The song must be understandable after one listen and must not become a checklist of references.
+        knowledge_policy=Knowledge references are optional creative material. Preserve the user's story core. Use only the facts, relationships, scenes, and emotional texture that serve song_core. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally. Do not turn lyrics into plot summary.
         entity_grounding_policy=If the user names a character, storyline, place, faction, or gameplay concept and resolved_entities maps it to a canonical Yanyun entity, use that canonical entity as the grounding source. Do not preserve user typos as official names. Character or storyline songs must use the core relationships, life events, conflicts, and scenes from the matched knowledge references instead of generic wuxia atmosphere.
-        songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, song_energy, song_thesis, pov, central_tension, emotional_turn, chorus_function, and memory_device as open creative guidance. Do not treat them as a rigid template. Before writing, decide one clear song thesis and keep every verse, chorus, and bridge serving it. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
+        songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, song_energy, song_thesis, pov, central_tension, emotional_turn, chorus_function, and memory_device only as open supporting guidance. Do not treat them as a rigid template. Before writing, decide one clear song thesis and keep every verse, chorus, and bridge serving it. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
         polish_policy=For POLISH, keep the original song title, point of view, thesis, emotional arc, and most usable lines unless the user explicitly asks to replace them. Improve diction, rhyme, singability, clarity, and requested weak spots; do not silently write a different song.
         """
         .formatted(
@@ -355,6 +362,12 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 + (creativeBrief.yanyunRewriteSuggestion() == null
                     ? ""
                     : "\nyanyun_rewrite_suggestion=" + creativeBrief.yanyunRewriteSuggestion()),
+            creativeBrief.songCore(),
+            creativeBrief.singerVoice(),
+            creativeBrief.listenerTarget(),
+            creativeBrief.emotionalEngine(),
+            creativeBrief.chorusJob(),
+            creativeBrief.avoidDirection(),
             creativeBrief.creativeCore(),
             creativeBrief.chosenAngle(),
             creativeBrief.alternativeAngles(),
@@ -410,6 +423,26 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "creative_brief_constraints",
                     creativeBrief == null ? List.of() : creativeBrief.constraints()),
+                Map.entry(
+                    "song_core",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.songCore(), "")),
+                Map.entry(
+                    "singer_voice",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.singerVoice(), "")),
+                Map.entry(
+                    "listener_target",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.listenerTarget(), "")),
+                Map.entry(
+                    "emotional_engine",
+                    creativeBrief == null
+                        ? ""
+                        : firstNonBlank(creativeBrief.emotionalEngine(), "")),
+                Map.entry(
+                    "chorus_job",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.chorusJob(), "")),
+                Map.entry(
+                    "avoid_direction",
+                    creativeBrief == null ? "" : firstNonBlank(creativeBrief.avoidDirection(), "")),
                 Map.entry(
                     "creative_core",
                     creativeBrief == null ? "" : firstNonBlank(creativeBrief.creativeCore(), "")),
@@ -565,7 +598,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.workId(),
             null,
             "LyricsAgent",
-            "v0.7",
+            "v0.8",
             request.operation().name(),
             deepSeekLyricsClient.modelName(),
             prompt.templateKey(),

@@ -27,7 +27,73 @@ public record CreativeBriefResult(
     String centralTension,
     String emotionalTurn,
     String chorusFunction,
-    String memoryDevice) {
+    String memoryDevice,
+    String songCore,
+    String singerVoice,
+    String listenerTarget,
+    String emotionalEngine,
+    String chorusJob,
+    String avoidDirection) {
+
+  public CreativeBriefResult(
+      CreativeDomainDecision domainDecision,
+      String userIntentSummary,
+      String theme,
+      List<String> moodTags,
+      String narrativeViewpoint,
+      String musicDirection,
+      List<String> yanyunReferences,
+      List<String> constraints,
+      List<String> riskNotes,
+      String userFacingMessage,
+      String yanyunRewriteSuggestion,
+      List<String> freeformOpportunities,
+      String creativeCore,
+      String chosenAngle,
+      List<String> alternativeAngles,
+      String antiClicheStrategy,
+      String voiceTexture,
+      List<String> imagePool,
+      String songEnergy,
+      String songThesis,
+      String pov,
+      String centralTension,
+      String emotionalTurn,
+      String chorusFunction,
+      String memoryDevice) {
+    this(
+        domainDecision,
+        userIntentSummary,
+        theme,
+        moodTags,
+        narrativeViewpoint,
+        musicDirection,
+        yanyunReferences,
+        constraints,
+        riskNotes,
+        userFacingMessage,
+        yanyunRewriteSuggestion,
+        freeformOpportunities,
+        creativeCore,
+        chosenAngle,
+        alternativeAngles,
+        antiClicheStrategy,
+        voiceTexture,
+        imagePool,
+        songEnergy,
+        songThesis,
+        pov,
+        centralTension,
+        emotionalTurn,
+        chorusFunction,
+        memoryDevice,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
+  }
 
   public CreativeBriefResult(
       CreativeDomainDecision domainDecision,
@@ -74,6 +140,12 @@ public record CreativeBriefResult(
         null,
         null,
         null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null);
   }
 
@@ -115,6 +187,12 @@ public record CreativeBriefResult(
         null,
         null,
         null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null);
   }
 
@@ -146,6 +224,12 @@ public record CreativeBriefResult(
         null,
         null,
         List.of(),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -195,6 +279,12 @@ public record CreativeBriefResult(
     emotionalTurn = firstNonBlank(emotionalTurn, "from first feeling to a changed meaning");
     chorusFunction = firstNonBlank(chorusFunction, "carry the song's main emotional argument");
     memoryDevice = firstNonBlank(memoryDevice, "repeatable phrase, image loop, or rhythm hook");
+    songCore = firstNonBlank(songCore, songThesis);
+    singerVoice = firstNonBlank(singerVoice, pov);
+    listenerTarget = firstNonBlank(listenerTarget, "the listener implied by the user input");
+    emotionalEngine = firstNonBlank(emotionalEngine, centralTension);
+    chorusJob = firstNonBlank(chorusJob, chorusFunction);
+    avoidDirection = firstNonBlank(avoidDirection, antiClicheStrategy);
   }
 
   private static String firstNonBlank(String value, String fallback) {

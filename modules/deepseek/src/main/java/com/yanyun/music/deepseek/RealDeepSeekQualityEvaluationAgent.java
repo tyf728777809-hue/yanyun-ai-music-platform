@@ -21,8 +21,8 @@ import java.util.Map;
 public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluationAgent {
 
   private static final String AGENT_NAME = "QualityEvaluationAgent";
-  private static final String AGENT_VERSION = "v0.7";
-  private static final String TEMPLATE_KEY = "quality.evaluation.v7";
+  private static final String AGENT_VERSION = "v0.8";
+  private static final String TEMPLATE_KEY = "quality.evaluation.v8";
   private static final int TEMPLATE_VERSION = 8;
 
   private final DeepSeekJsonChatClient client;
@@ -497,6 +497,8 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
 
         重点规则：
         1. LYRICS：歌词必须有《燕云十六声》大世界归属感，不得写其他 IP，不能只是泛古风；但不要求出现“燕云”“十六声”等字面关键词。
+        1a. LYRICS：必须结合 context 中的 user_input、song_core、singer_voice、listener_target、emotional_engine、chorus_job、avoid_direction、knowledge_reference_summaries 来评，不要孤立看歌词是否漂亮。
+        1b. LYRICS：金曲级评审维度包括歌曲命题、叙事视角、情感真实度、独特入口、语言准确度、副歌功能、声音记忆点、韵律可唱性、段落推进、意象系统、燕云归属感和原创高级感。
         2. LYRICS：不要用固定模板审稿；先判断歌词实际选择了哪种作词路径，例如叙事、意象、口语、对白/独白、群像、反差、重复、反讽、留白或反套路。
         3. LYRICS：必须检查歌词是否值得被唱：是否有独特入口，是否摆脱第一反应俗套，是否有听众能记住的声音记忆点，是否像歌而不是漂亮作文。
         4. LYRICS：声音记忆点不限定为金句；可以是句子、重复句式、口头禅、声音动作、意象回环或节奏记忆。

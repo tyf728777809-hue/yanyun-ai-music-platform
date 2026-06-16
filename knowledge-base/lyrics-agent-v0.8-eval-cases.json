@@ -1,0 +1,254 @@
+{
+  "version": "lyrics-agent-v0.8-player-inputs",
+  "description": "Realistic one-sentence Yanyun player inputs for LyricsAgent v0.8 A/B tuning. Full prompts and lyrics must stay in ignored build/reports/lyrics-agent/.",
+  "initial_batch_ids": [
+    "lyrics-v08-character-hanxiangxun-001",
+    "lyrics-v08-region-qinghe-001",
+    "lyrics-v08-player-underdog-001",
+    "lyrics-v08-life-market-001",
+    "lyrics-v08-contrast-light-sad-001",
+    "lyrics-v08-faction-jiuliu-001"
+  ],
+  "cases": [
+    {
+      "id": "lyrics-v08-character-hanxiangxun-001",
+      "category": "character_emotion",
+      "user_input": "我想写一首给寒姨的歌，感觉她一直在等我回家。",
+      "mood": "温柔、遗憾",
+      "music_style": "流行抒情",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["寒香寻", "不羡仙", "归家", "等待"],
+      "review_notes": "不能只写慈母或泛离别，要有不羡仙归家锚点和克制的未说出口。"
+    },
+    {
+      "id": "lyrics-v08-region-qinghe-001",
+      "category": "place_memory",
+      "user_input": "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。",
+      "mood": "怀念、酸楚",
+      "music_style": "民谣叙事",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["清河", "新手村", "离开后想回去"],
+      "review_notes": "应像玩家真实回忆，不要拔高成家国大叙事。"
+    },
+    {
+      "id": "lyrics-v08-player-underdog-001",
+      "category": "ordinary_player_story",
+      "user_input": "写一个不厉害的少侠，打不过很多人，但还是会出手。",
+      "mood": "倔强、热血",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["小人物", "不强但出手", "玩家故事"],
+      "review_notes": "不能写成救世英雄，重点是害怕和选择同时存在。"
+    },
+    {
+      "id": "lyrics-v08-life-market-001",
+      "category": "life_texture",
+      "user_input": "想写燕云里的烟火气，酒馆、渡口、路人、旧灯，不要太宏大。",
+      "mood": "温暖、克制",
+      "music_style": "City Pop",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["市井烟火", "酒馆", "渡口", "旧灯"],
+      "review_notes": "要小而准，不要写成风景清单。"
+    },
+    {
+      "id": "lyrics-v08-contrast-light-sad-001",
+      "category": "ambiguous_emotion",
+      "user_input": "我喜欢那种表面很轻快，唱到后面突然有点想哭的歌。",
+      "mood": "轻快、后劲酸",
+      "music_style": "流行抒情",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["表面轻快", "后劲想哭", "燕云玩家情绪"],
+      "review_notes": "要有反差转弯，不能从头悲到底。"
+    },
+    {
+      "id": "lyrics-v08-faction-jiuliu-001",
+      "category": "faction_energy",
+      "user_input": "想写九流门，摇滚一点，乱、脏、热闹、底层江湖。",
+      "mood": "粗粝、躁动",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["九流门", "底层江湖", "乱与热闹"],
+      "review_notes": "要有组织气质和底层声音，不能只写脏乱形容词。"
+    },
+    {
+      "id": "lyrics-v08-character-jiangwulang-001",
+      "category": "character_emotion",
+      "user_input": "我想写江无浪，他像那种嘴上不说但一直护着你的人。",
+      "mood": "嘴硬、温柔",
+      "music_style": "R&B",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["江无浪", "守护", "不说出口"],
+      "review_notes": "要避免把江无浪写成普通护道人，需有旧居、少东家等关系感。"
+    },
+    {
+      "id": "lyrics-v08-story-ruoshui-001",
+      "category": "storyline_memory",
+      "user_input": "弱水岸那段像做梦见到熟人但不敢认，写冷一点。",
+      "mood": "冷、恍惚",
+      "music_style": "电子",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["弱水岸", "熟人感", "不敢认"],
+      "review_notes": "不要把悬念写死，应保留梦境和误认感。"
+    },
+    {
+      "id": "lyrics-v08-player-friend-quit-001",
+      "category": "player_relationship",
+      "user_input": "想写一个一起跑图的朋友，后来他退坑了。",
+      "mood": "轻轻的遗憾",
+      "music_style": "流行抒情",
+      "vocal_preference": "双人对唱",
+      "expected_focus": ["同行", "退坑", "玩家关系"],
+      "review_notes": "这是玩家故事，不应强绑官方角色。"
+    },
+    {
+      "id": "lyrics-v08-theme-free-tethered-001",
+      "category": "open_theme",
+      "user_input": "写一个人明明很想逍遥，但总是被别人托付、被江湖拉住。",
+      "mood": "克制、纠结",
+      "music_style": "影视OST",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["逍遥与牵挂", "托付", "江湖拉扯"],
+      "review_notes": "不能只写自由，要写自由被责任拽住的张力。"
+    },
+    {
+      "id": "lyrics-v08-player-not-main-001",
+      "category": "ordinary_player_story",
+      "user_input": "给我的角色写一首歌，他不是主角，但也想被记住。",
+      "mood": "不甘、温柔",
+      "music_style": "流行抒情",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["无名者", "被记住", "玩家角色"],
+      "review_notes": "应写普通人的存在感，不要突然救世。"
+    },
+    {
+      "id": "lyrics-v08-place-buxianxian-001",
+      "category": "place_memory",
+      "user_input": "想写不羡仙，像夜里一个人喝酒，不要太煽情。",
+      "mood": "克制、孤独",
+      "music_style": "R&B",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["不羡仙", "夜酒", "克制"],
+      "review_notes": "不要变成普通酒馆歌，要有归处和等待的暗流。"
+    },
+    {
+      "id": "lyrics-v08-gameplay-steal-skill-001",
+      "category": "gameplay_experience",
+      "user_input": "写偷师，不是炫技，是一个普通人想变强。",
+      "mood": "认真、倔强",
+      "music_style": "说唱",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["偷师", "普通人", "变强"],
+      "review_notes": "玩法要转成情绪，不要写攻略说明。"
+    },
+    {
+      "id": "lyrics-v08-female-knight-001",
+      "category": "character_archetype",
+      "user_input": "想写一个燕云里的女侠，不依附谁，自己走自己的路。",
+      "mood": "坚定、洒脱",
+      "music_style": "摇滚",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["女侠", "独立", "自我选择"],
+      "review_notes": "不要写成口号，要用行动和声音建立人物。"
+    },
+    {
+      "id": "lyrics-v08-newbie-village-002",
+      "category": "place_memory",
+      "user_input": "我想写“回不去的新手村”，但不要太老套。",
+      "mood": "怀旧、清醒",
+      "music_style": "民谣叙事",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["新手村", "回不去", "反老套"],
+      "review_notes": "要避开明月故乡这种第一反应。"
+    },
+    {
+      "id": "lyrics-v08-qinghe-rain-bell-001",
+      "category": "place_image",
+      "user_input": "写清河下雨的时候，一个人在路边听见旧铃声。",
+      "mood": "潮湿、安静",
+      "music_style": "电子",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["清河", "雨", "旧铃声"],
+      "review_notes": "意象很小，应围绕铃声发展，不要散开。"
+    },
+    {
+      "id": "lyrics-v08-failure-not-waste-001",
+      "category": "ordinary_player_story",
+      "user_input": "想写一个失败的人，但不是废物。",
+      "mood": "低烧、倔强",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["失败", "尊严", "不放弃"],
+      "review_notes": "要有失败的具体动作，不要空喊热血。"
+    },
+    {
+      "id": "lyrics-v08-save-nearby-001",
+      "category": "moral_choice",
+      "user_input": "我不想当救世主，我只想把眼前的人救下来。",
+      "mood": "坚定、克制",
+      "music_style": "影视OST",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["小范围守护", "不做救世主", "眼前的人"],
+      "review_notes": "这条很适合反宏大，不能写成拯救天下。"
+    },
+    {
+      "id": "lyrics-v08-city-boy-free-001",
+      "category": "light_story",
+      "user_input": "写一个市井少年，斗笠一戴推开城门就走，自由一点。",
+      "mood": "轻快、洒脱",
+      "music_style": "City Pop",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["市井少年", "斗笠", "推城门", "自由"],
+      "review_notes": "自由可以轻，但要有具体身体动作和节奏。"
+    },
+    {
+      "id": "lyrics-v08-character-hanxiangxun-rnb-001",
+      "category": "character_style_open",
+      "user_input": "想写寒姨，R&B一点，别太古风，像夜里一个人喝酒。",
+      "mood": "克制、孤独",
+      "music_style": "R&B",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["寒香寻", "R&B", "夜酒", "克制"],
+      "review_notes": "内容要燕云，音乐和声口不要默认国风。"
+    },
+    {
+      "id": "lyrics-v08-faction-fall-practice-001",
+      "category": "faction_fall",
+      "user_input": "写一个门派散了以后还在练旧招的人。",
+      "mood": "荒凉、执拗",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["门派散去", "旧招", "执拗"],
+      "review_notes": "不要指定未确认门派，除非知识库召回清楚；可写群像。"
+    },
+    {
+      "id": "lyrics-v08-waiting-home-001",
+      "category": "relationship_regret",
+      "user_input": "写那种我走了很远，才知道有人一直在等我的感觉。",
+      "mood": "后知后觉、愧疚",
+      "music_style": "流行抒情",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["远行", "等待", "后知后觉"],
+      "review_notes": "可以借燕云归家感，但不能硬塞人物名。"
+    },
+    {
+      "id": "lyrics-v08-jiuliu-vendor-001",
+      "category": "ordinary_storyline",
+      "user_input": "我想写九流门局中局里的普通小摊贩，不要写成大英雄。",
+      "mood": "市井、紧张",
+      "music_style": "说唱",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["九流门", "普通小摊贩", "不做英雄"],
+      "review_notes": "这是知识库关系扩展重点，必须保留普通人视角。"
+    },
+    {
+      "id": "lyrics-v08-smiling-not-let-go-001",
+      "category": "ambiguous_emotion",
+      "user_input": "写一个人一直在笑，其实什么都没放下。",
+      "mood": "表面轻、内里重",
+      "music_style": "流行抒情",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["笑", "没放下", "反差"],
+      "review_notes": "要让笑成为声音装置或重复动作，不能只解释心理。"
+    }
+  ]
+}
