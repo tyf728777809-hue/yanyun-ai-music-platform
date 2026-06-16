@@ -859,7 +859,7 @@ public class WorkRepository {
               AND user_id = ?
               AND version = ?
               AND status = ?
-              AND failure_code = ?
+              AND failure_code IN (?, ?)
               AND EXISTS (
                 SELECT 1
                 FROM media_assets
@@ -874,6 +874,7 @@ public class WorkRepository {
             userId,
             expectedVersion,
             WorkStatus.FAILED.name(),
+            FailureCode.COVER_GENERATION_FAILED.name(),
             FailureCode.PACKAGE_BUILD_FAILED.name());
     return updated == 1;
   }

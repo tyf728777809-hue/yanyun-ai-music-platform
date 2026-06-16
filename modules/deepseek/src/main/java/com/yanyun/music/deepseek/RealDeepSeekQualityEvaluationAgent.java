@@ -218,15 +218,35 @@ public final class RealDeepSeekQualityEvaluationAgent implements QualityEvaluati
 
   private boolean containsUnsafeCoverInstruction(Map<String, Object> context) {
     for (Map.Entry<String, Object> entry : context.entrySet()) {
-      String key = normalize(entry.getKey());
-      if (isNegativePromptField(key)) {
-        continue;
-      }
-      if (containsUnsafeCoverInstructionText(String.valueOf(entry.getValue()))) {
+      if (containsUnsafeCoverInstructionValue(normalize(entry.getKey()), entry.getValue())) {
         return true;
       }
     }
     return false;
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean containsUnsafeCoverInstructionValue(String key, Object value) {
+    if (isNegativePromptField(key)) {
+      return false;
+    }
+    if (value instanceof Map<?, ?> map) {
+      for (Map.Entry<?, ?> entry : map.entrySet()) {
+        if (containsUnsafeCoverInstructionValue(normalize(entry.getKey()), entry.getValue())) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (value instanceof Iterable<?> iterable) {
+      for (Object item : iterable) {
+        if (containsUnsafeCoverInstructionValue(key, item)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return containsUnsafeCoverInstructionText(String.valueOf(value));
   }
 
   private boolean containsPositiveCoverTextInstruction(Map<String, Object> context) {

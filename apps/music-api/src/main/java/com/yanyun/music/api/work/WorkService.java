@@ -455,7 +455,8 @@ public class WorkService {
 
   private boolean canRetryPackageBuildFromExistingAudio(WorkRow work) {
     return work.status() == WorkStatus.FAILED
-        && work.failureCode() == FailureCode.PACKAGE_BUILD_FAILED
+        && (work.failureCode() == FailureCode.COVER_GENERATION_FAILED
+            || work.failureCode() == FailureCode.PACKAGE_BUILD_FAILED)
         && hasMediaAsset(work.id(), "AUDIO");
   }
 

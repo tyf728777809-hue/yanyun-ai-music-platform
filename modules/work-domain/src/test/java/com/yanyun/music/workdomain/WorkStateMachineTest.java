@@ -105,7 +105,7 @@ class WorkStateMachineTest {
   }
 
   @Test
-  void failedCoverOrVideoDoesNotExposeUnimplementedRecoveryActions() {
+  void failedCoverAllowsCoverRetryButVideoDoesNotExposeUnimplementedRecoveryAction() {
     List<AvailableAction> coverActions =
         WorkStateMachine.availableActions(
             new WorkSnapshot(
@@ -125,9 +125,8 @@ class WorkStateMachineTest {
                 true,
                 1));
 
-    assertFalse(coverActions.contains(AvailableAction.RETRY_COVER));
+    assertTrue(coverActions.contains(AvailableAction.RETRY_COVER));
     assertFalse(videoActions.contains(AvailableAction.RERENDER_VIDEO));
-    assertTrue(coverActions.contains(AvailableAction.CONTACT_SUPPORT));
     assertTrue(videoActions.contains(AvailableAction.CONTACT_SUPPORT));
     assertTrue(coverActions.contains(AvailableAction.RETURN_TO_EDIT));
     assertTrue(videoActions.contains(AvailableAction.RETURN_TO_EDIT));

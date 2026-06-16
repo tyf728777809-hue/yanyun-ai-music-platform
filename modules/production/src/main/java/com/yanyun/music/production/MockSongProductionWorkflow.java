@@ -416,7 +416,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
           jobId,
           exception.failureCode(),
           firstNonBlank(exception.getMessage(), exception.failureCode().name()),
-          false,
+          retryableMediaFailure(exception.failureCode()),
           input.userId(),
           lock.lockId());
     } catch (RuntimeException exception) {
@@ -741,6 +741,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
               true;
           default -> false;
         };
+  }
+
+  private boolean retryableMediaFailure(FailureCode failureCode) {
+    return failureCode == FailureCode.COVER_GENERATION_FAILED;
   }
 
   private FailureCode musicPromptQualityFailureCode(QualityEvaluationResult quality) {

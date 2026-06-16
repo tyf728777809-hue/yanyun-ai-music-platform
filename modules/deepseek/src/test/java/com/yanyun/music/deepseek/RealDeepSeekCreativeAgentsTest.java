@@ -831,6 +831,72 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
+  void qualityAgentLocalSafetyAllowsControlledCoverTitleReasonWithNestedNegativePrompt()
+      throws IOException {
+    server =
+        startServer(
+            exchange ->
+                respondJson(
+                    exchange,
+                    200,
+                    chatResponse(
+                        Map.of(
+                            "gate",
+                            "COVER",
+                            "decision",
+                            "REWRITE",
+                            "score",
+                            65,
+                            "reasons",
+                            List.of("封面 prompt 仅包含歌名“借火”，无额外文本，符合规则"),
+                            "recommended_action",
+                            "REWRITE_AGENT_OUTPUT",
+                            "retryable",
+                            true))));
+    RealDeepSeekQualityEvaluationAgent agent =
+        new RealDeepSeekQualityEvaluationAgent(
+            client(), objectMapper, new ArrayList<AgentRunRecord>()::add);
+
+    QualityEvaluationResult result =
+        agent.evaluate(
+            new QualityEvaluationRequest(
+                "work-1",
+                QualityGate.COVER,
+                "借火",
+                "lyrics",
+                null,
+                null,
+                null,
+                null,
+                1920,
+                1080,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Map.of(
+                    "visual_prompt",
+                    "premium cinematic album cover with exactly one text element: only the exact song title 借火 as clear Chinese title typography",
+                    "text_prompt",
+                    "CONTROLLED_TITLE_TEXT: render only the exact song title \"借火\". No other text.",
+                    "negative_prompt",
+                    "low quality, fake singer name, fake label, fake copyright, watermark, UI, garbled text",
+                    "provider_options",
+                    Map.of(
+                        "text_policy",
+                        "CONTROLLED_TITLE_TEXT",
+                        "allowed_title",
+                        "借火",
+                        "negative_prompt",
+                        "extra text beyond the exact song title, fake singer, fake label"))));
+
+    assertEquals(QualityDecision.PASS, result.decision());
+    assertEquals(80, result.score());
+    assertFalse(result.retryable());
+  }
+
+  @Test
   void qualityAgentLocalSafetyAllowsNoTextCoverPolicyWhenModelFlagsItAsRewrite()
       throws IOException {
     server =
