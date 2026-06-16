@@ -53,20 +53,21 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
     ensureConfigured();
     HttpRequest httpRequest =
         HttpRequest.newBuilder(chatCompletionsUri())
-            .timeout(requestTimeout())
+            .timeout(requestTimeout(request.operation()))
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
             .header("Authorization", "Bearer " + properties.getApiKey())
             .POST(HttpRequest.BodyPublishers.ofByteArray(writeJson(requestBody(request))))
             .build();
+    int semanticAttempts = semanticAttempts(request.operation());
     RuntimeException lastFailure = null;
-    for (int attempt = 1; attempt <= CONTENT_SEMANTIC_ATTEMPTS; attempt++) {
+    for (int attempt = 1; attempt <= semanticAttempts; attempt++) {
       try {
         JsonNode root = sendWithRetry(httpRequest);
         String content = firstChoiceContent(root);
         return parseContent(content, request);
       } catch (RuntimeException exception) {
-        if (!isRetryableContentFailure(exception) || attempt == CONTENT_SEMANTIC_ATTEMPTS) {
+        if (!isRetryableContentFailure(exception) || attempt == semanticAttempts) {
           throw exception;
         }
         lastFailure = exception;
@@ -387,9 +388,22 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
     return URI.create(base).resolve("chat/completions");
   }
 
-  private Duration requestTimeout() {
+  private Duration requestTimeout(String operation) {
     Duration timeout = properties.getRequestTimeout();
-    return timeout == null || timeout.isNegative() ? Duration.ofSeconds(30) : timeout;
+    Duration normalized =
+        timeout == null || timeout.isNegative() ? Duration.ofSeconds(30) : timeout;
+    if (editOperation(operation) && normalized.compareTo(Duration.ofSeconds(120)) > 0) {
+      return Duration.ofSeconds(120);
+    }
+    return normalized;
+  }
+
+  private int semanticAttempts(String operation) {
+    return editOperation(operation) ? 2 : CONTENT_SEMANTIC_ATTEMPTS;
+  }
+
+  private boolean editOperation(String operation) {
+    return "POLISH".equals(operation) || "CONTINUE".equals(operation);
   }
 
   private byte[] writeJson(Object value) {

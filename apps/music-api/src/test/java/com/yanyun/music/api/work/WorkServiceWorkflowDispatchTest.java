@@ -150,6 +150,7 @@ class WorkServiceWorkflowDispatchTest {
     assertThat(job.getValue().operation()).isEqualTo("POLISH");
     assertThat(job.getValue().instruction()).isEqualTo("更押韵一点");
     assertThat(job.getValue().status()).isEqualTo("QUEUED");
+    assertThat(job.getValue().maxAttempts()).isEqualTo(1);
     assertThat(job.getValue().sourceLyricsDraftId()).isEqualTo(draftId);
     verify(lyricsGenerationService, never()).generate(any());
   }
@@ -174,6 +175,7 @@ class WorkServiceWorkflowDispatchTest {
     verify(workRepository).insertLyricsEditJob(job.capture());
     assertThat(job.getValue().operation()).isEqualTo("CONTINUE");
     assertThat(job.getValue().instruction()).isEqualTo("Continue current lyrics.");
+    assertThat(job.getValue().maxAttempts()).isEqualTo(1);
     verify(lyricsGenerationService, never()).generate(any());
   }
 

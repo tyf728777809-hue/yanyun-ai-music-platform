@@ -212,6 +212,25 @@ class RealDeepSeekLyricsClientTest {
   }
 
   @Test
+  void editOperationsUseShorterSemanticRetryBudgetForInvalidContentJson() throws IOException {
+    AtomicInteger requestCount = new AtomicInteger();
+    server =
+        startServer(
+            exchange -> {
+              requestCount.incrementAndGet();
+              respondJson(exchange, 200, chatResponseContent("{not-json"));
+            });
+    RealDeepSeekLyricsClient client =
+        new RealDeepSeekLyricsClient(properties(serverBaseUri(), true, true), objectMapper);
+
+    IllegalStateException exception =
+        assertThrows(IllegalStateException.class, () -> client.generate(request("POLISH")));
+
+    assertEquals(2, requestCount.get());
+    assertTrue(exception.getMessage().contains("DeepSeek response content JSON is invalid"));
+  }
+
+  @Test
   void refusesToCallHttpWhenRealSwitchIsDisabled() throws IOException {
     AtomicInteger requestCount = new AtomicInteger();
     server =
@@ -283,8 +302,12 @@ class RealDeepSeekLyricsClientTest {
   }
 
   private DeepSeekLyricsRequest request() {
+    return request("LYRICS");
+  }
+
+  private DeepSeekLyricsRequest request(String operation) {
     return new DeepSeekLyricsRequest(
-        "LYRICS",
+        operation,
         "rendered prompt",
         "雁门旧事",
         null,

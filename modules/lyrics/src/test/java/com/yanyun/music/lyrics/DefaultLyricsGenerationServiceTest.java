@@ -168,7 +168,7 @@ class DefaultLyricsGenerationServiceTest {
         new DefaultLyricsGenerationService(
             knowledgeService(), promptService(), deepSeek, records::add);
 
-    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.POLISH));
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
     assertEquals(2, calls.get());
     assertEquals(6, records.size());
@@ -184,6 +184,49 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals(BigDecimal.valueOf(0.91), result.qualityScore());
     assertTrue(result.lyricsText().contains("quality gate"));
     assertTrue(result.lyricsText().contains("Yanyun Sixteen Sounds"));
+  }
+
+  @Test
+  void polishUsesLightweightEditPathWithoutCreativeBriefOrQualityGate() {
+    List<AgentRunRecord> records = new ArrayList<>();
+    List<String> seenInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request -> {
+          seenInstructions.add(request.instruction());
+          return new DeepSeekLyricsResponse(
+              "Song",
+              "Summary",
+              "[Verse]\nEdited lyrics",
+              "cinematic folk",
+              "cover seed",
+              List.of(),
+              BigDecimal.valueOf(0.72));
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            request -> {
+              throw new AssertionError("POLISH should not call CreativeBriefAgent");
+            },
+            deepSeek,
+            request -> {
+              throw new AssertionError("POLISH should not call QualityEvaluationAgent");
+            },
+            records::add);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.POLISH));
+
+    assertEquals("[Verse]\nEdited lyrics", result.lyricsText());
+    assertEquals(BigDecimal.valueOf(0.72), result.qualityScore());
+    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v7"));
+    assertEquals(7, result.promptTemplateVersions().get("lyrics.polish.v1"));
+    assertEquals(2, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("LyricsAgent", records.get(1).agentName());
+    assertTrue(seenInstructions.getFirst().contains("Lightweight edit brief:"));
+    assertTrue(seenInstructions.getFirst().contains("not a new full-song rewrite"));
+    assertTrue(seenInstructions.getFirst().contains("Preserve the current song title"));
   }
 
   @Test

@@ -15,6 +15,7 @@ type EditRecoveryResult = 'queued' | 'completed' | null;
 
 const EDIT_RECOVERY_ATTEMPTS = 12;
 const EDIT_RECOVERY_INTERVAL_MS = 2000;
+const SLOW_LYRICS_EDIT_MS = 90_000;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -22,6 +23,13 @@ function sleep(ms: number): Promise<void> {
 
 function isConnectionInterrupted(message: string): boolean {
   return message.includes('作曲服务连接中断');
+}
+
+function jobElapsedMs(createdAt?: string | null): number {
+  if (!createdAt) return 0;
+  const startedAt = new Date(createdAt).getTime();
+  if (!Number.isFinite(startedAt)) return 0;
+  return Math.max(0, Date.now() - startedAt);
 }
 
 function copyTextWithTextarea(text: string): boolean {
@@ -83,6 +91,7 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
   const hasLyrics = lyricsText.length > 0;
   const activeLyricsJob = work.active_lyrics_job;
   const lyricsEditRunning = Boolean(activeLyricsJob);
+  const lyricsEditSlow = lyricsEditRunning && jobElapsedMs(activeLyricsJob?.created_at) >= SLOW_LYRICS_EDIT_MS;
   const lastLyricsEditFailure = work.last_lyrics_edit_failure;
 
   function openEditor(kind: EditKind) {
@@ -207,6 +216,9 @@ export function ConfirmView({ work, refresh }: WorkViewProps) {
         <Banner tone="info" title={activeLyricsJob?.operation === 'CONTINUE' ? 'AI 正在续写' : 'AI 正在润色'}>
           <span>{activeLyricsJob?.message || 'AI 正在处理歌词，原歌词会保留。'}</span>
           <span className="banner-line">完成后页面会自动刷新，请先不要确认出歌。</span>
+          {lyricsEditSlow && (
+            <span className="banner-line">这次 AI 响应较慢，仍在后台处理中，原歌词会保留。</span>
+          )}
         </Banner>
       )}
 

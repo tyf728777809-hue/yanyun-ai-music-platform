@@ -257,7 +257,7 @@ public class WorkService {
               null,
               false,
               0,
-              LYRICS_EDIT_MAX_ATTEMPTS,
+              lyricsEditMaxAttempts(operation),
               null,
               null,
               null,
@@ -1036,9 +1036,9 @@ public class WorkService {
   private LyricsEditJob toLyricsEditJob(LyricsEditJobRow job) {
     String message =
         switch (job.operation()) {
-          case "CREATE_INSPIRATION", "CREATE_LYRICS" -> "AI 正在创作歌词，稍后会自动刷新。";
-          case "POLISH" -> "AI 正在润色歌词，原歌词会保留。";
-          case "CONTINUE" -> "AI 正在续写歌词，原歌词会保留。";
+          case "CREATE_INSPIRATION", "CREATE_LYRICS" -> "AI 正在创作歌词，通常 30-90 秒，完成后会自动刷新。";
+          case "POLISH" -> "AI 正在润色歌词，通常 30-90 秒，原歌词会保留。";
+          case "CONTINUE" -> "AI 正在续写歌词，通常 30-90 秒，原歌词会保留。";
           default -> "AI 正在处理歌词，稍后会自动刷新。";
         };
     return new LyricsEditJob(
@@ -1050,6 +1050,13 @@ public class WorkService {
         job.startedAt(),
         job.createdAt(),
         job.updatedAt());
+  }
+
+  private int lyricsEditMaxAttempts(String operation) {
+    return switch (operation) {
+      case "POLISH", "CONTINUE" -> 1;
+      default -> LYRICS_EDIT_MAX_ATTEMPTS;
+    };
   }
 
   private LyricsEditFailure toLyricsEditFailure(LyricsEditJobRow job) {

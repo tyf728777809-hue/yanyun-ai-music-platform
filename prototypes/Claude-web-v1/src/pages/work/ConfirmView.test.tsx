@@ -113,6 +113,33 @@ describe('ConfirmView', () => {
     expect(screen.getByRole('button', { name: '确认出歌' })).toBeDisabled();
   });
 
+  it('shows a slow backend hint when a lyrics edit job has waited too long', () => {
+    render(
+      <ToastProvider>
+        <ConfirmView
+          work={work({
+            polish_used_count: 0,
+            polish_remaining_count: 2,
+            active_lyrics_job: {
+              job_id: 'job-1',
+              operation: 'POLISH',
+              status: 'RUNNING',
+              message: 'AI 正在润色歌词，通常 30-90 秒，原歌词会保留。',
+              source_version_no: 3,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
+            },
+          })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    expect(screen.getByText('AI 正在润色歌词，通常 30-90 秒，原歌词会保留。')).toBeInTheDocument();
+    expect(screen.getByText('这次 AI 响应较慢，仍在后台处理中，原歌词会保留。')).toBeInTheDocument();
+  });
+
   it('keeps focus in the edit textarea while typing', async () => {
     render(
       <ToastProvider>

@@ -116,6 +116,9 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   public LyricsGenerationResult generate(LyricsGenerationRequest request) {
     KnowledgeRetrievalResult knowledge = retrieveKnowledge(request);
     ensureEntityResolutionAllowed(request, knowledge);
+    if (lightweightEditOperation(request.operation())) {
+      return generateLightweightEdit(request, knowledge);
+    }
     CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
     ensureCreativeDomainAllowed(creativeBrief);
     LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief, knowledge);
@@ -130,7 +133,18 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief, knowledge);
     }
     ensureLyricsQualityAllowed(response, quality);
-    return toResult(response, creativeBrief, knowledge, prompt);
+    return toResult(response, creativeBrief, knowledge, prompt, true);
+  }
+
+  private LyricsGenerationResult generateLightweightEdit(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    CreativeBriefResult lightweightBrief = fallbackCreativeBrief(request, knowledge);
+    ensureCreativeDomainAllowed(lightweightBrief);
+    LyricsGenerationRequest editRequest = withLightweightEditInstruction(request, knowledge);
+    PromptRenderResult prompt = renderPrompt(editRequest, knowledge);
+    DeepSeekLyricsResponse response = generateWithDeepSeek(editRequest, prompt, knowledge);
+    ensureLightweightEditQualityAllowed(editRequest, response);
+    return toResult(response, lightweightBrief, knowledge, prompt, false);
   }
 
   private void ensureCreativeDomainAllowed(CreativeBriefResult creativeBrief) {
@@ -254,6 +268,47 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         request.mood(),
         firstNonBlank(request.musicStyle(), creativeBrief.musicDirection()),
         request.vocalPreference());
+  }
+
+  private LyricsGenerationRequest withLightweightEditInstruction(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    return new LyricsGenerationRequest(
+        request.userId(),
+        request.workId(),
+        request.operation(),
+        request.userInput(),
+        request.currentLyrics(),
+        appendInstruction(request.instruction(), lightweightEditInstruction(request, knowledge)),
+        request.requestedTitle(),
+        request.mood(),
+        request.musicStyle(),
+        request.vocalPreference());
+  }
+
+  private String lightweightEditInstruction(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    String operationCopy =
+        request.operation() == LyricsOperation.CONTINUE
+            ? "This is a continuation task, not a new full-song rewrite."
+            : "This is a lightweight polish task, not a new full-song rewrite.";
+    return """
+        Lightweight edit brief:
+        %s
+        edit_goal=%s
+        resolved_entities=%s
+        yanyun_references=%s
+        edit_policy=Preserve the current song title, point of view, song thesis, emotional arc, section structure, and most usable lines. Apply only the user's requested change. Keep the result singable and coherent. Do not run away into a different story, a different protagonist, or a new song unless the user explicitly asked for that.
+        polish_policy=For POLISH, repair diction, rhyme, clarity, sentence length, chorus memory, and weak lines while retaining the original core.
+        continue_policy=For CONTINUE, extend the existing voice and structure naturally, then close the song if appropriate.
+        grounding_policy=Use retrieved Yanyun entities and references as grounding material. Do not output user typos as canonical names. Do not force official names or the words Yanyun/Sixteen Sounds unless they fit naturally.
+        speed_policy=Return one clean JSON object. Avoid over-explaining. Do not include Markdown.
+        """
+        .formatted(
+            operationCopy,
+            firstNonBlank(request.instruction(), "keep the current lyric's direction"),
+            entityLabels(knowledge),
+            yanyunReferenceLabels(knowledge))
+        .trim();
   }
 
   private String creativeBriefInstruction(
@@ -435,6 +490,32 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       return "歌词质量分不足，请补充更明确的燕云十六声主题后重试。";
     }
     return "歌词不够贴合燕云十六声，请调整灵感后重试。";
+  }
+
+  private void ensureLightweightEditQualityAllowed(
+      LyricsGenerationRequest request, DeepSeekLyricsResponse response) {
+    if (response == null || firstNonBlank(response.lyricsText(), "").isBlank()) {
+      throw new LyricsQualityException("AI 改词没有返回有效歌词，请稍后重试。");
+    }
+    String outputText =
+        String.join(
+            " ",
+            firstNonBlank(response.songTitle(), ""),
+            firstNonBlank(response.songSummary(), ""),
+            firstNonBlank(response.lyricsText(), ""),
+            firstNonBlank(response.musicPrompt(), ""),
+            firstNonBlank(response.coverPromptSeed(), ""));
+    String inputText =
+        String.join(
+            " ",
+            firstNonBlank(request.userInput(), ""),
+            firstNonBlank(request.currentLyrics(), ""),
+            firstNonBlank(request.instruction(), ""),
+            firstNonBlank(request.requestedTitle(), ""));
+    if (CreativeBoundaryTerms.containsOtherIpTerm(outputText)
+        && !CreativeBoundaryTerms.containsOtherIpTerm(inputText)) {
+      throw new LyricsQualityException("AI 改词偏离了燕云十六声创作域，请换一个更明确的润色方向后重试。");
+    }
   }
 
   private DeepSeekLyricsResponse generateWithDeepSeek(
@@ -653,7 +734,16 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       DeepSeekLyricsResponse response,
       CreativeBriefResult creativeBrief,
       KnowledgeRetrievalResult knowledge,
-      PromptRenderResult prompt) {
+      PromptRenderResult prompt,
+      boolean includeCreativeBriefVersion) {
+    Map<String, Integer> promptTemplateVersions =
+        includeCreativeBriefVersion
+            ? Map.of(
+                prompt.templateKey(),
+                prompt.version(),
+                CREATIVE_BRIEF_TEMPLATE_KEY,
+                CREATIVE_BRIEF_TEMPLATE_VERSION)
+            : Map.of(prompt.templateKey(), prompt.version());
     return new LyricsGenerationResult(
         response.songTitle(),
         response.songSummary(),
@@ -663,11 +753,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         response.riskNotes(),
         yanyunReferences(creativeBrief, knowledge),
         knowledge.kbVersion(),
-        Map.of(
-            prompt.templateKey(),
-            prompt.version(),
-            CREATIVE_BRIEF_TEMPLATE_KEY,
-            CREATIVE_BRIEF_TEMPLATE_VERSION),
+        promptTemplateVersions,
         response.qualityScore());
   }
 
@@ -753,6 +839,10 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private boolean isLowQuality(DeepSeekLyricsResponse response) {
     return response.qualityScore() != null
         && response.qualityScore().compareTo(QUALITY_REWRITE_THRESHOLD) < 0;
+  }
+
+  private boolean lightweightEditOperation(LyricsOperation operation) {
+    return operation == LyricsOperation.POLISH || operation == LyricsOperation.CONTINUE;
   }
 
   private String query(LyricsGenerationRequest request) {
