@@ -1280,6 +1280,30 @@ public class WorkRepository {
     }
   }
 
+  public Optional<String> findLatestProviderTraceId(UUID workId, String provider, String operation) {
+    try {
+      return Optional.ofNullable(
+          jdbcTemplate.queryForObject(
+              """
+              SELECT provider_trace_id
+              FROM provider_calls
+              WHERE work_id = ?
+                AND provider = ?
+                AND operation = ?
+                AND provider_trace_id IS NOT NULL
+                AND provider_trace_id <> ''
+              ORDER BY created_at DESC
+              LIMIT 1
+              """,
+              String.class,
+              workId,
+              provider,
+              operation));
+    } catch (EmptyResultDataAccessException exception) {
+      return Optional.empty();
+    }
+  }
+
   public Optional<IdempotencyRecord> findIdempotency(
       String userId, String idempotencyKey, String operation) {
     try {

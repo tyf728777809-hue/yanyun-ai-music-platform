@@ -53,6 +53,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
 
   @Override
   public MusicGenerationResult submit(MusicGenerationRequest request) {
+    String taskId = null;
     try {
       ensureConfigured();
       JsonNode submitRoot = postJson(apiUri("/suno/submit/music"), requestBody(request));
@@ -63,7 +64,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
             DreamMakerFailureMapper.sanitizedMessage(
                 "Yunwu Suno", message(submitRoot), "Yunwu Suno task submission failed"));
       }
-      String taskId = taskId(submitRoot);
+      taskId = taskId(submitRoot);
       if (!hasText(taskId)) {
         return providerFailure(
             null,
@@ -72,7 +73,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
       }
       return pollUntilTerminal(taskId);
     } catch (YunwuSunoProviderException exception) {
-      return providerFailure(null, exception.failureCode(), exception.getMessage());
+      return providerFailure(taskId, exception.failureCode(), exception.getMessage());
     }
   }
 

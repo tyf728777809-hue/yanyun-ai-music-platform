@@ -157,6 +157,19 @@ class YunwuSunoMusicProviderTest {
     assertEquals("PROVIDER_ACCOUNT_LIMIT", result.failureCode());
   }
 
+  @Test
+  void preservesProviderTaskIdWhenPollingFailsAfterSubmitSucceeds() throws Exception {
+    server = startSubmitSuccessFetchFailureServer();
+    YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+    MusicGenerationResult result =
+        provider.submit(new MusicGenerationRequest("work-1", "lyrics", "prompt", "AUTO", Map.of()));
+
+    assertEquals(MusicGenerationStatus.FAILED, result.status());
+    assertEquals("task-keep", result.providerTaskId());
+    assertEquals("MUSIC_GENERATION_FAILED", result.failureCode());
+  }
+
   private HttpServer startSuccessServer(String audioIdFieldName, String audioId)
       throws IOException {
     HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -236,6 +249,38 @@ class YunwuSunoMusicProviderTest {
                   .getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "application/json");
           exchange.sendResponseHeaders(200, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
+  private HttpServer startSubmitSuccessFetchFailureServer() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/suno/submit/music",
+        exchange -> {
+          byte[] body =
+              """
+              {
+                "code": 200,
+                "data": "task-keep",
+                "msg": "操作成功"
+              }
+              """
+                  .getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "application/json");
+          exchange.sendResponseHeaders(200, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.createContext(
+        "/suno/fetch/task-keep",
+        exchange -> {
+          byte[] body = "<html><body>502 Bad Gateway</body></html>".getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
+          exchange.sendResponseHeaders(502, body.length);
           exchange.getResponseBody().write(body);
           exchange.close();
         });

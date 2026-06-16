@@ -324,6 +324,41 @@ public class WorkService {
           HttpStatus.CONFLICT, "Music retry is already running or retry limit reached");
     }
     boolean retryAllowedAfterFailure = work.musicRetryCount() + 1 < MUSIC_RETRY_LIMIT;
+    Optional<String> recoverableProviderTaskId =
+        recoverableMusicProviderTaskId(workId, selectedMusicProvider);
+    boolean reuseExistingCover = hasMediaAsset(workId, "COVER");
+    if (recoverableProviderTaskId.isPresent()) {
+      if (workflowDispatchProperties.outboxMode()) {
+        return enqueueReservedSongProduction(
+            workId,
+            userId,
+            draft,
+            selectedMusicProvider,
+            retryAllowedAfterFailure,
+            false,
+            reuseExistingCover,
+            false,
+            recoverableProviderTaskId.get());
+      }
+      SongProductionWorkflowResult workflowResult =
+          songProductionWorkflow.produce(
+              workflowInput(
+                  workId,
+                  userId,
+                  draft,
+                  selectedMusicProvider,
+                  retryAllowedAfterFailure,
+                  null,
+                  false,
+                  reuseExistingCover,
+                  false,
+                  recoverableProviderTaskId.get()));
+      if (!workflowResult.packageReady()) {
+        throw workflowFailure(workflowResult);
+      }
+      WorkRow updated = getRequiredWork(workId, userId);
+      return accepted(updated, UUID.fromString(workflowResult.jobId()));
+    }
     if (workflowDispatchProperties.outboxMode()) {
       return enqueueReservedSongProduction(
           workId, userId, draft, selectedMusicProvider, retryAllowedAfterFailure);
@@ -349,8 +384,7 @@ public class WorkService {
     String selectedMusicProvider = musicProvider(null);
     requireSafeRealMusicDispatch(selectedMusicProvider);
     String providerTaskId =
-        workRepository
-            .findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION", "SUCCEEDED")
+        recoverableMusicProviderTaskId(workId, selectedMusicProvider)
             .orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.CONFLICT, "没有可恢复的音乐任务，请重新生成音乐。"));
     boolean reuseExistingCover = hasMediaAsset(workId, "COVER");
@@ -607,9 +641,15 @@ public class WorkService {
         && !hasMediaAsset(work.id(), "AUDIO")
         && (work.failureCode() == FailureCode.AUDIO_IMPORT_FAILED
             || (work.failureCode() == FailureCode.PACKAGE_BUILD_FAILED
-                && workRepository
-                    .findLatestProviderTraceId(work.id(), "SUNO", "MUSIC_GENERATION", "SUCCEEDED")
-                    .isPresent()));
+                && recoverableMusicProviderTaskId(work.id(), null).isPresent()));
+  }
+
+  private Optional<String> recoverableMusicProviderTaskId(UUID workId, String selectedMusicProvider) {
+    if (hasMediaAsset(workId, "AUDIO")
+        || effectiveMusicProvider(selectedMusicProvider) != MusicProviderType.SUNO) {
+      return Optional.empty();
+    }
+    return workRepository.findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION");
   }
 
   private boolean canRerenderVideoFromExistingMedia(WorkRow work) {
