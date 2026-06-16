@@ -389,7 +389,7 @@ public class WorkRepository {
                AND locked_at IS NOT NULL
                AND locked_at < now() - (? * interval '1 second')
              )
-          ORDER BY created_at ASC
+          ORDER BY CASE WHEN status = 'QUEUED' THEN 0 ELSE 1 END, created_at ASC
           LIMIT ?
           FOR UPDATE SKIP LOCKED
         )

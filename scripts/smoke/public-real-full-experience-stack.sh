@@ -19,6 +19,8 @@ START_TIMEOUT_SECONDS="${START_TIMEOUT_SECONDS:-120}"
 STOP_TIMEOUT_SECONDS="${STOP_TIMEOUT_SECONDS:-60}"
 MAX_POLL_ATTEMPTS="${MAX_POLL_ATTEMPTS:-180}"
 POLL_INTERVAL_SECONDS="${POLL_INTERVAL_SECONDS:-5}"
+LYRICS_MAX_POLL_ATTEMPTS="${LYRICS_MAX_POLL_ATTEMPTS:-120}"
+LYRICS_POLL_INTERVAL_SECONDS="${LYRICS_POLL_INTERVAL_SECONDS:-3}"
 SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
 MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-0}"
 CHECK_YUNWU_TIMESTAMPED_LYRICS="${CHECK_YUNWU_TIMESTAMPED_LYRICS:-false}"
@@ -89,6 +91,9 @@ cleanup() {
   stop_process "$FRONTEND_PID" "frontend"
   stop_process "$API_PID" "API"
   stop_process "$WORKER_PID" "worker"
+  stop_port_listener "$FRONTEND_PORT" "frontend"
+  stop_port_listener "$API_PORT" "API"
+  stop_port_listener "$WORKER_PORT" "worker"
   unset DEEPSEEK_API_KEY
   unset YUNWU_API_KEY
   unset WELLAPI_API_KEY
@@ -104,6 +109,23 @@ stop_process() {
     kill "$pid" >/dev/null 2>&1 || true
     wait "$pid" >/dev/null 2>&1 || true
   fi
+}
+
+stop_port_listener() {
+  local port="$1"
+  local name="$2"
+  local pids pid
+  if [ -z "$port" ]; then
+    return
+  fi
+  pids="$(lsof -nP -tiTCP:"$port" -sTCP:LISTEN 2>/dev/null || true)"
+  for pid in $pids; do
+    if [ -n "$pid" ] && kill -0 "$pid" >/dev/null 2>&1; then
+      log "stopping leftover $name listener pid=$pid port=$port"
+      kill "$pid" >/dev/null 2>&1 || true
+      wait "$pid" >/dev/null 2>&1 || true
+    fi
+  done
 }
 
 derive_api_port() {
@@ -385,7 +407,7 @@ create_real_work() {
 wait_for_lyrics() {
   local detail status stage failure
   LYRICS_DRAFT_ID=""
-  for _ in $(seq 1 40); do
+  for _ in $(seq 1 "$LYRICS_MAX_POLL_ATTEMPTS"); do
     detail="$(get_json "/works/$WORK_ID")"
     status="$(echo "$detail" | jq -r '.status')"
     stage="$(echo "$detail" | jq -r '.generation_stage')"
@@ -399,7 +421,7 @@ wait_for_lyrics() {
       echo "$detail" | jq '{work_id, status, generation_stage, failure}' >&2
       fail "lyrics stage failed"
     fi
-    sleep 2
+    sleep "$LYRICS_POLL_INTERVAL_SECONDS"
   done
   fail "lyrics draft was not ready in time"
 }

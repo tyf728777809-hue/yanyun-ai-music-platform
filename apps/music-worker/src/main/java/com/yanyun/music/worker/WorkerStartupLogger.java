@@ -4,6 +4,7 @@ import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.MusicPromptAgent;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
 import com.yanyun.music.deepseek.DeepSeekProperties;
+import com.yanyun.music.knowledge.KnowledgeProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -17,6 +18,7 @@ public class WorkerStartupLogger implements ApplicationRunner {
 
   private final TemporalWorkerProperties properties;
   private final DeepSeekProperties deepSeekProperties;
+  private final KnowledgeProperties knowledgeProperties;
   private final MusicPromptAgent musicPromptAgent;
   private final CoverPromptAgent coverPromptAgent;
   private final QualityEvaluationAgent qualityEvaluationAgent;
@@ -24,11 +26,13 @@ public class WorkerStartupLogger implements ApplicationRunner {
   public WorkerStartupLogger(
       TemporalWorkerProperties properties,
       DeepSeekProperties deepSeekProperties,
+      KnowledgeProperties knowledgeProperties,
       MusicPromptAgent musicPromptAgent,
       CoverPromptAgent coverPromptAgent,
       QualityEvaluationAgent qualityEvaluationAgent) {
     this.properties = properties;
     this.deepSeekProperties = deepSeekProperties;
+    this.knowledgeProperties = knowledgeProperties;
     this.musicPromptAgent = musicPromptAgent;
     this.coverPromptAgent = coverPromptAgent;
     this.qualityEvaluationAgent = qualityEvaluationAgent;
@@ -48,5 +52,9 @@ public class WorkerStartupLogger implements ApplicationRunner {
         musicPromptAgent.getClass().getSimpleName(),
         coverPromptAgent.getClass().getSimpleName(),
         qualityEvaluationAgent.getClass().getSimpleName());
+    log.info(
+        "music-worker knowledge config. retrievalMode={}, kbVersion={}",
+        knowledgeProperties.getRetrievalMode(),
+        knowledgeProperties.getKbVersion());
   }
 }

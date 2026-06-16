@@ -65,7 +65,8 @@ expected_operations = {
   "/api/v1/works/{work_id}/video/rerender" => {"post" => "rerenderVideo"},
   "/api/v1/works/{work_id}/publish-package" => {"get" => "getPublishPackage"},
   "/api/v1/works/{work_id}/publish-package/mark-fetched" => {"post" => "markPublishPackageFetched"},
-  "/api/v1/works/{work_id}/publish-package/refresh-url" => {"post" => "refreshPublishPackageUrl"}
+  "/api/v1/works/{work_id}/publish-package/refresh-url" => {"post" => "refreshPublishPackageUrl"},
+  "/api/v1/works/{work_id}/publish-package/rebuild" => {"post" => "rebuildPublishPackage"}
 }
 
 expected_operations.each do |path, methods|
@@ -258,10 +259,6 @@ assert_work_summary() {
   assert_json '.items[0].work_id and .items[0].work_code and .items[0].status and .items[0].generation_stage and .items[0].package_status and .items[0].updated_at' "WorkSummary required fields missing"
 }
 
-health_status="$(curl -sS -o "$RESULT_BODY" -w "%{http_code}" "$API_HEALTH_URL" || true)"
-assert_status "$health_status" "200"
-assert_json '.status == "OK"' "API health did not return status OK"
-
 log "checking static OpenAPI contract"
 static_openapi_check
 
@@ -269,6 +266,10 @@ if [[ "$OPENAPI_CONTRACT_STATIC_ONLY" == "true" || "$OPENAPI_CONTRACT_STATIC_ONL
   log "PASS static OpenAPI contract"
   exit 0
 fi
+
+health_status="$(curl -sS -o "$RESULT_BODY" -w "%{http_code}" "$API_HEALTH_URL" || true)"
+assert_status "$health_status" "200"
+assert_json '.status == "OK"' "API health did not return status OK"
 
 assert_runtime_safe_for_dynamic_contract
 
