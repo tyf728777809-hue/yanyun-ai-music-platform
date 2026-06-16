@@ -39,6 +39,12 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
     });
   }
 
+  async function handleRebuildPackage() {
+    await run('REBUILD_PACKAGE', () => service.rebuildPublishPackage(work.work_id), {
+      successMsg: '已重新整理作品素材',
+    });
+  }
+
   function handleReturnToEdit() {
     onBackToHome();
   }
@@ -125,6 +131,20 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
                 loading={busyKey === action}
                 disabled={busyKey !== null}
                 onClick={handleRerenderVideo}
+              >
+                {actionLabel(action)}
+              </Button>
+            );
+          }
+          if (action === 'REBUILD_PACKAGE') {
+            return (
+              <Button
+                key={action}
+                tone="secondary"
+                block
+                loading={busyKey === action}
+                disabled={busyKey !== null}
+                onClick={handleRebuildPackage}
               >
                 {actionLabel(action)}
               </Button>

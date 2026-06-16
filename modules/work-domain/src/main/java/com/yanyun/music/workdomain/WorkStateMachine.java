@@ -125,8 +125,8 @@ public final class WorkStateMachine {
         }
       }
       case COVER_GENERATION_FAILED -> actions.add(AvailableAction.RETRY_COVER);
-      case VIDEO_RENDER_FAILED, PACKAGE_BUILD_FAILED ->
-          actions.add(AvailableAction.CONTACT_SUPPORT);
+      case VIDEO_RENDER_FAILED -> actions.add(AvailableAction.RERENDER_VIDEO);
+      case PACKAGE_BUILD_FAILED -> actions.add(AvailableAction.REBUILD_PACKAGE);
       case USER_INPUT_BLOCKED -> {
         // The common RETURN_TO_EDIT action is appended below.
       }

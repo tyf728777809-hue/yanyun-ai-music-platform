@@ -434,6 +434,111 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void reuseExistingAudioAndCoverSkipsMusicAndCoverProvidersThenRendersVideo() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    CoverPromptAgent coverPromptAgent = mock(CoverPromptAgent.class);
+    VideoRenderService videoRenderService = mock(VideoRenderService.class);
+    MediaAssetRow existingAudio = existingAsset(workId, "AUDIO", "audio/" + workId + ".mp3");
+    MediaAssetRow existingCover = existingAsset(workId, "COVER", "covers/" + workId + ".png");
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(existingAudio, existingCover));
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(videoRenderService.renderVideo(any()))
+        .thenReturn(
+            new VideoRenderResult(
+                new MediaAssetDescriptor(
+                    "VIDEO",
+                    "videos/" + workId + ".mp4",
+                    "video/mp4",
+                    8_000L,
+                    "video-checksum",
+                    1920,
+                    1080,
+                    213_520,
+                    Map.of()),
+                new MediaAssetDescriptor(
+                    "TIMELINE",
+                    "timelines/" + workId + ".json",
+                    "application/json",
+                    800L,
+                    "timeline-checksum",
+                    null,
+                    null,
+                    null,
+                    Map.of())));
+    stubSuccessfulPackage(workId);
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                videoRenderService,
+                new MockMusicPromptAgent(),
+                coverPromptAgent)
+            .produce(inputReusingAudioAndCover(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    verify(musicProvider, never()).submit(any());
+    verifyNoInteractions(coverPromptAgent);
+    verify(videoRenderService).renderVideo(any());
+  }
+
+  @Test
+  void reuseExistingAudioCoverAndVideoSkipsAllMediaProvidersAndRebuildsPackageOnly() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider();
+    CoverPromptAgent coverPromptAgent = mock(CoverPromptAgent.class);
+    VideoRenderService videoRenderService = mock(VideoRenderService.class);
+    MediaAssetRow existingAudio = existingAsset(workId, "AUDIO", "audio/" + workId + ".mp3");
+    MediaAssetRow existingCover = existingAsset(workId, "COVER", "covers/" + workId + ".png");
+    MediaAssetRow existingVideo = existingAsset(workId, "VIDEO", "videos/" + workId + ".mp4");
+    MediaAssetRow existingTimeline =
+        existingAsset(workId, "TIMELINE", "timelines/" + workId + ".json");
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(workRepository.findMediaAssets(workId))
+        .thenReturn(List.of(existingAudio, existingCover, existingVideo, existingTimeline));
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    stubSuccessfulPackage(workId);
+
+    SongProductionWorkflowResult result =
+        workflowWith(
+                musicProvider,
+                MusicProviderType.MOCK,
+                videoRenderService,
+                new MockMusicPromptAgent(),
+                coverPromptAgent)
+            .produce(inputReusingAllMedia(workId));
+
+    assertThat(result.packageReady()).isTrue();
+    verify(musicProvider, never()).submit(any());
+    verifyNoInteractions(coverPromptAgent);
+    verifyNoInteractions(videoRenderService);
+    ArgumentCaptor<ObjectStoragePutRequest> storagePut =
+        ArgumentCaptor.forClass(ObjectStoragePutRequest.class);
+    verify(objectStorageClient).putObject(storagePut.capture());
+    assertThat(storagePut.getValue().objectKey()).isEqualTo("packages/" + workId + ".json");
+  }
+
+  @Test
   void quotaCommitFailureDoesNotMarkPackageReady() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -1970,6 +2075,48 @@ class MockSongProductionWorkflowTest {
             });
   }
 
+  private void stubSuccessfulPackage(UUID workId) {
+    when(publishAdapter.preparePackage(workId.toString()))
+        .thenReturn(
+            new PublishHandoff(
+                "packages/" + workId + ".json",
+                "http://localhost/packages/" + workId + ".json",
+                OffsetDateTime.parse("2026-06-05T12:00:00Z")));
+    when(moderationAdapter.preCheckPublishPackage("user-1", workId.toString()))
+        .thenReturn(ModerationDecision.allow());
+    when(objectStorageClient.putObject(any()))
+        .thenAnswer(
+            invocation -> {
+              ObjectStoragePutRequest request = invocation.getArgument(0);
+              return new StoredObject(
+                  request.objectKey(),
+                  "http://localhost/" + request.objectKey(),
+                  request.contentType(),
+                  request.content().length);
+            });
+    when(quotaAdapter.commitGenerateQuota("user-1", "lock-1"))
+        .thenReturn(new QuotaCommit(true, "committed"));
+  }
+
+  private MediaAssetRow existingAsset(UUID workId, String assetType, String objectKey) {
+    return new MediaAssetRow(
+        workId,
+        assetType,
+        objectKey,
+        switch (assetType) {
+          case "AUDIO" -> "audio/mpeg";
+          case "COVER" -> "image/png";
+          case "VIDEO" -> "video/mp4";
+          default -> "application/json";
+        },
+        4_810_374L,
+        assetType.toLowerCase(java.util.Locale.ROOT) + "-checksum",
+        "AUDIO".equals(assetType) || "TIMELINE".equals(assetType) ? null : 1920,
+        "AUDIO".equals(assetType) || "TIMELINE".equals(assetType) ? null : 1080,
+        "AUDIO".equals(assetType) || "VIDEO".equals(assetType) ? 213_520 : null,
+        "{}");
+  }
+
   private MusicProvider mockMusicProvider() {
     return mockMusicProvider(MusicProviderType.MOCK);
   }
@@ -2026,6 +2173,44 @@ class MockSongProductionWorkflowTest {
         null,
         false,
         null,
+        true);
+  }
+
+  private SongProductionWorkflowInput inputReusingAudioAndCover(UUID workId) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        "user-1",
+        UUID.randomUUID().toString(),
+        "Mock title",
+        "Mock summary",
+        "Mock lyrics",
+        "Mock prompt",
+        "Mock cover seed",
+        "AUTO",
+        null,
+        false,
+        null,
+        true,
+        true,
+        false);
+  }
+
+  private SongProductionWorkflowInput inputReusingAllMedia(UUID workId) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        "user-1",
+        UUID.randomUUID().toString(),
+        "Mock title",
+        "Mock summary",
+        "Mock lyrics",
+        "Mock prompt",
+        "Mock cover seed",
+        "AUTO",
+        null,
+        false,
+        null,
+        true,
+        true,
         true);
   }
 }

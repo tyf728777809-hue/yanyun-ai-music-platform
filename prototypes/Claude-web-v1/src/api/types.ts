@@ -44,6 +44,7 @@ export type AvailableAction =
   | 'RETRY_MUSIC'
   | 'RETRY_COVER'
   | 'RERENDER_VIDEO'
+  | 'REBUILD_PACKAGE'
   | 'REFRESH_PACKAGE_URL'
   | 'MARK_PACKAGE_FETCHED'
   | 'RETURN_TO_EDIT'

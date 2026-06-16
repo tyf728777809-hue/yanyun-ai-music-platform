@@ -105,7 +105,7 @@ class WorkStateMachineTest {
   }
 
   @Test
-  void failedCoverAllowsCoverRetryButVideoDoesNotExposeUnimplementedRecoveryAction() {
+  void mediaStageFailuresExposeMatchingRecoveryActions() {
     List<AvailableAction> coverActions =
         WorkStateMachine.availableActions(
             new WorkSnapshot(
@@ -124,12 +124,22 @@ class WorkStateMachineTest {
                 FailureCode.VIDEO_RENDER_FAILED,
                 true,
                 1));
+    List<AvailableAction> packageActions =
+        WorkStateMachine.availableActions(
+            new WorkSnapshot(
+                WorkStatus.FAILED,
+                GenerationStage.FAILED,
+                PackageStatus.PACKAGE_NOT_READY,
+                FailureCode.PACKAGE_BUILD_FAILED,
+                true,
+                1));
 
     assertTrue(coverActions.contains(AvailableAction.RETRY_COVER));
-    assertFalse(videoActions.contains(AvailableAction.RERENDER_VIDEO));
-    assertTrue(videoActions.contains(AvailableAction.CONTACT_SUPPORT));
+    assertTrue(videoActions.contains(AvailableAction.RERENDER_VIDEO));
+    assertTrue(packageActions.contains(AvailableAction.REBUILD_PACKAGE));
     assertTrue(coverActions.contains(AvailableAction.RETURN_TO_EDIT));
     assertTrue(videoActions.contains(AvailableAction.RETURN_TO_EDIT));
+    assertTrue(packageActions.contains(AvailableAction.RETURN_TO_EDIT));
   }
 
   @Test

@@ -83,6 +83,11 @@ export const service = {
   rerenderVideo: (...args: Parameters<typeof realApi.rerenderVideo>) =>
     currentMode === 'demo' ? mockBackend.rerenderVideo(args[0]) : realApi.rerenderVideo(...args),
 
+  rebuildPublishPackage: (...args: Parameters<typeof realApi.rebuildPublishPackage>) =>
+    currentMode === 'demo'
+      ? mockBackend.rebuildPublishPackage(args[0])
+      : realApi.rebuildPublishPackage(...args),
+
   getPublishPackage: (...args: Parameters<typeof realApi.getPublishPackage>) =>
     currentMode === 'demo'
       ? mockBackend.getPublishPackage(args[0])

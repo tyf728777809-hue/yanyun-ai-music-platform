@@ -328,6 +328,25 @@ paths:
                 $ref: "#/components/schemas/PublishPackage"
         default:
           $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/publish-package/rebuild:
+    post:
+      tags: [PublishPackage]
+      summary: 失败态重建发布素材
+      description: 仅用于 `PACKAGE_BUILD_FAILED` 恢复；复用已有音频、封面和视频，不重新调用音乐或生图供应商。
+      operationId: rebuildPublishPackage
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "202":
+          description: 发布素材重建任务已排队
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
 components:
   parameters:
     MockUserId:
@@ -891,6 +910,7 @@ components:
         - RETRY_MUSIC
         - RETRY_COVER
         - RERENDER_VIDEO
+        - REBUILD_PACKAGE
         - REFRESH_PACKAGE_URL
         - MARK_PACKAGE_FETCHED
         - RETURN_TO_EDIT

@@ -488,6 +488,15 @@ export const mockBackend = {
     return jobAccepted(w, d);
   },
 
+  async rebuildPublishPackage(workId: string): Promise<JobAcceptedResponse> {
+    const w = requireWork(workId);
+    const d = derive(w, Date.now());
+    if (d.status !== 'GENERATED') {
+      throw new ApiError(409, 'CONFLICT', '当前状态不能重新整理作品素材');
+    }
+    return jobAccepted(w, d);
+  },
+
   async getPublishPackage(workId: string): Promise<PublishPackage> {
     return toPublishPackage(requireWork(workId));
   },

@@ -82,6 +82,10 @@ export function rerenderVideo(workId: string): Promise<JobAcceptedResponse> {
   return apiRequest(`/works/${workId}/video/rerender`, { method: 'POST' });
 }
 
+export function rebuildPublishPackage(workId: string): Promise<JobAcceptedResponse> {
+  return apiRequest(`/works/${workId}/publish-package/rebuild`, { method: 'POST' });
+}
+
 export function getPublishPackage(workId: string, signal?: AbortSignal): Promise<PublishPackage> {
   return apiRequest(`/works/${workId}/publish-package`, { signal });
 }

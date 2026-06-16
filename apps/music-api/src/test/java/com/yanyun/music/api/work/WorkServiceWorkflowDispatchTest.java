@@ -420,7 +420,7 @@ class WorkServiceWorkflowDispatchTest {
   }
 
   @Test
-  void regenerateCoverEnqueuesPackageRetryWithExistingAudio() {
+  void rebuildPublishPackageEnqueuesRecoveryWithExistingMedia() {
     UUID workId = UUID.randomUUID();
     UUID draftId = UUID.randomUUID();
     WorkRow failed = packageBuildFailedWork(workId);
@@ -428,19 +428,20 @@ class WorkServiceWorkflowDispatchTest {
     when(workRepository.findWorkForUser(workId, "user-1"))
         .thenReturn(Optional.of(failed))
         .thenReturn(Optional.of(queued));
-    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(audioAsset(workId)));
+    when(workRepository.findMediaAssets(workId))
+        .thenReturn(List.of(audioAsset(workId), coverAsset(workId), videoAsset(workId)));
     when(workRepository.findLatestLyricsDraft(workId))
         .thenReturn(Optional.of(draft(workId, draftId)));
-    when(workRepository.reservePackageBuildRetry(workId, "user-1", failed.version()))
+    when(workRepository.reservePublishPackageRebuild(workId, "user-1", failed.version()))
         .thenReturn(true);
 
     JobAcceptedResponse response =
-        service(temporalOutboxProperties()).regenerateCover("user-1", workId);
+        service(temporalOutboxProperties()).rebuildPublishPackage("user-1", workId);
 
     assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
     assertThat(response.generationStage()).isEqualTo(GenerationStage.QUOTA_LOCKING);
     assertThat(response.jobId()).isNotNull();
-    verify(workRepository).reservePackageBuildRetry(workId, "user-1", failed.version());
+    verify(workRepository).reservePublishPackageRebuild(workId, "user-1", failed.version());
     verify(workRepository)
         .insertGenerationJob(
             eq(response.jobId()),
@@ -454,6 +455,8 @@ class WorkServiceWorkflowDispatchTest {
         ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
     verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
     assertThat(input.getValue().reuseExistingAudio()).isTrue();
+    assertThat(input.getValue().reuseExistingCover()).isTrue();
+    assertThat(input.getValue().reuseExistingVideo()).isTrue();
     assertThat(input.getValue().workId()).isEqualTo(workId.toString());
     assertThat(input.getValue().jobId()).isEqualTo(response.jobId().toString());
     verify(songProductionWorkflow, never()).produce(any());
@@ -483,6 +486,39 @@ class WorkServiceWorkflowDispatchTest {
         ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
     verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
     assertThat(input.getValue().reuseExistingAudio()).isTrue();
+    assertThat(input.getValue().reuseExistingCover()).isFalse();
+    assertThat(input.getValue().reuseExistingVideo()).isFalse();
+    assertThat(input.getValue().jobId()).isEqualTo(response.jobId().toString());
+    verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
+  void rerenderVideoEnqueuesRecoveryWithExistingAudioAndCover() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow failed = videoRenderFailedWork(workId);
+    WorkRow queued = work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(failed))
+        .thenReturn(Optional.of(queued));
+    when(workRepository.findMediaAssets(workId))
+        .thenReturn(List.of(audioAsset(workId), coverAsset(workId)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.reserveVideoRerender(workId, "user-1", failed.version())).thenReturn(true);
+
+    JobAcceptedResponse response =
+        service(temporalOutboxProperties()).rerenderVideo("user-1", workId);
+
+    assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
+    assertThat(response.generationStage()).isEqualTo(GenerationStage.QUOTA_LOCKING);
+    verify(workRepository).reserveVideoRerender(workId, "user-1", failed.version());
+    ArgumentCaptor<SongProductionWorkflowInput> input =
+        ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
+    verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
+    assertThat(input.getValue().reuseExistingAudio()).isTrue();
+    assertThat(input.getValue().reuseExistingCover()).isTrue();
+    assertThat(input.getValue().reuseExistingVideo()).isFalse();
     assertThat(input.getValue().jobId()).isEqualTo(response.jobId().toString());
     verify(songProductionWorkflow, never()).produce(any());
   }
@@ -878,6 +914,32 @@ class WorkServiceWorkflowDispatchTest {
         3);
   }
 
+  private WorkRow videoRenderFailedWork(UUID workId) {
+    return new WorkRow(
+        workId,
+        "YYM-20260605-ABCDEF",
+        "user-1",
+        CreationMode.LYRICS,
+        WorkStatus.FAILED,
+        GenerationStage.FAILED,
+        PackageStatus.PACKAGE_NOT_READY,
+        "Mock title",
+        "Mock summary",
+        0,
+        0,
+        FailureCode.VIDEO_RENDER_FAILED,
+        "Video render failed",
+        true,
+        OffsetDateTime.now(),
+        false,
+        false,
+        0,
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
+        null,
+        3);
+  }
+
   private WorkRow coverGenerationFailedWork(UUID workId) {
     return new WorkRow(
         workId,
@@ -914,6 +976,34 @@ class WorkServiceWorkflowDispatchTest {
         "audio-checksum",
         null,
         null,
+        213_520,
+        "{}");
+  }
+
+  private MediaAssetRow coverAsset(UUID workId) {
+    return new MediaAssetRow(
+        workId,
+        "COVER",
+        "covers/" + workId + ".png",
+        "image/png",
+        810_374L,
+        "cover-checksum",
+        1920,
+        1080,
+        null,
+        "{}");
+  }
+
+  private MediaAssetRow videoAsset(UUID workId) {
+    return new MediaAssetRow(
+        workId,
+        "VIDEO",
+        "videos/" + workId + ".mp4",
+        "video/mp4",
+        8_810_374L,
+        "video-checksum",
+        1920,
+        1080,
         213_520,
         "{}");
   }

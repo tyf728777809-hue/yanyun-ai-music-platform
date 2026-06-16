@@ -304,6 +304,28 @@ public class WorkController {
         () -> workService.refreshPublishPackageUrl(safeUserId, workId));
   }
 
+  @PostMapping("/works/{work_id}/publish-package/rebuild")
+  public ResponseEntity<JobAcceptedResponse> rebuildPublishPackage(
+      @RequestHeader(
+              value = "X-Mock-User-Id",
+              required = false,
+              defaultValue = DEFAULT_MOCK_USER_ID)
+          String userId,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+      @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
+    requireIdempotencyKey(idempotencyKey);
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                safeUserId,
+                idempotencyKey,
+                "works.publish-package.rebuild",
+                fingerprint(workId, null),
+                JobAcceptedResponse.class,
+                () -> workService.rebuildPublishPackage(safeUserId, workId)));
+  }
+
   private void requireIdempotencyKey(String idempotencyKey) {
     if (idempotencyKey == null || idempotencyKey.isBlank() || idempotencyKey.length() < 8) {
       throw new IllegalArgumentException("Idempotency-Key header must be at least 8 characters");

@@ -16,6 +16,7 @@ export const ACTION_META: Record<AvailableAction, ActionMeta> = {
   RETRY_MUSIC: { label: '重新生成', tone: 'primary' },
   RETRY_COVER: { label: '重新生成封面', tone: 'secondary' },
   RERENDER_VIDEO: { label: '重新渲染画面', tone: 'secondary' },
+  REBUILD_PACKAGE: { label: '重新整理作品素材', tone: 'secondary' },
   REFRESH_PACKAGE_URL: { label: '刷新下载链接', tone: 'secondary' },
   MARK_PACKAGE_FETCHED: { label: '标记已交接', tone: 'primary' },
   RETURN_TO_EDIT: { label: '返回编辑', tone: 'ghost' },

@@ -223,7 +223,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
     CompletableFuture<MediaAssetRow> coverFuture = null;
     MusicGenerationResult musicResult;
     if (input.reuseExistingAudio()) {
-      if (parallelMediaEnabled) {
+      if (parallelMediaEnabled && !input.reuseExistingCover()) {
         coverFuture = startCoverGeneration(workId, jobId, input, true);
       }
       musicResult = existingAudioMusicResult(workId, selectedProvider);
@@ -339,7 +339,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
               musicPrompt.musicPrompt(),
               input.vocalPreference(),
               musicProviderOptions(input, musicPrompt));
-      if (parallelMediaEnabled) {
+      if (parallelMediaEnabled && !input.reuseExistingCover()) {
         coverFuture = startCoverGeneration(workId, jobId, input, true);
       }
       long providerStartedAt = System.nanoTime();
@@ -787,17 +787,30 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
             writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
 
+    MediaAssetRow coverAsset;
     CompletableFuture<MediaAssetRow> safeCoverFuture = coverFuture == null ? null : coverFuture;
-    if (safeCoverFuture == null) {
+    if (input.reuseExistingCover()) {
+      coverAsset = existingMediaAsset(workId, "COVER");
+      recordStepSucceeded(workId, jobId, GenerationStage.COVER_GENERATING.name());
+    } else if (safeCoverFuture == null) {
       if (!markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
         throw new StaleWorkflowException(GenerationStage.COVER_GENERATING);
       }
       safeCoverFuture = startCoverGeneration(workId, jobId, input, false);
+      coverAsset = awaitCoverAsset(safeCoverFuture);
     } else if (!safeCoverFuture.isDone()
         && !markStage(workId, jobId, GenerationStage.COVER_GENERATING)) {
       throw new StaleWorkflowException(GenerationStage.COVER_GENERATING);
+    } else {
+      coverAsset = awaitCoverAsset(safeCoverFuture);
     }
-    MediaAssetRow coverAsset = awaitCoverAsset(safeCoverFuture);
+
+    if (input.reuseExistingVideo()) {
+      MediaAssetRow videoAsset = existingMediaAsset(workId, "VIDEO");
+      MediaAssetRow timelineAsset = existingMediaAsset(workId, "TIMELINE");
+      recordStepSucceeded(workId, jobId, GenerationStage.VIDEO_RENDERING.name());
+      return new GeneratedMediaAssets(audioAsset, coverAsset, videoAsset, timelineAsset);
+    }
 
     recordStepRunning(workId, jobId, GenerationStage.VIDEO_RENDERING.name());
     if (!markStage(workId, jobId, GenerationStage.VIDEO_RENDERING)) {
@@ -1446,11 +1459,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
 
   private MusicGenerationResult existingAudioMusicResult(
       UUID workId, MusicProviderSelection selectedProvider) {
-    MediaAssetRow audioAsset =
-        workRepository.findMediaAssets(workId).stream()
-            .filter(asset -> "AUDIO".equals(asset.assetType()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalStateException("Existing audio asset is required"));
+    MediaAssetRow audioAsset = existingMediaAsset(workId, "AUDIO");
     Map<String, Object> metadata = new LinkedHashMap<>();
     metadata.put("existing_audio_reuse", true);
     metadata.put("content_type", audioAsset.mimeType());
@@ -1469,6 +1478,14 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
         null,
         "Reused existing audio for package retry",
         metadata);
+  }
+
+  private MediaAssetRow existingMediaAsset(UUID workId, String assetType) {
+    return workRepository.findMediaAssets(workId).stream()
+        .filter(asset -> assetType.equals(asset.assetType()))
+        .findFirst()
+        .orElseThrow(
+            () -> new IllegalStateException("Existing " + assetType + " asset is required"));
   }
 
   private Map<String, Object> musicProviderOptions(
