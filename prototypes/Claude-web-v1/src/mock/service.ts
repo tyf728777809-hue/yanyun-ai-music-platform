@@ -77,6 +77,9 @@ export const service = {
   retryMusic: (...args: Parameters<typeof realApi.retryMusic>) =>
     currentMode === 'demo' ? mockBackend.retryMusic(args[0], args[1]) : realApi.retryMusic(...args),
 
+  retryAudioImport: (...args: Parameters<typeof realApi.retryAudioImport>) =>
+    currentMode === 'demo' ? mockBackend.retryMusic(args[0], {}) : realApi.retryAudioImport(...args),
+
   regenerateCover: (...args: Parameters<typeof realApi.regenerateCover>) =>
     currentMode === 'demo' ? mockBackend.regenerateCover(args[0]) : realApi.regenerateCover(...args),
 

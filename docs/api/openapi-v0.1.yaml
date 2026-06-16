@@ -238,6 +238,25 @@ paths:
                 $ref: "#/components/schemas/JobAcceptedResponse"
         default:
           $ref: "#/components/responses/ErrorResponse"
+  /api/v1/works/{work_id}/music/audio-import/retry:
+    post:
+      tags: [Generation]
+      summary: 重新获取音乐文件
+      description: 仅用于 `AUDIO_IMPORT_FAILED` 恢复；复用已成功的音乐供应商任务，不重新提交 Suno / DreamMaker 生成任务，不重复消耗一次音乐生成。
+      operationId: retryAudioImport
+      parameters:
+        - $ref: "#/components/parameters/MockUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "202":
+          description: 音频获取恢复任务已启动
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobAcceptedResponse"
+        default:
+          $ref: "#/components/responses/ErrorResponse"
   /api/v1/works/{work_id}/cover/regenerate:
     post:
       tags: [Generation]
@@ -908,6 +927,7 @@ components:
         - CONFIRM_WORK
         - RETRY_LYRICS
         - RETRY_MUSIC
+        - RETRY_AUDIO_IMPORT
         - RETRY_COVER
         - RERENDER_VIDEO
         - REBUILD_PACKAGE
@@ -926,6 +946,7 @@ components:
         - QUOTA_COMMIT_FAILED
         - MUSIC_GENERATION_FAILED
         - MUSIC_QUALITY_FAILED
+        - AUDIO_IMPORT_FAILED
         - COVER_GENERATION_FAILED
         - VIDEO_RENDER_FAILED
         - PACKAGE_BUILD_FAILED

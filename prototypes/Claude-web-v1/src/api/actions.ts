@@ -14,6 +14,7 @@ export const ACTION_META: Record<AvailableAction, ActionMeta> = {
   CONFIRM_WORK: { label: '确认出歌', tone: 'primary' },
   RETRY_LYRICS: { label: '重新生成歌词', tone: 'primary' },
   RETRY_MUSIC: { label: '重新生成', tone: 'primary' },
+  RETRY_AUDIO_IMPORT: { label: '重新获取音频', tone: 'primary' },
   RETRY_COVER: { label: '重新生成封面', tone: 'secondary' },
   RERENDER_VIDEO: { label: '重新渲染画面', tone: 'secondary' },
   REBUILD_PACKAGE: { label: '重新整理作品素材', tone: 'secondary' },

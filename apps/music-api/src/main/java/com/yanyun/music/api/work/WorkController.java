@@ -230,6 +230,28 @@ public class WorkController {
                 () -> workService.retryMusic(safeUserId, workId, request)));
   }
 
+  @PostMapping("/works/{work_id}/music/audio-import/retry")
+  public ResponseEntity<JobAcceptedResponse> retryAudioImport(
+      @RequestHeader(
+              value = "X-Mock-User-Id",
+              required = false,
+              defaultValue = DEFAULT_MOCK_USER_ID)
+          String userId,
+      @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+      @PathVariable("work_id") UUID workId) {
+    String safeUserId = requireMockUser(userId);
+    requireIdempotencyKey(idempotencyKey);
+    return ResponseEntity.accepted()
+        .body(
+            idempotencyService.execute(
+                safeUserId,
+                idempotencyKey,
+                "works.music.audio-import.retry",
+                fingerprint(workId, null),
+                JobAcceptedResponse.class,
+                () -> workService.retryAudioImport(safeUserId, workId)));
+  }
+
   @PostMapping("/works/{work_id}/video/rerender")
   public ResponseEntity<JobAcceptedResponse> rerenderVideo(
       @RequestHeader(

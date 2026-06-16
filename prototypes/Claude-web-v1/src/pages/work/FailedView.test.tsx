@@ -116,4 +116,37 @@ describe('FailedView action matrix', () => {
 
     await waitFor(() => expect(retryMusic).toHaveBeenCalledWith('work-failed-1', {}));
   });
+
+  it('retries audio import without regenerating music', async () => {
+    const retryAudioImport = vi.spyOn(service, 'retryAudioImport').mockResolvedValue({
+      work_id: 'work-failed-1',
+      status: 'GENERATING',
+      generation_stage: 'MUSIC_GENERATING',
+      job_id: 'job-audio-import',
+      available_actions: [],
+    });
+
+    render(
+      <ToastProvider>
+        <FailedView
+          work={failedWork({
+            failure: {
+              failure_code: 'AUDIO_IMPORT_FAILED',
+              failure_message: 'audio import failed',
+              retryable: true,
+              remaining_retry_count: null,
+              recommended_action: 'RETRY_AUDIO_IMPORT',
+            },
+            available_actions: ['RETRY_AUDIO_IMPORT', 'RETURN_TO_EDIT'],
+          })}
+          refresh={async () => {}}
+          onBackToHome={() => {}}
+        />
+      </ToastProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '重新获取音频' }));
+
+    await waitFor(() => expect(retryAudioImport).toHaveBeenCalledWith('work-failed-1'));
+  });
 });

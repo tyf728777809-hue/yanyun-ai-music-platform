@@ -74,6 +74,10 @@ export function retryMusic(
   return apiRequest(`/works/${workId}/music/retry`, { method: 'POST', body });
 }
 
+export function retryAudioImport(workId: string): Promise<JobAcceptedResponse> {
+  return apiRequest(`/works/${workId}/music/audio-import/retry`, { method: 'POST' });
+}
+
 export function regenerateCover(workId: string): Promise<JobAcceptedResponse> {
   return apiRequest(`/works/${workId}/cover/regenerate`, { method: 'POST' });
 }

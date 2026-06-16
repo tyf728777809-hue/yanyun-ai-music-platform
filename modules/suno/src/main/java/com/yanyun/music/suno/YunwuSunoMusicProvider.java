@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yanyun.music.dreammaker.DreamMakerFailureMapper;
+import com.yanyun.music.musicprovider.MusicAudioRefreshRequest;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
 import com.yanyun.music.musicprovider.MusicGenerationResult;
+import com.yanyun.music.musicprovider.MusicGenerationStatus;
 import com.yanyun.music.musicprovider.MusicProvider;
 import com.yanyun.music.musicprovider.MusicProviderType;
 import java.io.IOException;
@@ -71,6 +73,25 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
       return pollUntilTerminal(taskId);
     } catch (YunwuSunoProviderException exception) {
       return providerFailure(null, exception.failureCode(), exception.getMessage());
+    }
+  }
+
+  @Override
+  public Optional<MusicGenerationResult> refreshAudio(MusicAudioRefreshRequest request) {
+    try {
+      ensureConfigured();
+      if (request == null || !hasText(request.providerTaskId())) {
+        return Optional.empty();
+      }
+      MusicGenerationResult result =
+          successFromStatus(
+              request.providerTaskId(),
+              getJson(apiUri("/suno/fetch/" + encodePath(request.providerTaskId()))));
+      return result.status() == MusicGenerationStatus.SUCCEEDED
+          ? Optional.of(result)
+          : Optional.empty();
+    } catch (YunwuSunoProviderException exception) {
+      return Optional.empty();
     }
   }
 
@@ -375,7 +396,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
       String text = value.asText("");
       boolean urlField = fieldName.contains("url");
       boolean audioField = fieldName.contains("audio") || fieldName.contains("song");
-      if (hasText(text) && isHttpUrl(text) && urlField && audioField) {
+      if (hasText(text) && isUsableHttpUrl(text) && urlField && audioField) {
         return text.trim();
       }
     }
@@ -406,7 +427,7 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
                   boolean urlField = fieldName.contains("url");
                   boolean audioField = fieldName.contains("audio") || fieldName.contains("song");
                   if (hasText(text)
-                      && isHttpUrl(text)
+                      && isUsableHttpUrl(text)
                       && urlField
                       && (!requireAudioFieldName || audioField)) {
                     urls.add(text.trim());
@@ -569,6 +590,19 @@ public final class YunwuSunoMusicProvider implements MusicProvider {
 
   private boolean isHttpUrl(String value) {
     return value.startsWith("http://") || value.startsWith("https://");
+  }
+
+  private boolean isUsableHttpUrl(String value) {
+    if (!isHttpUrl(value)) {
+      return false;
+    }
+    String normalized = value.toLowerCase(Locale.ROOT);
+    return !normalized.contains("/none.")
+        && !normalized.contains("/null.")
+        && !normalized.contains("/undefined.")
+        && !normalized.contains("%2fnone.")
+        && !normalized.contains("%2fnull.")
+        && !normalized.contains("%2fundefined.");
   }
 
   private boolean isAudioUrl(String value) {

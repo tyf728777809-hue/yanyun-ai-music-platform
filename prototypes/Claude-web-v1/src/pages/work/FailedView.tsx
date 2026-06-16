@@ -27,6 +27,12 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
     });
   }
 
+  async function handleRetryAudioImport() {
+    await run('RETRY_AUDIO_IMPORT', () => service.retryAudioImport(work.work_id), {
+      successMsg: '已重新获取音频',
+    });
+  }
+
   async function handleRetryCover() {
     await run('RETRY_COVER', () => service.regenerateCover(work.work_id), {
       successMsg: '已重新生成封面',
@@ -51,7 +57,7 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
 
   // 渲染除主重试外的次级动作。
   const secondaryActions = work.available_actions.filter(
-    (a): a is AvailableAction => a !== 'RETRY_MUSIC',
+    (a): a is AvailableAction => a !== 'RETRY_MUSIC' && a !== 'RETRY_AUDIO_IMPORT',
   );
 
   return (
@@ -91,6 +97,19 @@ export function FailedView({ work, refresh, onBackToHome }: WorkViewProps) {
             onClick={handleRetryMusic}
           >
             重新生成
+          </Button>
+        )}
+
+        {hasAction(work, 'RETRY_AUDIO_IMPORT') && (
+          <Button
+            tone="primary"
+            size="lg"
+            block
+            loading={busyKey === 'RETRY_AUDIO_IMPORT'}
+            disabled={busyKey !== null}
+            onClick={handleRetryAudioImport}
+          >
+            {actionLabel('RETRY_AUDIO_IMPORT')}
           </Button>
         )}
 

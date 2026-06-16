@@ -51,6 +51,7 @@ import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.RemoteObjectImportException;
 import com.yanyun.music.storage.RemoteObjectImportRequest;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.storage.StoredObject;
@@ -1332,6 +1333,101 @@ class MockSongProductionWorkflowTest {
   }
 
   @Test
+  void classifiesProviderAudioImportHttp403AsRetryableAudioImportFailure() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider(MusicProviderType.SUNO);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.submit(any()))
+        .thenReturn(
+            MusicGenerationResult.succeededFromSource(
+                MusicProviderType.SUNO,
+                "task-403",
+                "yunwu:suno:chirp-fenix",
+                "https://provider.example/audio-expired.mp3",
+                "audio/mpeg",
+                123_000,
+                "ok"));
+    when(remoteObjectImporter.importObject(any()))
+        .thenThrow(
+            new RemoteObjectImportException(
+                "Remote object download failed with HTTP 403", 403, false, null));
+    when(musicProvider.refreshAudio(any())).thenReturn(java.util.Optional.empty());
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.AUDIO_IMPORT_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.SUNO).produce(input(workId));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.AUDIO_IMPORT_FAILED.name());
+    assertThat(result.failureMessage()).contains("音乐文件");
+    verify(workRepository, never()).upsertMediaAsset(any());
+    verify(workRepository)
+        .markFailure(
+            eq(workId),
+            eq(FailureCode.AUDIO_IMPORT_FAILED),
+            org.mockito.ArgumentMatchers.contains("HTTP 403"),
+            eq(true));
+    verify(workRepository)
+        .completeGenerationJob(
+            eq(jobId),
+            eq("FAILED"),
+            eq(GenerationStage.FAILED),
+            eq(FailureCode.AUDIO_IMPORT_FAILED),
+            org.mockito.ArgumentMatchers.contains("HTTP 403"));
+    verify(musicProvider).refreshAudio(any());
+  }
+
+  @Test
+  void classifiesMissingRefreshedProviderAudioAsRetryableMusicGenerationFailure() {
+    UUID workId = UUID.randomUUID();
+    UUID jobId = UUID.randomUUID();
+    MusicProvider musicProvider = mockMusicProvider(MusicProviderType.SUNO);
+    when(workRepository.insertGenerationJob(
+            eq(workId),
+            eq("SONG_PRODUCTION"),
+            eq("RUNNING"),
+            eq(GenerationStage.QUOTA_LOCKING),
+            any(OffsetDateTime.class),
+            isNull()))
+        .thenReturn(jobId);
+    when(quotaAdapter.lockGenerateQuota("user-1", workId.toString()))
+        .thenReturn(new QuotaLock(true, "lock-1", "locked"));
+    when(musicProvider.refreshAudio(any())).thenReturn(java.util.Optional.empty());
+    when(quotaAdapter.releaseGenerateQuota(
+            "user-1", "lock-1", FailureCode.MUSIC_GENERATION_FAILED.name()))
+        .thenReturn(new QuotaRelease(true, "released"));
+
+    SongProductionWorkflowResult result =
+        workflowWith(musicProvider, MusicProviderType.SUNO)
+            .produce(inputRefreshingAudio(workId, "task-without-audio"));
+
+    assertThat(result.packageReady()).isFalse();
+    assertThat(result.failureCode()).isEqualTo(FailureCode.MUSIC_GENERATION_FAILED.name());
+    assertThat(result.failureMessage()).contains("没有可用音频");
+    verify(musicProvider).refreshAudio(any());
+    verify(musicProvider, never()).submit(any());
+    verify(workRepository, never()).upsertMediaAsset(any());
+    verify(workRepository)
+        .markFailure(
+            eq(workId),
+            eq(FailureCode.MUSIC_GENERATION_FAILED),
+            org.mockito.ArgumentMatchers.contains("没有可用音频"),
+            eq(true));
+  }
+
+  @Test
   void writesMockAudioObjectBeforeLocalProcessStyleVideoRenderReadsIt() {
     UUID workId = UUID.randomUUID();
     UUID jobId = UUID.randomUUID();
@@ -2021,6 +2117,7 @@ class MockSongProductionWorkflowTest {
       CoverGenerationService coverGenerationService) {
     stubObjectStorageDownloadUrls();
     when(workRepository.markGenerationStage(any(), any(), any())).thenReturn(true);
+    when(workRepository.isGenerationJobRunning(any())).thenReturn(true);
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,
@@ -2043,6 +2140,7 @@ class MockSongProductionWorkflowTest {
       MusicProvider musicProvider, CoverPromptAgent coverPromptAgent) {
     stubObjectStorageDownloadUrls();
     when(workRepository.markGenerationStage(any(), any(), any())).thenReturn(true);
+    when(workRepository.isGenerationJobRunning(any())).thenReturn(true);
     return new MockSongProductionWorkflow(
         workRepository,
         quotaAdapter,
@@ -2212,5 +2310,25 @@ class MockSongProductionWorkflowTest {
         true,
         true,
         true);
+  }
+
+  private SongProductionWorkflowInput inputRefreshingAudio(UUID workId, String providerTaskId) {
+    return new SongProductionWorkflowInput(
+        workId.toString(),
+        "user-1",
+        UUID.randomUUID().toString(),
+        "Mock title",
+        "Mock summary",
+        "Mock lyrics",
+        "Mock prompt",
+        "Mock cover seed",
+        "AUTO",
+        "suno",
+        true,
+        null,
+        false,
+        true,
+        false,
+        providerTaskId);
   }
 }

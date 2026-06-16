@@ -124,6 +124,7 @@ public final class WorkStateMachine {
           actions.add(AvailableAction.CONTACT_SUPPORT);
         }
       }
+      case AUDIO_IMPORT_FAILED -> actions.add(AvailableAction.RETRY_AUDIO_IMPORT);
       case COVER_GENERATION_FAILED -> actions.add(AvailableAction.RETRY_COVER);
       case VIDEO_RENDER_FAILED -> actions.add(AvailableAction.RERENDER_VIDEO);
       case PACKAGE_BUILD_FAILED -> actions.add(AvailableAction.REBUILD_PACKAGE);

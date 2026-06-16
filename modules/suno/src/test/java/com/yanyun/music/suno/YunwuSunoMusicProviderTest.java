@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
+import com.yanyun.music.musicprovider.MusicAudioRefreshRequest;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
 import com.yanyun.music.musicprovider.MusicGenerationResult;
 import com.yanyun.music.musicprovider.MusicGenerationStatus;
@@ -95,6 +96,31 @@ class YunwuSunoMusicProviderTest {
   }
 
   @Test
+  void refreshesAudioSourceFromExistingTaskWithoutSubmittingNewGeneration() throws Exception {
+    server = startFetchOnlyServer();
+    YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+    MusicGenerationResult result =
+        provider.refreshAudio(new MusicAudioRefreshRequest("work-1", "task-refresh")).orElseThrow();
+
+    assertEquals(MusicGenerationStatus.SUCCEEDED, result.status());
+    assertEquals("task-refresh", result.providerTaskId());
+    assertEquals("https://cdn.example.test/refreshed-song.mp3", result.audioSourceUrl());
+    assertEquals("audio-refresh-1", result.metadata().get("provider_audio_id"));
+  }
+
+  @Test
+  void ignoresPlaceholderNoneAudioUrlWhenRefreshingExistingTask() throws Exception {
+    server = startPlaceholderAudioUrlServer();
+    YunwuSunoMusicProvider provider = new YunwuSunoMusicProvider(realProperties(), objectMapper);
+
+    assertFalse(
+        provider
+            .refreshAudio(new MusicAudioRefreshRequest("work-1", "task-placeholder"))
+            .isPresent());
+  }
+
+  @Test
   void disabledRealSwitchReturnsControlledFailureWithoutHttpCall() {
     YunwuProperties properties = realProperties();
     properties.setRealCallsEnabled(false);
@@ -175,6 +201,70 @@ class YunwuSunoMusicProviderTest {
               }
               """
                       .formatted(audioIdJson))
+                  .getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "application/json");
+          exchange.sendResponseHeaders(200, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
+  private HttpServer startFetchOnlyServer() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/suno/fetch/task-refresh",
+        exchange -> {
+          authorizationHeader = exchange.getRequestHeaders().getFirst("Authorization");
+          byte[] body =
+              """
+              {
+                "code": 200,
+                "data": {
+                  "status": "SUCCESS",
+                  "clips": [
+                    {
+                      "audio_id": "audio-refresh-1",
+                      "audio_url": "https://cdn.example.test/refreshed-song.mp3",
+                      "duration": 181.5
+                    }
+                  ]
+                }
+              }
+              """
+                  .getBytes(StandardCharsets.UTF_8);
+          exchange.getResponseHeaders().set("Content-Type", "application/json");
+          exchange.sendResponseHeaders(200, body.length);
+          exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
+  private HttpServer startPlaceholderAudioUrlServer() throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/suno/fetch/task-placeholder",
+        exchange -> {
+          byte[] body =
+              """
+              {
+                "code": 200,
+                "data": {
+                  "taskStatus": "finished",
+                  "items": [
+                    {
+                      "clipId": "clip-placeholder",
+                      "status": 40,
+                      "progress": 100,
+                      "cld2AudioUrl": "https://cdn1.suno.ai/None.mp3"
+                    }
+                  ]
+                }
+              }
+              """
                   .getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "application/json");
           exchange.sendResponseHeaders(200, body.length);

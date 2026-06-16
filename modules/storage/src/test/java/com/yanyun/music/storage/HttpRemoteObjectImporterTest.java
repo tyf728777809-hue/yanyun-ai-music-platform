@@ -81,6 +81,29 @@ class HttpRemoteObjectImporterTest {
   }
 
   @Test
+  void exposesHttpStatusWhenRemoteObjectDownloadIsForbidden() throws Exception {
+    server = startStatusServer(403);
+    HttpRemoteObjectImporter importer =
+        new HttpRemoteObjectImporter(
+            new CapturingStorageClient(),
+            HttpClient.newHttpClient(),
+            1024L,
+            Duration.ofSeconds(2),
+            true);
+
+    RemoteObjectImportException exception =
+        assertThrows(
+            RemoteObjectImportException.class,
+            () ->
+                importer.importObject(
+                    new RemoteObjectImportRequest(
+                        serverUrl("/forbidden.mp3"), "audio/forbidden.mp3", "audio/mpeg")));
+
+    assertEquals(403, exception.statusCode());
+    assertEquals(false, exception.retryable());
+  }
+
+  @Test
   void rejectsNonHttpSourceUrl() {
     HttpRemoteObjectImporter importer =
         new HttpRemoteObjectImporter(
@@ -157,6 +180,18 @@ class HttpRemoteObjectImporterTest {
           exchange.getResponseHeaders().set("Content-Type", "audio/mpeg");
           exchange.sendResponseHeaders(200, body.length);
           exchange.getResponseBody().write(body);
+          exchange.close();
+        });
+    httpServer.start();
+    return httpServer;
+  }
+
+  private HttpServer startStatusServer(int statusCode) throws IOException {
+    HttpServer httpServer = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+    httpServer.createContext(
+        "/forbidden.mp3",
+        exchange -> {
+          exchange.sendResponseHeaders(statusCode, -1);
           exchange.close();
         });
     httpServer.start();

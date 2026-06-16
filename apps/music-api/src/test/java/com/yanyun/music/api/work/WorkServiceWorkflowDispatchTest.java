@@ -31,6 +31,7 @@ import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
 import com.yanyun.music.suno.YunwuProperties;
+import com.yanyun.music.workdomain.AvailableAction;
 import com.yanyun.music.workdomain.CreationMode;
 import com.yanyun.music.workdomain.FailureCode;
 import com.yanyun.music.workdomain.GenerationStage;
@@ -490,6 +491,96 @@ class WorkServiceWorkflowDispatchTest {
     assertThat(input.getValue().reuseExistingVideo()).isFalse();
     assertThat(input.getValue().jobId()).isEqualTo(response.jobId().toString());
     verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
+  void retryAudioImportEnqueuesRecoveryWithProviderTaskIdAndExistingCover() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow failed = audioImportFailedWork(workId);
+    WorkRow queued = work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(failed))
+        .thenReturn(Optional.of(queued));
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(coverAsset(workId)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION", "SUCCEEDED"))
+        .thenReturn(Optional.of("task-123"));
+    when(workRepository.reserveAudioImportRetry(workId, "user-1", failed.version()))
+        .thenReturn(true);
+
+    JobAcceptedResponse response =
+        service(temporalOutboxProperties()).retryAudioImport("user-1", workId);
+
+    assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
+    assertThat(response.generationStage()).isEqualTo(GenerationStage.QUOTA_LOCKING);
+    ArgumentCaptor<SongProductionWorkflowInput> input =
+        ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
+    verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
+    assertThat(input.getValue().reuseExistingAudio()).isFalse();
+    assertThat(input.getValue().reuseExistingCover()).isTrue();
+    assertThat(input.getValue().reuseExistingVideo()).isFalse();
+    assertThat(input.getValue().audioImportProviderTaskId()).isEqualTo("task-123");
+    verify(workRepository).reserveAudioImportRetry(workId, "user-1", failed.version());
+    verify(songProductionWorkflow, never()).produce(any());
+  }
+
+  @Test
+  void retryAudioImportAcceptsLegacyPackageBuildFailureWhenAudioIsMissing() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow failed = packageBuildFailedWork(workId);
+    WorkRow queued = work(workId, WorkStatus.GENERATING, GenerationStage.QUOTA_LOCKING);
+    when(workRepository.findWorkForUser(workId, "user-1"))
+        .thenReturn(Optional.of(failed))
+        .thenReturn(Optional.of(queued));
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(coverAsset(workId)));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION", "SUCCEEDED"))
+        .thenReturn(Optional.of("task-legacy"));
+    when(workRepository.reserveAudioImportRetry(workId, "user-1", failed.version()))
+        .thenReturn(true);
+
+    JobAcceptedResponse response =
+        service(temporalOutboxProperties()).retryAudioImport("user-1", workId);
+
+    assertThat(response.status()).isEqualTo(WorkStatus.GENERATING);
+    ArgumentCaptor<SongProductionWorkflowInput> input =
+        ArgumentCaptor.forClass(SongProductionWorkflowInput.class);
+    verify(workflowOutboxService).enqueueSongProduction(eq(workId), input.capture());
+    assertThat(input.getValue().audioImportProviderTaskId()).isEqualTo("task-legacy");
+    assertThat(input.getValue().reuseExistingCover()).isTrue();
+    verify(workRepository).reserveAudioImportRetry(workId, "user-1", failed.version());
+  }
+
+  @Test
+  void getWorkExposesAudioImportRetryForLegacyPackageBuildFailureWithMissingAudio() {
+    UUID workId = UUID.randomUUID();
+    UUID draftId = UUID.randomUUID();
+    WorkRow failed = packageBuildFailedWork(workId);
+    when(workRepository.findWorkForUser(workId, "user-1")).thenReturn(Optional.of(failed));
+    when(workRepository.findLatestLyricsDraft(workId))
+        .thenReturn(Optional.of(draft(workId, draftId)));
+    when(workRepository.findActiveLyricsEditJob(workId)).thenReturn(Optional.empty());
+    when(workRepository.findLatestLyricsEditFailure(workId)).thenReturn(Optional.empty());
+    when(workRepository.findMediaAssets(workId)).thenReturn(List.of(coverAsset(workId)));
+    when(workRepository.findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION", "SUCCEEDED"))
+        .thenReturn(Optional.of("task-legacy"));
+    when(quotaAdapter.getHint("user-1", 0))
+        .thenReturn(new QuotaDecision(false, "PACKAGE_READY", 999, 2, "ok"));
+    when(objectStorageClient.createDownloadUrl(any()))
+        .thenReturn(
+            new ObjectStorageDownloadUrl(
+                "covers/" + workId + ".jpeg",
+                "http://localhost/covers/" + workId + ".jpeg",
+                OffsetDateTime.now().plusHours(1)));
+
+    var response = service(syncProperties()).getWork("user-1", workId);
+
+    assertThat(response.availableActions())
+        .containsExactly(AvailableAction.RETRY_AUDIO_IMPORT, AvailableAction.RETURN_TO_EDIT);
   }
 
   @Test
@@ -955,6 +1046,32 @@ class WorkServiceWorkflowDispatchTest {
         0,
         FailureCode.COVER_GENERATION_FAILED,
         "Cover prompt quality gate failed",
+        true,
+        OffsetDateTime.now(),
+        false,
+        false,
+        0,
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
+        null,
+        3);
+  }
+
+  private WorkRow audioImportFailedWork(UUID workId) {
+    return new WorkRow(
+        workId,
+        "YYM-20260605-ABCDEF",
+        "user-1",
+        CreationMode.LYRICS,
+        WorkStatus.FAILED,
+        GenerationStage.FAILED,
+        PackageStatus.PACKAGE_NOT_READY,
+        "Mock title",
+        "Mock summary",
+        0,
+        0,
+        FailureCode.AUDIO_IMPORT_FAILED,
+        "Audio import failed",
         true,
         OffsetDateTime.now(),
         false,

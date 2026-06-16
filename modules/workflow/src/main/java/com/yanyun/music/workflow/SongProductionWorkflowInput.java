@@ -15,7 +15,8 @@ public record SongProductionWorkflowInput(
     String jobId,
     boolean reuseExistingAudio,
     boolean reuseExistingCover,
-    boolean reuseExistingVideo) {
+    boolean reuseExistingVideo,
+    String audioImportProviderTaskId) {
 
   public SongProductionWorkflowInput(
       String workId,
@@ -43,7 +44,8 @@ public record SongProductionWorkflowInput(
         null,
         false,
         false,
-        false);
+        false,
+        null);
   }
 
   public SongProductionWorkflowInput(
@@ -73,7 +75,8 @@ public record SongProductionWorkflowInput(
         null,
         false,
         false,
-        false);
+        false,
+        null);
   }
 
   public SongProductionWorkflowInput(
@@ -103,7 +106,8 @@ public record SongProductionWorkflowInput(
         jobId,
         false,
         false,
-        false);
+        false,
+        null);
   }
 
   public SongProductionWorkflowInput(
@@ -135,6 +139,42 @@ public record SongProductionWorkflowInput(
         jobId,
         reuseExistingAudio,
         false,
-        false);
+        false,
+        null);
+  }
+
+  public SongProductionWorkflowInput(
+      String workId,
+      String userId,
+      String lyricsDraftId,
+      String songTitle,
+      String songSummary,
+      String lyricsText,
+      String musicPrompt,
+      String coverPromptSeed,
+      String vocalPreference,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      String jobId,
+      boolean reuseExistingAudio,
+      boolean reuseExistingCover,
+      boolean reuseExistingVideo) {
+    this(
+        workId,
+        userId,
+        lyricsDraftId,
+        songTitle,
+        songSummary,
+        lyricsText,
+        musicPrompt,
+        coverPromptSeed,
+        vocalPreference,
+        musicProvider,
+        musicRetryAllowedAfterFailure,
+        jobId,
+        reuseExistingAudio,
+        reuseExistingCover,
+        reuseExistingVideo,
+        null);
   }
 }

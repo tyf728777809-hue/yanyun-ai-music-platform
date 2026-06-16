@@ -169,6 +169,10 @@ export const FAILURE_COPY: Record<FailureCode, { title: string; hint: string }> 
     title: '这一版旋律质量没达标',
     hint: '重试会重新谱写一版旋律。',
   },
+  AUDIO_IMPORT_FAILED: {
+    title: '音乐文件暂时没取到',
+    hint: '可以重新获取音频，不会重新消耗一次出歌生成。',
+  },
   COVER_GENERATION_FAILED: {
     title: '封面没能画好',
     hint: '可以重新生成封面。',

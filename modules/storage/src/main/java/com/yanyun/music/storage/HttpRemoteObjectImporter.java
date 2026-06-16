@@ -66,7 +66,7 @@ public final class HttpRemoteObjectImporter implements RemoteObjectImporter {
     requireSafeHttpUri(sourceUri);
     IOException lastIoException = null;
     InterruptedException lastInterruptedException = null;
-    IllegalStateException lastRetryableResponse = null;
+    RemoteObjectImportException lastRetryableResponse = null;
     for (int attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         DownloadedObject downloaded = download(sourceUri, request.contentType());
@@ -74,9 +74,12 @@ public final class HttpRemoteObjectImporter implements RemoteObjectImporter {
             new ObjectStoragePutRequest(
                 request.objectKey(), downloaded.contentType(), downloaded.body()));
       } catch (HttpStatusException exception) {
-        IllegalStateException failure =
-            new IllegalStateException(
-                "Remote object download failed with HTTP " + exception.statusCode());
+        RemoteObjectImportException failure =
+            new RemoteObjectImportException(
+                "Remote object download failed with HTTP " + exception.statusCode(),
+                exception.statusCode(),
+                isRetryableStatus(exception.statusCode()),
+                exception);
         if (!isRetryableStatus(exception.statusCode()) || attempt == maxAttempts) {
           throw failure;
         }

@@ -26,6 +26,7 @@ import com.yanyun.music.media.VideoRenderResult;
 import com.yanyun.music.media.VideoRenderService;
 import com.yanyun.music.moderation.ModerationAdapter;
 import com.yanyun.music.moderation.ModerationDecision;
+import com.yanyun.music.musicprovider.MusicAudioRefreshRequest;
 import com.yanyun.music.musicprovider.MusicGenerationRequest;
 import com.yanyun.music.musicprovider.MusicGenerationResult;
 import com.yanyun.music.musicprovider.MusicGenerationStatus;
@@ -41,6 +42,7 @@ import com.yanyun.music.quota.QuotaRelease;
 import com.yanyun.music.storage.ObjectStorageClient;
 import com.yanyun.music.storage.ObjectStorageDownloadUrl;
 import com.yanyun.music.storage.ObjectStoragePutRequest;
+import com.yanyun.music.storage.RemoteObjectImportException;
 import com.yanyun.music.storage.RemoteObjectImportRequest;
 import com.yanyun.music.storage.RemoteObjectImporter;
 import com.yanyun.music.storage.StoredObject;
@@ -233,184 +235,210 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
         return stale(workId, jobId, GenerationStage.MUSIC_GENERATING);
       }
       recordStepRunning(workId, jobId, GenerationStage.MUSIC_GENERATING.name());
-      MusicPromptResult musicPrompt;
-      try {
-        musicPrompt =
-            musicPromptAgent.generate(
-                new MusicPromptRequest(
-                    input.workId(),
-                    input.songTitle(),
-                    input.songSummary(),
-                    input.lyricsText(),
-                    input.musicPrompt(),
-                    input.vocalPreference(),
-                    selectedProvider.providerType().name()));
-      } catch (RuntimeException exception) {
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            FailureCode.MUSIC_GENERATION_FAILED.name(),
-            exception.getMessage());
-        return fail(
-            workId,
-            jobId,
-            FailureCode.MUSIC_GENERATION_FAILED,
-            firstNonBlank(exception.getMessage(), "Music prompt generation failed"),
-            input.musicRetryAllowedAfterFailure(),
-            input.userId(),
-            lock.lockId());
-      }
-      QualityEvaluationResult musicPromptQuality;
-      try {
-        musicPromptQuality = evaluateMusicPromptQuality(input, selectedProvider, musicPrompt);
-      } catch (RuntimeException exception) {
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            FailureCode.MUSIC_QUALITY_FAILED.name(),
-            exception.getMessage());
-        return fail(
-            workId,
-            jobId,
-            FailureCode.MUSIC_QUALITY_FAILED,
-            firstNonBlank(exception.getMessage(), "Music prompt quality evaluation failed"),
-            input.musicRetryAllowedAfterFailure(),
-            input.userId(),
-            lock.lockId());
-      }
-      if (musicPromptQuality.decision() != QualityDecision.PASS) {
-        FailureCode failureCode = musicPromptQualityFailureCode(musicPromptQuality);
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            failureCode.name(),
-            qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality));
-        return fail(
-            workId,
-            jobId,
-            failureCode,
-            qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality),
-            failureCode == FailureCode.MUSIC_QUALITY_FAILED && musicPromptQuality.retryable(),
-            input.userId(),
-            lock.lockId());
-      }
-      ModerationAgentResult musicPromptModeration;
-      try {
-        musicPromptModeration = preCheckMusicPrompt(input, selectedProvider, musicPrompt);
-      } catch (RuntimeException exception) {
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            FailureCode.MUSIC_GENERATION_FAILED.name(),
-            exception.getMessage());
-        return fail(
-            workId,
-            jobId,
-            FailureCode.MUSIC_GENERATION_FAILED,
-            firstNonBlank(exception.getMessage(), "Music prompt moderation failed"),
-            input.musicRetryAllowedAfterFailure(),
-            input.userId(),
-            lock.lockId());
-      }
-      if (!musicPromptModeration.allowed()) {
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            FailureCode.MUSIC_GENERATION_FAILED.name(),
-            musicPromptModeration.message());
-        return fail(
-            workId,
-            jobId,
-            FailureCode.MUSIC_GENERATION_FAILED,
-            firstNonBlank(musicPromptModeration.message(), "Music prompt moderation blocked"),
-            false,
-            input.userId(),
-            lock.lockId());
-      }
-      MusicGenerationRequest musicRequest =
-          new MusicGenerationRequest(
-              input.workId(),
-              firstNonBlank(musicPrompt.lyricsWithStructureTags(), input.lyricsText()),
-              musicPrompt.musicPrompt(),
-              input.vocalPreference(),
-              musicProviderOptions(input, musicPrompt));
-      if (parallelMediaEnabled && !input.reuseExistingCover()) {
-        coverFuture = startCoverGeneration(workId, jobId, input, true);
-      }
-      long providerStartedAt = System.nanoTime();
-      try {
+      if (input.audioImportProviderTaskId() != null
+          && !input.audioImportProviderTaskId().isBlank()) {
         musicResult =
-            musicProviderRegistry.require(selectedProvider.providerType()).submit(musicRequest);
-      } catch (RuntimeException exception) {
+            refreshProviderAudio(workId, selectedProvider, input.audioImportProviderTaskId());
+        if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
+          FailureCode refreshFailureCode =
+              failureCodeFromProviderResult(musicResult, FailureCode.AUDIO_IMPORT_FAILED);
+          cancelCoverFuture(coverFuture);
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              refreshFailureCode.name(),
+              musicResult.failureMessage());
+          return fail(
+              workId,
+              jobId,
+              refreshFailureCode,
+              firstNonBlank(musicResult.failureMessage(), "Audio import refresh failed"),
+              true,
+              input.userId(),
+              lock.lockId());
+        }
+      } else {
+        MusicPromptResult musicPrompt;
+        try {
+          musicPrompt =
+              musicPromptAgent.generate(
+                  new MusicPromptRequest(
+                      input.workId(),
+                      input.songTitle(),
+                      input.songSummary(),
+                      input.lyricsText(),
+                      input.musicPrompt(),
+                      input.vocalPreference(),
+                      selectedProvider.providerType().name()));
+        } catch (RuntimeException exception) {
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              FailureCode.MUSIC_GENERATION_FAILED.name(),
+              exception.getMessage());
+          return fail(
+              workId,
+              jobId,
+              FailureCode.MUSIC_GENERATION_FAILED,
+              firstNonBlank(exception.getMessage(), "Music prompt generation failed"),
+              input.musicRetryAllowedAfterFailure(),
+              input.userId(),
+              lock.lockId());
+        }
+        QualityEvaluationResult musicPromptQuality;
+        try {
+          musicPromptQuality = evaluateMusicPromptQuality(input, selectedProvider, musicPrompt);
+        } catch (RuntimeException exception) {
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              FailureCode.MUSIC_QUALITY_FAILED.name(),
+              exception.getMessage());
+          return fail(
+              workId,
+              jobId,
+              FailureCode.MUSIC_QUALITY_FAILED,
+              firstNonBlank(exception.getMessage(), "Music prompt quality evaluation failed"),
+              input.musicRetryAllowedAfterFailure(),
+              input.userId(),
+              lock.lockId());
+        }
+        if (musicPromptQuality.decision() != QualityDecision.PASS) {
+          FailureCode failureCode = musicPromptQualityFailureCode(musicPromptQuality);
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              failureCode.name(),
+              qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality));
+          return fail(
+              workId,
+              jobId,
+              failureCode,
+              qualityFailureMessage("Music prompt quality gate failed", musicPromptQuality),
+              failureCode == FailureCode.MUSIC_QUALITY_FAILED && musicPromptQuality.retryable(),
+              input.userId(),
+              lock.lockId());
+        }
+        ModerationAgentResult musicPromptModeration;
+        try {
+          musicPromptModeration = preCheckMusicPrompt(input, selectedProvider, musicPrompt);
+        } catch (RuntimeException exception) {
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              FailureCode.MUSIC_GENERATION_FAILED.name(),
+              exception.getMessage());
+          return fail(
+              workId,
+              jobId,
+              FailureCode.MUSIC_GENERATION_FAILED,
+              firstNonBlank(exception.getMessage(), "Music prompt moderation failed"),
+              input.musicRetryAllowedAfterFailure(),
+              input.userId(),
+              lock.lockId());
+        }
+        if (!musicPromptModeration.allowed()) {
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              FailureCode.MUSIC_GENERATION_FAILED.name(),
+              musicPromptModeration.message());
+          return fail(
+              workId,
+              jobId,
+              FailureCode.MUSIC_GENERATION_FAILED,
+              firstNonBlank(musicPromptModeration.message(), "Music prompt moderation blocked"),
+              false,
+              input.userId(),
+              lock.lockId());
+        }
+        MusicGenerationRequest musicRequest =
+            new MusicGenerationRequest(
+                input.workId(),
+                firstNonBlank(musicPrompt.lyricsWithStructureTags(), input.lyricsText()),
+                musicPrompt.musicPrompt(),
+                input.vocalPreference(),
+                musicProviderOptions(input, musicPrompt));
+        if (parallelMediaEnabled && !input.reuseExistingCover()) {
+          coverFuture = startCoverGeneration(workId, jobId, input, true);
+        }
+        long providerStartedAt = System.nanoTime();
+        try {
+          musicResult =
+              musicProviderRegistry.require(selectedProvider.providerType()).submit(musicRequest);
+        } catch (RuntimeException exception) {
+          recordProviderCall(
+              workId,
+              jobId,
+              selectedProvider,
+              musicRequest,
+              null,
+              "FAILED",
+              elapsedMillis(providerStartedAt),
+              "PROVIDER_EXCEPTION",
+              firstNonBlank(exception.getMessage(), "Music provider failed"));
+          cancelCoverFuture(coverFuture);
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              FailureCode.MUSIC_GENERATION_FAILED.name(),
+              exception.getMessage());
+          return fail(
+              workId,
+              jobId,
+              FailureCode.MUSIC_GENERATION_FAILED,
+              firstNonBlank(exception.getMessage(), "Music generation failed"),
+              input.musicRetryAllowedAfterFailure(),
+              input.userId(),
+              lock.lockId());
+        }
         recordProviderCall(
             workId,
             jobId,
             selectedProvider,
             musicRequest,
-            null,
-            "FAILED",
+            musicResult,
+            musicResult.status().name(),
             elapsedMillis(providerStartedAt),
-            "PROVIDER_EXCEPTION",
-            firstNonBlank(exception.getMessage(), "Music provider failed"));
-        cancelCoverFuture(coverFuture);
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            FailureCode.MUSIC_GENERATION_FAILED.name(),
-            exception.getMessage());
-        return fail(
-            workId,
-            jobId,
-            FailureCode.MUSIC_GENERATION_FAILED,
-            firstNonBlank(exception.getMessage(), "Music generation failed"),
-            input.musicRetryAllowedAfterFailure(),
-            input.userId(),
-            lock.lockId());
-      }
-      recordProviderCall(
-          workId,
-          jobId,
-          selectedProvider,
-          musicRequest,
-          musicResult,
-          musicResult.status().name(),
-          elapsedMillis(providerStartedAt),
-          musicResult.failureCode(),
-          musicResult.failureMessage());
-      if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
-        FailureCode musicFailureCode = musicFailureCode(musicResult);
-        cancelCoverFuture(coverFuture);
-        recordStepFailed(
-            workId,
-            jobId,
-            GenerationStage.MUSIC_GENERATING.name(),
-            musicFailureCode.name(),
+            musicResult.failureCode(),
             musicResult.failureMessage());
-        return fail(
-            workId,
-            jobId,
-            musicFailureCode,
-            firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
-            retryableMusicFailure(musicFailureCode, input),
-            input.userId(),
-            lock.lockId());
+        if (musicResult.status() != MusicGenerationStatus.SUCCEEDED) {
+          FailureCode musicFailureCode = musicFailureCode(musicResult);
+          cancelCoverFuture(coverFuture);
+          recordStepFailed(
+              workId,
+              jobId,
+              GenerationStage.MUSIC_GENERATING.name(),
+              musicFailureCode.name(),
+              musicResult.failureMessage());
+          return fail(
+              workId,
+              jobId,
+              musicFailureCode,
+              firstNonBlank(musicResult.failureMessage(), "Music generation failed"),
+              retryableMusicFailure(musicFailureCode, input),
+              input.userId(),
+              lock.lockId());
+        }
       }
-      recordStepSucceeded(workId, jobId, GenerationStage.MUSIC_GENERATING.name());
     }
 
     GeneratedMediaAssets mediaAssets;
     try {
-      mediaAssets = createMediaAssets(workId, jobId, input, musicResult, coverFuture);
+      mediaAssets =
+          createMediaAssets(workId, jobId, input, selectedProvider, musicResult, coverFuture);
     } catch (StaleWorkflowException exception) {
       releaseStaleQuota(workId, input.userId(), lock.lockId());
       return stale(workId, jobId, exception.stage());
     } catch (MediaStageException exception) {
+      cancelCoverFuture(coverFuture);
       return fail(
           workId,
           jobId,
@@ -420,6 +448,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
           input.userId(),
           lock.lockId());
     } catch (RuntimeException exception) {
+      cancelCoverFuture(coverFuture);
       return fail(
           workId,
           jobId,
@@ -744,7 +773,8 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
   }
 
   private boolean retryableMediaFailure(FailureCode failureCode) {
-    return failureCode == FailureCode.COVER_GENERATION_FAILED;
+    return failureCode == FailureCode.COVER_GENERATION_FAILED
+        || failureCode == FailureCode.AUDIO_IMPORT_FAILED;
   }
 
   private FailureCode musicPromptQualityFailureCode(QualityEvaluationResult quality) {
@@ -770,9 +800,10 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
       UUID workId,
       UUID jobId,
       SongProductionWorkflowInput input,
+      MusicProviderSelection selectedProvider,
       MusicGenerationResult musicResult,
       CompletableFuture<MediaAssetRow> coverFuture) {
-    AudioObject audioObject = resolveAudioObject(workId, musicResult);
+    AudioObject audioObject = resolveAudioObject(workId, selectedProvider, musicResult);
     MediaAssetRow audioAsset =
         new MediaAssetRow(
             workId,
@@ -786,6 +817,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
             musicResult.durationMs() == null ? 180_000 : musicResult.durationMs(),
             writeJson(audioObject.metadata()));
     workRepository.upsertMediaAsset(audioAsset);
+    recordStepSucceeded(workId, jobId, GenerationStage.MUSIC_GENERATING.name());
 
     MediaAssetRow coverAsset;
     CompletableFuture<MediaAssetRow> safeCoverFuture = coverFuture == null ? null : coverFuture;
@@ -892,6 +924,7 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
     }
     MediaAssetDescriptor coverDescriptor = generateCoverOrDefault(workId, input, coverPrompt);
     MediaAssetRow coverAsset = toMediaAssetRow(workId, coverDescriptor);
+    ensureJobStillRunning(jobId, GenerationStage.COVER_GENERATING);
     workRepository.upsertMediaAsset(coverAsset);
     return coverAsset;
   }
@@ -958,6 +991,12 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
   private void cancelCoverFuture(CompletableFuture<MediaAssetRow> coverFuture) {
     if (coverFuture != null && !coverFuture.isDone()) {
       coverFuture.cancel(true);
+    }
+  }
+
+  private void ensureJobStillRunning(UUID jobId, GenerationStage stage) {
+    if (!workRepository.isGenerationJobRunning(jobId)) {
+      throw new StaleWorkflowException(stage);
     }
   }
 
@@ -1151,8 +1190,15 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
             firstNonBlank(musicResult.audioContentType(), "audio/mpeg")));
   }
 
-  private AudioObject resolveAudioObject(UUID workId, MusicGenerationResult musicResult) {
-    StoredObject importedAudio = importProviderAudio(workId, musicResult);
+  private AudioObject resolveAudioObject(
+      UUID workId, MusicProviderSelection selectedProvider, MusicGenerationResult musicResult) {
+    StoredObject importedAudio;
+    try {
+      importedAudio = importProviderAudio(workId, musicResult);
+    } catch (RemoteObjectImportException exception) {
+      importedAudio =
+          refreshAndImportProviderAudio(workId, selectedProvider, musicResult, exception);
+    }
     if (importedAudio != null) {
       return new AudioObject(
           importedAudio.objectKey(),
@@ -1194,6 +1240,48 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
         4_800_000L,
         "provider-audio",
         audioMetadata(musicResult, "provider-audio"));
+  }
+
+  private StoredObject refreshAndImportProviderAudio(
+      UUID workId,
+      MusicProviderSelection selectedProvider,
+      MusicGenerationResult musicResult,
+      RemoteObjectImportException originalFailure) {
+    if (!shouldRefreshAudioSource(originalFailure)
+        || musicResult.providerTaskId() == null
+        || musicResult.providerTaskId().isBlank()) {
+      throw audioImportFailure(originalFailure);
+    }
+    MusicGenerationResult refreshed =
+        refreshProviderAudio(workId, selectedProvider, musicResult.providerTaskId());
+    if (refreshed.status() != MusicGenerationStatus.SUCCEEDED
+        || refreshed.audioSourceUrl() == null
+        || refreshed.audioSourceUrl().isBlank()) {
+      throw audioImportFailure(originalFailure);
+    }
+    try {
+      return importProviderAudio(workId, refreshed);
+    } catch (RemoteObjectImportException refreshedFailure) {
+      throw audioImportFailure(refreshedFailure);
+    }
+  }
+
+  private MediaStageException audioImportFailure(RemoteObjectImportException exception) {
+    String message =
+        exception.statusCode() == null
+            ? "音乐文件获取失败，请稍后重新获取音频"
+            : "音乐文件获取失败（HTTP " + exception.statusCode() + "），请稍后重新获取音频";
+    return new MediaStageException(FailureCode.AUDIO_IMPORT_FAILED, message, exception);
+  }
+
+  private boolean shouldRefreshAudioSource(RemoteObjectImportException exception) {
+    Integer statusCode = exception.statusCode();
+    return statusCode != null
+        && (statusCode == 401
+            || statusCode == 403
+            || statusCode == 404
+            || statusCode == 429
+            || statusCode >= 500);
   }
 
   private Map<String, Object> audioMetadata(MusicGenerationResult musicResult, String source) {
@@ -1478,6 +1566,33 @@ public class MockSongProductionWorkflow implements SongProductionWorkflow, Dispo
         null,
         "Reused existing audio for package retry",
         metadata);
+  }
+
+  private MusicGenerationResult refreshProviderAudio(
+      UUID workId, MusicProviderSelection selectedProvider, String providerTaskId) {
+    return musicProviderRegistry
+        .require(selectedProvider.providerType())
+        .refreshAudio(new MusicAudioRefreshRequest(workId.toString(), providerTaskId))
+        .orElseGet(
+            () ->
+                MusicGenerationResult.failed(
+                    selectedProvider.providerType(),
+                    providerTaskId,
+                    selectedProvider.providerType().name().toLowerCase(java.util.Locale.ROOT),
+                    FailureCode.MUSIC_GENERATION_FAILED.name(),
+                    "音乐任务没有可用音频，请重新生成音乐"));
+  }
+
+  private FailureCode failureCodeFromProviderResult(
+      MusicGenerationResult result, FailureCode fallback) {
+    if (result == null || result.failureCode() == null || result.failureCode().isBlank()) {
+      return fallback;
+    }
+    try {
+      return FailureCode.valueOf(result.failureCode());
+    } catch (IllegalArgumentException exception) {
+      return fallback;
+    }
   }
 
   private MediaAssetRow existingMediaAsset(UUID workId, String assetType) {

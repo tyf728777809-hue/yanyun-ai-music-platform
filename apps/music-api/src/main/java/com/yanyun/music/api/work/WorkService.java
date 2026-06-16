@@ -339,6 +339,56 @@ public class WorkService {
     return accepted(updated, UUID.fromString(workflowResult.jobId()));
   }
 
+  @Transactional(noRollbackFor = ResponseStatusException.class)
+  public JobAcceptedResponse retryAudioImport(String userId, UUID workId) {
+    WorkRow work = getRequiredWork(workId, userId);
+    if (!canRetryAudioImport(work)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "当前作品不能重新获取音频，或已经有任务在运行。");
+    }
+    LyricsDraftRow draft = getRequiredLyricsDraft(workId);
+    String selectedMusicProvider = musicProvider(null);
+    requireSafeRealMusicDispatch(selectedMusicProvider);
+    String providerTaskId =
+        workRepository
+            .findLatestProviderTraceId(workId, "SUNO", "MUSIC_GENERATION", "SUCCEEDED")
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.CONFLICT, "没有可恢复的音乐任务，请重新生成音乐。"));
+    boolean reuseExistingCover = hasMediaAsset(workId, "COVER");
+    if (!workRepository.reserveAudioImportRetry(workId, userId, work.version())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "音频获取恢复任务已在运行。");
+    }
+    if (workflowDispatchProperties.outboxMode()) {
+      return enqueueReservedSongProduction(
+          workId,
+          userId,
+          draft,
+          selectedMusicProvider,
+          false,
+          false,
+          reuseExistingCover,
+          false,
+          providerTaskId);
+    }
+    UUID jobId = insertSongProductionJob(workId);
+    SongProductionWorkflowResult workflowResult =
+        songProductionWorkflow.produce(
+            workflowInput(
+                workId,
+                userId,
+                draft,
+                selectedMusicProvider,
+                false,
+                jobId,
+                false,
+                reuseExistingCover,
+                false,
+                providerTaskId));
+    if (!workflowResult.packageReady()) {
+      throw workflowFailure(workflowResult);
+    }
+    return accepted(getRequiredWork(workId, userId), UUID.fromString(workflowResult.jobId()));
+  }
+
   private JobAcceptedResponse enqueueSongProduction(
       WorkRow work,
       LyricsDraftRow draft,
@@ -389,6 +439,28 @@ public class WorkService {
       boolean reuseExistingAudio,
       boolean reuseExistingCover,
       boolean reuseExistingVideo) {
+    return enqueueReservedSongProduction(
+        workId,
+        userId,
+        draft,
+        selectedMusicProvider,
+        musicRetryAllowedAfterFailure,
+        reuseExistingAudio,
+        reuseExistingCover,
+        reuseExistingVideo,
+        null);
+  }
+
+  private JobAcceptedResponse enqueueReservedSongProduction(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String selectedMusicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      boolean reuseExistingAudio,
+      boolean reuseExistingCover,
+      boolean reuseExistingVideo,
+      String audioImportProviderTaskId) {
     UUID jobId = insertSongProductionJob(workId);
     workflowOutboxService.enqueueSongProduction(
         workId,
@@ -401,7 +473,8 @@ public class WorkService {
             jobId,
             reuseExistingAudio,
             reuseExistingCover,
-            reuseExistingVideo));
+            reuseExistingVideo,
+            audioImportProviderTaskId));
     return accepted(getRequiredWork(workId, userId), jobId);
   }
 
@@ -527,6 +600,16 @@ public class WorkService {
     return work.status() == WorkStatus.FAILED
         && work.failureCode() == FailureCode.COVER_GENERATION_FAILED
         && hasMediaAsset(work.id(), "AUDIO");
+  }
+
+  private boolean canRetryAudioImport(WorkRow work) {
+    return work.status() == WorkStatus.FAILED
+        && !hasMediaAsset(work.id(), "AUDIO")
+        && (work.failureCode() == FailureCode.AUDIO_IMPORT_FAILED
+            || (work.failureCode() == FailureCode.PACKAGE_BUILD_FAILED
+                && workRepository
+                    .findLatestProviderTraceId(work.id(), "SUNO", "MUSIC_GENERATION", "SUCCEEDED")
+                    .isPresent()));
   }
 
   private boolean canRerenderVideoFromExistingMedia(WorkRow work) {
@@ -669,6 +752,30 @@ public class WorkService {
       boolean reuseExistingAudio,
       boolean reuseExistingCover,
       boolean reuseExistingVideo) {
+    return workflowInput(
+        workId,
+        userId,
+        draft,
+        musicProvider,
+        musicRetryAllowedAfterFailure,
+        jobId,
+        reuseExistingAudio,
+        reuseExistingCover,
+        reuseExistingVideo,
+        null);
+  }
+
+  private SongProductionWorkflowInput workflowInput(
+      UUID workId,
+      String userId,
+      LyricsDraftRow draft,
+      String musicProvider,
+      boolean musicRetryAllowedAfterFailure,
+      UUID jobId,
+      boolean reuseExistingAudio,
+      boolean reuseExistingCover,
+      boolean reuseExistingVideo,
+      String audioImportProviderTaskId) {
     return new SongProductionWorkflowInput(
         workId.toString(),
         userId,
@@ -684,7 +791,8 @@ public class WorkService {
         jobId == null ? null : jobId.toString(),
         reuseExistingAudio,
         reuseExistingCover,
-        reuseExistingVideo);
+        reuseExistingVideo,
+        audioImportProviderTaskId);
   }
 
   private String musicProvider(String requestedProvider) {
@@ -1103,6 +1211,9 @@ public class WorkService {
   }
 
   private List<AvailableAction> availableActions(WorkRow work, boolean hasActiveLyricsEditJob) {
+    if (canRetryAudioImport(work)) {
+      return List.of(AvailableAction.RETRY_AUDIO_IMPORT, AvailableAction.RETURN_TO_EDIT);
+    }
     List<AvailableAction> actions = WorkStateMachine.availableActions(workSnapshot(work));
     if (!hasActiveLyricsEditJob) {
       return actions;
