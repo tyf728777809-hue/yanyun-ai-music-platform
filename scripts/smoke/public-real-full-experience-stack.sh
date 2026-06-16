@@ -37,6 +37,7 @@ FRONTEND_PID=""
 API_LOG=""
 WORKER_LOG=""
 FRONTEND_LOG=""
+CLEANUP_PORT_LISTENERS=false
 
 fail() {
   printf '[public-real-full] ERROR: %s\n' "$*" >&2
@@ -91,9 +92,11 @@ cleanup() {
   stop_process "$FRONTEND_PID" "frontend"
   stop_process "$API_PID" "API"
   stop_process "$WORKER_PID" "worker"
-  stop_port_listener "$FRONTEND_PORT" "frontend"
-  stop_port_listener "$API_PORT" "API"
-  stop_port_listener "$WORKER_PORT" "worker"
+  if [ "$CLEANUP_PORT_LISTENERS" = "true" ]; then
+    stop_port_listener "$FRONTEND_PORT" "frontend"
+    stop_port_listener "$API_PORT" "API"
+    stop_port_listener "$WORKER_PORT" "worker"
+  fi
   unset DEEPSEEK_API_KEY
   unset YUNWU_API_KEY
   unset WELLAPI_API_KEY
@@ -864,6 +867,7 @@ main() {
   assert_port_free "$FRONTEND_PORT" "frontend"
 
   run_preflights
+  CLEANUP_PORT_LISTENERS=true
   start_worker
   start_api
   check_api_readiness

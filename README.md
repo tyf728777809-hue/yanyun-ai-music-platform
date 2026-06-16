@@ -52,6 +52,20 @@ docker compose -f deploy/docker-compose.yml ps
 
 端口口径：`5273` 用于普通本地前端开发，`5274` 由 smoke 脚本临时占用，`5275` 用于用户手动真实测试或公网临时 tunnel 的前端进程。朋友公网测试必须使用 `OBJECT_STORAGE_PROVIDER=s3`、可公网访问的 `S3_PUBLIC_ENDPOINT` 和 `RENDER_WORKER_MODE=album-ffmpeg`；不要用 `local` 对象存储模式冒充可交付媒体链接。
 
+给朋友做小范围公网真实测试时，优先用守护脚本启动后端，避免出现 API 在线但 worker 掉线、歌词任务长期排队的假健康状态：
+
+```bash
+S3_PUBLIC_ENDPOINT=https://<public-media-endpoint> \
+ALLOW_KILL_EXISTING=true \
+scripts/smoke/public-real-test-stack.sh restart
+
+scripts/smoke/public-real-test-stack.sh status
+```
+
+该脚本会启动 `music-api` 与 `music-worker`，强制 DeepSeek + Yunwu Suno + WellAPI Image2 + S3/MinIO + `album-ffmpeg` 真实测试配置，并检查 `/health`、`/actuator/health` 和 `/internal/integration-readiness`。在支持 `screen` 的环境下，脚本会默认用独立 screen session 承载 API/worker，避免终端或 Codex 命令结束后 Java 子进程被清理。
+
+`status` 会同时检查 API 与 worker 的进程和健康接口；任一服务掉线都会返回失败，不再把“API 在线但 worker 已退出”的半活状态误判为可测试。
+
 ## Runtime Defaults
 
 长期商用方向下，文本生成和媒体生成默认按后台任务运行：
