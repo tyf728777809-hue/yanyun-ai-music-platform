@@ -173,6 +173,12 @@ class DefaultLyricsGenerationServiceTest {
     LyricsCraftPlanner planner =
         request ->
             new LyricsCraftPlanResult(
+                "USE_PLAN",
+                "WEAK_PHRASE",
+                "IN_WORLD",
+                "USE_SMALL_DEVICE",
+                "WORTH_EXTRA_CALL",
+                "HIGH",
                 "只写一个清河旧游人离开后想回去。",
                 "茶碗一响",
                 "从茶摊上没人再递来的那一碗进入。",
@@ -200,10 +206,69 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
     assertEquals("Song", result.songTitle());
-    assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.9.2:"));
+    assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.10:"));
+    assertTrue(renderedInstructions.getFirst().contains("planning_decision=USE_PLAN"));
+    assertTrue(renderedInstructions.getFirst().contains("lyric_surface_mode=IN_WORLD"));
+    assertTrue(renderedInstructions.getFirst().contains("device_decision=USE_SMALL_DEVICE"));
     assertTrue(renderedInstructions.getFirst().contains("selected_device=茶碗一响"));
     assertTrue(renderedInstructions.getFirst().contains("chorus_mechanism=副歌让茶碗声从日常变成回不去。"));
-    assertEquals(11, result.promptTemplateVersions().get("lyrics.craft.plan.v9.2"));
+    assertEquals(12, result.promptTemplateVersions().get("lyrics.craft.plan.v10"));
+  }
+
+  @Test
+  void inspirationSkipsCraftPlanWhenPlannerSaysNotWorthIt() {
+    List<String> renderedInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                request.instruction(),
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    LyricsCraftPlanner planner =
+        request ->
+            new LyricsCraftPlanResult(
+                "SKIP_PLAN",
+                "STRONG_HOOK",
+                "ORDINARY_STORY",
+                "USE_USER_PHRASE",
+                "NOT_WORTH_EXTRA_CALL",
+                "HIGH",
+                "用户原句已经能直接成为歌核。",
+                "还是会出手",
+                "",
+                "",
+                "保持燕云世界内表达。",
+                List.of("另造物件会稀释原句"));
+    PromptTemplateService promptService =
+        request -> {
+          renderedInstructions.add(request.instruction());
+          return new PromptRenderResult(request.templateKey(), 7, "rendered prompt");
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService,
+            new MockCreativeBriefAgent(),
+            planner,
+            true,
+            deepSeek,
+            request ->
+                new QualityEvaluationResult(
+                    request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+            new ArrayList<AgentRunRecord>()::add);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertTrue(
+        renderedInstructions
+            .getFirst()
+            .contains("lyrics_craft_plan_status=disabled_skipped_or_fallback"));
+    assertFalse(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.10:"));
+    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v10"));
   }
 
   @Test
@@ -275,8 +340,9 @@ class DefaultLyricsGenerationServiceTest {
 
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
-    assertTrue(result.lyricsText().contains("lyrics_craft_plan_status=disabled_or_fallback"));
-    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v9.2"));
+    assertTrue(
+        result.lyricsText().contains("lyrics_craft_plan_status=disabled_skipped_or_fallback"));
+    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v10"));
     assertTrue(
         records.stream()
             .anyMatch(

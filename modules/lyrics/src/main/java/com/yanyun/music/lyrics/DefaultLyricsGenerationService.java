@@ -44,8 +44,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.80);
   private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v8";
   private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 8;
-  private static final String CRAFT_PLAN_TEMPLATE_KEY = "lyrics.craft.plan.v9.2";
-  private static final int CRAFT_PLAN_TEMPLATE_VERSION = 11;
+  private static final String CRAFT_PLAN_TEMPLATE_KEY = "lyrics.craft.plan.v10";
+  private static final int CRAFT_PLAN_TEMPLATE_VERSION = 12;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
@@ -465,19 +465,31 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private String craftPlanInstruction(LyricsCraftPlanResult craftPlan) {
     if (craftPlan == null || !craftPlan.usable()) {
-      return "lyrics_craft_plan_status=disabled_or_fallback";
+      return "lyrics_craft_plan_status=disabled_skipped_or_fallback";
     }
     return """
-        LyricsCraftPlan v0.9.2:
+        LyricsCraftPlan v0.10:
+        planning_decision=%s
+        user_phrase_assessment=%s
+        lyric_surface_mode=%s
+        device_decision=%s
+        latency_budget=%s
+        confidence=%s
         song_thesis_guard=%s
         selected_device=%s
         selected_angle=%s
         chorus_mechanism=%s
         yanyun_boundary_guard=%s
         rejected_alternatives=%s
-        craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. If selected_device preserves a strong user phrase, keep it recognizable and use it in the chorus or key refrain. Do not replace strong user phrasing with a more cinematic but less singable device. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. Preserve useful contradiction instead of smoothing it away. If the selected angle is rough, low-level, dangerous, or street-side, keep texture without falling into obvious profanity or cheap rebellion.
+        craft_plan_policy=Use this plan only as the smallest writing decision. If lyric_surface_mode=IN_WORLD, keep the lyric fully inside the Yanyun world and avoid player/UI words. If PLAYER_META, allow player experience only when it is the user's emotional truth. If CHARACTER_SONG, ground the lyric in the matched character. If ORDINARY_STORY, preserve ordinary scale. Follow device_decision without forcing a device when NO_DEVICE or USE_DIRECT_REFRAIN would sing better. Keep yanyun_boundary_guard active.
         """
         .formatted(
+            craftPlan.planningDecision(),
+            craftPlan.userPhraseAssessment(),
+            craftPlan.lyricSurfaceMode(),
+            craftPlan.deviceDecision(),
+            craftPlan.latencyBudget(),
+            craftPlan.confidence(),
             craftPlan.songThesisGuard(),
             craftPlan.selectedDevice(),
             craftPlan.selectedAngle(),
@@ -586,6 +598,24 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "memory_device",
                     creativeBrief == null ? "" : firstNonBlank(creativeBrief.memoryDevice(), "")),
+                Map.entry(
+                    "craft_plan_planning_decision",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.planningDecision(), "")),
+                Map.entry(
+                    "craft_plan_user_phrase_assessment",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.userPhraseAssessment(), "")),
+                Map.entry(
+                    "craft_plan_lyric_surface_mode",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.lyricSurfaceMode(), "")),
+                Map.entry(
+                    "craft_plan_device_decision",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.deviceDecision(), "")),
+                Map.entry(
+                    "craft_plan_latency_budget",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.latencyBudget(), "")),
+                Map.entry(
+                    "craft_plan_confidence",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.confidence(), "")),
                 Map.entry(
                     "craft_plan_song_thesis_guard",
                     craftPlan == null ? "" : firstNonBlank(craftPlan.songThesisGuard(), "")),
@@ -720,7 +750,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.workId(),
             null,
             "LyricsAgent",
-            "v0.9",
+            "v0.10",
             request.operation().name(),
             deepSeekLyricsClient.modelName(),
             prompt.templateKey(),
@@ -792,7 +822,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request == null ? null : request.workId(),
             null,
             "LyricsCraftPlanner",
-            "v0.9.2-fallback",
+            "v0.10-fallback",
             request == null ? "UNKNOWN" : request.operation().name(),
             "fallback-to-direct-lyrics",
             CRAFT_PLAN_TEMPLATE_KEY,

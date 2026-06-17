@@ -425,6 +425,29 @@ knowledge-base/lyrics-agent-v0.9.2-mid12-review-summary.json
 - 玩家真实输入里既有燕云世界内故事，也有“跑图、退坑、队伍”等元叙事。下一版必须先决定歌词表面是否允许游戏 UI / 玩家元语言，否则会出现有些歌意外带出头像、频道、传送点等词。
 - 金曲级歌词不一定需要更复杂的 device；有时 v0.7 的简单重复更像歌。
 
+## v0.10 结构化 CraftPlan 决策
+
+v0.10 不再继续增加自然语言规则。它把 CraftPlan 从“写法导演”降级为“是否值得规划的分诊器”：
+
+- `planning_decision`：`USE_PLAN` 或 `SKIP_PLAN`。强用户原句、强口头禅、强动作或本身已经像 hook 的输入，允许跳过 CraftPlan 直写。
+- `user_phrase_assessment`：判断用户原句是否已经是最佳 hook，避免再造更电影感但更不适合唱的装置。
+- `lyric_surface_mode`：先决定歌词表层是燕云世界内叙事、玩家元叙事、角色歌，还是普通人故事。
+- `device_decision`：允许选择用户原句、小装置、直接副歌反复，或明确不使用装置。
+- `latency_budget`：如果多一次规划不太可能提升质量，返回 `NOT_WORTH_EXTRA_CALL`，降低用户等待。
+
+运行口径：
+
+- 只对首轮 `INSPIRATION` 生效。
+- `POLISH` / `CONTINUE` / `LYRICS` 不调用 CraftPlan。
+- `SKIP_PLAN`、`LOW` confidence 或 `NOT_WORTH_EXTRA_CALL` 时，生产链路不把 CraftPlan 注入 LyricsAgent。
+- LyricsAgent v0.10 从“必须兑现 CraftPlan”改为“先完成一首歌”；只有 `USE_PLAN` 时才使用 selected fields。
+
+v0.10 第一轮验收仍使用 12 条压力集：
+
+- 至少 `8/12` 优于 v0.7 才考虑扩大到 24 条。
+- 延迟必须进入评审：如果质量收益不足以抵消多一次 DeepSeek 调用，默认继续跳过 CraftPlan。
+- 如果 v0.10 仍不过关，应停止 planner 路线，回到更简单的直写 Prompt，而不是继续堆规则。
+
 ## 通过标准
 
 第二批 24 条扩大评测时：

@@ -10,10 +10,10 @@ import java.util.List;
 public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
 
   private static final String AGENT_NAME = "LyricsCraftPlanner";
-  private static final String AGENT_VERSION = "mock-v0.9.2";
+  private static final String AGENT_VERSION = "mock-v0.10";
   private static final String MODEL_NAME = "mock-lyrics-craft-planner";
-  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9.2";
-  private static final int TEMPLATE_VERSION = 11;
+  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v10";
+  private static final int TEMPLATE_VERSION = 12;
 
   private final AgentRunRecorder agentRunRecorder;
 
@@ -32,6 +32,12 @@ public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
     try {
       LyricsCraftPlanResult result =
           new LyricsCraftPlanResult(
+              "USE_PLAN",
+              "WEAK_PHRASE",
+              "IN_WORLD",
+              "USE_SMALL_DEVICE",
+              "WORTH_EXTRA_CALL",
+              "HIGH",
               "Keep one clear song thesis from the user's Yanyun inspiration.",
               "preserve the user's strongest concrete phrase, sound, object, or spoken habit",
               "enter through the user's smallest believable scene and keep its contradiction alive",
@@ -92,6 +98,12 @@ public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
     return String.join(
         "\n",
         result.songThesisGuard(),
+        result.planningDecision(),
+        result.userPhraseAssessment(),
+        result.lyricSurfaceMode(),
+        result.deviceDecision(),
+        result.latencyBudget(),
+        result.confidence(),
         result.selectedDevice(),
         result.selectedAngle(),
         result.chorusMechanism(),

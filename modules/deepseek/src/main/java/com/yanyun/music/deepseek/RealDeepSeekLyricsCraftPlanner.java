@@ -17,9 +17,9 @@ import java.util.List;
 public final class RealDeepSeekLyricsCraftPlanner implements LyricsCraftPlanner {
 
   private static final String AGENT_NAME = "LyricsCraftPlanner";
-  private static final String AGENT_VERSION = "v0.9.2";
-  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9.2";
-  private static final int TEMPLATE_VERSION = 11;
+  private static final String AGENT_VERSION = "v0.10";
+  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v10";
+  private static final int TEMPLATE_VERSION = 12;
 
   private final DeepSeekJsonChatClient client;
   private final AgentRunRecorder agentRunRecorder;
@@ -56,6 +56,12 @@ public final class RealDeepSeekLyricsCraftPlanner implements LyricsCraftPlanner 
 
   private LyricsCraftPlanResult parse(JsonNode root) {
     return new LyricsCraftPlanResult(
+        DeepSeekAgentJson.text(root, "planning_decision", "planningDecision"),
+        DeepSeekAgentJson.text(root, "user_phrase_assessment", "userPhraseAssessment"),
+        DeepSeekAgentJson.text(root, "lyric_surface_mode", "lyricSurfaceMode"),
+        DeepSeekAgentJson.text(root, "device_decision", "deviceDecision"),
+        DeepSeekAgentJson.text(root, "latency_budget", "latencyBudget"),
+        DeepSeekAgentJson.text(root, "confidence"),
         DeepSeekAgentJson.text(root, "song_thesis_guard", "songThesisGuard"),
         DeepSeekAgentJson.text(root, "selected_device", "selectedDevice"),
         DeepSeekAgentJson.text(root, "selected_angle", "selectedAngle"),
@@ -69,32 +75,37 @@ public final class RealDeepSeekLyricsCraftPlanner implements LyricsCraftPlanner 
 
   private String systemPrompt() {
     return """
-        你是燕云十六声 AI 作曲平台的 LyricsCraftPlan 轻量写法选择 Agent。
-        你的任务不是写歌词，不是评审，也不是扩写剧情，而是在完整写词前，为当前题目选择一个更像歌的入口和声音装置。
+        你是燕云十六声 AI 作曲平台的 LyricsCraftPlan v0.10 结构化决策 Agent。
+        你的任务不是写歌词，也不是替歌曲做复杂导演，而是判断这次首轮灵感写词是否值得多一次规划调用；只有值得时才给出最小写法决策。
 
         工作原则：
         1. 只输出 JSON object，不输出 Markdown、解释或完整歌词。
         2. 只为 INSPIRATION 首轮写词服务；不要考虑润色、续写或整理用户已有歌词。
-        3. 这是通用作词判断，不要写题材专属规则；先内部比较 2-3 个候选写法，再选一个最能让歌曲“听得懂、记得住、像一首歌”的方案。
-        4. 候选只做写法选择：声音装置、进入角度、副歌机制、燕云边界；不要生成歌词正文。
-        5. 第一判断必须先找用户强短语：用户原句里是否已有可唱、可重复、可变义、能代表整首歌的短语或动作，例如“还是会出手”“不是废物”“眼前的人”“突然安静下来”。如果有，selected_device 必须保留原句或近似原句。
-        6. 只有当用户原句太抽象、太散、太长、不可唱或无法变义时，才允许另选小动作、物件、声音或仪式作为 selected_device；另选时必须解释它如何增强用户原句，而不是替换用户歌核。
-        7. 不要追求更电影感但更不适合唱的装置。门、刀、酒、灯、雨、碗等物件只有在比用户原句更私人、更可唱、更能变义时才可选。
-        8. 具体胜过正确：selected_device 必须私人、具体、可重复、可在后半首变义；不能只是抽象主题词。
-        9. 矛盾胜过顺滑：如果用户输入里有“不厉害但出手”“轻快但想哭”“不想救世但要救眼前人”等矛盾，不要抹平；selected_angle 要保留矛盾的张力。
-        10. selected_angle 必须收束，不能把轻量灵感扩成百科、宏大家国命题或多个并列故事。
-        11. 副歌必须有功能：chorus_mechanism 要说明副歌如何工作，可能是重复、变义、反问、回收、反讽、安慰、爆发或沉默；不要只说“副歌要有记忆点”。
-        12. 知识库服务歌曲：只挑能支撑 song_thesis_guard 的资料；不能摊成资料点，也不能因为知识库很多就改变用户本来的故事。
-        13. 曲风不改变世界：yanyun_boundary_guard 必须提醒曲风只影响节奏、声口、能量和句子颗粒度，不能导入现代道具、现代舞台、酒吧、霓虹、拳击/训练室等不属于用户输入的场景。
-        14. 粗粝不等于粗口：如果题目需要粗粝、底层、危险或混杂，可以保留噪音、狼狈和不体面的生活细节；但除非用户明确要求，不要用明显粗口、廉价狠话或空泛反叛代替真实。
-        15. 不要求歌里出现“燕云”“十六声”，但内容必须属于燕云十六声大世界。
+        3. 首先判断用户输入里是否已有强表达。已有强 hook、强口头禅、强矛盾或强动作时，优先 SKIP_PLAN 或 USE_USER_PHRASE，不要另造装置。
+        4. 只有当输入散、抽象、缺少可唱入口，或知识库实体需要明确表层模式时，才 USE_PLAN。
+        5. planning_decision=SKIP_PLAN 时，selected_device/selected_angle/chorus_mechanism 可以留空或极短，不要为了填字段硬编。
+        6. lyric_surface_mode 必须先判断歌词表层：
+           - IN_WORLD：歌词完全发生在燕云世界内，不出现玩家、跑图、退坑、队伍、界面等现代/游戏外词。
+           - PLAYER_META：用户明确写玩家经历时才用，可保留少量玩家体验词，但不能写成论坛帖。
+           - CHARACTER_SONG：用户点名角色或明确要求人物经历。
+           - ORDINARY_STORY：普通小人物、玩家自创江湖故事、地点怀念。
+        7. device_decision 只做写法选择：USE_USER_PHRASE、USE_SMALL_DEVICE、USE_DIRECT_REFRAIN、NO_DEVICE。不是每首歌都需要装置。
+        8. latency_budget 必须诚实：如果多一次规划不太可能提升歌词，输出 NOT_WORTH_EXTRA_CALL。
+        9. 曲风只影响节奏、声口、能量和句子颗粒度，不能导入现代道具或现代场景。
+        10. 不要求歌里出现“燕云”“十六声”，但内容必须属于燕云十六声大世界。
 
         输出字段必须包含：
         {
+          "planning_decision": "USE_PLAN | SKIP_PLAN",
+          "user_phrase_assessment": "STRONG_HOOK | WEAK_PHRASE | NONE",
+          "lyric_surface_mode": "IN_WORLD | PLAYER_META | CHARACTER_SONG | ORDINARY_STORY",
+          "device_decision": "USE_USER_PHRASE | USE_SMALL_DEVICE | USE_DIRECT_REFRAIN | NO_DEVICE",
+          "latency_budget": "WORTH_EXTRA_CALL | NOT_WORTH_EXTRA_CALL",
+          "confidence": "HIGH | MEDIUM | LOW",
           "song_thesis_guard": "一句话守住这首歌到底在唱什么，防止写散",
-          "selected_device": "本歌选中的私人声音装置/动作/物件/句式/小仪式",
-          "selected_angle": "本歌从哪里进入，必须具体、收束、有作品感",
-          "chorus_mechanism": "副歌如何使用 selected_device 或句式，让它重复、变义或变重",
+          "selected_device": "仅在 USE_PLAN 时填写；可以是用户原句、小动作、物件、声音、句式或空",
+          "selected_angle": "仅在 USE_PLAN 时填写；本歌从哪里进入，必须具体、收束",
+          "chorus_mechanism": "仅在 USE_PLAN 时填写；副歌如何重复、变义、反问、回收或直接推进",
           "yanyun_boundary_guard": "燕云世界边界与曲风边界提醒",
           "rejected_alternatives": ["被放弃的写法及原因，2-3 条"]
         }
@@ -175,6 +186,12 @@ public final class RealDeepSeekLyricsCraftPlanner implements LyricsCraftPlanner 
     return String.join(
         "\n",
         result.songThesisGuard(),
+        result.planningDecision(),
+        result.userPhraseAssessment(),
+        result.lyricSurfaceMode(),
+        result.deviceDecision(),
+        result.latencyBudget(),
+        result.confidence(),
         result.selectedDevice(),
         result.selectedAngle(),
         result.chorusMechanism(),

@@ -300,6 +300,18 @@ class RealDeepSeekCreativeAgentsTest {
                   200,
                   chatResponse(
                       mapOf(
+                          "planning_decision",
+                          "USE_PLAN",
+                          "user_phrase_assessment",
+                          "WEAK_PHRASE",
+                          "lyric_surface_mode",
+                          "ORDINARY_STORY",
+                          "device_decision",
+                          "USE_SMALL_DEVICE",
+                          "latency_budget",
+                          "WORTH_EXTRA_CALL",
+                          "confidence",
+                          "HIGH",
                           "song_thesis_guard",
                           "一个清河旧游人离开后才明白自己想回去。",
                           "selected_device",
@@ -342,33 +354,38 @@ class RealDeepSeekCreativeAgentsTest {
                 List.of("region/清河 matched=清河 kind=exact confidence=1.00"),
                 List.of("清河: 新手村、茶摊、江湖初见。")));
 
+    assertEquals("USE_PLAN", result.planningDecision());
+    assertEquals("WEAK_PHRASE", result.userPhraseAssessment());
+    assertEquals("ORDINARY_STORY", result.lyricSurfaceMode());
+    assertEquals("USE_SMALL_DEVICE", result.deviceDecision());
+    assertEquals("WORTH_EXTRA_CALL", result.latencyBudget());
+    assertEquals("HIGH", result.confidence());
     assertEquals("茶碗轻轻一响", result.selectedDevice());
     assertTrue(result.chorusMechanism().contains("变成回不去"));
     assertTrue(result.yanyunBoundaryGuard().contains("不导入霓虹"));
     assertFalse(result.rejectedAlternatives().isEmpty());
     JsonNode systemMessage = capturedBody.get().path("messages").get(0).path("content");
     JsonNode userMessage = capturedBody.get().path("messages").get(1).path("content");
-    assertTrue(systemMessage.asText().contains("LyricsCraftPlan 轻量写法选择 Agent"));
+    assertTrue(systemMessage.asText().contains("LyricsCraftPlan v0.10 结构化决策 Agent"));
     assertTrue(systemMessage.asText().contains("不是写歌词"));
-    assertTrue(systemMessage.asText().contains("通用作词判断"));
-    assertTrue(systemMessage.asText().contains("不要写题材专属规则"));
-    assertTrue(systemMessage.asText().contains("第一判断必须先找用户强短语"));
-    assertTrue(systemMessage.asText().contains("原句或近似原句"));
-    assertTrue(systemMessage.asText().contains("更电影感但更不适合唱"));
-    assertTrue(systemMessage.asText().contains("具体胜过正确"));
-    assertTrue(systemMessage.asText().contains("矛盾胜过顺滑"));
+    assertTrue(systemMessage.asText().contains("是否值得多一次规划调用"));
+    assertTrue(systemMessage.asText().contains("不要为了填字段硬编"));
+    assertTrue(systemMessage.asText().contains("planning_decision"));
+    assertTrue(systemMessage.asText().contains("SKIP_PLAN"));
+    assertTrue(systemMessage.asText().contains("STRONG_HOOK"));
+    assertTrue(systemMessage.asText().contains("lyric_surface_mode"));
+    assertTrue(systemMessage.asText().contains("PLAYER_META"));
+    assertTrue(systemMessage.asText().contains("device_decision"));
+    assertTrue(systemMessage.asText().contains("latency_budget"));
     assertTrue(systemMessage.asText().contains("selected_device"));
     assertTrue(systemMessage.asText().contains("chorus_mechanism"));
-    assertTrue(systemMessage.asText().contains("副歌必须有功能"));
-    assertTrue(systemMessage.asText().contains("知识库服务歌曲"));
     assertTrue(systemMessage.asText().contains("不能导入现代道具"));
-    assertTrue(systemMessage.asText().contains("粗粝不等于粗口"));
     assertFalse(systemMessage.asText().contains("九流门"));
     assertFalse(systemMessage.asText().contains("寒香寻"));
     assertTrue(userMessage.asText().contains("City Pop"));
     assertTrue(userMessage.asText().contains("region/清河"));
     assertEquals("LyricsCraftPlanner", records.getFirst().agentName());
-    assertEquals("v0.9.2", records.getFirst().agentVersion());
+    assertEquals("v0.10", records.getFirst().agentVersion());
   }
 
   @Test

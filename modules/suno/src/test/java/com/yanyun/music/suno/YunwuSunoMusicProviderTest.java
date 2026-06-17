@@ -278,7 +278,8 @@ class YunwuSunoMusicProviderTest {
     httpServer.createContext(
         "/suno/fetch/task-keep",
         exchange -> {
-          byte[] body = "<html><body>502 Bad Gateway</body></html>".getBytes(StandardCharsets.UTF_8);
+          byte[] body =
+              "<html><body>502 Bad Gateway</body></html>".getBytes(StandardCharsets.UTF_8);
           exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
           exchange.sendResponseHeaders(502, body.length);
           exchange.getResponseBody().write(body);

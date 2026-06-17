@@ -1280,7 +1280,8 @@ public class WorkRepository {
     }
   }
 
-  public Optional<String> findLatestProviderTraceId(UUID workId, String provider, String operation) {
+  public Optional<String> findLatestProviderTraceId(
+      UUID workId, String provider, String operation) {
     try {
       return Optional.ofNullable(
           jdbcTemplate.queryForObject(

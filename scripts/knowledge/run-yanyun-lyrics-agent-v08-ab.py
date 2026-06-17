@@ -37,7 +37,7 @@ CRAFT_PLANNER_PATH = (
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsCraftPlanner.java"
 )
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
-CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9.2")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.10")
 
 
 def sha256(value):
@@ -260,7 +260,36 @@ def lyrics_system_prompt(version):
 
 
 def craft_plan_enabled(version):
-    return version.startswith("B_v0.9")
+    return version.startswith("B_v0.9") or version.startswith("B_v0.10")
+
+
+def craft_plan_usable(craft_plan):
+    if not craft_plan:
+        return False
+    planning_decision = first_non_blank(
+        craft_plan.get("planning_decision"), craft_plan.get("planningDecision")
+    ).upper()
+    latency_budget = first_non_blank(
+        craft_plan.get("latency_budget"), craft_plan.get("latencyBudget")
+    ).upper()
+    confidence = first_non_blank(craft_plan.get("confidence")).upper()
+    has_core = bool(
+        first_non_blank(
+            craft_plan.get("selected_device"),
+            craft_plan.get("selectedDevice"),
+            craft_plan.get("selected_angle"),
+            craft_plan.get("selectedAngle"),
+            craft_plan.get("chorus_mechanism"),
+            craft_plan.get("chorusMechanism"),
+        )
+    )
+    if planning_decision and planning_decision != "USE_PLAN":
+        return False
+    if latency_budget == "NOT_WORTH_EXTRA_CALL":
+        return False
+    if confidence == "LOW":
+        return False
+    return has_core
 
 
 def craft_plan_system_prompt(version):
@@ -459,11 +488,26 @@ def craft_plan_user_prompt(case, brief, references):
 
 
 def craft_plan_instruction(craft_plan):
-    if not craft_plan:
-        return "lyrics_craft_plan_status=disabled_or_fallback"
+    if not craft_plan_usable(craft_plan):
+        return "lyrics_craft_plan_status=disabled_skipped_or_fallback"
     return "\n".join(
         [
-            "LyricsCraftPlan v0.9.2:",
+            "LyricsCraftPlan v0.10:",
+            "planning_decision="
+            + first_non_blank(
+                craft_plan.get("planning_decision"), craft_plan.get("planningDecision")
+            ),
+            "user_phrase_assessment="
+            + first_non_blank(
+                craft_plan.get("user_phrase_assessment"), craft_plan.get("userPhraseAssessment")
+            ),
+            "lyric_surface_mode="
+            + first_non_blank(craft_plan.get("lyric_surface_mode"), craft_plan.get("lyricSurfaceMode")),
+            "device_decision="
+            + first_non_blank(craft_plan.get("device_decision"), craft_plan.get("deviceDecision")),
+            "latency_budget="
+            + first_non_blank(craft_plan.get("latency_budget"), craft_plan.get("latencyBudget")),
+            "confidence=" + first_non_blank(craft_plan.get("confidence")),
             "song_thesis_guard="
             + first_non_blank(
                 craft_plan.get("song_thesis_guard"), craft_plan.get("songThesisGuard")
@@ -604,7 +648,7 @@ def write_reports(results):
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.9.2 A/B Manual Review",
+        "# LyricsAgent v0.10 A/B Manual Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
         f"- baseline_revision: `{BASELINE_REV}`",
