@@ -1,0 +1,91 @@
+{
+  "version": "lyrics-agent-v0.9.1-full6-review-summary",
+  "generated_at": "2026-06-17T03:55:00+08:00",
+  "source_report": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "contains_full_prompt_or_lyrics": false,
+  "baseline_variant": "A_v0.7",
+  "current_variant": "B_v0.9.1",
+  "latency_summary": {
+    "A_v0.7": {
+      "total_p50_ms": 64746,
+      "total_avg_ms": 71614.5,
+      "total_p95_ms": 83946
+    },
+    "B_v0.9.1": {
+      "craft_plan_p50_ms": 26884,
+      "total_p50_ms": 95529,
+      "total_avg_ms": 105140.0,
+      "total_p95_ms": 144539
+    }
+  },
+  "overall_result": {
+    "b_wins": 2,
+    "a_wins": 4,
+    "borderline_cases": 1,
+    "passed_expansion_gate": false,
+    "judgment": "v0.9.1 does not justify expanding to 12 cases yet. It improves concrete device selection in some open-style and rough-texture cases, but often replaces the user's strongest phrase with a new device and pays a large latency cost."
+  },
+  "case_reviews": [
+    {
+      "case_id": "lyrics-v091-strong-phrase-still-act-001",
+      "winner": "A_v0.7",
+      "a_score": 82,
+      "b_score": 75,
+      "conclusion": "可用但不够顶",
+      "reason": "A keeps the user's exact hook more directly. B has a richer scene and a door device, but it weakens the user's strongest phrase and becomes more cinematic than singable.",
+      "failure_cause": "CraftPlan selected a new device instead of preserving the user's strong phrase."
+    },
+    {
+      "case_id": "lyrics-v091-conflicting-light-heavy-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 78,
+      "conclusion": "A has stronger golden-song potential",
+      "reason": "A's half-cup and then-what device is simpler, more singable, and more emotionally precise. B is coherent but slightly over-designed and explains the sadness too much.",
+      "failure_cause": "CraftPlan made the device technically clear but reduced naturalness."
+    },
+    {
+      "case_id": "lyrics-v091-anti-savior-nearby-001",
+      "winner": "A_v0.7",
+      "a_score": 84,
+      "b_score": 81,
+      "conclusion": "A wins narrowly",
+      "reason": "B is more dramatic and concrete, but A preserves the anti-grand premise more directly. B's repeated device is strong, yet it drifts toward cinematic rescue rather than the user's plain moral boundary.",
+      "failure_cause": "CraftPlan converted a conceptual contradiction into a rescue-scene device, losing some of the user's thesis."
+    },
+    {
+      "case_id": "lyrics-v091-failure-not-waste-001",
+      "winner": "A_v0.7",
+      "a_score": 83,
+      "b_score": 79,
+      "conclusion": "可用但不够顶",
+      "reason": "A has a steadier dignity and less slogan pressure. B's repeated action is usable, but it replaces the sharper phrase '不是废物' with a more common stand-up motif.",
+      "failure_cause": "CraftPlan picked an action device that is singable but too familiar."
+    },
+    {
+      "case_id": "lyrics-v091-open-style-modern-boundary-001",
+      "winner": "B_v0.9.1",
+      "a_score": 72,
+      "b_score": 84,
+      "conclusion": "B has usable golden-song direction",
+      "reason": "B's repeated pouring action fits R&B while staying inside a Yanyun night scene. It is restrained, concrete, and avoids modern bar or neon drift.",
+      "failure_cause": ""
+    },
+    {
+      "case_id": "lyrics-v091-rough-without-profanity-001",
+      "winner": "B_v0.9.1",
+      "a_score": 76,
+      "b_score": 82,
+      "conclusion": "B is better but still not top-tier",
+      "reason": "B's copper-coin-in-bowl device is clearer and avoids obvious profanity. It still has some slogan-heavy lines, but it better captures noisy bottom-level texture than A.",
+      "failure_cause": "LyricsAgent still leans toward banner-like slogans in rough material."
+    }
+  ],
+  "next_prompt_direction": [
+    "CraftPlan must first identify whether the user's original phrase is already the best device.",
+    "If the user's phrase is strong, selected_device should preserve it verbatim or nearly verbatim.",
+    "CraftPlan should penalize devices that are more cinematic but less singable.",
+    "CraftPlan should choose smaller devices only when they strengthen the user's core thesis, not when they replace it.",
+    "Because v0.9.1 adds about 30 seconds P50 latency, it should not become the final default unless it wins clearly."
+  ]
+}

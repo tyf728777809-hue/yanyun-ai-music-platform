@@ -307,6 +307,40 @@ knowledge-base/lyrics-agent-v0.9.1-eval-cases.json
 
 评测脚本支持通过 `LYRICS_AGENT_AB_CASES_PATH` 指定该样本集，并在 ignored 的本地报告中输出 `latency_summary`，用于判断 CraftPlan 多一次文本调用的耗时成本是否值得。
 
+## v0.9.1 六条压力测试结论
+
+v0.9.1 已跑 6 条真实 DeepSeek 文本 A/B。完整 Prompt 与完整歌词仍只保存在 ignored 的 `build/reports/lyrics-agent/`；提交区只保留脱敏摘要：
+
+```text
+knowledge-base/lyrics-agent-v0.9.1-full6-review-summary.json
+```
+
+结果不达标：
+
+- B 组 v0.9.1 明显胜出 `2/6`。
+- A 组 v0.7 胜出 `4/6`。
+- 其中反宏大守护题存在争议，但即使算作接近，v0.9.1 仍未达到扩大到 12 条的门槛。
+
+耗时判断：
+
+- A 组 total P50 约 `64.7s`。
+- B 组 total P50 约 `95.5s`。
+- CraftPlan 自身 P50 约 `26.9s`。
+
+质量判断：
+
+- v0.9.1 在“开放曲风但不现代漂移”和“粗粝但不低俗”上更稳。
+- v0.9.1 在强用户原句题上仍会犯错：把“还是会出手”“不是废物”替换成新的声音装置，导致作品更设计化但不一定更能唱进用户心里。
+- 这说明下一轮不应继续扩样本，也不应继续堆题材规则；应先修 CraftPlan 的第一判断：**用户原句是否已经是最好的 hook / device**。
+
+下一轮只调 CraftPlan：
+
+- 先判断用户原句是否已经可唱、可重复、可变义。
+- 如果是，`selected_device` 必须保留用户原句或近似原句。
+- 只有当用户原句太抽象、太散或不可唱时，才另选小动作/物件/声音。
+- 新 device 必须增强用户歌核，不能替换用户歌核。
+- 同时加入“更电影感但更不适合唱”的反例惩罚。
+
 ## 通过标准
 
 第二批 24 条扩大评测时：
