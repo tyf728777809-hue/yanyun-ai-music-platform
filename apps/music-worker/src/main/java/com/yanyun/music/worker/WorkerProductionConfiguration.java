@@ -33,6 +33,7 @@ import com.yanyun.music.knowledge.MockKnowledgeService;
 import com.yanyun.music.knowledge.NoopKnowledgeService;
 import com.yanyun.music.lyrics.DefaultLyricsGenerationService;
 import com.yanyun.music.lyrics.LyricsGenerationService;
+import com.yanyun.music.lyrics.LyricsQualityGateMode;
 import com.yanyun.music.minimax.MiniMaxMusicProvider;
 import com.yanyun.music.minimax.MiniMaxMusicProviderOptions;
 import com.yanyun.music.moderation.MockModerationAdapter;
@@ -227,14 +228,16 @@ public class WorkerProductionConfiguration {
       CreativeBriefAgent creativeBriefAgent,
       DeepSeekLyricsClient deepSeekLyricsClient,
       QualityEvaluationAgent qualityEvaluationAgent,
-      AgentRunRecorder agentRunRecorder) {
+      AgentRunRecorder agentRunRecorder,
+      @Value("${yanyun.lyrics.quality-gate-mode:strict}") String lyricsQualityGateMode) {
     return new DefaultLyricsGenerationService(
         knowledgeService,
         promptTemplateService,
         creativeBriefAgent,
         deepSeekLyricsClient,
         qualityEvaluationAgent,
-        agentRunRecorder);
+        agentRunRecorder,
+        LyricsQualityGateMode.fromProperty(lyricsQualityGateMode));
   }
 
   @Bean

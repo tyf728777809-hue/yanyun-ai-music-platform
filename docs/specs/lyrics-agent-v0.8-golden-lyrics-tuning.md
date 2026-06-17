@@ -549,3 +549,30 @@ v0.11.2 六条回归结果：
 ```text
 knowledge-base/lyrics-agent-v0.11.2-full6-review-summary.json
 ```
+
+## v0.12 质量门策略开关
+
+v0.11.2 之后不再继续堆 Prompt 规则。下一步先把“重链路”和“轻链路”做成可控实验，而不是直接替换生产逻辑。
+
+新增配置：
+
+```text
+LYRICS_QUALITY_GATE_MODE=strict | self-score-only
+```
+
+模式说明：
+
+- `strict`：默认。保持当前链路：`KnowledgeRetrieve -> CreativeBriefAgent -> LyricsAgent -> QualityEvaluationAgent`，低质时最多一次受控重写。
+- `self-score-only`：实验快路径。保持 `KnowledgeRetrieve -> CreativeBriefAgent -> LyricsAgent`，跳过额外 `QualityEvaluationAgent` 调用，只用 LyricsAgent 自评分和本地安全边界检查。
+
+`self-score-only` 不是“关闭质量”：
+
+- `quality_score < 0.80` 仍会阻断。
+- 输出漂到其他 IP，且用户输入没有要求其他 IP 转译时，仍会阻断。
+- 知识库已纠正用户错字名，但歌词仍把错字当正式名输出时，仍会阻断。
+
+当前决策：
+
+- 默认仍为 `strict`，不影响公网真实测试和公司交付基线。
+- 后续可以用同一批真实玩家输入跑 `strict` vs `self-score-only`，比较耗时、通过率和人工歌词质量。
+- 只有当轻量模式在真实样本中质量接近、速度明显更好，才考虑作为默认用户路径。

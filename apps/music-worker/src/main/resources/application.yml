@@ -38,6 +38,8 @@ yanyun:
     max-references: ${KNOWLEDGE_MAX_REFERENCES:6}
     entity-limit: ${KNOWLEDGE_ENTITY_LIMIT:4}
     semantic-limit: ${KNOWLEDGE_SEMANTIC_LIMIT:6}
+  lyrics:
+    quality-gate-mode: ${LYRICS_QUALITY_GATE_MODE:strict}
   image:
     provider: ${IMAGE_PROVIDER:mock}
   image2:

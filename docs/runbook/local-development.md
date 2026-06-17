@@ -465,6 +465,11 @@ CreativeBriefAgent|v0.1|INSPIRATION|mock-creative-brief|SUCCEEDED|t|t
 LyricsAgent|v0.1|INSPIRATION|mock-deepseek-lyrics|SUCCEEDED|t|t
 ```
 
+写词质量门默认使用 `LYRICS_QUALITY_GATE_MODE=strict`：
+
+- `strict`：默认路径。首轮写词后运行 `QualityEvaluationAgent`，必要时允许一次受控重写；质量门仍不通过时阻断返回，适合正式测试和交付基线。
+- `self-score-only`：实验快路径。跳过额外 `QualityEvaluationAgent` 调用，只使用 `LyricsAgent` 自评分和本地安全检查；低自评分、其他 IP 漂移、实体错字输出仍会阻断。该模式用于评估少一次 DeepSeek 调用能节省多少等待时间，不应在未完成 A/B 前作为默认生产口径。
+
 如果继续调用 `POST /api/v1/works/{work_id}/confirm`，正常还能看到类似：
 
 ```text

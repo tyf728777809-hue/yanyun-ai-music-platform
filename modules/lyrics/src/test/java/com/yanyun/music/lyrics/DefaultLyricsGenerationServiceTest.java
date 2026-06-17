@@ -282,6 +282,75 @@ class DefaultLyricsGenerationServiceTest {
   }
 
   @Test
+  void selfScoreOnlyModeSkipsQualityEvaluationAgent() {
+    List<AgentRunRecord> records = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            new MockCreativeBriefAgent(records::add),
+            deepSeek,
+            request -> {
+              throw new AssertionError("self-score-only should not call QualityEvaluationAgent");
+            },
+            records::add,
+            LyricsQualityGateMode.SELF_SCORE_ONLY);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertEquals("Song", result.songTitle());
+    assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
+    assertEquals(3, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("CreativeBriefAgent", records.get(1).agentName());
+    assertEquals("LyricsAgent", records.get(2).agentName());
+    assertFalse(
+        records.stream().anyMatch(record -> "QualityEvaluationAgent".equals(record.agentName())));
+  }
+
+  @Test
+  void selfScoreOnlyModeStillRejectsLowSelfScore() {
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.40));
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            new MockCreativeBriefAgent(),
+            deepSeek,
+            request -> {
+              throw new AssertionError("self-score-only should not call QualityEvaluationAgent");
+            },
+            new ArrayList<AgentRunRecord>()::add,
+            LyricsQualityGateMode.SELF_SCORE_ONLY);
+
+    LyricsQualityException exception =
+        assertThrows(
+            LyricsQualityException.class,
+            () -> service.generate(baseRequest(LyricsOperation.INSPIRATION)));
+
+    assertTrue(exception.getMessage().contains("歌词质量分不足"));
+  }
+
+  @Test
   void rewriteStillRejectedByQualityGateStopsBeforeReturningLyrics() {
     AtomicInteger deepSeekCalls = new AtomicInteger();
     AtomicInteger qualityCalls = new AtomicInteger();

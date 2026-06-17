@@ -47,6 +47,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private final DeepSeekLyricsClient deepSeekLyricsClient;
   private final QualityEvaluationAgent qualityEvaluationAgent;
   private final AgentRunRecorder agentRunRecorder;
+  private final LyricsQualityGateMode qualityGateMode;
 
   public DefaultLyricsGenerationService(
       KnowledgeService knowledgeService,
@@ -58,7 +59,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         new MockCreativeBriefAgent(NoopAgentRunRecorder.INSTANCE),
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(NoopAgentRunRecorder.INSTANCE),
-        NoopAgentRunRecorder.INSTANCE);
+        NoopAgentRunRecorder.INSTANCE,
+        LyricsQualityGateMode.STRICT);
   }
 
   public DefaultLyricsGenerationService(
@@ -72,7 +74,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         new MockCreativeBriefAgent(agentRunRecorder),
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
-        agentRunRecorder);
+        agentRunRecorder,
+        LyricsQualityGateMode.STRICT);
   }
 
   public DefaultLyricsGenerationService(
@@ -87,7 +90,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         creativeBriefAgent,
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
-        agentRunRecorder);
+        agentRunRecorder,
+        LyricsQualityGateMode.STRICT);
   }
 
   public DefaultLyricsGenerationService(
@@ -97,6 +101,24 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       DeepSeekLyricsClient deepSeekLyricsClient,
       QualityEvaluationAgent qualityEvaluationAgent,
       AgentRunRecorder agentRunRecorder) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        creativeBriefAgent,
+        deepSeekLyricsClient,
+        qualityEvaluationAgent,
+        agentRunRecorder,
+        LyricsQualityGateMode.STRICT);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      QualityEvaluationAgent qualityEvaluationAgent,
+      AgentRunRecorder agentRunRecorder,
+      LyricsQualityGateMode qualityGateMode) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
     this.creativeBriefAgent =
@@ -110,6 +132,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             : qualityEvaluationAgent;
     this.agentRunRecorder =
         agentRunRecorder == null ? NoopAgentRunRecorder.INSTANCE : agentRunRecorder;
+    this.qualityGateMode = qualityGateMode == null ? LyricsQualityGateMode.STRICT : qualityGateMode;
   }
 
   @Override
@@ -125,12 +148,15 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
     QualityEvaluationResult quality =
-        evaluateLyricsQuality(briefedRequest, response, creativeBrief, knowledge);
-    if (isLowQuality(response) || shouldRewrite(quality)) {
+        maybeEvaluateLyricsQuality(briefedRequest, response, creativeBrief, knowledge);
+    if (qualityGateMode.strict() && (isLowQuality(response) || shouldRewrite(quality))) {
       LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest, quality);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
       quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief, knowledge);
+    }
+    if (qualityGateMode.selfScoreOnly()) {
+      ensureSelfScoreLyricsAllowed(briefedRequest, response, knowledge);
     }
     ensureLyricsQualityAllowed(response, quality);
     return toResult(response, creativeBrief, knowledge, prompt, true);
@@ -499,17 +525,32 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry("risk_notes", response.riskNotes()))));
   }
 
+  private QualityEvaluationResult maybeEvaluateLyricsQuality(
+      LyricsGenerationRequest request,
+      DeepSeekLyricsResponse response,
+      CreativeBriefResult creativeBrief,
+      KnowledgeRetrievalResult knowledge) {
+    if (qualityGateMode.selfScoreOnly()) {
+      return null;
+    }
+    return evaluateLyricsQuality(request, response, creativeBrief, knowledge);
+  }
+
   private boolean shouldRewrite(QualityEvaluationResult quality) {
+    if (quality == null) {
+      return false;
+    }
     return quality.decision() == QualityDecision.REWRITE
         || quality.decision() == QualityDecision.RETRY;
   }
 
   private void ensureLyricsQualityAllowed(
       DeepSeekLyricsResponse response, QualityEvaluationResult quality) {
-    if (quality.decision() == QualityDecision.BLOCK
-        || quality.decision() == QualityDecision.MANUAL_REVIEW
-        || quality.decision() == QualityDecision.REWRITE
-        || quality.decision() == QualityDecision.RETRY
+    if ((quality != null
+            && (quality.decision() == QualityDecision.BLOCK
+                || quality.decision() == QualityDecision.MANUAL_REVIEW
+                || quality.decision() == QualityDecision.REWRITE
+                || quality.decision() == QualityDecision.RETRY))
         || isLowQuality(response)) {
       throw new LyricsQualityException(lyricsQualityMessage(response, quality));
     }
@@ -517,13 +558,59 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
 
   private String lyricsQualityMessage(
       DeepSeekLyricsResponse response, QualityEvaluationResult quality) {
-    if (!quality.reasons().isEmpty()) {
+    if (quality != null && !quality.reasons().isEmpty()) {
       return String.join("; ", quality.reasons());
     }
     if (isLowQuality(response)) {
       return "歌词质量分不足，请补充更明确的燕云十六声主题后重试。";
     }
     return "歌词不够贴合燕云十六声，请调整灵感后重试。";
+  }
+
+  private void ensureSelfScoreLyricsAllowed(
+      LyricsGenerationRequest request,
+      DeepSeekLyricsResponse response,
+      KnowledgeRetrievalResult knowledge) {
+    if (response == null || firstNonBlank(response.lyricsText(), "").isBlank()) {
+      throw new LyricsQualityException("AI 写词没有返回有效歌词，请稍后重试。");
+    }
+    String outputText =
+        String.join(
+            " ",
+            firstNonBlank(response.songTitle(), ""),
+            firstNonBlank(response.songSummary(), ""),
+            firstNonBlank(response.lyricsText(), ""),
+            firstNonBlank(response.musicPrompt(), ""),
+            firstNonBlank(response.coverPromptSeed(), ""));
+    String inputText =
+        String.join(
+            " ",
+            firstNonBlank(request.userInput(), ""),
+            firstNonBlank(request.currentLyrics(), ""),
+            firstNonBlank(request.instruction(), ""),
+            firstNonBlank(request.requestedTitle(), ""));
+    if (CreativeBoundaryTerms.containsOtherIpTerm(outputText)
+        && !CreativeBoundaryTerms.containsOtherIpTerm(inputText)) {
+      throw new LyricsQualityException("歌词偏离了燕云十六声创作域，请换一个更明确的燕云主题后重试。");
+    }
+    if (usesCorrectedEntityTypoAsOfficialName(outputText, knowledge)) {
+      throw new LyricsQualityException("歌词把用户输入的错字名当作正式名称输出，请检查名称后重试。");
+    }
+  }
+
+  private boolean usesCorrectedEntityTypoAsOfficialName(
+      String outputText, KnowledgeRetrievalResult knowledge) {
+    if (outputText == null || outputText.isBlank() || knowledge == null) {
+      return false;
+    }
+    return knowledge.resolvedEntities().stream()
+        .filter(entity -> !entity.ambiguous())
+        .filter(entity -> !firstNonBlank(entity.matchedText(), "").isBlank())
+        .filter(
+            entity ->
+                !firstNonBlank(entity.matchedText(), "")
+                    .equals(firstNonBlank(entity.canonicalName(), "")))
+        .anyMatch(entity -> outputText.contains(firstNonBlank(entity.matchedText(), "")));
   }
 
   private void ensureLightweightEditQualityAllowed(
