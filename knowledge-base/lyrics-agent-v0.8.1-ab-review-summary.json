@@ -1,0 +1,231 @@
+{
+  "version": "lyrics-agent-v0.8.1-batch-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v081-ab-merged.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "rubric": {
+    "total": 100,
+    "dimensions": {
+      "song_thesis": 12,
+      "narrative_pov": 10,
+      "emotional_truth": 12,
+      "distinctive_entry": 10,
+      "language_accuracy": 10,
+      "chorus_function": 10,
+      "memory_device": 10,
+      "singability_rhyme": 10,
+      "section_progression": 8,
+      "imagery_system": 6,
+      "yanyun_grounding": 8,
+      "original_sophistication": 4
+    }
+  },
+  "summary": {
+    "sample_count": 6,
+    "v081_wins": 3,
+    "v07_wins": 3,
+    "ties": 0,
+    "verdict": "v0.8.1 is a real improvement over v0.8 initial, but not ready to expand to 24 samples. It wins 3/6: strong on character warmth, city-life warmth, and rough faction texture; still loses on place nostalgia, underdog warmth, and light-to-sad memory devices."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "B_v0.8.1",
+      "review_note": "v0.8.1 用“梨花又开了吗 / 酒温好了又凉”完成等待主题，比 v0.7 更像歌，也没直接喊口号。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "fcfec53d89cd3212b41ed8af411b382209a26c5671cb8e9ddd47af8d8c7755be",
+          "score": 86,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "clear_home_motif",
+            "slightly_generic_lamp",
+            "bridge_explains_too_directly"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "7c6bd7b4ab824081cca086cebcd78be5feafafce4751c5d58869e37dcd183fd1",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "specific_waiting_device",
+            "strong_chorus_job",
+            "restrained_character_grounding"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的“清河 / 茶凉”更简单、更有声音记忆；v0.8.1 画面多但略解释，个别句子不够自然。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "36f062f7102d9f60aadf5cf7515b3836cb835eed49eb7b8f074899aa951e049f",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_place_refrain",
+            "simple_memory_device",
+            "specific_player_nostalgia"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "31f7bd1827d57fa6656797e43aa98a3eaa040e816859cb51bb8e5f510ce9b273",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "overwritten_nostalgia",
+            "awkward_phrasing",
+            "less_memorable_refrain"
+          ],
+          "failure_attribution": [
+            "CreativeBrief 方向错误",
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.8.1 的画面更具体，但把“不厉害”推成了过度受伤和硬撑，少了笨拙温暖。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "1d389046d7f34338023be733eb9a45e5385b0d46d9f396b29343e92b3d786b49",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "clear_hook",
+            "human_scale",
+            "singable_rock_chorus"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "cf117ca1a5e1c4238baa6b9b5171a67619b71efc53ea99d45e7736e3d5dba615",
+          "score": 85,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "vivid_details",
+            "over_intensified_injury",
+            "repeats_core_too_much"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "B_v0.8.1",
+      "review_note": "v0.8.1 保住烟火气和旧灯动作，人物掠影更活；少量“天塌了”略大，但整体胜出。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "5f7fdf06c2383a2ef5a7a13f00d4ea598fa4149f7607623f15bc3919a8d1059f",
+          "score": 86,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "elegant_lamp_motif",
+            "slightly_static",
+            "safe_repetition"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "e674ed4d44b3c98eeeceaf7922600d31a11905a71a956df2aa32dbd7b917a340",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "warm_scene_voice",
+            "good_minor_characters",
+            "clear_chorus_action"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的“再喝一碗就走”是更高级的轻快转酸楚装置；v0.8.1 的“你在哪呢”有效但偏常规。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "75a8ff950e84bca0845343481d341437f605f0a094d0b7bf06e089c765d85275",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_memory_phrase",
+            "true_light_to_sad_turn",
+            "specific_friendship_ritual"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "198afe5c4956f681027e5cc3e485b9b7710b9fa96b18fc1c61d1f63e9951c23b",
+          "score": 86,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "good_mood_turn",
+            "generic_missing_question",
+            "less_unique_memory_device"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.8.1",
+      "review_note": "v0.8.1 用“踩着碎瓦走 / 灯下不用看脸”解决了 v0.8 初版空喊问题，粗粝但不脏口。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "19146ad32b02115c1aa1a3bd09d5fb24f14d207c14f7d059dd7f55269185f5b3",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "raw_texture",
+            "chant_slogan_risk",
+            "less_specific_hook"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.1",
+          "lyrics_hash": "2c833e98fe0550fd17b28f24f7d74eddf3e14963ec414a07473c059a4409cdfa",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_action_hook",
+            "controlled_roughness",
+            "better_faction_texture"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    }
+  ],
+  "next_prompt_adjustments": [
+    "For place nostalgia, choose one small sensory ritual or refrain and let it repeat; do not overwrite the whole return journey.",
+    "For underdog stories, preserve clumsy warmth and human-scale courage; avoid inflating pain into extreme injury spectacle.",
+    "For light-to-sad songs, prefer an innocent shared phrase/action that changes meaning later over generic missing-you questions.",
+    "When v0.7 wins because of one odd concrete device, teach v0.8 to keep that device rather than replacing it with a cleaner theme statement."
+  ]
+}

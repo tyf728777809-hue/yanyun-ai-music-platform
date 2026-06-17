@@ -644,7 +644,8 @@ public class WorkService {
                 && recoverableMusicProviderTaskId(work.id(), null).isPresent()));
   }
 
-  private Optional<String> recoverableMusicProviderTaskId(UUID workId, String selectedMusicProvider) {
+  private Optional<String> recoverableMusicProviderTaskId(
+      UUID workId, String selectedMusicProvider) {
     if (hasMediaAsset(workId, "AUDIO")
         || effectiveMusicProvider(selectedMusicProvider) != MusicProviderType.SUNO) {
       return Optional.empty();

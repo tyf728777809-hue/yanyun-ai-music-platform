@@ -1,0 +1,206 @@
+{
+  "version": "lyrics-agent-v0.9-full6-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "summary": {
+    "sample_count": 6,
+    "v09_wins": 4,
+    "v07_wins": 2,
+    "ties": 0,
+    "craft_plan_latency_observed": "6.6s-39.1s per B_v0.9 sample",
+    "verdict": "v0.9 passes the first 6-sample gate. It clearly improves Hanxiangxun, Qinghe, underdog and light-to-sad cases by selecting a private device and a clearer chorus mechanism before writing. It does not yet decisively beat v0.7 on market-life and Jiuliu. Proceed to 12-sample evaluation, but do not expand to 24 cases yet."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 的“少东家，饭好了”把寒香寻从漂亮怀念拉回不羡仙日常和不可抵达的回声，比 v0.7 更角色化、更私人，也更容易被听众记住。",
+      "craft_plan_note": "selected_device=口头禅“少东家，饭好了”；selected_angle=不羡仙门外、饭香与近乡情怯；chorus_mechanism=温暖招呼逐渐变成回不去的回声。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "18e0e8c752670ab57e9f903e477d37d160ca498e7e0374f4dbc89326330f7eb4",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "restrained_waiting",
+            "solid_character_emotion"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "b3c9faac2f5ef506ace0dc8e97edb3c714542bfb632ad51564a03e3c12e0e633",
+          "score": 94,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "private_memory_device",
+            "strong_character_specificity",
+            "chorus_meaning_shift"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.7 漂移到红线人物怀念，偏离用户的新手村清河感；v0.9 的“再坐会儿”更贴地点记忆和离开后才想回去的情绪，虽然仍有少量散文化。",
+      "craft_plan_note": "selected_device=茶摊老板一句“再坐会儿”；selected_angle=异乡客栈错听清河茶摊；chorus_mechanism=同一句话从挽留变成归乡幻听。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "0ea061f3472a9f3a789e35e54ca25613fbc611608c81fd7af7c2f71150854aa1",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "user_intent_drift",
+            "character_over_place"
+          ],
+          "failure_attribution": [
+            "CreativeBrief 方向错误"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "a261997a40fd6f6d62c4bbbdb4266cf1a3ee4560fc9f1f599a5fc10cf7adcf93",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "place_memory_device",
+            "better_user_intent_fidelity",
+            "singable_phrase"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 的“拍掉膝盖的沙，再来”让不厉害的小少侠有了可重复动作和口气，比 v0.7 的泛热血更有人味；少数句子仍偏标语。",
+      "craft_plan_note": "selected_device=拍掉膝盖上的沙并说“再来”；selected_angle=输很多次但仍站起来的小人物；chorus_mechanism=从逞强变成护人的笨拙勇气。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "f802a96ff41566842bf2e1c17ee1cd4988af60439eb65b36a7ef5fe69f0e8f20",
+          "score": 86,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "clear_but_generic",
+            "direct_defiance"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "49fc02d1e7632392f8c2fbb261e7121409e47ab2ecbe9dac638ec9c3c77d43a1",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "physical_memory_device",
+            "human_scale_courage",
+            "better_hook"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.9 的“灯还没灭呢”有统一装置，但整体少了 v0.7 的克制和自然烟火味，部分场景说明感偏重。严格算 v0.7 胜。",
+      "craft_plan_note": "selected_device=夜市摊贩口头禅“灯还没灭呢”；selected_angle=夜市将散未散的普通人互相等候；chorus_mechanism=从营业提醒变成人间不散的安慰。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "d10097b76d0f736e965a9412212636c1c6f48ebc3878145b9098ee36bc1a2b94",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "restrained_market_warmth",
+            "natural_scene_voice"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "d2b587c787420e058ecabeb0af889ff1e80cfd158c68a2ce0cc1f81119e58590",
+          "score": 87,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "coherent_but_less_elegant",
+            "slightly_explanatory"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 的“走啦，下次再聚”完成了表面轻快到后劲发酸的变义，比 v0.7 更有一首歌的反复装置和听后刺痛。",
+      "craft_plan_note": "selected_device=一句玩笑式告别“走啦，下次再聚”；selected_angle=轻快聚散背后的失约；chorus_mechanism=同一句话在后半首变成再也无法兑现。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "3861b96b93a5fb04f62ba66093ce9a34c81d309880c25893d93e011d078777c3",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "clean_bittersweet_turn",
+            "solid_refrain"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "3f3350990468764109c823884bf1ae67b7d549234f98958aef328662236934a2",
+          "score": 94,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_phrase_shift",
+            "strong_aftertaste",
+            "clear_song_shape"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.9 已比 v0.8.4 粗粝，但仍出现“老子不输”这类摇滚套话；v0.7 的脏乱、危险和集体噪音更像九流门。严格算 v0.7 胜。",
+      "craft_plan_note": "selected_device=破鞋不认路；selected_angle=底层人不按正经路数活下去；chorus_mechanism=破鞋从羞辱变成身份宣言。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "fcce64f011d6b234f5cdc9e3e3f01d61d305c148af66d270edc6240f2a6d85c6",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "raw_collective_energy",
+            "strong_faction_texture",
+            "dangerous_noise"
+          ]
+        },
+        {
+          "variant": "B_v0.9",
+          "lyrics_hash": "43e25f7006b4a8b02a8eb6b73e0cc465fcb2376969d0f2c7c220c57db7ca11db",
+          "score": 86,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "roughness_recovered",
+            "still_has_rock_cliche",
+            "not_dirty_enough"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱",
+            "CraftPlan 选择不够锋利"
+          ]
+        }
+      ]
+    }
+  ],
+  "next_recommendation": {
+    "expand_to_12": true,
+    "expand_to_24": false,
+    "reason": "The lightweight CraftPlan route has crossed the first quality gate, but the added latency and the remaining Jiuliu/market-life weakness need a medium batch before treating v0.9 as stable.",
+    "recommended_next_strategy": "Run 12-sample v0.9 evaluation. If it wins at least 8/12 and keeps at least 3 gold-potential outputs without style collapse, then expand to 24. Otherwise tune CraftPlan selection pressure for rough/noisy topics and low-key everyday topics."
+  }
+}

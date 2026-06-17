@@ -19,7 +19,7 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
   private static final Set<String> OTHER_IP_TERMS =
       Set.of("高达", "gundam", "原神", "genshin", "星穹", "崩坏", "鸣潮", "王者荣耀", "火影", "海贼王");
   private static final Set<String> YANYUN_TERMS =
-      Set.of("燕云", "十六声", "江湖", "武学", "奇术", "门派", "乱世", "家国", "寻声", "侠", "边城", "雁门");
+      Set.of("燕云", "十六声", "江湖", "武学", "奇术", "门派", "乱世", "家国", "寻声", "侠", "边城", "边关", "雁门");
 
   private final AgentRunRecorder agentRunRecorder;
 
@@ -109,7 +109,7 @@ public final class MockCreativeBriefAgent implements CreativeBriefAgent {
 
   private List<String> moodTags(String musicDirection, String seed) {
     String normalized = (musicDirection + " " + seed).toLowerCase(Locale.ROOT);
-    if (normalized.contains("rock") || normalized.contains("摇滚")) {
+    if (normalized.contains("rock") || normalized.contains("摇滚") || normalized.contains("热血")) {
       return List.of("heroic", "driving");
     }
     if (normalized.contains("sad")

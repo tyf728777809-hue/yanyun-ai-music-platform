@@ -1,0 +1,128 @@
+{
+  "version": "lyrics-agent-v0.9-mid12-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v09-mid12-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "summary": {
+    "sample_count": 12,
+    "v09_wins": 9,
+    "v07_wins": 3,
+    "ties": 0,
+    "verdict": "v0.9 passes the 12-sample medium gate. It improves song focus and memory devices across character, place, player-story and ambiguous-emotion inputs. It should proceed to the 24-sample full evaluation before being treated as the default writing direction."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.7",
+      "review_note": "This rerun's v0.9 chose a safer '灯还亮着' device; v0.7's 梨花/灯 image is more poetic and less directly explained.",
+      "hashes": {
+        "A_v0.7": "652aa862cbf5ae25d849daa681d21171429574055b4fe56a2862bcb754f850c0",
+        "B_v0.9": "52635c6e5d5bec98b7a1577f97b1fc8a2ab5728b2334eb516a410bb04adab1ee"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '雾还没散' keeps the Qinghe memory narrow and repeatable, with better place-centered focus than v0.7.",
+      "hashes": {
+        "A_v0.7": "4351c0a72021c6519a18160314ea4847fd774b560a60f936d575bedee7c46421",
+        "B_v0.9": "644a6eca6385a3d0aa8b4e63506c5568d3794512e1272addf43a6274f129e069"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.9 is grounded, but v0.7's '再来' is a sharper, more singable underdog hook in this rerun.",
+      "hashes": {
+        "A_v0.7": "72c670ecaac1a7a2f1b3f4db563544a797100909a03ec4e2fce4f842d16cfa2d",
+        "B_v0.9": "9501e8e3a6f2559ca0f274baee562e21e74d6ffa10140baed4501835a3e8ecbd"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '还亮着呢' is a stronger lived-in device than v0.7's more static scene sketch.",
+      "hashes": {
+        "A_v0.7": "adfe786e3095b02be730dad4b797755da5c05df84e2bb96d0bfc88a5dfff0738",
+        "B_v0.9": "bbcfc27a79ad4923fd6aa094fadb7cf13a527a4b7454b3ed110f8929e0da5f48"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '喏，给你留着呢' creates a clear light-to-sad meaning shift and strong private action.",
+      "hashes": {
+        "A_v0.7": "b40c6b80b26ccaf151d03acc015a1187c6a3255b4943f7b98fd4748d57b68aad",
+        "B_v0.9": "6759b2fccc4bc598f4f7c15058f560a2ba141fd6a4f59617727a75c76af46c88"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's copper-coin device finally gives Jiuliu a rough, noisy, repeatable center without over-cleaning the faction.",
+      "hashes": {
+        "A_v0.7": "45709e6f02dc9e4bf85cc08508d3ad7ce8dee4c6d9a8900ef10b8d99703aea1a",
+        "B_v0.9": "e8b9eabb390ba20709771956562ba7d004304389531fec244e8d28ab6aed3826"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-character-jiangwulang-001",
+      "winner": "B_v0.9",
+      "review_note": "Both variants are strong, but v0.9's half-flask device is more tactile and tied to Jiang Wulang's unsaid protection.",
+      "hashes": {
+        "A_v0.7": "35bd84ad89bfc114ea9aec813abe486c429da8cd261a9632836fb84bc64c2889",
+        "B_v0.9": "5814f08487099d7d2c2950c0a900365976780a9767bf1ae64225c17c554f30a3"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-story-ruoshui-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's repeated '像你' keeps the uncertainty alive and avoids over-confirming the Ruoshui identity mystery.",
+      "hashes": {
+        "A_v0.7": "79a2d73fb428f451ea38f1da5714fad7693b774986dff88c765267b8b97056df",
+        "B_v0.9": "f53545322903f68f782e8fe225b0f9da9f57a31816a890e4c3e971193349bec4"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-friend-quit-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 maps the player friendship into a singable Yanyun action without leaning on game UI terms like auto-pathing and dungeons.",
+      "hashes": {
+        "A_v0.7": "dbcb3c7acf38c5d03ee7f2307e9c90a47ac60581d80668f50138ce09de15b628",
+        "B_v0.9": "77d609037033d0cd955724599667a50f3fdfb283cc849458355fa5945d42a2e5"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-theme-free-tethered-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '我本该说不' gives the open theme a clear moral hinge and chorus function.",
+      "hashes": {
+        "A_v0.7": "9efb8976dc409aea369b0abdab8021dc499545e5dc18995c2f622c82cc7eb197",
+        "B_v0.9": "70824cdec3c427718d84cb43b55d5077d55b91d31d3e8121145804ec7320d883"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-not-main-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's tea-stall lamp is a better concrete symbol for an unremembered ordinary character than v0.7's generic wind/name refrain.",
+      "hashes": {
+        "A_v0.7": "9aae82d54916a3e849e48de3e0a7e6ea4863a0c9e000c5aed82543200607c2e1",
+        "B_v0.9": "f7c05f2fa3db2f1dccd39b4a79ebb8cea629e013ea3bb1f61f500213d000408c"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-place-buxianxian-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '酒在晃，灯还没熄' is more restrained and less on-the-nose than repeating the place name as the chorus.",
+      "hashes": {
+        "A_v0.7": "b6a0c37611163d38064d0760a6a1353ed5729f6c909d22fbfd477952fc02be1d",
+        "B_v0.9": "eb83dc2903c04ebd896c0150d7c8f010bf8ec715aee356cf211724e6ff92c2ba"
+      }
+    }
+  ],
+  "next_recommendation": {
+    "expand_to_24": true,
+    "reason": "The medium batch clears the 8/12 threshold and covers character, place, player-story, relationship, faction and open-theme inputs. The remaining risk is latency and occasional device selection that is too safe.",
+    "recommended_next_strategy": "Run the full 24-sample evaluation before making v0.9 the default long-term writing direction. If full24 clears 16/24, keep v0.9 for INSPIRATION only and then tune latency separately."
+  }
+}

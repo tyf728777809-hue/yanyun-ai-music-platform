@@ -1,0 +1,50 @@
+{
+  "version": "lyrics-agent-v0.8.4-underdog-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "summary": {
+    "sample_count": 1,
+    "target_case": "lyrics-v08-player-underdog-001",
+    "verdict": "v0.8.4 fixes the modern-prop drift introduced by v0.8.3, but the result is still only usable, not golden-song level. It should not trigger expansion to the 24-case set."
+  },
+  "case": {
+    "case_id": "lyrics-v08-player-underdog-001",
+    "winner": "B_v0.8.4",
+    "review_note": "v0.8.4 no longer imports boxing-gym props from rock energy and returns to Yanyun-compatible mud, broken gear, rain, child-protection and weak-but-still-acting details. However, the chorus hook '还没倒' is still generic and the rhyme/action loop falls back to '挥刀/咆哮', so this is a boundary fix, not a quality breakthrough.",
+    "variants": [
+      {
+        "variant": "A_v0.7",
+        "lyrics_hash": "d8ec33340df9966b6cd3e4b1779cb947c16a933d523980ca34024aa719e7088e",
+        "score": 84,
+        "conclusion": "可用但不够顶",
+        "issue_tags": [
+          "clear_but_generic",
+          "punch_imagery_not_ideal_for_yanyun",
+          "direct_theme_chorus"
+        ],
+        "failure_attribution": []
+      },
+      {
+        "variant": "B_v0.8.4",
+        "lyrics_hash": "bad0f4cdacd7db0ca15564f36f458d1a10facc1ed63ad9622a897c0c764701a3",
+        "score": 86,
+        "conclusion": "可用但不够顶",
+        "issue_tags": [
+          "modern_prop_drift_fixed",
+          "better_yanyun_grounding",
+          "generic_chorus_hook",
+          "not_golden_level"
+        ],
+        "failure_attribution": [
+          "LyricsAgent 执行弱"
+        ]
+      }
+    ]
+  },
+  "next_prompt_adjustments": [
+    "Do not keep adding hard constraints; v0.8.4 already proves boundary fixes can work, but quality gains now need a different strategy.",
+    "For underdog songs, the next improvement should ask for a more private, less slogan-like weakness marker, such as a repeated mistake, a nickname, a small promise or a bodily habit, instead of 'not falling down' slogans.",
+    "Before expanding to 24 cases, run a 6-case regression only after deciding whether to keep prompt-only tuning or introduce a two-candidate internal draft selection flow."
+  ]
+}

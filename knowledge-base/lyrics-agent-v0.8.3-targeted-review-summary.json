@@ -1,0 +1,133 @@
+{
+  "version": "lyrics-agent-v0.8.3-targeted-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "rubric": {
+    "total": 100,
+    "dimensions": {
+      "song_thesis": 12,
+      "narrative_pov": 10,
+      "emotional_truth": 12,
+      "distinctive_entry": 10,
+      "language_accuracy": 10,
+      "chorus_function": 10,
+      "memory_device": 10,
+      "singability_rhyme": 10,
+      "section_progression": 8,
+      "imagery_system": 6,
+      "yanyun_grounding": 8,
+      "original_sophistication": 4
+    }
+  },
+  "summary": {
+    "sample_count": 3,
+    "v083_wins": 2,
+    "v07_wins": 1,
+    "ties": 0,
+    "verdict": "v0.8.3 wins 2/3 targeted failure cases. It restores stronger private memory devices for Qinghe nostalgia and light-to-sad friendship songs, but regresses the underdog sample by importing modern boxing imagery from rock energy. Do not expand to 24 before fixing modern-prop drift."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "B_v0.8.3",
+      "review_note": "v0.8.3 的“茶还热着吗”比 v0.7 的“清河啊清河”更私人、更少铺陈，也更像一首歌的核心装置；结尾“凉了，早就凉了”有真实刺痛感。仍需注意不要把不羡仙等知识点插得过显。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "6643b883d72187ae55740edae0b5ec8f7a2ae0ac0b38d950aba81938b0cb97b1",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "singable_place_refrain",
+            "slightly_conventional_nostalgia",
+            "clear_emotional_arc"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.3",
+          "lyrics_hash": "587831a362487eb1256c4d7c7b4dcb06412eb2d250eb105ceb4f8fa9b4058510",
+          "score": 91,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "private_memory_device",
+            "minimal_refrain",
+            "strong_final_turn"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.8.3 的“我还是出了手”主钩子清楚，但误把摇滚能量翻译成“拳套、沙袋、巷子拳击”，现代道具破坏燕云归属感；v0.7 虽然更直白，但泥水、旧剑、茶摊承诺更贴世界。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "7af2df9ceaf3533144bc9e59f00ea9e27389571549d6a1edff528b650734db20",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "embodied_action",
+            "yanyun_grounding",
+            "clear_rock_refrain"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.3",
+          "lyrics_hash": "6875f61783071244e64e12a9f7e59419c7f27774f8cb404ba1f1380d7d8f9cd7",
+          "score": 81,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "modern_prop_drift",
+            "generic_underdog_hook",
+            "weaker_yanyun_grounding"
+          ],
+          "failure_attribution": [
+            "LyricsAgent Prompt 规则过载",
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.8.3",
+      "review_note": "v0.8.3 的“走啊，去看看”是目前最接近目标的结果：前半首轻、后半首酸，同一句口头禅自然变义，且茶碗、斗笠、驿站等细节没有堆资料。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "88c818d071ae466d4fd2b8fc49e45e7918a5d8e67e44723751b1f2117f25c2b0",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "good_light_to_sad_arc",
+            "slightly_familiar_lamp_device",
+            "solid_song_shape"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.3",
+          "lyrics_hash": "aa164aed817c45d885df2285d4e06c22c0cbb88753bf0235dccd9f987f353d14",
+          "score": 93,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_spoken_hook",
+            "meaning_shift",
+            "specific_friendship_detail"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    }
+  ],
+  "next_prompt_adjustments": [
+    "For any style preference such as rock/R&B/electronic, treat it as rhythm, energy and vocal phrasing only, never as permission to import modern scene props unless the user explicitly asks.",
+    "For ordinary-player action songs, keep weapons, body, mud, road, market, escort, mistake and promise details inside Yanyun-compatible life instead of modern training-room imagery.",
+    "After this fix, rerun only the underdog sample first; expand only if it recovers without weakening the v0.8.3 gains."
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "version": "lyrics-agent-v0.8.4-full6-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "summary": {
+    "sample_count": 6,
+    "v084_wins": 3,
+    "v07_wins": 3,
+    "ties": 0,
+    "verdict": "v0.8.4 is a boundary-safe improvement over v0.8.2, but it is not a decisive quality upgrade over v0.7. It wins the underdog, market-life and light-to-sad cases, loses Hanxiangxun, Qinghe and Jiuliu. Do not expand to 24 cases yet."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的“灯还亮着”更克制、更像寒姨的等待；v0.8.4 虽有灯与梨花，但‘我却始终在途中’的主旨偏泛，且情感动作不如 v0.7 精准。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "08376a35b21171ec3f842fac7743994dac6852b1cbde3d072e5740a86dd92957",
+          "score": 91,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "restrained_waiting",
+            "clear_character_emotion",
+            "strong_domestic_image"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "7c54790525cd351ceb9ba3c01a7bf044db2f9b8e8d22a0d462d20ee1fce991ed",
+          "score": 87,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "safe_but_generic",
+            "weaker_character_specificity",
+            "solid_but_less_moving"
+          ],
+          "failure_attribution": [
+            "CreativeBrief 方向错误"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的清河、晨雾、茶碗、长凳更直接可唱；v0.8.4 的‘旧衫’隐喻有文学感，但主歌偏散文化，副歌不像能被普通用户马上记住。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "ef0caa147452957b5c9557f2e1ea8beae4dae4039cfc5dd3f78db5dd25633a96",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "clear_place_hook",
+            "singable_refrain",
+            "nostalgia_grounded"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "dd77382287dcdd123914c8ba6beecda68a3661aecac6f27e8e800b2db47126bc",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "literary_metaphor",
+            "less_singable",
+            "overwritten_verses"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "B_v0.8.4",
+      "review_note": "v0.8.4 的“一、二、三”是有效声音装置，且修掉现代拳击漂移；v0.7 虽有力量，但拳头、擂台、野狗等词更容易串出现代摇滚模板。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "21d5b26223b337f525e65e45a108a0ed61948de1c3b437b0bd0266b06072b6ea",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "direct_rock_hook",
+            "modernish_fist_arena_imagery",
+            "generic_defiance"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "07f4e1ea5bb3162f65f1b63ef5113b732736c0abe9e03ec2fbdf641b2989b32f",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "counting_memory_device",
+            "human_scale_courage",
+            "better_yanyun_grounding"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "B_v0.8.4",
+      "review_note": "v0.8.4 的旧灯从环境物件推进到情感容器，视角更统一；v0.7 很克制，但更像一组好看的场景速写。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "e9c66b5ff81a995db164536433d93fabc5855a1b5b9984221804c8aaf136e310",
+          "score": 87,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "beautiful_scene_sketch",
+            "weaker_pov",
+            "soft_but_static"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "50bb7d16222d85c274b7cd02c41111fd32f4fda5f7115071de9cccdd5cee0405",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "stable_pov",
+            "object_becomes_emotion",
+            "restrained_market_warmth"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.8.4",
+      "review_note": "v0.8.4 的跑调旧歌、拍肩口头禅和‘走吧’变义，完成了表面轻快到后劲酸的转折；这是本批最接近目标的结果。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "590409833ea94eb133783bb50394a693fe3f00e52a53406b0b4343bfd468dabf",
+          "score": 91,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_light_phrase",
+            "clean_bittersweet_turn",
+            "slightly_more_sketch_like"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "a95fddb2d1a310fe4370f7b11421fffc3525f20849eafcf15637afcfd2d03181",
+          "score": 94,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_private_hook",
+            "meaning_shift",
+            "strong_aftertaste"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 粗粝、有脏乱热闹的集体感，虽然略硬；v0.8.4 太干净、太规整，九流门的危险和底层混沌被磨平了。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "2f815c0d1c7ce3a441287b550a8983114a08ae4af29030eaad887424d365e986",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "raw_collective_energy",
+            "strong_faction_texture",
+            "memorable_chant"
+          ]
+        },
+        {
+          "variant": "B_v0.8.4",
+          "lyrics_hash": "d834b6a617276e00fa5bb48c187d817cd42a7a0eb8e1c984b7c13aeca60ef62c",
+          "score": 83,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "too_clean",
+            "reduced_danger",
+            "generic_lamp_refrain"
+          ],
+          "failure_attribution": [
+            "LyricsAgent Prompt 规则过载"
+          ]
+        }
+      ]
+    }
+  ],
+  "next_recommendation": {
+    "do_not_expand_to_24": true,
+    "reason": "The prompt-only v0.8 line is no longer consistently improving over v0.7. It can produce excellent hooks, but also over-sanitizes raw topics and over-literarizes place nostalgia.",
+    "recommended_next_strategy": "Introduce a lightweight candidate-selection loop for lyrics only: generate two short creative directions or two chorus devices internally, select the stronger one using a strict local rubric or a cheap evaluator, then generate the final lyric. If call count must remain one, simplify v0.8 by removing most subtype-specific rules and keep only song_core, private device, and Yanyun boundary."
+  }
+}

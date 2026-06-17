@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.yanyun.music.agentruntime.AgentRunRecord;
 import com.yanyun.music.agentruntime.AgentRunStatus;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
+import com.yanyun.music.creativeagent.LyricsCraftPlanResult;
+import com.yanyun.music.creativeagent.LyricsCraftPlanner;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
 import com.yanyun.music.creativeagent.QualityDecision;
 import com.yanyun.music.creativeagent.QualityEvaluationResult;
@@ -152,6 +154,135 @@ class DefaultLyricsGenerationServiceTest {
     assertTrue(renderedInstructions.getFirst().contains("songcraft_policy="));
     assertTrue(renderedInstructions.getFirst().contains("v08_policy="));
     assertTrue(renderedInstructions.getFirst().contains("polish_policy="));
+  }
+
+  @Test
+  void inspirationUsesCraftPlanWhenEnabled() {
+    List<String> renderedInstructions = new ArrayList<>();
+    List<AgentRunRecord> records = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    LyricsCraftPlanner planner =
+        request ->
+            new LyricsCraftPlanResult(
+                "只写一个清河旧游人离开后想回去。",
+                "茶碗一响",
+                "从茶摊上没人再递来的那一碗进入。",
+                "副歌让茶碗声从日常变成回不去。",
+                "City Pop 只改变节奏，不导入霓虹。",
+                List.of("完整返乡剧情太满"));
+    PromptTemplateService promptService =
+        request -> {
+          renderedInstructions.add(request.instruction());
+          return new PromptRenderResult(request.templateKey(), 7, "rendered prompt");
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService,
+            new MockCreativeBriefAgent(records::add),
+            planner,
+            true,
+            deepSeek,
+            request ->
+                new QualityEvaluationResult(
+                    request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+            records::add);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertEquals("Song", result.songTitle());
+    assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.9:"));
+    assertTrue(renderedInstructions.getFirst().contains("selected_device=茶碗一响"));
+    assertTrue(renderedInstructions.getFirst().contains("chorus_mechanism=副歌让茶碗声从日常变成回不去。"));
+    assertEquals(9, result.promptTemplateVersions().get("lyrics.craft.plan.v9"));
+  }
+
+  @Test
+  void lyricsAndLightweightEditsDoNotCallCraftPlan() {
+    AtomicInteger plannerCalls = new AtomicInteger();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    LyricsCraftPlanner planner =
+        request -> {
+          plannerCalls.incrementAndGet();
+          return new LyricsCraftPlanResult(
+              "guard", "device", "angle", "chorus", "boundary", List.of());
+        };
+    for (LyricsOperation operation :
+        List.of(LyricsOperation.LYRICS, LyricsOperation.POLISH, LyricsOperation.CONTINUE)) {
+      DefaultLyricsGenerationService service =
+          new DefaultLyricsGenerationService(
+              knowledgeService(),
+              promptService(),
+              new MockCreativeBriefAgent(),
+              planner,
+              true,
+              deepSeek,
+              request ->
+                  new QualityEvaluationResult(
+                      request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+              new ArrayList<AgentRunRecord>()::add);
+      service.generate(baseRequest(operation));
+    }
+
+    assertEquals(0, plannerCalls.get());
+  }
+
+  @Test
+  void craftPlanFailureFallsBackToDirectLyrics() {
+    List<AgentRunRecord> records = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                request.instruction(),
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            new MockCreativeBriefAgent(records::add),
+            request -> {
+              throw new IllegalStateException("planner timeout");
+            },
+            true,
+            deepSeek,
+            request ->
+                new QualityEvaluationResult(
+                    request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+            records::add);
+
+    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+
+    assertTrue(result.lyricsText().contains("lyrics_craft_plan_status=disabled_or_fallback"));
+    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v9"));
+    assertTrue(
+        records.stream()
+            .anyMatch(
+                record ->
+                    "LyricsCraftPlanner".equals(record.agentName())
+                        && "LYRICS_CRAFT_PLAN_FALLBACK".equals(record.failureCode())));
   }
 
   @Test

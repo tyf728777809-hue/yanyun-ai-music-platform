@@ -1,0 +1,232 @@
+{
+  "version": "lyrics-agent-v0.8.2-full6-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "rubric": {
+    "total": 100,
+    "dimensions": {
+      "song_thesis": 12,
+      "narrative_pov": 10,
+      "emotional_truth": 12,
+      "distinctive_entry": 10,
+      "language_accuracy": 10,
+      "chorus_function": 10,
+      "memory_device": 10,
+      "singability_rhyme": 10,
+      "section_progression": 8,
+      "imagery_system": 6,
+      "yanyun_grounding": 8,
+      "original_sophistication": 4
+    }
+  },
+  "summary": {
+    "sample_count": 6,
+    "v082_wins": 1,
+    "v07_wins": 5,
+    "ties": 0,
+    "verdict": "v0.8.2 is not ready for 24 samples. It wins only 1/6 in the full regression. The targeted rules are useful, but current prompt over-constrains the model and sometimes replaces stronger emergent devices with safer, plainer songcraft."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的“灯还亮着，门不关”更简洁完整，寒姨的等待仪式更稳；v0.8.2 有愧疚感但副歌略绕，刺眼/烧伤的解释感偏重。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "09e1a2f7e6a149954a3deb7eb4cde9a80f5406842ab086b56a2eba7f97701f3e",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_waiting_ritual",
+            "clean_chorus",
+            "warm_character_grounding"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "38dcdcb353a7ce08376281a1902a068593fa0d7b2d26138dd1ffbaa4d845c49f",
+          "score": 86,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "over_explains_guilt",
+            "chorus_less_clean",
+            "good_domestic_detail"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的“那时的清河啊”更适合民谣反复；v0.8.2 的“草桥”方向对，但“那时不知道”略说明化，钩子还不够锋利。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "28ae2da1175a1f5025ebcab7470e4d6a6d636d9937dcb3c0d12b9459787268de",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_refrain",
+            "specific_qinghe_memory",
+            "folk_singability"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "167f116b49ba19c85cebcd48377435fc2b37d927254e637c1d3dfcdd4bc7b9ed",
+          "score": 86,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "improved_minimal_object",
+            "hook_not_sharp_enough",
+            "slightly_explanatory"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 这次抓到“卖灯笼女孩”这种具体善意，动机成立；v0.8.2 虽然更克制，但太抽象，少了为什么出手。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "dbf1ae3b2c9ba80b3d9e6e4580f751156f440d453604856256925ea5906b558e",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "specific_moral_trigger",
+            "human_scale_courage",
+            "strong_rock_hook"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "3313079c72642b7638f84d7c0e184967d03fc1882137881040224d9b2625a11e",
+          "score": 82,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "too_generic_underdog",
+            "lacks_moral_trigger",
+            "safe_but_plain"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7 的旧灯、渡口、船要开了构成完整小电影；v0.8.2 过短，只有氛围，没有足够的人间细节推进。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "203f05edff4152b7c32e88d6d07197dccf4e5d5c6d03ca0f33e73d27f2508f36",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "good_citypop_restraint",
+            "cinematic_small_scene",
+            "clear_warmth"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "df4197d38e0f7324976ae4e237464cbc70ca7958d5e7d42cfeb3fc632d3def76",
+          "score": 80,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "underwritten",
+            "generic_lamp_motif",
+            "weak_section_progression"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "A_v0.7",
+      "review_note": "两版都强，但 v0.7 的“笨啊你”更独特、更像私人关系里留下来的刺；v0.8.2 的“再来一壶”也可用，但稍常见。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "3f59f340fc0409950bc9fa60f54265eb546b7093946e8268bc425cc06549e1f5",
+          "score": 92,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_private_phrase",
+            "strong_light_to_sad_turn",
+            "memorable_dialogue_hook"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "11ef02483eb7683fc18a022421835be794c6df4f968e90b132a54f95f8fcb59e",
+          "score": 89,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "good_tea_refrain",
+            "clear_emotional_turn",
+            "less_unique_than_baseline"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.8.2",
+      "review_note": "v0.8.2 的“踩着暗号走”比 v0.7 的“活成我”更不俗，保住九流门的暗语、规矩和底层响动。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "58e6631e23a71a038c6b351d7ad4c536350843db14f940759e3d566fc1b1927f",
+          "score": 84,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "raw_texture",
+            "self-expression_cliche",
+            "good_energy"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "3513bd870e9c7e4470592143eeecca79b3affb1a1df66e121265b09a1beb2049",
+          "score": 90,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_faction_device",
+            "controlled_roughness",
+            "distinctive_underworld_rhythm"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    }
+  ],
+  "next_prompt_adjustments": [
+    "Do not force v0.8 to beat v0.7 by more rules. Keep the evaluator workflow, but make LyricsAgent preserve emergent strong devices discovered in CreativeBrief/user input/knowledge.",
+    "Move from additive constraints to a shorter hierarchy: song must have one private device, one concrete motive, one chorus transformation; everything else is optional.",
+    "For INSPIRATION, consider asking the model to internally produce two candidate hooks and choose the less generic one, without outputting the planning.",
+    "Before expanding to 24, run a v0.8.3 prompt that is shorter and less corrective."
+  ]
+}

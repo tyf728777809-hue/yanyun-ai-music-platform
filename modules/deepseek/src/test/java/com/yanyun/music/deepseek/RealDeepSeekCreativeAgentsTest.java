@@ -13,6 +13,8 @@ import com.yanyun.music.creativeagent.CoverPromptResult;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
 import com.yanyun.music.creativeagent.CreativeDomainDecision;
+import com.yanyun.music.creativeagent.LyricsCraftPlanRequest;
+import com.yanyun.music.creativeagent.LyricsCraftPlanResult;
 import com.yanyun.music.creativeagent.MusicPromptRequest;
 import com.yanyun.music.creativeagent.MusicPromptResult;
 import com.yanyun.music.creativeagent.QualityDecision;
@@ -269,9 +271,94 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("不要建议 LyricsAgent 直接反复喊主题句"));
     assertTrue(systemPrompt.contains("具体声音、动作、物件、句式变奏或意象回环"));
     assertTrue(systemPrompt.contains("过度直白、口号化、把歌核讲破"));
+    assertTrue(systemPrompt.contains("地点怀念类输入不要扩成完整返乡剧情"));
+    assertTrue(systemPrompt.contains("不要拔高成英雄受难"));
+    assertTrue(systemPrompt.contains("共同动作或小约定"));
+    assertTrue(systemPrompt.contains("memory_device 是最重要字段之一"));
+    assertTrue(systemPrompt.contains("私人、具体、可重复、可在后半首变义"));
+    assertTrue(systemPrompt.contains("说明这个声音装置如何在副歌里变重"));
+    assertTrue(systemPrompt.contains("不能把现代道具或现代场景带进燕云世界"));
+    assertTrue(systemPrompt.contains("只转译为节奏、能量、声口和句子颗粒度"));
     assertTrue(systemPrompt.contains("不要把轻量灵感放大成宏大家国命题"));
     assertTrue(systemPrompt.contains("不要把知识库资料摊成任务清单"));
     assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
+  }
+
+  @Test
+  void lyricsCraftPlannerSelectsDeviceAndKeepsYanyunBoundary() throws IOException {
+    AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
+    List<AgentRunRecord> records = new ArrayList<>();
+    server =
+        startServer(
+            exchange -> {
+              capturedBody.set(
+                  objectMapper.readTree(
+                      new String(
+                          exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8)));
+              respondJson(
+                  exchange,
+                  200,
+                  chatResponse(
+                      mapOf(
+                          "song_thesis_guard",
+                          "一个清河旧游人离开后才明白自己想回去。",
+                          "selected_device",
+                          "茶碗轻轻一响",
+                          "selected_angle",
+                          "从清河茶摊上没人再递来的那一碗进入。",
+                          "chorus_mechanism",
+                          "副歌让茶碗声先像日常，后半首变成回不去的提示。",
+                          "yanyun_boundary_guard",
+                          "City Pop 只影响轻快节奏，不导入霓虹、酒吧或现代街景。",
+                          "rejected_alternatives",
+                          List.of("完整返乡叙事太满", "宏大家国命题会盖住用户怀念"))));
+            });
+    RealDeepSeekLyricsCraftPlanner planner =
+        new RealDeepSeekLyricsCraftPlanner(client(), records::add);
+
+    LyricsCraftPlanResult result =
+        planner.plan(
+            new LyricsCraftPlanRequest(
+                "user-1",
+                "work-1",
+                "INSPIRATION",
+                "清河真的很像我的新手村，想写那种离开以后才想回去的感觉",
+                null,
+                null,
+                null,
+                "轻快但有点酸",
+                "City Pop",
+                "女声主唱",
+                new CreativeBriefResult(
+                    "离开清河以后才知道自己想回去。",
+                    "清河旧游",
+                    List.of("怀念", "轻快转酸"),
+                    "旧游人第一人称",
+                    "City Pop",
+                    List.of("清河"),
+                    List.of(),
+                    List.of()),
+                List.of("清河"),
+                List.of("region/清河 matched=清河 kind=exact confidence=1.00"),
+                List.of("清河: 新手村、茶摊、江湖初见。")));
+
+    assertEquals("茶碗轻轻一响", result.selectedDevice());
+    assertTrue(result.chorusMechanism().contains("变成回不去"));
+    assertTrue(result.yanyunBoundaryGuard().contains("不导入霓虹"));
+    assertFalse(result.rejectedAlternatives().isEmpty());
+    JsonNode systemMessage = capturedBody.get().path("messages").get(0).path("content");
+    JsonNode userMessage = capturedBody.get().path("messages").get(1).path("content");
+    assertTrue(systemMessage.asText().contains("LyricsCraftPlan 轻量写法选择 Agent"));
+    assertTrue(systemMessage.asText().contains("不是写歌词"));
+    assertTrue(systemMessage.asText().contains("selected_device"));
+    assertTrue(systemMessage.asText().contains("chorus_mechanism"));
+    assertTrue(systemMessage.asText().contains("不能导入现代道具"));
+    assertTrue(systemMessage.asText().contains("不要清洁化、规整化"));
+    assertTrue(systemMessage.asText().contains("过度文学化"));
+    assertTrue(userMessage.asText().contains("City Pop"));
+    assertTrue(userMessage.asText().contains("region/清河"));
+    assertEquals("LyricsCraftPlanner", records.getFirst().agentName());
+    assertEquals("v0.9", records.getFirst().agentVersion());
   }
 
   @Test

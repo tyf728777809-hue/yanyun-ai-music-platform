@@ -10,7 +10,11 @@ import com.yanyun.music.creativeagent.CreativeBriefAgent;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
 import com.yanyun.music.creativeagent.CreativeDomainDecision;
+import com.yanyun.music.creativeagent.LyricsCraftPlanRequest;
+import com.yanyun.music.creativeagent.LyricsCraftPlanResult;
+import com.yanyun.music.creativeagent.LyricsCraftPlanner;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
+import com.yanyun.music.creativeagent.MockLyricsCraftPlanner;
 import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
 import com.yanyun.music.creativeagent.QualityDecision;
 import com.yanyun.music.creativeagent.QualityEvaluationAgent;
@@ -40,10 +44,14 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.80);
   private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v8";
   private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 8;
+  private static final String CRAFT_PLAN_TEMPLATE_KEY = "lyrics.craft.plan.v9";
+  private static final int CRAFT_PLAN_TEMPLATE_VERSION = 9;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
   private final CreativeBriefAgent creativeBriefAgent;
+  private final LyricsCraftPlanner lyricsCraftPlanner;
+  private final boolean craftPlannerEnabled;
   private final DeepSeekLyricsClient deepSeekLyricsClient;
   private final QualityEvaluationAgent qualityEvaluationAgent;
   private final AgentRunRecorder agentRunRecorder;
@@ -56,6 +64,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         knowledgeService,
         promptTemplateService,
         new MockCreativeBriefAgent(NoopAgentRunRecorder.INSTANCE),
+        new MockLyricsCraftPlanner(NoopAgentRunRecorder.INSTANCE),
+        false,
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(NoopAgentRunRecorder.INSTANCE),
         NoopAgentRunRecorder.INSTANCE);
@@ -70,6 +80,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         knowledgeService,
         promptTemplateService,
         new MockCreativeBriefAgent(agentRunRecorder),
+        new MockLyricsCraftPlanner(agentRunRecorder),
+        false,
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
         agentRunRecorder);
@@ -85,6 +97,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         knowledgeService,
         promptTemplateService,
         creativeBriefAgent,
+        new MockLyricsCraftPlanner(agentRunRecorder),
+        false,
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
         agentRunRecorder);
@@ -97,12 +111,37 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       DeepSeekLyricsClient deepSeekLyricsClient,
       QualityEvaluationAgent qualityEvaluationAgent,
       AgentRunRecorder agentRunRecorder) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        creativeBriefAgent,
+        new MockLyricsCraftPlanner(agentRunRecorder),
+        false,
+        deepSeekLyricsClient,
+        qualityEvaluationAgent,
+        agentRunRecorder);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
+      LyricsCraftPlanner lyricsCraftPlanner,
+      boolean craftPlannerEnabled,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      QualityEvaluationAgent qualityEvaluationAgent,
+      AgentRunRecorder agentRunRecorder) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
     this.creativeBriefAgent =
         creativeBriefAgent == null
             ? new MockCreativeBriefAgent(agentRunRecorder)
             : creativeBriefAgent;
+    this.lyricsCraftPlanner =
+        lyricsCraftPlanner == null
+            ? new MockLyricsCraftPlanner(agentRunRecorder)
+            : lyricsCraftPlanner;
+    this.craftPlannerEnabled = craftPlannerEnabled;
     this.deepSeekLyricsClient = deepSeekLyricsClient;
     this.qualityEvaluationAgent =
         qualityEvaluationAgent == null
@@ -121,19 +160,22 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     }
     CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
     ensureCreativeDomainAllowed(creativeBrief);
-    LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief, knowledge);
+    LyricsCraftPlanResult craftPlan = generateCraftPlan(request, creativeBrief, knowledge);
+    LyricsGenerationRequest briefedRequest =
+        withCreativeBrief(request, creativeBrief, craftPlan, knowledge);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(briefedRequest, prompt, knowledge);
     QualityEvaluationResult quality =
-        evaluateLyricsQuality(briefedRequest, response, creativeBrief, knowledge);
+        evaluateLyricsQuality(briefedRequest, response, creativeBrief, craftPlan, knowledge);
     if (isLowQuality(response) || shouldRewrite(quality)) {
       LyricsGenerationRequest rewriteRequest = rewriteRequest(briefedRequest, quality);
       prompt = renderPrompt(rewriteRequest, knowledge);
       response = generateWithDeepSeek(rewriteRequest, prompt, knowledge);
-      quality = evaluateLyricsQuality(rewriteRequest, response, creativeBrief, knowledge);
+      quality =
+          evaluateLyricsQuality(rewriteRequest, response, creativeBrief, craftPlan, knowledge);
     }
     ensureLyricsQualityAllowed(response, quality);
-    return toResult(response, creativeBrief, knowledge, prompt, true);
+    return toResult(response, creativeBrief, craftPlan, knowledge, prompt, true);
   }
 
   private LyricsGenerationResult generateLightweightEdit(
@@ -144,7 +186,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     PromptRenderResult prompt = renderPrompt(editRequest, knowledge);
     DeepSeekLyricsResponse response = generateWithDeepSeek(editRequest, prompt, knowledge);
     ensureLightweightEditQualityAllowed(editRequest, response);
-    return toResult(response, lightweightBrief, knowledge, prompt, false);
+    return toResult(response, lightweightBrief, null, knowledge, prompt, false);
   }
 
   private void ensureCreativeDomainAllowed(CreativeBriefResult creativeBrief) {
@@ -190,6 +232,38 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       return creativeBriefAgent.generate(briefRequest);
     } catch (RuntimeException exception) {
       return fallbackCreativeBrief(request, knowledge);
+    }
+  }
+
+  private LyricsCraftPlanResult generateCraftPlan(
+      LyricsGenerationRequest request,
+      CreativeBriefResult creativeBrief,
+      KnowledgeRetrievalResult knowledge) {
+    if (!craftPlannerEnabled || request.operation() != LyricsOperation.INSPIRATION) {
+      return null;
+    }
+    LyricsCraftPlanRequest craftRequest =
+        new LyricsCraftPlanRequest(
+            request.userId(),
+            request.workId(),
+            request.operation().name(),
+            request.userInput(),
+            request.currentLyrics(),
+            request.instruction(),
+            request.requestedTitle(),
+            request.mood(),
+            request.musicStyle(),
+            request.vocalPreference(),
+            creativeBrief,
+            yanyunReferenceLabels(knowledge),
+            entityLabels(knowledge),
+            referenceSummaries(knowledge));
+    try {
+      LyricsCraftPlanResult result = lyricsCraftPlanner.plan(craftRequest);
+      return result == null || !result.usable() ? null : result;
+    } catch (RuntimeException exception) {
+      recordCraftPlanFallback(request, craftRequest, exception);
+      return null;
     }
   }
 
@@ -255,6 +329,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private LyricsGenerationRequest withCreativeBrief(
       LyricsGenerationRequest request,
       CreativeBriefResult creativeBrief,
+      LyricsCraftPlanResult craftPlan,
       KnowledgeRetrievalResult knowledge) {
     return new LyricsGenerationRequest(
         request.userId(),
@@ -263,7 +338,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         request.userInput(),
         request.currentLyrics(),
         appendInstruction(
-            request.instruction(), creativeBriefInstruction(creativeBrief, knowledge)),
+            request.instruction(), creativeBriefInstruction(creativeBrief, craftPlan, knowledge)),
         request.requestedTitle(),
         request.mood(),
         firstNonBlank(request.musicStyle(), creativeBrief.musicDirection()),
@@ -312,7 +387,9 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   }
 
   private String creativeBriefInstruction(
-      CreativeBriefResult creativeBrief, KnowledgeRetrievalResult knowledge) {
+      CreativeBriefResult creativeBrief,
+      LyricsCraftPlanResult craftPlan,
+      KnowledgeRetrievalResult knowledge) {
     return """
         Creative brief:
         domain_decision=%s
@@ -348,6 +425,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         entity_grounding_policy=If the user names a character, storyline, place, faction, or gameplay concept and resolved_entities maps it to a canonical Yanyun entity, use that canonical entity as the grounding source. Do not preserve user typos as official names. Character or storyline songs must use the core relationships, life events, conflicts, and scenes from the matched knowledge references instead of generic wuxia atmosphere.
         songcraft_policy=Use creative_core, chosen_angle, anti_cliche_strategy, voice_texture, image_pool, song_energy, song_thesis, pov, central_tension, emotional_turn, chorus_function, and memory_device only as open supporting guidance. Do not treat them as a rigid template. Before writing, decide one clear song thesis and keep every verse, chorus, and bridge serving it. Choose the best writing path for this song: narrative, image-led, colloquial, dialogue, monologue, group portrait, contrast, repetition, irony, silence, or anti-cliche. Music style is only a voice/rhythm/energy reference, not a creative cage.
         polish_policy=For POLISH, keep the original song title, point of view, thesis, emotional arc, and most usable lines unless the user explicitly asks to replace them. Improve diction, rhyme, singability, clarity, and requested weak spots; do not silently write a different song.
+        %s
         """
         .formatted(
             creativeBrief.domainDecision(),
@@ -380,7 +458,32 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             creativeBrief.centralTension(),
             creativeBrief.emotionalTurn(),
             creativeBrief.chorusFunction(),
-            creativeBrief.memoryDevice())
+            creativeBrief.memoryDevice(),
+            craftPlanInstruction(craftPlan))
+        .trim();
+  }
+
+  private String craftPlanInstruction(LyricsCraftPlanResult craftPlan) {
+    if (craftPlan == null || !craftPlan.usable()) {
+      return "lyrics_craft_plan_status=disabled_or_fallback";
+    }
+    return """
+        LyricsCraftPlan v0.9:
+        song_thesis_guard=%s
+        selected_device=%s
+        selected_angle=%s
+        chorus_mechanism=%s
+        yanyun_boundary_guard=%s
+        rejected_alternatives=%s
+        craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. If the topic is rough, low-level, factional, or street-side, do not clean it into safe pretty literature.
+        """
+        .formatted(
+            craftPlan.songThesisGuard(),
+            craftPlan.selectedDevice(),
+            craftPlan.selectedAngle(),
+            craftPlan.chorusMechanism(),
+            craftPlan.yanyunBoundaryGuard(),
+            craftPlan.rejectedAlternatives())
         .trim();
   }
 
@@ -388,6 +491,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       LyricsGenerationRequest request,
       DeepSeekLyricsResponse response,
       CreativeBriefResult creativeBrief,
+      LyricsCraftPlanResult craftPlan,
       KnowledgeRetrievalResult knowledge) {
     return qualityEvaluationAgent.evaluate(
         new QualityEvaluationRequest(
@@ -482,6 +586,24 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
                 Map.entry(
                     "memory_device",
                     creativeBrief == null ? "" : firstNonBlank(creativeBrief.memoryDevice(), "")),
+                Map.entry(
+                    "craft_plan_song_thesis_guard",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.songThesisGuard(), "")),
+                Map.entry(
+                    "craft_plan_selected_device",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.selectedDevice(), "")),
+                Map.entry(
+                    "craft_plan_selected_angle",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.selectedAngle(), "")),
+                Map.entry(
+                    "craft_plan_chorus_mechanism",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.chorusMechanism(), "")),
+                Map.entry(
+                    "craft_plan_yanyun_boundary_guard",
+                    craftPlan == null ? "" : firstNonBlank(craftPlan.yanyunBoundaryGuard(), "")),
+                Map.entry(
+                    "craft_plan_rejected_alternatives",
+                    craftPlan == null ? List.of() : craftPlan.rejectedAlternatives()),
                 Map.entry("knowledge_base_version", knowledge == null ? "" : knowledge.kbVersion()),
                 Map.entry("knowledge_resolved_entities", entityLabels(knowledge)),
                 Map.entry("knowledge_reference_names", referenceNames(knowledge)),
@@ -598,7 +720,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             request.workId(),
             null,
             "LyricsAgent",
-            "v0.8",
+            "v0.9",
             request.operation().name(),
             deepSeekLyricsClient.modelName(),
             prompt.templateKey(),
@@ -659,6 +781,49 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             null,
             exception == null ? null : "KNOWLEDGE_RETRIEVAL_FAILED",
             exception == null ? null : exception.getMessage()));
+  }
+
+  private void recordCraftPlanFallback(
+      LyricsGenerationRequest request,
+      LyricsCraftPlanRequest craftRequest,
+      RuntimeException exception) {
+    agentRunRecorder.record(
+        new AgentRunRecord(
+            request == null ? null : request.workId(),
+            null,
+            "LyricsCraftPlanner",
+            "v0.9-fallback",
+            request == null ? "UNKNOWN" : request.operation().name(),
+            "fallback-to-direct-lyrics",
+            CRAFT_PLAN_TEMPLATE_KEY,
+            CRAFT_PLAN_TEMPLATE_VERSION,
+            craftRequest == null
+                ? null
+                : AgentRunHashing.sha256(craftPlanInputFingerprint(craftRequest)),
+            null,
+            AgentRunStatus.FAILED,
+            0,
+            null,
+            null,
+            null,
+            "LYRICS_CRAFT_PLAN_FALLBACK",
+            exception == null ? null : exception.getMessage()));
+  }
+
+  private String craftPlanInputFingerprint(LyricsCraftPlanRequest request) {
+    return String.join(
+        "\n",
+        nullToEmpty(request.userId()),
+        nullToEmpty(request.workId()),
+        nullToEmpty(request.operation()),
+        nullToEmpty(request.userInput()),
+        nullToEmpty(request.instruction()),
+        nullToEmpty(request.mood()),
+        nullToEmpty(request.musicStyle()),
+        nullToEmpty(request.vocalPreference()),
+        request.yanyunReferences().toString(),
+        request.resolvedEntities().toString(),
+        request.knowledgeReferenceSummaries().toString());
   }
 
   private String knowledgeInputFingerprint(KnowledgeRetrievalRequest request) {
@@ -766,17 +931,30 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private LyricsGenerationResult toResult(
       DeepSeekLyricsResponse response,
       CreativeBriefResult creativeBrief,
+      LyricsCraftPlanResult craftPlan,
       KnowledgeRetrievalResult knowledge,
       PromptRenderResult prompt,
       boolean includeCreativeBriefVersion) {
-    Map<String, Integer> promptTemplateVersions =
-        includeCreativeBriefVersion
-            ? Map.of(
-                prompt.templateKey(),
-                prompt.version(),
-                CREATIVE_BRIEF_TEMPLATE_KEY,
-                CREATIVE_BRIEF_TEMPLATE_VERSION)
-            : Map.of(prompt.templateKey(), prompt.version());
+    Map<String, Integer> promptTemplateVersions;
+    if (includeCreativeBriefVersion && craftPlan != null && craftPlan.usable()) {
+      promptTemplateVersions =
+          Map.of(
+              prompt.templateKey(),
+              prompt.version(),
+              CREATIVE_BRIEF_TEMPLATE_KEY,
+              CREATIVE_BRIEF_TEMPLATE_VERSION,
+              CRAFT_PLAN_TEMPLATE_KEY,
+              CRAFT_PLAN_TEMPLATE_VERSION);
+    } else if (includeCreativeBriefVersion) {
+      promptTemplateVersions =
+          Map.of(
+              prompt.templateKey(),
+              prompt.version(),
+              CREATIVE_BRIEF_TEMPLATE_KEY,
+              CREATIVE_BRIEF_TEMPLATE_VERSION);
+    } else {
+      promptTemplateVersions = Map.of(prompt.templateKey(), prompt.version());
+    }
     return new LyricsGenerationResult(
         response.songTitle(),
         response.songSummary(),

@@ -1,0 +1,132 @@
+{
+  "version": "lyrics-agent-v0.8.2-targeted-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "rubric": {
+    "total": 100,
+    "dimensions": {
+      "song_thesis": 12,
+      "narrative_pov": 10,
+      "emotional_truth": 12,
+      "distinctive_entry": 10,
+      "language_accuracy": 10,
+      "chorus_function": 10,
+      "memory_device": 10,
+      "singability_rhyme": 10,
+      "section_progression": 8,
+      "imagery_system": 6,
+      "yanyun_grounding": 8,
+      "original_sophistication": 4
+    }
+  },
+  "summary": {
+    "sample_count": 3,
+    "v082_wins": 2,
+    "v07_wins": 1,
+    "ties": 0,
+    "verdict": "v0.8.2 wins 2/3 targeted failure cases. It fixes underdog warmth and light-to-sad memory device, but place nostalgia still needs a stronger minimal refrain. Proceed to a full 6-case regression before expanding to 24."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.8.2 收束为晨雾、草桥、茶摊，但仍写得偏满；v0.7 的“清河/再喝一碗”更简单、更可唱、更像记忆钩子。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "e4bed15d42f6b6d95b1cf97a1762087528bb6778a9d1237a66647da887da51fe",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "strong_place_refrain",
+            "simple_memory_device",
+            "singable_nostalgia"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "b9da970fc49c3f7fe411cddb57f0bbd0569b49ebff01ffb5e1182b6d3611c891",
+          "score": 86,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "improved_sensory_focus",
+            "still_overwritten",
+            "slightly_awkward_chorus"
+          ],
+          "failure_attribution": [
+            "LyricsAgent 执行弱"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "B_v0.8.2",
+      "review_note": "v0.8.2 比 v0.8.1 少了英雄受难感，“茶碗一响”“旧伞骨”“真丢脸”保住笨拙人味；虽然仍有摇滚直白，但动作 hook 更好。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "bd318fef75325d00ac075acd3c11ba2f832a124069104f0ff105de1a5508185c",
+          "score": 85,
+          "conclusion": "可用但不够顶",
+          "issue_tags": [
+            "clear_but_generic_rock",
+            "too_many_abstract_pain_words",
+            "less_human_detail"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "814f7115086f6fa2dc5c9af66c97ec32c146d9b3a7999a9a08062952ba391211",
+          "score": 88,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "action_hook",
+            "clumsy_warmth",
+            "human_scale_courage"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.8.2",
+      "review_note": "v0.8.2 找到了真正的轻快转酸装置：“输的人请酒 / 谁耍赖就是小狗”前面可爱，后面刺痛，明显优于泛化想念。",
+      "variants": [
+        {
+          "variant": "A_v0.7",
+          "lyrics_hash": "2ab7ca31e20cf8d45da472451a814d98fbab12c4d84a3323202015a2025e03a6",
+          "score": 87,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "good_tea_ritual",
+            "slightly_forced_theme",
+            "less_personal_promise"
+          ],
+          "failure_attribution": []
+        },
+        {
+          "variant": "B_v0.8.2",
+          "lyrics_hash": "f36f15e7020009f356aefcd5ba262d0384266f4f8edbc6bd882a4fcc00ad9337",
+          "score": 92,
+          "conclusion": "金曲潜力",
+          "issue_tags": [
+            "excellent_memory_device",
+            "light_to_sad_turn",
+            "specific_friendship_promise"
+          ],
+          "failure_attribution": []
+        }
+      ]
+    }
+  ],
+  "next_prompt_adjustments": [
+    "For place nostalgia, force the refrain to be one plain repeatable sentence or object phrase, not a scenic if-clause sequence.",
+    "Keep v0.8.2 underdog and light-to-sad constraints; they produced useful gains.",
+    "Run the full 6-case regression before deciding whether to expand to 24 samples."
+  ]
+}

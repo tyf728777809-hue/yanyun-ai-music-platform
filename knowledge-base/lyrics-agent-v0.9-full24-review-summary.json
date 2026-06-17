@@ -1,0 +1,248 @@
+{
+  "version": "lyrics-agent-v0.9-full24-review",
+  "generated_from": "build/reports/lyrics-agent/yanyun-lyrics-agent-v09-full24-manual-review.json",
+  "full_prompts_and_lyrics_committed": false,
+  "judge": "Codex strict golden-lyrics review",
+  "summary": {
+    "sample_count": 24,
+    "v09_wins": 18,
+    "v07_wins": 6,
+    "ties": 0,
+    "verdict": "v0.9 passes the full 24-sample gate. The lightweight CraftPlan route is a real improvement over pure prompt stacking: it more reliably gives each song a concrete device, a narrower angle, and a chorus job. It should become the preferred direction for INSPIRATION first drafts only. It is not yet a final gold-standard lyrics system: several cases still show safe device choices, repeated lamp/wine imagery, or weaker emotional sharpness than v0.7."
+  },
+  "cases": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.9's '梨花又开了，饭还温着' is usable, but v0.7's '灯还亮着' is more restrained and less directly explanatory for Hanxiangxun.",
+      "hashes": {
+        "A_v0.7": "afd99856f796e246ab0bf36ed491e15322adc62a933b80e81e03318541ba529d",
+        "B_v0.9": "22a2843015056294ffe7d0668deabdd30e7b3f7bd27af7797e12b5e96ca783fb"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's grass-bridge device is more specific to Qinghe and avoids drifting into a generic return-home song.",
+      "hashes": {
+        "A_v0.7": "11a0a784e5030bb5640b4a576bfc485df8dd0fcd6c74b89daddca1682c0b23b4",
+        "B_v0.9": "afa0e7c1d2baecb0fac9dde48c48baedfd49fdcb6b9ec766826caf04939d50c2"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.9 is grounded, but v0.7's direct '还是会出手' better preserves the user's core phrase and has a sharper singable thesis.",
+      "hashes": {
+        "A_v0.7": "89fbe3dfc7f6d2294e3f93eacfc6fd841db3752d99842a6b4f04341bf63c0232",
+        "B_v0.9": "35611f13092ffbfc3b4a7b72cbabca1759cedc3e53911fff4cdc3a3d998aae43"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's old-lamp motion is slightly more song-shaped than v0.7's scene sketch, though this category still risks repeating lamp/wine imagery.",
+      "hashes": {
+        "A_v0.7": "bc939061fa29f131834dc40295e392f7515a3ad08dc06df1c08f20daae4e8865",
+        "B_v0.9": "4831eef17319e1964e1f5486e9fc6c42733e9675f4886df8a5826c426e58ea72"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '下次一定' gives the light-to-sad request a clearer repeatable phrase and emotional turn.",
+      "hashes": {
+        "A_v0.7": "428af7420bebe76a77c02eda1d350209145ec23ede8fb6142fb697b4932c60ed",
+        "B_v0.9": "24b8449c81dde8d5726b17cdb451678c9e7e1922e3072f8f301868ff9186ea3e"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 recovers the dirt and noise v0.8.4 lacked; it may need profanity policy tuning later, but artistically it is stronger.",
+      "hashes": {
+        "A_v0.7": "911d645bf66e943ebcc8e8334a69202e66381199f663b2e0d56e0937e1868238",
+        "B_v0.9": "1bcb87c920cfa88616a9e1ad3eb990fae1c00bdd658e5c8a6d6f7e93b95e99d3"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-character-jiangwulang-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '他还是没说' and silent object trail fit Jiang Wulang's guarded protection better than a generic unsaid-love frame.",
+      "hashes": {
+        "A_v0.7": "58323e81245a209afc3f95582b068fc0419f77c4081ebf0ee4d1a018f623623b",
+        "B_v0.9": "cb3b0831d88b0f4db6a708a6509f8d2423b87cf1b68b02467a59873f34881335"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-story-ruoshui-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '还是别叫了' keeps the Ruoshui identity uncertainty intact and works as a cold chorus device.",
+      "hashes": {
+        "A_v0.7": "32fcaeab63c45b6f92f29433a914d5db416f08ee1ccc121bcab02433c48f7aa5",
+        "B_v0.9": "d784f3cf4ecd4ab1061dc53a1cd13fc16826ffbf1815ee7e388b8b7ab8c8e30e"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-friend-quit-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7's ordinary shared-memory detail is more moving; v0.9's '有宝箱' device is vivid but a little too game-UI explicit.",
+      "hashes": {
+        "A_v0.7": "a56cd5c48c0161bdd3250e03cfa45e2f53c7115d672319e8d111d4522f68ca46",
+        "B_v0.9": "1b310062dda6ea58cccec5ee71e45b98d396c32551ff3e25cd67b5b04d5d8227"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-theme-free-tethered-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7's '再一件事' is subtler and more true to the repeated burden; v0.9's '最后一回' is more familiar and less fresh.",
+      "hashes": {
+        "A_v0.7": "7492af981cb53d22d3d3372b8c2fca9ca532e8b9487d3f8e1845d287d005aa80",
+        "B_v0.9": "24d6f656f9737d36ce8167ca92d196a8eea4572c9a095b431b977fd0fbc8215f"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-player-not-main-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's city-gate bell creates a cleaner ordinary-character memory hook than v0.7's more generic wind/name refrain.",
+      "hashes": {
+        "A_v0.7": "697096bb2eeaa4707f9b984947eb5e01a58f7b8fa90b2b815c0a96e76ec5df1b",
+        "B_v0.9": "1b9178f7c5670cc62ca4b754848cd10202e593324747075db55fa9e318a83c15"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-place-buxianxian-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's half-cup ritual is more restrained and less on-the-nose than repeating the place name.",
+      "hashes": {
+        "A_v0.7": "65165ac207d030c4e75c4ace32f2daca06cddad0544392015411966753cf697c",
+        "B_v0.9": "4307e6ebf2d5a0c4d67b3c1dd452d9d2bc37df123941baaa581a65712178cf7b"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-gameplay-steal-skill-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 turns gameplay into emotion: '偷半招' becomes a rhythm of shame, practice and resolve rather than a mechanic description.",
+      "hashes": {
+        "A_v0.7": "76df4c6421097ee8f901e03191d51a187d97579838c34595ad62b997aadfb975",
+        "B_v0.9": "3e0ee710d48b3a2046005a7ab81116b6740395b369370adfd26912c0f1cc3456"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-female-knight-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '我自去' is concise, action-led and avoids turning independence into a slogan lecture.",
+      "hashes": {
+        "A_v0.7": "9640e380203bdaab4335047e1d8c17a5345413125722e579a077c368502f13a6",
+        "B_v0.9": "9188bd975704477b018a726889ea5cd4c75a625c63535bca7c83deca58ff54f7"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-newbie-village-002",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's unreadable wooden sign is a better anti-cliche device for '回不去的新手村' than v0.7's broader old-sword return frame.",
+      "hashes": {
+        "A_v0.7": "162062eb3a06de4127f5159de59ce76e639fecc919341c5af7e195cb11642f7d",
+        "B_v0.9": "1d61337b5bfe6f433c013b3a10bc6580babd07440baa61f2ee912107288dd8ce"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-qinghe-rain-bell-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9 correctly holds onto one small sound motif instead of spreading into a general Qinghe mood piece.",
+      "hashes": {
+        "A_v0.7": "8634c0320735e308ff45f02485f7c51cab57990f06d96987017624c28ced4d55",
+        "B_v0.9": "01b636806872503641d40d048d03baf4c778e49059c0ad8a0ccba79c6baa08ac"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-failure-not-waste-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7's direct '我不是废物，我只是还没赢过' is blunt but memorable; v0.9 is solid but more expected.",
+      "hashes": {
+        "A_v0.7": "fa0fd22bfd9865d1761ae9a8128b719a65e1f60d23a47ef25eb585e83c550a4c",
+        "B_v0.9": "7998f374cd69dc51f121d23f7df6ca59945876aba308b3a68ba611f10c070818"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-save-nearby-001",
+      "winner": "A_v0.7",
+      "review_note": "v0.7's '山河再大，大不过一个人' is stronger than v0.9's more generic '这一步，我不退'.",
+      "hashes": {
+        "A_v0.7": "23d8b78c8eb217b4107fdb576016e25b9ac6b8524d92395cc37794623517991b",
+        "B_v0.9": "050da427ac0dc47ea78d7a094d2e4ece4e1fd10ac08ae1ab24f41147a558b61e"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-city-boy-free-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '吱呀——走咯' turns freedom into body rhythm and sound, not just a mood label.",
+      "hashes": {
+        "A_v0.7": "f1dad45e0625adce8db448c5cabbeccf7d2fd2b2a595fa3d4de4160ee1bd2889",
+        "B_v0.9": "85612d7bb59f80836b8ad4c5f075f6f122cdb9beb72893f6c42c0aa200fcb3cc"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-rnb-001",
+      "winner": "A_v0.7",
+      "review_note": "Both use '未满', but v0.7 is more character-specific; v0.9 is elegant yet drifts toward a generic lonely-drinking image.",
+      "hashes": {
+        "A_v0.7": "30d54e4fef0c0b5fdacb74b5be4e57e787bbbdb807af54d38f386b32b100302f",
+        "B_v0.9": "f76b9361fd38f27ee86f1118d2eb44095ea7d2b2537d6d7bf61dd1544db5f44f"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-faction-fall-practice-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's old-formula shout '第七式，守静笃' is highly specific and gives the fallen-faction song a strong ritual center.",
+      "hashes": {
+        "A_v0.7": "617ba5b8598a6657ec69d064b7d1aa8e0379d10f757fb9b1a0c5d5247412d20b",
+        "B_v0.9": "6ff8ab366ba6318b8cb23a2e10625d528720cc670b14bb86c8376a242c67f28e"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-waiting-home-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's warmed tea phrase gives the waiting-home theme a concrete ritual without forcing an official character.",
+      "hashes": {
+        "A_v0.7": "f6b71a6330d5f9a9ec906810eaef71bbb3fa79102c6c261686956c17997fa012",
+        "B_v0.9": "855c764f2c90d044ef42a4ca5578d132f67edff118366f683cf89e925c830f0c"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-jiuliu-vendor-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's tofu-pudding call is exactly the right kind of ordinary-person device: tiny, local, tense, and not heroic.",
+      "hashes": {
+        "A_v0.7": "cc5f08e03bc8eae88fcdee9de7dbbca8e415b4346b0e1f3bbe7f4536760a3447",
+        "B_v0.9": "bcf65a7c340387efba2c3f7a8ec457ec0361ea185fb4747c71190d917403bcae"
+      }
+    },
+    {
+      "case_id": "lyrics-v08-smiling-not-let-go-001",
+      "winner": "B_v0.9",
+      "review_note": "v0.9's '我很好啊' plus cup-rim action makes the hidden wound singable instead of merely explaining that the person is sad.",
+      "hashes": {
+        "A_v0.7": "f52231cdbc928596cb24875273f6328020eae730b1b0db678dd7dd8a824c01ef",
+        "B_v0.9": "0f263e8f251679f87823a24f592c566011487b941a4a35f42db72923eea0b5ad"
+      }
+    }
+  ],
+  "gold_potential_count_estimate": 12,
+  "remaining_risks": [
+    "CraftPlan adds a real extra DeepSeek call and should stay limited to INSPIRATION until latency is separately optimized.",
+    "Several v0.9 failures happen when the selected device is too safe or too familiar, such as generic non-retreat phrases.",
+    "Character-specific requests can lose specificity if CraftPlan selects a common object instead of a character-specific action.",
+    "Rough faction songs may introduce profanity; product policy should decide whether to allow, soften, or quality-gate it."
+  ],
+  "next_recommendation": {
+    "make_v09_default_for_inspiration": true,
+    "keep_disabled_for_polish_continue_lyrics": true,
+    "next_tuning_focus": [
+      "CraftPlan should prefer user-provided core phrases when they are already strong.",
+      "For character songs, selected_device should be character-unique, not just broadly poetic.",
+      "For moral-choice songs, avoid generic heroic phrases and preserve the user's anti-grand narrative.",
+      "Add latency telemetry to compare user-perceived wait time with quality improvement."
+    ]
+  }
+}

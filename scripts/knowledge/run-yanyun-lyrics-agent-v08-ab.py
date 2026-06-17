@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import hashlib
 import json
+import multiprocessing
 import os
 import subprocess
 import sys
@@ -25,7 +26,12 @@ BRIEF_AGENT_PATH = (
     ROOT
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekCreativeBriefAgent.java"
 )
+CRAFT_PLANNER_PATH = (
+    ROOT
+    / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsCraftPlanner.java"
+)
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9")
 
 
 def sha256(value):
@@ -60,10 +66,81 @@ def parse_json_object(content):
 
 
 def deepseek_chat_json(system_prompt, user_prompt, temperature=0.45, max_tokens=4096):
+    timeout = int(os.environ.get("DEEPSEEK_REQUEST_TIMEOUT_SECONDS", "180"))
+    wall_timeout = int(os.environ.get("DEEPSEEK_AB_WALL_TIMEOUT_SECONDS", str(timeout + 30)))
+    attempts = int(os.environ.get("DEEPSEEK_AB_MAX_ATTEMPTS", "3"))
+    last_error = None
+    total_elapsed_ms = 0
+    ctx = multiprocessing.get_context("fork")
+    for attempt in range(1, attempts + 1):
+        parent_conn, child_conn = ctx.Pipe(duplex=False)
+        process = ctx.Process(
+            target=_deepseek_chat_json_worker,
+            args=(child_conn, system_prompt, user_prompt, temperature, max_tokens, timeout),
+        )
+        started = time.perf_counter()
+        process.start()
+        child_conn.close()
+        try:
+            process.join(wall_timeout)
+        except KeyboardInterrupt:
+            if process.is_alive():
+                process.terminate()
+                process.join(5)
+                if process.is_alive():
+                    process.kill()
+                    process.join(1)
+            parent_conn.close()
+            raise
+        elapsed_ms = int((time.perf_counter() - started) * 1000)
+        total_elapsed_ms += elapsed_ms
+        if process.is_alive():
+            process.terminate()
+            process.join(5)
+            if process.is_alive():
+                process.kill()
+                process.join(1)
+            parent_conn.close()
+            last_error = RuntimeError("DeepSeek request timed out")
+            if attempt >= attempts:
+                raise last_error
+            continue
+        if not parent_conn.poll():
+            parent_conn.close()
+            last_error = RuntimeError("DeepSeek request ended without result")
+            if attempt >= attempts:
+                raise last_error
+            continue
+        status, payload = parent_conn.recv()
+        parent_conn.close()
+        if status == "ok":
+            result, request_elapsed_ms = payload
+            return result, total_elapsed_ms if total_elapsed_ms > request_elapsed_ms else request_elapsed_ms
+        last_error = RuntimeError(payload)
+        if attempt >= attempts:
+            raise last_error
+        time.sleep(1.0)
+    raise last_error or RuntimeError("DeepSeek request failed")
+
+
+def _deepseek_chat_json_worker(conn, system_prompt, user_prompt, temperature, max_tokens, timeout):
+    try:
+        conn.send(
+            (
+                "ok",
+                _deepseek_chat_json_once(system_prompt, user_prompt, temperature, max_tokens, timeout),
+            )
+        )
+    except Exception as error:
+        conn.send(("error", str(error)))
+    finally:
+        conn.close()
+
+
+def _deepseek_chat_json_once(system_prompt, user_prompt, temperature=0.45, max_tokens=4096, timeout=180):
     base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com").rstrip("/")
     api_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
     model = os.environ.get("DEEPSEEK_MODEL_NAME", "deepseek-v4-pro")
-    timeout = int(os.environ.get("DEEPSEEK_REQUEST_TIMEOUT_SECONDS", "180"))
     if not api_key:
         raise RuntimeError("DEEPSEEK_API_KEY is required")
     body = {
@@ -86,39 +163,23 @@ def deepseek_chat_json(system_prompt, user_prompt, temperature=0.45, max_tokens=
         },
         method="POST",
     )
-    attempts = int(os.environ.get("DEEPSEEK_AB_MAX_ATTEMPTS", "3"))
-    last_error = None
-    total_elapsed_ms = 0
-    for attempt in range(1, attempts + 1):
-        started = time.perf_counter()
-        try:
-            with urllib.request.urlopen(request, timeout=timeout) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as error:
-            raise RuntimeError(f"DeepSeek HTTP {error.code}") from error
-        except TimeoutError as error:
-            last_error = RuntimeError("DeepSeek request timed out")
-            if attempt >= attempts:
-                raise last_error from error
-            continue
-        elapsed_ms = int((time.perf_counter() - started) * 1000)
-        total_elapsed_ms += elapsed_ms
-        choices = payload.get("choices") or []
-        if not choices:
-            last_error = RuntimeError("DeepSeek response did not include choices")
-        else:
-            content = choices[0].get("message", {}).get("content", "")
-            if content:
-                try:
-                    return parse_json_object(content), total_elapsed_ms
-                except json.JSONDecodeError as error:
-                    last_error = RuntimeError("DeepSeek response JSON content is malformed")
-                    if attempt >= attempts:
-                        raise last_error from error
-            else:
-                last_error = RuntimeError("DeepSeek response content is empty")
-        time.sleep(1.0)
-    raise last_error or RuntimeError("DeepSeek request failed")
+    started = time.perf_counter()
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        raise RuntimeError(f"DeepSeek HTTP {error.code}") from error
+    elapsed_ms = int((time.perf_counter() - started) * 1000)
+    choices = payload.get("choices") or []
+    if not choices:
+        raise RuntimeError("DeepSeek response did not include choices")
+    content = choices[0].get("message", {}).get("content", "")
+    if not content:
+        raise RuntimeError("DeepSeek response content is empty")
+    try:
+        return parse_json_object(content), elapsed_ms
+    except json.JSONDecodeError as error:
+        raise RuntimeError("DeepSeek response JSON content is malformed") from error
 
 
 def extract_java_text_block_from_text(source, method_signature):
@@ -164,7 +225,7 @@ def baseline_prompt(relative_path, method_signature, fallback):
 
 
 def creative_brief_system_prompt(version):
-    if version == "B_v0.8":
+    if version != "A_v0.7":
         return production_prompt(BRIEF_AGENT_PATH, "private String systemPrompt()")
     return baseline_prompt(
         "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekCreativeBriefAgent.java",
@@ -178,7 +239,7 @@ def creative_brief_system_prompt(version):
 
 
 def lyrics_system_prompt(version):
-    if version == "B_v0.8":
+    if version != "A_v0.7":
         return production_prompt(LYRICS_CLIENT_PATH, "private String systemPrompt()")
     return baseline_prompt(
         "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsClient.java",
@@ -190,6 +251,16 @@ def lyrics_system_prompt(version):
         输出 song_title、song_summary、lyrics_text、music_prompt、cover_prompt_seed、risk_notes、quality_score 的 JSON object。
         """,
     )
+
+
+def craft_plan_enabled(version):
+    return version.startswith("B_v0.9")
+
+
+def craft_plan_system_prompt(version):
+    if not craft_plan_enabled(version):
+        return ""
+    return production_prompt(CRAFT_PLANNER_PATH, "private String systemPrompt()")
 
 
 def flatten_knowledge():
@@ -307,7 +378,7 @@ def reference_summaries(references):
 
 def brief_instruction(version, brief, references):
     refs = reference_summaries(references)
-    if version == "B_v0.8":
+    if version != "A_v0.7":
         keys = [
             "song_core",
             "singer_voice",
@@ -353,6 +424,68 @@ def brief_instruction(version, brief, references):
     return "\n".join(lines)
 
 
+def craft_plan_user_prompt(case, brief, references):
+    return "\n".join(
+        [
+            "operation=INSPIRATION",
+            "user_input=" + case.get("user_input", ""),
+            "mood=" + case.get("mood", ""),
+            "music_style=" + case.get("music_style", ""),
+            "vocal_preference=" + case.get("vocal_preference", ""),
+            "requested_title=",
+            "creative_brief.song_core=" + first_non_blank(brief.get("song_core"), brief.get("songCore")),
+            "creative_brief.singer_voice="
+            + first_non_blank(brief.get("singer_voice"), brief.get("singerVoice")),
+            "creative_brief.emotional_engine="
+            + first_non_blank(brief.get("emotional_engine"), brief.get("emotionalEngine")),
+            "creative_brief.chorus_job="
+            + first_non_blank(brief.get("chorus_job"), brief.get("chorusJob")),
+            "creative_brief.avoid_direction="
+            + first_non_blank(brief.get("avoid_direction"), brief.get("avoidDirection")),
+            "creative_brief.memory_device="
+            + first_non_blank(brief.get("memory_device"), brief.get("memoryDevice")),
+            "resolved_entities=[]",
+            "yanyun_references=" + json.dumps([row.get("display_name") for row in references], ensure_ascii=False),
+            "knowledge_reference_summaries="
+            + json.dumps(reference_summaries(references), ensure_ascii=False),
+        ]
+    )
+
+
+def craft_plan_instruction(craft_plan):
+    if not craft_plan:
+        return "lyrics_craft_plan_status=disabled_or_fallback"
+    return "\n".join(
+        [
+            "LyricsCraftPlan v0.9:",
+            "song_thesis_guard="
+            + first_non_blank(
+                craft_plan.get("song_thesis_guard"), craft_plan.get("songThesisGuard")
+            ),
+            "selected_device="
+            + first_non_blank(craft_plan.get("selected_device"), craft_plan.get("selectedDevice")),
+            "selected_angle="
+            + first_non_blank(craft_plan.get("selected_angle"), craft_plan.get("selectedAngle")),
+            "chorus_mechanism="
+            + first_non_blank(
+                craft_plan.get("chorus_mechanism"), craft_plan.get("chorusMechanism")
+            ),
+            "yanyun_boundary_guard="
+            + first_non_blank(
+                craft_plan.get("yanyun_boundary_guard"), craft_plan.get("yanyunBoundaryGuard")
+            ),
+            "rejected_alternatives="
+            + json.dumps(
+                craft_plan.get("rejected_alternatives")
+                or craft_plan.get("rejectedAlternatives")
+                or [],
+                ensure_ascii=False,
+            ),
+            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. If the topic is rough, low-level, factional, or street-side, do not clean it into safe pretty literature.",
+        ]
+    )
+
+
 def lyrics_user_prompt(case, brief_instruction_text):
     return "\n".join(
         [
@@ -376,8 +509,15 @@ def select_cases(payload):
     if ids_env:
         ids = [item.strip() for item in ids_env.split(",") if item.strip()]
     else:
-        ids = payload.get("initial_batch_ids", [])
+        ids = list(payload.get("initial_batch_ids", []))
     limit = int(os.environ.get("LYRICS_AGENT_AB_SAMPLE_LIMIT", str(len(ids) or 6)))
+    if not ids_env and limit > len(ids):
+        seen = set(ids)
+        for case in payload["cases"]:
+            case_id = case["id"]
+            if case_id not in seen:
+                ids.append(case_id)
+                seen.add(case_id)
     selected = []
     for case_id in ids:
         if case_id not in case_by_id:
@@ -404,10 +544,11 @@ def write_reports(results):
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.8 A/B Manual Review",
+        "# LyricsAgent v0.9 A/B Manual Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
         f"- baseline_revision: `{BASELINE_REV}`",
+        f"- current_variant: `{CURRENT_VARIANT_LABEL}`",
         "- 注意：本文件包含完整 Prompt 和完整歌词，只保存在 ignored 的 build/ 目录，不要提交。",
         "",
     ]
@@ -436,6 +577,7 @@ def write_reports(results):
                     f"### {variant['variant']}",
                     "",
                     f"- CreativeBrief 耗时：{variant.get('brief_elapsed_ms', '')}ms",
+                    f"- CraftPlan 耗时：{variant.get('craft_plan_elapsed_ms', '')}ms",
                     f"- Lyrics 耗时：{variant.get('lyrics_elapsed_ms', '')}ms",
                     f"- song_title: {output.get('song_title', '')}",
                     f"- song_summary: {output.get('song_summary', '')}",
@@ -444,6 +586,18 @@ def write_reports(results):
                     "#### CreativeBrief",
                     "```json",
                     json.dumps(variant.get("creative_brief", {}), ensure_ascii=False, indent=2),
+                    "```",
+                    "",
+                    "#### LyricsCraftPlan",
+                    "```json",
+                    json.dumps(variant.get("lyrics_craft_plan", {}), ensure_ascii=False, indent=2),
+                    "```",
+                    f"- CraftPlan error: {variant.get('lyrics_craft_plan_error') or ''}",
+                    "",
+                    "",
+                    "#### CraftPlan Prompt",
+                    "```text",
+                    variant.get("craft_plan_user_prompt", ""),
                     "```",
                     "",
                     "#### System Prompt",
@@ -478,25 +632,50 @@ def write_reports(results):
 def run_execute(cases, knowledge_rows):
     results = []
     for case in cases:
+        print(f"[case] {case['id']}", file=sys.stderr, flush=True)
         references = retrieve_knowledge(case, knowledge_rows)
         result = {
             "case": case,
             "knowledge_references": reference_summaries(references),
             "variants": [],
         }
-        for variant in ["A_v0.7", "B_v0.8"]:
+        for variant in ["A_v0.7", CURRENT_VARIANT_LABEL]:
             try:
+                print(f"[case] {case['id']} [variant] {variant} brief", file=sys.stderr, flush=True)
                 brief_system = creative_brief_system_prompt(variant)
                 brief_user = creative_brief_user_prompt(case, references)
                 brief, brief_elapsed_ms = deepseek_chat_json(
                     brief_system, brief_user, temperature=0.35, max_tokens=3000
                 )
+                craft_plan = None
+                craft_plan_error = None
+                craft_plan_elapsed_ms = None
+                craft_system = ""
+                craft_user = ""
+                if craft_plan_enabled(variant):
+                    print(
+                        f"[case] {case['id']} [variant] {variant} craft-plan",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    craft_system = craft_plan_system_prompt(variant)
+                    craft_user = craft_plan_user_prompt(case, brief, references)
+                    try:
+                        craft_plan, craft_plan_elapsed_ms = deepseek_chat_json(
+                            craft_system, craft_user, temperature=0.35, max_tokens=1600
+                        )
+                    except RuntimeError as error:
+                        craft_plan_error = str(error)
                 instruction = brief_instruction(variant, brief, references)
+                if craft_plan_enabled(variant):
+                    instruction = instruction + "\n" + craft_plan_instruction(craft_plan)
                 lyrics_system = lyrics_system_prompt(variant)
                 lyrics_user = lyrics_user_prompt(case, instruction)
+                print(f"[case] {case['id']} [variant] {variant} lyrics", file=sys.stderr, flush=True)
                 lyrics, lyrics_elapsed_ms = deepseek_chat_json(
                     lyrics_system, lyrics_user, temperature=0.72, max_tokens=4096
                 )
+                print(f"[case] {case['id']} [variant] {variant} done", file=sys.stderr, flush=True)
                 result["variants"].append(
                     {
                         "variant": variant,
@@ -505,9 +684,14 @@ def run_execute(cases, knowledge_rows):
                         "lyrics_system_prompt_hash": sha256(lyrics_system),
                         "lyrics_user_prompt_hash": sha256(lyrics_user),
                         "creative_brief": brief,
+                        "lyrics_craft_plan": craft_plan or {},
+                        "lyrics_craft_plan_error": craft_plan_error,
                         "lyrics_output": lyrics,
                         "brief_elapsed_ms": brief_elapsed_ms,
+                        "craft_plan_elapsed_ms": craft_plan_elapsed_ms,
                         "lyrics_elapsed_ms": lyrics_elapsed_ms,
+                        "craft_plan_system_prompt": craft_system,
+                        "craft_plan_user_prompt": craft_user,
                         "lyrics_system_prompt": lyrics_system,
                         "lyrics_user_prompt": lyrics_user,
                     }
