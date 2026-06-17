@@ -239,7 +239,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       LyricsGenerationRequest request,
       CreativeBriefResult creativeBrief,
       KnowledgeRetrievalResult knowledge) {
-    if (!craftPlannerEnabled || request.operation() != LyricsOperation.INSPIRATION) {
+    if (!shouldInvokeCraftPlanner(request)) {
       return null;
     }
     LyricsCraftPlanRequest craftRequest =
@@ -265,6 +265,34 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       recordCraftPlanFallback(request, craftRequest, exception);
       return null;
     }
+  }
+
+  private boolean shouldInvokeCraftPlanner(LyricsGenerationRequest request) {
+    if (!craftPlannerEnabled || request.operation() != LyricsOperation.INSPIRATION) {
+      return false;
+    }
+    String input = normalizeCraftPlannerInput(request.userInput());
+    if (input.isBlank()) {
+      return false;
+    }
+    if (containsAny(
+        input, "新手村", "退坑", "跑图", "上线", "下线", "玩家", "我的角色", "主角", "任务", "截图", "开荒", "副本")) {
+      return true;
+    }
+    return containsAny(input, "说不清", "不知道", "没想好", "帮我想", "随便", "没灵感", "不知道写什么");
+  }
+
+  private static String normalizeCraftPlannerInput(String value) {
+    return value == null ? "" : value.replaceAll("\\s+", "");
+  }
+
+  private static boolean containsAny(String value, String... needles) {
+    for (String needle : needles) {
+      if (value.contains(needle)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private CreativeBriefResult fallbackCreativeBrief(

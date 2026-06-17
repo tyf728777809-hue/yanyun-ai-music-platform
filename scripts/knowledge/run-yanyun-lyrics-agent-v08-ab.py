@@ -263,6 +263,40 @@ def craft_plan_enabled(version):
     return version.startswith("B_v0.9") or version.startswith("B_v0.10")
 
 
+def story_input(case):
+    return (
+        case.get("story_input")
+        or case.get("input")
+        or case.get("user_input")
+        or case.get("prompt")
+        or ""
+    )
+
+
+def should_call_craft_plan(case, version):
+    if not craft_plan_enabled(version):
+        return False
+    text = "".join(str(story_input(case)).split())
+    if not text:
+        return False
+    meta_terms = [
+        "新手村",
+        "退坑",
+        "跑图",
+        "上线",
+        "下线",
+        "玩家",
+        "我的角色",
+        "主角",
+        "任务",
+        "截图",
+        "开荒",
+        "副本",
+    ]
+    vague_terms = ["说不清", "不知道", "没想好", "帮我想", "随便", "没灵感", "不知道写什么"]
+    return any(term in text for term in meta_terms + vague_terms)
+
+
 def craft_plan_usable(craft_plan):
     if not craft_plan:
         return False
@@ -763,7 +797,7 @@ def run_execute(cases, knowledge_rows):
                 craft_plan_elapsed_ms = None
                 craft_system = ""
                 craft_user = ""
-                if craft_plan_enabled(variant):
+                if should_call_craft_plan(case, variant):
                     print(
                         f"[case] {case['id']} [variant] {variant} craft-plan",
                         file=sys.stderr,

@@ -47,7 +47,9 @@ class DefaultLyricsGenerationServiceTest {
     DefaultLyricsGenerationService service =
         new DefaultLyricsGenerationService(knowledgeService(), promptService(), deepSeek);
 
-    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
 
     assertEquals("Song", result.songTitle());
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
@@ -203,7 +205,9 @@ class DefaultLyricsGenerationServiceTest {
                     request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
             records::add);
 
-    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
 
     assertEquals("Song", result.songTitle());
     assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.10:"));
@@ -261,13 +265,74 @@ class DefaultLyricsGenerationServiceTest {
                     request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
             new ArrayList<AgentRunRecord>()::add);
 
-    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
 
     assertTrue(
         renderedInstructions
             .getFirst()
             .contains("lyrics_craft_plan_status=disabled_skipped_or_fallback"));
     assertFalse(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.10:"));
+    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v10"));
+  }
+
+  @Test
+  void inspirationSkipsCraftPlanBeforeCallingWhenUserInputAlreadyHasStrongSongCore() {
+    AtomicInteger plannerCalls = new AtomicInteger();
+    List<String> renderedInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                request.instruction(),
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    PromptTemplateService promptService =
+        request -> {
+          renderedInstructions.add(request.instruction());
+          return new PromptRenderResult(request.templateKey(), 7, "rendered prompt");
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService,
+            new MockCreativeBriefAgent(),
+            request -> {
+              plannerCalls.incrementAndGet();
+              return new LyricsCraftPlanResult(
+                  "USE_PLAN",
+                  "WEAK_PHRASE",
+                  "IN_WORLD",
+                  "USE_SMALL_DEVICE",
+                  "WORTH_EXTRA_CALL",
+                  "HIGH",
+                  "guard",
+                  "device",
+                  "angle",
+                  "chorus",
+                  "boundary",
+                  List.of());
+            },
+            true,
+            deepSeek,
+            request ->
+                new QualityEvaluationResult(
+                    request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+            new ArrayList<AgentRunRecord>()::add);
+
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "写一个不厉害的少侠，打不过很多人，但还是会出手。"));
+
+    assertEquals(0, plannerCalls.get());
+    assertTrue(
+        renderedInstructions
+            .getFirst()
+            .contains("lyrics_craft_plan_status=disabled_skipped_or_fallback"));
     assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v10"));
   }
 
@@ -338,7 +403,9 @@ class DefaultLyricsGenerationServiceTest {
                     request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
             records::add);
 
-    LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
 
     assertTrue(
         result.lyricsText().contains("lyrics_craft_plan_status=disabled_skipped_or_fallback"));
@@ -637,11 +704,16 @@ class DefaultLyricsGenerationServiceTest {
   }
 
   private LyricsGenerationRequest baseRequest(LyricsOperation operation) {
+    return requestWithUserInput(operation, "a vow under the moon");
+  }
+
+  private LyricsGenerationRequest requestWithUserInput(
+      LyricsOperation operation, String userInput) {
     return new LyricsGenerationRequest(
         "user-1",
         "work-1",
         operation,
-        "a vow under the moon",
+        userInput,
         "[Verse]\nOld lyrics",
         "Make it warmer",
         "Requested",
