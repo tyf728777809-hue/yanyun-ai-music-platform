@@ -49,17 +49,34 @@ public final class DeepSeekJsonChatClient {
 
   public JsonNode completeJson(
       String systemPrompt, String userPrompt, BigDecimal temperature, int responseMaxTokens) {
+    return completeJson(
+        systemPrompt,
+        userPrompt,
+        temperature,
+        responseMaxTokens,
+        properties.getRequestTimeout(),
+        CONTENT_SEMANTIC_ATTEMPTS);
+  }
+
+  public JsonNode completeJson(
+      String systemPrompt,
+      String userPrompt,
+      BigDecimal temperature,
+      int responseMaxTokens,
+      Duration timeout,
+      int semanticAttempts) {
     ensureConfigured();
     RuntimeException lastFailure = null;
-    for (int attempt = 1; attempt <= CONTENT_SEMANTIC_ATTEMPTS; attempt++) {
+    int attempts = Math.max(1, semanticAttempts);
+    for (int attempt = 1; attempt <= attempts; attempt++) {
       try {
         HttpRequest httpRequest =
-            chatRequest(systemPrompt, userPrompt, temperature, responseMaxTokens);
+            chatRequest(systemPrompt, userPrompt, temperature, responseMaxTokens, timeout);
         JsonNode root = sendWithRetry(httpRequest);
         String content = firstChoiceContent(root);
         return parseContentJson(content);
       } catch (RuntimeException exception) {
-        if (!isRetryableContentFailure(exception) || attempt == CONTENT_SEMANTIC_ATTEMPTS) {
+        if (!isRetryableContentFailure(exception) || attempt == attempts) {
           throw exception;
         }
         lastFailure = exception;
@@ -94,9 +111,13 @@ public final class DeepSeekJsonChatClient {
   }
 
   private HttpRequest chatRequest(
-      String systemPrompt, String userPrompt, BigDecimal temperature, int responseMaxTokens) {
+      String systemPrompt,
+      String userPrompt,
+      BigDecimal temperature,
+      int responseMaxTokens,
+      Duration timeout) {
     return HttpRequest.newBuilder(chatCompletionsUri())
-        .timeout(requestTimeout())
+        .timeout(requestTimeout(timeout))
         .header("Accept", "application/json")
         .header("Content-Type", "application/json")
         .header("Authorization", "Bearer " + properties.getApiKey())
@@ -198,9 +219,9 @@ public final class DeepSeekJsonChatClient {
     return URI.create(base).resolve("chat/completions");
   }
 
-  private Duration requestTimeout() {
-    Duration timeout = properties.getRequestTimeout();
-    return timeout == null || timeout.isNegative() ? Duration.ofSeconds(30) : timeout;
+  private Duration requestTimeout(Duration timeout) {
+    Duration configured = timeout == null ? properties.getRequestTimeout() : timeout;
+    return configured == null || configured.isNegative() ? Duration.ofSeconds(30) : configured;
   }
 
   private byte[] writeJson(Object value) {

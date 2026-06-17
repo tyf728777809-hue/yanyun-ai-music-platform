@@ -61,8 +61,12 @@ yanyun:
     api-key: ${DEEPSEEK_API_KEY:}
     model-name: ${DEEPSEEK_MODEL_NAME:deepseek-v4-pro}
     request-timeout: ${DEEPSEEK_TIMEOUT_MS:30000ms}
+    creative-brief-request-timeout: ${DEEPSEEK_CREATIVE_BRIEF_TIMEOUT:20s}
     max-attempts: ${DEEPSEEK_MAX_ATTEMPTS:1}
     response-max-tokens: ${DEEPSEEK_RESPONSE_MAX_TOKENS:4096}
+    creative-brief-response-max-tokens: ${DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS:900}
+    creative-brief-semantic-attempts: ${DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS:1}
+    lyrics-semantic-attempts: ${DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS:2}
     temperature: ${DEEPSEEK_TEMPERATURE:0.7}
   knowledge:
     retrieval-mode: ${KNOWLEDGE_RETRIEVAL_MODE:disabled}
@@ -71,7 +75,8 @@ yanyun:
     entity-limit: ${KNOWLEDGE_ENTITY_LIMIT:4}
     semantic-limit: ${KNOWLEDGE_SEMANTIC_LIMIT:6}
   lyrics:
-    quality-gate-mode: ${LYRICS_QUALITY_GATE_MODE:strict}
+    quality-gate-mode: ${LYRICS_QUALITY_GATE_MODE:self-score-only}
+    first-draft-mode: ${LYRICS_FIRST_DRAFT_MODE:conditional-brief}
   image:
     provider: ${IMAGE_PROVIDER:mock}
   image2:

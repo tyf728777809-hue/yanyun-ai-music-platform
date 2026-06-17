@@ -34,6 +34,7 @@ BRIEF_AGENT_PATH = (
 )
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
 CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.11.2-minimal")
+AB_PROFILE = os.environ.get("LYRICS_AGENT_AB_PROFILE", "legacy").strip() or "legacy"
 
 
 def sha256(value):
@@ -67,10 +68,20 @@ def parse_json_object(content):
     return json.loads(text)
 
 
-def deepseek_chat_json(system_prompt, user_prompt, temperature=0.45, max_tokens=4096):
-    timeout = int(os.environ.get("DEEPSEEK_REQUEST_TIMEOUT_SECONDS", "180"))
-    wall_timeout = int(os.environ.get("DEEPSEEK_AB_WALL_TIMEOUT_SECONDS", str(timeout + 30)))
-    attempts = int(os.environ.get("DEEPSEEK_AB_MAX_ATTEMPTS", "3"))
+def deepseek_chat_json(
+    system_prompt,
+    user_prompt,
+    temperature=0.45,
+    max_tokens=4096,
+    timeout_seconds=None,
+    wall_timeout_seconds=None,
+    attempts=None,
+):
+    timeout = int(timeout_seconds or os.environ.get("DEEPSEEK_REQUEST_TIMEOUT_SECONDS", "180"))
+    wall_timeout = int(
+        wall_timeout_seconds or os.environ.get("DEEPSEEK_AB_WALL_TIMEOUT_SECONDS", str(timeout + 30))
+    )
+    attempts = int(attempts or os.environ.get("DEEPSEEK_AB_MAX_ATTEMPTS", "3"))
     last_error = None
     total_elapsed_ms = 0
     ctx = multiprocessing.get_context("fork")
@@ -255,6 +266,26 @@ def lyrics_system_prompt(version):
     )
 
 
+def default_variants():
+    variants_env = os.environ.get("LYRICS_AGENT_AB_VARIANTS", "").strip()
+    if variants_env:
+        return [item.strip() for item in variants_env.split(",") if item.strip()]
+    if AB_PROFILE in {"v012", "v012-first-draft", "first-draft-v012"}:
+        return ["A_v0.12_full_brief", "B_v0.12_direct", "C_v0.12_conditional"]
+    return ["A_v0.7", CURRENT_VARIANT_LABEL]
+
+
+def variant_brief_strategy(variant):
+    normalized = variant.lower()
+    if normalized == "a_v0.7" or "full_brief" in normalized or "full-brief" in normalized:
+        return "full"
+    if "direct" in normalized:
+        return "direct"
+    if "conditional" in normalized:
+        return "conditional"
+    return "full"
+
+
 def flatten_knowledge():
     rows = []
     for path in sorted(KB_DIR.glob("*.json")):
@@ -336,6 +367,124 @@ def retrieve_knowledge(case, knowledge_rows):
             "content": "",
         }
     ]
+
+
+def fallback_creative_brief(case, references):
+    refs = reference_summaries(references)
+    reference_names = [row.get("display_name", "") for row in refs if row.get("display_name")]
+    song_core = first_non_blank(case.get("user_input", ""), case.get("review_notes", ""), "燕云玩家故事")
+    singer_voice = first_non_blank(case.get("vocal_preference", ""), "以用户原始视角演唱")
+    chorus_job = "让副歌清楚重复这首歌最重要的情绪，而不是摊开知识点。"
+    knowledge_hint = "只使用能服务歌曲主线的知识库材料；不要把资料逐条写进歌词。"
+    return {
+        "domain_decision": "PASS",
+        "song_core": song_core[:120],
+        "singer_voice": singer_voice,
+        "central_tension": first_non_blank(case.get("mood", ""), "用户想表达的情绪和燕云世界经验之间的张力"),
+        "chorus_job": chorus_job,
+        "avoid_direction": "不要写成剧情简介、设定介绍或泛古风漂亮话。",
+        "knowledge_use_hint": knowledge_hint,
+        "yanyun_references": reference_names[:6],
+        "creative_core": song_core[:120],
+        "chosen_angle": song_core[:120],
+        "anti_cliche_strategy": "从用户输入里最具体、最像人会说出口的东西进入。",
+        "voice_texture": singer_voice,
+        "image_pool": reference_names[:6],
+        "song_energy": first_non_blank(case.get("mood", ""), "自然推进"),
+        "song_thesis": song_core[:120],
+        "pov": singer_voice,
+        "emotional_turn": first_non_blank(case.get("mood", ""), "从具体经验转成可唱的情绪"),
+        "chorus_function": chorus_job,
+        "memory_device": "从用户原句、动作、物件或声音里找一个可重复装置。",
+    }
+
+
+def compact(value):
+    return "".join((value or "").split())
+
+
+def contains_any(value, needles):
+    return any(needle in value for needle in needles if needle)
+
+
+def has_intent_cue(value):
+    return contains_any(
+        value,
+        [
+            "想",
+            "希望",
+            "不要",
+            "但是",
+            "却",
+            "因为",
+            "离开",
+            "回去",
+            "等",
+            "守",
+            "打不过",
+            "还会",
+            "写一个",
+            "以",
+            "关于",
+            "感觉",
+            "表面",
+            "后面",
+            "故事",
+            "经历",
+            "人生",
+            "遗憾",
+            "开心",
+            "难过",
+            "自由",
+            "热血",
+        ],
+    )
+
+
+def lacks_emotional_or_story_cue(value):
+    return not has_intent_cue(value) and not contains_any(
+        value,
+        [
+            "角色",
+            "地点",
+            "门派",
+            "剧情",
+            "任务",
+            "玩家",
+            "少侠",
+            "游侠",
+            "朋友",
+            "师父",
+            "旧人",
+            "故乡",
+        ],
+    )
+
+
+def has_named_reference(case, references):
+    seed = compact(
+        " ".join(
+            [
+                case.get("user_input", ""),
+                case.get("review_notes", ""),
+                " ".join(case.get("expected_focus", [])),
+            ]
+        )
+    )
+    for row in references:
+        names = [row.get("display_name", "")] + row.get("aliases", [])
+        if any(name and name in seed for name in names):
+            return True
+    return False
+
+
+def should_use_conditional_brief(case, references):
+    seed = compact(" ".join([case.get("user_input", ""), case.get("requested_title", "")]))
+    if len(seed) <= 18:
+        return True
+    entity_only_like_input = has_named_reference(case, references) and len(seed) <= 38 and not has_intent_cue(seed)
+    scattered = len(seed) <= 32 and lacks_emotional_or_story_cue(seed)
+    return entity_only_like_input or scattered
 
 
 def creative_brief_user_prompt(case, references):
@@ -519,6 +668,8 @@ def write_reports(results):
     timings = latency_summary(results)
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "profile": AB_PROFILE,
+        "variants": default_variants(),
         "baseline_revision": BASELINE_REV,
         "current_variant": CURRENT_VARIANT_LABEL,
         "eval_cases_path": str(EVAL_CASES_PATH),
@@ -527,9 +678,11 @@ def write_reports(results):
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.11 Direct A/B Manual Review",
+        "# LyricsAgent Manual A/B Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
+        f"- profile: `{AB_PROFILE}`",
+        f"- variants: `{', '.join(payload['variants'])}`",
         f"- baseline_revision: `{BASELINE_REV}`",
         f"- current_variant: `{CURRENT_VARIANT_LABEL}`",
         f"- eval_cases_path: `{EVAL_CASES_PATH}`",
@@ -566,6 +719,9 @@ def write_reports(results):
                 [
                     f"### {variant['variant']}",
                     "",
+                    f"- Brief 策略：{variant.get('brief_strategy', '')}",
+                    f"- Brief 是否跳过：{variant.get('brief_skipped', False)}",
+                    f"- Brief 跳过原因：{variant.get('brief_skip_reason', '')}",
                     f"- CreativeBrief 耗时：{variant.get('brief_elapsed_ms', '')}ms",
                     f"- Lyrics 耗时：{variant.get('lyrics_elapsed_ms', '')}ms",
                     f"- song_title: {output.get('song_title', '')}",
@@ -608,6 +764,7 @@ def write_reports(results):
 
 def run_execute(cases, knowledge_rows):
     results = []
+    variants = default_variants()
     for case in cases:
         print(f"[case] {case['id']}", file=sys.stderr, flush=True)
         references = retrieve_knowledge(case, knowledge_rows)
@@ -616,25 +773,57 @@ def run_execute(cases, knowledge_rows):
             "knowledge_references": reference_summaries(references),
             "variants": [],
         }
-        for variant in ["A_v0.7", CURRENT_VARIANT_LABEL]:
+        for variant in variants:
             try:
-                print(f"[case] {case['id']} [variant] {variant} brief", file=sys.stderr, flush=True)
-                brief_system = creative_brief_system_prompt(variant)
-                brief_user = creative_brief_user_prompt(case, references)
-                brief, brief_elapsed_ms = deepseek_chat_json(
-                    brief_system, brief_user, temperature=0.35, max_tokens=3000
+                strategy = variant_brief_strategy(variant)
+                brief_system = ""
+                brief_user = ""
+                brief_elapsed_ms = 0
+                brief_skipped = False
+                brief_skip_reason = ""
+                use_brief = strategy == "full" or (
+                    strategy == "conditional" and should_use_conditional_brief(case, references)
                 )
+                if use_brief:
+                    print(f"[case] {case['id']} [variant] {variant} brief", file=sys.stderr, flush=True)
+                    brief_system = creative_brief_system_prompt(variant)
+                    brief_user = creative_brief_user_prompt(case, references)
+                    max_tokens = 3000 if variant == "A_v0.7" else 900
+                    brief, brief_elapsed_ms = deepseek_chat_json(
+                        brief_system,
+                        brief_user,
+                        temperature=0.35,
+                        max_tokens=max_tokens,
+                        timeout_seconds=None if variant == "A_v0.7" else 20,
+                        wall_timeout_seconds=None if variant == "A_v0.7" else 25,
+                        attempts=None if variant == "A_v0.7" else 1,
+                    )
+                else:
+                    brief = fallback_creative_brief(case, references)
+                    brief_skipped = True
+                    brief_skip_reason = (
+                        "direct mode"
+                        if strategy == "direct"
+                        else "conditional input did not require model creative brief"
+                    )
                 instruction = brief_instruction(variant, brief, references)
                 lyrics_system = lyrics_system_prompt(variant)
                 lyrics_user = lyrics_user_prompt(case, instruction)
                 print(f"[case] {case['id']} [variant] {variant} lyrics", file=sys.stderr, flush=True)
                 lyrics, lyrics_elapsed_ms = deepseek_chat_json(
-                    lyrics_system, lyrics_user, temperature=0.72, max_tokens=4096
+                    lyrics_system,
+                    lyrics_user,
+                    temperature=0.72,
+                    max_tokens=4096,
+                    attempts=None if variant == "A_v0.7" else 2,
                 )
                 print(f"[case] {case['id']} [variant] {variant} done", file=sys.stderr, flush=True)
                 result["variants"].append(
                     {
                         "variant": variant,
+                        "brief_strategy": strategy,
+                        "brief_skipped": brief_skipped,
+                        "brief_skip_reason": brief_skip_reason,
                         "creative_brief_system_prompt_hash": sha256(brief_system),
                         "creative_brief_user_prompt_hash": sha256(brief_user),
                         "lyrics_system_prompt_hash": sha256(lyrics_system),
@@ -651,6 +840,7 @@ def run_execute(cases, knowledge_rows):
                 result["variants"].append(
                     {
                         "variant": variant,
+                        "brief_strategy": variant_brief_strategy(variant),
                         "error": str(error),
                         "lyrics_output": {},
                         "creative_brief": {},
@@ -677,6 +867,8 @@ def main():
                     "sample_count": len(cases),
                     "sample_ids": [case["id"] for case in cases],
                     "eval_cases_path": str(EVAL_CASES_PATH),
+                    "profile": AB_PROFILE,
+                    "variants": default_variants(),
                     "current_variant": CURRENT_VARIANT_LABEL,
                     "report_dir": str(REPORT_DIR),
                     "will_call_deepseek": False,
@@ -697,6 +889,8 @@ def main():
                     "knowledge_rows": len(knowledge_rows),
                     "baseline_revision": BASELINE_REV,
                     "eval_cases_path": str(EVAL_CASES_PATH),
+                    "profile": AB_PROFILE,
+                    "variants": default_variants(),
                     "current_variant": CURRENT_VARIANT_LABEL,
                     "reports_ignored_path": str(REPORT_DIR),
                 },

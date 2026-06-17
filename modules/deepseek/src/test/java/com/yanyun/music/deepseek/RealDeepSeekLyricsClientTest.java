@@ -239,12 +239,12 @@ class RealDeepSeekLyricsClientTest {
     IllegalStateException exception =
         assertThrows(IllegalStateException.class, () -> client.generate(request()));
 
-    assertEquals(3, requestCount.get());
+    assertEquals(2, requestCount.get());
     assertTrue(exception.getMessage().contains("DeepSeek response content JSON is invalid"));
   }
 
   @Test
-  void editOperationsUseShorterSemanticRetryBudgetForInvalidContentJson() throws IOException {
+  void editOperationsUseConfiguredSemanticRetryBudgetForInvalidContentJson() throws IOException {
     AtomicInteger requestCount = new AtomicInteger();
     server =
         startServer(

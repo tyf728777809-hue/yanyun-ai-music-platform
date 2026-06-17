@@ -300,9 +300,15 @@ start_worker() {
     export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
     export DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}"
     export DEEPSEEK_TIMEOUT_MS="${DEEPSEEK_TIMEOUT_MS:-30000}"
+    export DEEPSEEK_CREATIVE_BRIEF_TIMEOUT="${DEEPSEEK_CREATIVE_BRIEF_TIMEOUT:-20s}"
     export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
     export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}"
+    export DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS="${DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS:-900}"
+    export DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS="${DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS:-1}"
+    export DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS="${DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS:-2}"
     export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
+    export LYRICS_FIRST_DRAFT_MODE="${LYRICS_FIRST_DRAFT_MODE:-conditional-brief}"
+    export LYRICS_QUALITY_GATE_MODE="${LYRICS_QUALITY_GATE_MODE:-self-score-only}"
     export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
     export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
     export DREAMMAKER_REAL_CALLS_ENABLED=false
@@ -337,9 +343,15 @@ start_api() {
     export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
     export DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}"
     export DEEPSEEK_TIMEOUT_MS="${DEEPSEEK_TIMEOUT_MS:-30000}"
+    export DEEPSEEK_CREATIVE_BRIEF_TIMEOUT="${DEEPSEEK_CREATIVE_BRIEF_TIMEOUT:-20s}"
     export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
     export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}"
+    export DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS="${DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS:-900}"
+    export DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS="${DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS:-1}"
+    export DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS="${DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS:-2}"
     export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
+    export LYRICS_FIRST_DRAFT_MODE="${LYRICS_FIRST_DRAFT_MODE:-conditional-brief}"
+    export LYRICS_QUALITY_GATE_MODE="${LYRICS_QUALITY_GATE_MODE:-self-score-only}"
     export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
     export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
     export MUSIC_PROVIDER=suno
@@ -533,11 +545,11 @@ verify_sanitized_db_evidence() {
   local mock_required_agent_count missing_required_agent_count
   mock_required_agent_count="$(
     psql_query \
-      "select count(*) from agent_runs where work_id = '$WORK_ID'::uuid and agent_name in ('CreativeBriefAgent','LyricsAgent','MusicPromptAgent','CoverPromptAgent','QualityEvaluationAgent') and model_name like 'mock-%';"
+      "select count(*) from agent_runs where work_id = '$WORK_ID'::uuid and agent_name in ('LyricsAgent','MusicPromptAgent','CoverPromptAgent','QualityEvaluationAgent') and model_name like 'mock-%';"
   )"
   missing_required_agent_count="$(
     psql_query \
-      "with required(agent_name) as (values ('CreativeBriefAgent'),('LyricsAgent'),('MusicPromptAgent'),('CoverPromptAgent'),('QualityEvaluationAgent')) select count(*) from required r where not exists (select 1 from agent_runs a where a.work_id = '$WORK_ID'::uuid and a.agent_name = r.agent_name and a.status = 'SUCCEEDED' and a.model_name not like 'mock-%');"
+      "with required(agent_name) as (values ('LyricsAgent'),('MusicPromptAgent'),('CoverPromptAgent'),('QualityEvaluationAgent')) select count(*) from required r where not exists (select 1 from agent_runs a where a.work_id = '$WORK_ID'::uuid and a.agent_name = r.agent_name and a.status = 'SUCCEEDED' and a.model_name not like 'mock-%');"
   )"
   if [ "${mock_required_agent_count:-0}" != "0" ]; then
     fail "required DeepSeek agent evidence contains mock agent runs"
@@ -863,6 +875,16 @@ main() {
   export DEEPSEEK_REAL_CALLS_ENABLED=true
   export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
   export DEEPSEEK_MODEL_NAME="${DEEPSEEK_MODEL_NAME:-deepseek-v4-pro}"
+  export DEEPSEEK_TIMEOUT_MS="${DEEPSEEK_TIMEOUT_MS:-30000}"
+  export DEEPSEEK_CREATIVE_BRIEF_TIMEOUT="${DEEPSEEK_CREATIVE_BRIEF_TIMEOUT:-20s}"
+  export DEEPSEEK_MAX_ATTEMPTS="${DEEPSEEK_MAX_ATTEMPTS:-1}"
+  export DEEPSEEK_RESPONSE_MAX_TOKENS="${DEEPSEEK_RESPONSE_MAX_TOKENS:-4096}"
+  export DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS="${DEEPSEEK_CREATIVE_BRIEF_RESPONSE_MAX_TOKENS:-900}"
+  export DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS="${DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS:-1}"
+  export DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS="${DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS:-2}"
+  export DEEPSEEK_TEMPERATURE="${DEEPSEEK_TEMPERATURE:-0.7}"
+  export LYRICS_FIRST_DRAFT_MODE="${LYRICS_FIRST_DRAFT_MODE:-conditional-brief}"
+  export LYRICS_QUALITY_GATE_MODE="${LYRICS_QUALITY_GATE_MODE:-self-score-only}"
   export KNOWLEDGE_RETRIEVAL_MODE="${KNOWLEDGE_RETRIEVAL_MODE:-pgvector}"
   export KNOWLEDGE_KB_VERSION="${KNOWLEDGE_KB_VERSION:-yanyun-commercial-kb-2026-06-13-v1}"
   export SUNO_BACKEND=yunwu

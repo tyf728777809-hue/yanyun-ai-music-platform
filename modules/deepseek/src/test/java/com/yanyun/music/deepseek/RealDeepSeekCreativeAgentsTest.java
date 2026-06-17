@@ -76,7 +76,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertEquals(CreativeDomainDecision.REJECT, result.domainDecision());
     assertEquals(0, requestCount.get());
     assertEquals("CreativeBriefAgent", records.getFirst().agentName());
-    assertEquals("v0.8", records.getFirst().agentVersion());
+    assertEquals("v0.12", records.getFirst().agentVersion());
   }
 
   @Test
@@ -164,7 +164,7 @@ class RealDeepSeekCreativeAgentsTest {
   }
 
   @Test
-  void creativeBriefPromptUsesOpenSongcraftInsteadOfFixedTemplate() throws IOException {
+  void creativeBriefPromptUsesSlimFailFastSongEntryInsteadOfHeavyTemplate() throws IOException {
     AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
     server =
         startServer(
@@ -243,43 +243,22 @@ class RealDeepSeekCreativeAgentsTest {
             List.of("开封夜市")));
 
     String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
-    assertTrue(systemPrompt.contains("不按曲风套写法"));
-    assertTrue(systemPrompt.contains("不强制每首歌都有同一种结构"));
-    assertTrue(systemPrompt.contains("不强制一定有金句式 hook"));
-    assertTrue(systemPrompt.contains("creative_core"));
-    assertTrue(systemPrompt.contains("chosen_angle"));
-    assertTrue(systemPrompt.contains("alternative_angles"));
-    assertTrue(systemPrompt.contains("anti_cliche_strategy"));
-    assertTrue(systemPrompt.contains("voice_texture"));
-    assertTrue(systemPrompt.contains("image_pool"));
-    assertTrue(systemPrompt.contains("song_energy"));
+    assertTrue(systemPrompt.contains("轻量 CreativeBrief Agent"));
+    assertTrue(systemPrompt.contains("不是写剧情大纲"));
+    assertTrue(systemPrompt.contains("每个字段 1 句以内"));
     assertTrue(systemPrompt.contains("song_core"));
     assertTrue(systemPrompt.contains("singer_voice"));
-    assertTrue(systemPrompt.contains("listener_target"));
-    assertTrue(systemPrompt.contains("emotional_engine"));
+    assertTrue(systemPrompt.contains("central_tension"));
     assertTrue(systemPrompt.contains("chorus_job"));
     assertTrue(systemPrompt.contains("avoid_direction"));
-    assertTrue(systemPrompt.contains("不是替用户写剧情大纲"));
-    assertTrue(systemPrompt.contains("song_thesis"));
-    assertTrue(systemPrompt.contains("central_tension"));
-    assertTrue(systemPrompt.contains("emotional_turn"));
-    assertTrue(systemPrompt.contains("chorus_function"));
-    assertTrue(systemPrompt.contains("memory_device"));
-    assertTrue(systemPrompt.contains("这首歌到底在唱什么"));
-    assertTrue(systemPrompt.contains("不要建议 LyricsAgent 直接反复喊主题句"));
-    assertTrue(systemPrompt.contains("具体声音、动作、物件、句式变奏或意象回环"));
-    assertTrue(systemPrompt.contains("过度直白、口号化、把歌核讲破"));
-    assertTrue(systemPrompt.contains("地点怀念类输入不要扩成完整返乡剧情"));
-    assertTrue(systemPrompt.contains("不要拔高成英雄受难"));
-    assertTrue(systemPrompt.contains("共同动作或小约定"));
-    assertTrue(systemPrompt.contains("memory_device 是最重要字段之一"));
-    assertTrue(systemPrompt.contains("私人、具体、可重复、可在后半首变义"));
-    assertTrue(systemPrompt.contains("说明这个声音装置如何在副歌里变重"));
-    assertTrue(systemPrompt.contains("不能把现代道具或现代场景带进燕云世界"));
-    assertTrue(systemPrompt.contains("只转译为节奏、能量、声口和句子颗粒度"));
-    assertTrue(systemPrompt.contains("不要把轻量灵感放大成宏大家国命题"));
-    assertTrue(systemPrompt.contains("不要把知识库资料摊成任务清单"));
-    assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
+    assertTrue(systemPrompt.contains("knowledge_use_hint"));
+    assertFalse(systemPrompt.contains("alternative_angles"));
+    assertFalse(systemPrompt.contains("image_pool"));
+    assertFalse(systemPrompt.contains("memory_device"));
+    assertFalse(systemPrompt.contains("song_thesis"));
+
+    JsonNode requestBody = capturedBody.get();
+    assertEquals(900, requestBody.path("max_tokens").asInt());
   }
 
   @Test

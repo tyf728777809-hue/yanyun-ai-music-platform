@@ -550,22 +550,32 @@ v0.11.2 六条回归结果：
 knowledge-base/lyrics-agent-v0.11.2-full6-review-summary.json
 ```
 
-## v0.12 质量门策略开关
+## v0.12 首轮写词轻链路策略
 
-v0.11.2 之后不再继续堆 Prompt 规则。下一步先把“重链路”和“轻链路”做成可控实验，而不是直接替换生产逻辑。
+v0.11.2 之后不再继续堆 Prompt 规则。首轮写词的主要问题不是知识库慢，而是串行 LLM 调用过重：CreativeBrief、LyricsAgent、QualityEvaluation 依次调用，且 CreativeBrief 在空内容/坏 JSON 时会放大等待时间。v0.12 把首轮拆成可切换链路，先保证“质量说得过去 + 速度可接受 + 失败可控”。
 
 新增配置：
 
 ```text
+LYRICS_FIRST_DRAFT_MODE=conditional-brief | direct | full-brief
 LYRICS_QUALITY_GATE_MODE=strict | self-score-only
+DEEPSEEK_CREATIVE_BRIEF_TIMEOUT=20s
+DEEPSEEK_CREATIVE_BRIEF_SEMANTIC_ATTEMPTS=1
+DEEPSEEK_LYRICS_SEMANTIC_ATTEMPTS=2
 ```
 
-模式说明：
+首轮模式：
 
-- `strict`：默认。保持当前链路：`KnowledgeRetrieve -> CreativeBriefAgent -> LyricsAgent -> QualityEvaluationAgent`，低质时最多一次受控重写。
-- `self-score-only`：实验快路径。保持 `KnowledgeRetrieve -> CreativeBriefAgent -> LyricsAgent`，跳过额外 `QualityEvaluationAgent` 调用，只用 LyricsAgent 自评分和本地安全边界检查。
+- `conditional-brief`：默认用户路径。清晰输入走 `KnowledgeRetrieve -> LyricsAgent -> self-score/local safety`；短输入、散输入或只点名实体时，才跑瘦身 CreativeBrief。
+- `direct`：A/B 候选 B。永远跳过 CreativeBrief。
+- `full-brief`：A/B 基线 A。保留历史重链路，用于对照质量。
 
-`self-score-only` 不是“关闭质量”：
+质量门模式：
+
+- `self-score-only`：默认用户路径。跳过阻塞式 Lyrics QualityEvaluationAgent，只用 LyricsAgent 自评分和本地安全边界检查。
+- `strict`：后台抽检、人工评审、A/B 基线和高风险内容复查路径。会调用 QualityEvaluationAgent，必要时允许一次受控重写。
+
+`self-score-only` 不是关闭质量：
 
 - `quality_score < 0.80` 仍会阻断。
 - 输出漂到其他 IP，且用户输入没有要求其他 IP 转译时，仍会阻断。
@@ -573,6 +583,40 @@ LYRICS_QUALITY_GATE_MODE=strict | self-score-only
 
 当前决策：
 
-- 默认仍为 `strict`，不影响公网真实测试和公司交付基线。
-- 后续可以用同一批真实玩家输入跑 `strict` vs `self-score-only`，比较耗时、通过率和人工歌词质量。
-- 只有当轻量模式在真实样本中质量接近、速度明显更好，才考虑作为默认用户路径。
+- 公网真实测试默认 `conditional-brief + self-score-only`。
+- A/B 仍保留 `full-brief + strict` 作为历史基线。
+- 如果 12 条文本 A/B 证明 direct 不弱于 conditional，可进一步切成 `direct + self-score-only`。
+
+## v0.12 12 条文本 A/B 结果
+
+已用 `LYRICS_AGENT_AB_PROFILE=v012-first-draft` 跑完 12 条真实玩家输入的 DeepSeek 文本 A/B，只调用 DeepSeek 文本，不调用 Yunwu、WellAPI、DreamMaker，不生成音乐、封面或视频。完整 Prompt 和完整歌词只保存在 ignored 的 `build/reports/lyrics-agent/`。
+
+三组：
+
+- `A_v0.12_full_brief`：每条都跑瘦身 CreativeBrief。
+- `B_v0.12_direct`：永远跳过 CreativeBrief。
+- `C_v0.12_conditional`：按生产启发式判断，只有短、散或剧情实体输入才跑 CreativeBrief。
+
+耗时结果：
+
+- full-brief total P50 约 `42.4s`，P95 约 `48.7s`。
+- direct total P50 约 `26.1s`，P95 约 `33.9s`。
+- conditional total P50 约 `25.7s`，P95 约 `48.3s`。
+
+人工严评结果：
+
+- full-brief 胜出 `3/12`，更适合少数需要完整情绪弧线的角色/怀旧题。
+- direct 胜出 `5/12`，在清晰玩家故事、地点夜酒、普通角色自白上通常更自然，也更快。
+- conditional 胜出 `4/12`，但在“弱水岸”这类短、剧情实体、氛围不明的输入上明显追回质量。
+
+当前结论：
+
+- 不建议把 `full-brief` 作为默认：质量没有稳定压过另外两组，但额外耗时明确。
+- 不直接切 `direct`：它很快，但短剧情/实体输入有变薄风险。
+- 保持 `conditional-brief` 作为公网真实测试默认：中位耗时接近 direct，同时保留对短/散/实体输入的安全增强。
+
+脱敏摘要：
+
+```text
+knowledge-base/lyrics-agent-v0.12-first-draft-review-summary.json
+```

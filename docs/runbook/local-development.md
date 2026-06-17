@@ -447,8 +447,9 @@ scripts/smoke/openapi-contract.sh
 
 ### Agent Run Audit Smoke
 
-真实模型联调前，Agent 调用审计通过 `agent_runs` 表记录。当前写词链路会先写入 `CreativeBriefAgent` run，
-再写入 Mock DeepSeek 的 `LyricsAgent` run；确认出歌后，音乐提示词规划会写入 `MusicPromptAgent` run，音乐 Provider 提交前 Prompt 预检会写入 `ModerationAgent` run，封面提示词规划会写入 `CoverPromptAgent` run，发布包写入前质量门会写入 `QualityEvaluationAgent` run。记录只包含模型名、operation、
+真实模型联调前，Agent 调用审计通过 `agent_runs` 表记录。当前首轮写词默认是轻链路：
+`KnowledgeRetrieve -> LyricsAgent -> self-score/local safety`；当 `LYRICS_FIRST_DRAFT_MODE=conditional-brief`
+且输入很短、很散或只点名实体时，才会额外写入 `CreativeBriefAgent` run。确认出歌后，音乐提示词规划会写入 `MusicPromptAgent` run，音乐 Provider 提交前 Prompt 预检会写入 `ModerationAgent` run，封面提示词规划会写入 `CoverPromptAgent` run，发布包写入前质量门会写入 `QualityEvaluationAgent` run。记录只包含模型名、operation、
 Prompt 模板版本、输入/输出 hash、状态、耗时和脱敏失败信息，不保存完整 Prompt 或用户原文。
 
 API 启动后创建任意灵感成歌或填词成歌作品，再用 PostgreSQL 抽查：
@@ -458,17 +459,22 @@ docker exec yanyun-postgres psql -U postgres -d yanyun_music -Atc \
   "SELECT agent_name, agent_version, operation, model_name, status, input_hash IS NOT NULL, output_hash IS NOT NULL FROM agent_runs ORDER BY created_at DESC LIMIT 5;"
 ```
 
-如果只创建作品，正常应能看到类似：
+如果只创建作品，默认至少应能看到类似：
 
 ```text
-CreativeBriefAgent|v0.1|INSPIRATION|mock-creative-brief|SUCCEEDED|t|t
 LyricsAgent|v0.1|INSPIRATION|mock-deepseek-lyrics|SUCCEEDED|t|t
 ```
 
-写词质量门默认使用 `LYRICS_QUALITY_GATE_MODE=strict`：
+首轮写词模式默认使用 `LYRICS_FIRST_DRAFT_MODE=conditional-brief`：
 
-- `strict`：默认路径。首轮写词后运行 `QualityEvaluationAgent`，必要时允许一次受控重写；质量门仍不通过时阻断返回，适合正式测试和交付基线。
-- `self-score-only`：实验快路径。跳过额外 `QualityEvaluationAgent` 调用，只使用 `LyricsAgent` 自评分和本地安全检查；低自评分、其他 IP 漂移、实体错字输出仍会阻断。该模式用于评估少一次 DeepSeek 调用能节省多少等待时间，不应在未完成 A/B 前作为默认生产口径。
+- `conditional-brief`：默认用户路径。清晰输入跳过 CreativeBrief；短输入、散输入或只点名角色/地点/剧情时，使用瘦身 CreativeBrief，20 秒失败即降级。
+- `direct`：最快 A/B 候选。永远跳过 CreativeBrief。
+- `full-brief`：历史基线。每次首轮写词都先跑 CreativeBrief，主要用于对照评测。
+
+写词质量门默认使用 `LYRICS_QUALITY_GATE_MODE=self-score-only`：
+
+- `self-score-only`：默认用户路径。跳过额外 `QualityEvaluationAgent` 调用，只使用 `LyricsAgent` 自评分和本地安全检查；低自评分、其他 IP 漂移、实体错字输出仍会阻断。
+- `strict`：人工评审 / 对照评测路径。首轮写词后运行 `QualityEvaluationAgent`，必要时允许一次受控重写；质量门仍不通过时阻断返回。
 
 如果继续调用 `POST /api/v1/works/{work_id}/confirm`，正常还能看到类似：
 

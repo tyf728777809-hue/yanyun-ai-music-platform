@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 
 public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
 
-  private static final int CONTENT_SEMANTIC_ATTEMPTS = 3;
   private static final Pattern BEARER_TOKEN_PATTERN =
       Pattern.compile("Bearer\\s+[A-Za-z0-9._~+/=-]+", Pattern.CASE_INSENSITIVE);
   private static final Pattern API_KEY_PATTERN =
@@ -432,7 +431,7 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
   }
 
   private int semanticAttempts(String operation) {
-    return editOperation(operation) ? 2 : CONTENT_SEMANTIC_ATTEMPTS;
+    return Math.max(1, properties.getLyricsSemanticAttempts());
   }
 
   private boolean editOperation(String operation) {

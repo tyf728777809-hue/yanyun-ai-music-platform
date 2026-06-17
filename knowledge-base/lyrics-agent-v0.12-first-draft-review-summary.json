@@ -1,0 +1,236 @@
+{
+  "version": "lyrics-agent-v0.12-first-draft-review-summary",
+  "generated_at": "2026-06-17T15:29:00Z",
+  "scope": "DeepSeek text-only A/B for first-draft mode. No Yunwu, WellAPI, DreamMaker, music, cover, or video generation.",
+  "profile": "v012-first-draft",
+  "sample_count": 12,
+  "variants": [
+    "A_v0.12_full_brief",
+    "B_v0.12_direct",
+    "C_v0.12_conditional"
+  ],
+  "report_files_ignored": [
+    "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.md",
+    "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json"
+  ],
+  "latency_summary_ms": {
+    "A_v0.12_full_brief": {
+      "brief_p50": 9766,
+      "lyrics_p50": 33621,
+      "total_p50": 42400,
+      "total_p95": 48677
+    },
+    "B_v0.12_direct": {
+      "brief_p50": 0,
+      "lyrics_p50": 26088,
+      "total_p50": 26088,
+      "total_p95": 33891
+    },
+    "C_v0.12_conditional": {
+      "brief_p50": 0,
+      "lyrics_p50": 25731,
+      "total_p50": 25731,
+      "total_p95": 48337
+    }
+  },
+  "judge_rubric": {
+    "standard": "Gold-award-level direction, but scored for whether the first draft is understandable, singable, grounded in Yanyun, and worth user editing.",
+    "dimensions": [
+      "song thesis clarity",
+      "point of view",
+      "emotional truth",
+      "unique entry",
+      "chorus function",
+      "memory device",
+      "singability",
+      "section progression",
+      "imagery system",
+      "Yanyun grounding",
+      "originality"
+    ]
+  },
+  "per_case_review": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "A_v0.12_full_brief",
+      "scores": {
+        "A_v0.12_full_brief": 88,
+        "B_v0.12_direct": 86,
+        "C_v0.12_conditional": 82
+      },
+      "reason": "Full brief gave the most complete waiting/returning emotional arc. Direct was usable and much faster, but slightly simpler. Conditional skipped brief and introduced more scattered lore references.",
+      "risk_tags": [
+        "character_song_benefits_from_brief",
+        "conditional_heuristic_may_skip_some_character_cases"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "B_v0.12_direct",
+      "scores": {
+        "A_v0.12_full_brief": 84,
+        "B_v0.12_direct": 88,
+        "C_v0.12_conditional": 83
+      },
+      "reason": "Direct kept the player memory clean and concrete. Full brief drifted toward a broader nostalgia frame. Conditional was singable but pulled in extra relationship imagery that made the place memory less pure.",
+      "risk_tags": [
+        "place_memory_can_be_overplanned"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "C_v0.12_conditional",
+      "scores": {
+        "A_v0.12_full_brief": 82,
+        "B_v0.12_direct": 84,
+        "C_v0.12_conditional": 87
+      },
+      "reason": "Conditional kept the ordinary-player scale and avoided turning the character into a savior. Full brief was serviceable but slightly sports-hero shaped. Direct was clear but less memorable.",
+      "risk_tags": [
+        "ordinary_story_needs_human_scale"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "A_v0.12_full_brief",
+      "scores": {
+        "A_v0.12_full_brief": 88,
+        "B_v0.12_direct": 84,
+        "C_v0.12_conditional": 85
+      },
+      "reason": "Full brief produced the most restrained small-scene song. Direct and conditional were usable, but leaned toward a list of warm scene objects.",
+      "risk_tags": [
+        "life_texture_can_become_scene_inventory"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "A_v0.12_full_brief",
+      "scores": {
+        "A_v0.12_full_brief": 88,
+        "B_v0.12_direct": 82,
+        "C_v0.12_conditional": 85
+      },
+      "reason": "Full brief best handled the light-to-sad turn. Direct was understandable but generic. Conditional had a stronger memory frame than direct but still too clean.",
+      "risk_tags": [
+        "emotional_turn_benefits_from_planning"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.12_direct",
+      "scores": {
+        "A_v0.12_full_brief": 87,
+        "B_v0.12_direct": 88,
+        "C_v0.12_conditional": 85
+      },
+      "reason": "Direct had the strongest dirty-street texture and bottom-level voice. Full brief was more polished and still good. Conditional was a little too orderly.",
+      "risk_tags": [
+        "gritty_faction_can_be_overcleaned"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-character-jiangwulang-001",
+      "winner": "C_v0.12_conditional",
+      "scores": {
+        "A_v0.12_full_brief": 85,
+        "B_v0.12_direct": 84,
+        "C_v0.12_conditional": 89
+      },
+      "reason": "Conditional found the strongest speaking voice and daily care details. Full brief was correct but more distant. Direct was grounded but less song-like.",
+      "risk_tags": [
+        "character_voice_matters_more_than_lore_count"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-story-ruoshui-001",
+      "winner": "C_v0.12_conditional",
+      "scores": {
+        "A_v0.12_full_brief": 87,
+        "B_v0.12_direct": 82,
+        "C_v0.12_conditional": 90
+      },
+      "reason": "This is the strongest argument for conditional brief. The input is short and entity-heavy; conditional triggered brief and produced the coldest, most controlled story-song. Direct was too thin.",
+      "risk_tags": [
+        "short_story_entity_should_trigger_brief"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-friend-quit-001",
+      "winner": "B_v0.12_direct",
+      "scores": {
+        "A_v0.12_full_brief": 84,
+        "B_v0.12_direct": 89,
+        "C_v0.12_conditional": 85
+      },
+      "reason": "Direct preserved the player-meta relationship without forcing official plot. Full brief and conditional were both acceptable but more literary and less immediate.",
+      "risk_tags": [
+        "player_meta_should_not_be_overgrounded"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-theme-free-tethered-001",
+      "winner": "C_v0.12_conditional",
+      "scores": {
+        "A_v0.12_full_brief": 84,
+        "B_v0.12_direct": 82,
+        "C_v0.12_conditional": 88
+      },
+      "reason": "Conditional best expressed freedom being pulled back by human obligation. Full brief was coherent but generic. Direct was subtle but underpowered.",
+      "risk_tags": [
+        "abstract_theme_needs_one_clear_tension"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-player-not-main-001",
+      "winner": "B_v0.12_direct",
+      "scores": {
+        "A_v0.12_full_brief": 84,
+        "B_v0.12_direct": 88,
+        "C_v0.12_conditional": 85
+      },
+      "reason": "Direct gave the best ordinary-player self-portrait. Full brief was polished but generic. Conditional was singable but softer and less distinct.",
+      "risk_tags": [
+        "ordinary_player_story_should_keep_self_portrait"
+      ]
+    },
+    {
+      "case_id": "lyrics-v08-place-buxianxian-001",
+      "winner": "B_v0.12_direct",
+      "scores": {
+        "A_v0.12_full_brief": 84,
+        "B_v0.12_direct": 90,
+        "C_v0.12_conditional": 86
+      },
+      "reason": "Direct produced the clearest restrained night-drinking song with a memorable chorus mechanism. Full brief was correct but ordinary. Conditional was competent but less sharp.",
+      "risk_tags": [
+        "intimate_place_song_can_work_without_brief"
+      ]
+    }
+  ],
+  "score_totals": {
+    "A_v0.12_full_brief": 1019,
+    "B_v0.12_direct": 1027,
+    "C_v0.12_conditional": 1030
+  },
+  "winner_counts": {
+    "A_v0.12_full_brief": 3,
+    "B_v0.12_direct": 5,
+    "C_v0.12_conditional": 4
+  },
+  "decision": {
+    "recommended_default": "C_v0.12_conditional",
+    "rationale": "Conditional brief has almost the same median latency as direct mode in this 12-sample run, avoids the full-brief latency tax, and still recovers quality on short/entity-heavy story inputs such as Ruoshui. Direct mode is a valid fallback and often strongest for clear player-meta or intimate place inputs, but conditional gives a better safety net with little median cost.",
+    "do_not_use_default": [
+      {
+        "mode": "A_v0.12_full_brief",
+        "reason": "Quality is not consistently better, while total P50 is about 42.4s versus about 26s for direct/conditional."
+      },
+      {
+        "mode": "B_v0.12_direct",
+        "reason": "Fast and often good, but weaker on short story/entity inputs where a brief can clarify the song entry."
+      }
+    ],
+    "next_action": "Keep public real-test default at LYRICS_FIRST_DRAFT_MODE=conditional-brief and LYRICS_QUALITY_GATE_MODE=self-score-only. Do not expand prompt rules now; next product test should validate user-perceived quality and first-draft latency in real browser flow."
+  }
+}

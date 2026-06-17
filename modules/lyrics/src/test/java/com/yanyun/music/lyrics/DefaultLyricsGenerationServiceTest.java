@@ -53,7 +53,7 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("mock-kb-v1", result.knowledgeBaseVersion());
     assertEquals(List.of("Mock Yanyun Reference"), result.yanyunReferences());
     assertEquals(7, result.promptTemplateVersions().get("lyrics.inspiration.v1"));
-    assertEquals(8, result.promptTemplateVersions().get("creative.brief.v8"));
+    assertEquals(12, result.promptTemplateVersions().get("creative.brief.v12"));
     assertEquals(BigDecimal.valueOf(0.86), result.qualityScore());
   }
 
@@ -271,7 +271,7 @@ class DefaultLyricsGenerationServiceTest {
 
     assertEquals("[Verse]\nEdited lyrics", result.lyricsText());
     assertEquals(BigDecimal.valueOf(0.72), result.qualityScore());
-    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v8"));
+    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v12"));
     assertEquals(7, result.promptTemplateVersions().get("lyrics.polish.v1"));
     assertEquals(2, records.size());
     assertEquals("KnowledgeRetrieve", records.get(0).agentName());
@@ -316,6 +316,86 @@ class DefaultLyricsGenerationServiceTest {
     assertEquals("LyricsAgent", records.get(2).agentName());
     assertFalse(
         records.stream().anyMatch(record -> "QualityEvaluationAgent".equals(record.agentName())));
+  }
+
+  @Test
+  void directFirstDraftModeSkipsCreativeBriefAgentAndQualityGate() {
+    List<AgentRunRecord> records = new ArrayList<>();
+    List<String> seenInstructions = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request -> {
+          seenInstructions.add(request.instruction());
+          return new DeepSeekLyricsResponse(
+              "Song",
+              "Summary",
+              "[Verse]\nLyrics",
+              "cinematic folk",
+              "cover seed",
+              List.of(),
+              BigDecimal.valueOf(0.86));
+        };
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            request -> {
+              throw new AssertionError("direct mode should not call CreativeBriefAgent");
+            },
+            deepSeek,
+            request -> {
+              throw new AssertionError("self-score-only should not call QualityEvaluationAgent");
+            },
+            records::add,
+            LyricsQualityGateMode.SELF_SCORE_ONLY,
+            LyricsFirstDraftMode.DIRECT);
+
+    LyricsGenerationResult result =
+        service.generate(
+            requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
+
+    assertEquals("Song", result.songTitle());
+    assertEquals(2, records.size());
+    assertEquals("KnowledgeRetrieve", records.get(0).agentName());
+    assertEquals("LyricsAgent", records.get(1).agentName());
+    assertFalse(result.promptTemplateVersions().containsKey("creative.brief.v12"));
+    assertTrue(seenInstructions.getFirst().contains("creative_brief_unavailable_fallback"));
+  }
+
+  @Test
+  void conditionalBriefSkipsClearInputButUsesBriefForVeryShortInput() {
+    List<CreativeBriefRequest> briefRequests = new ArrayList<>();
+    DeepSeekLyricsClient deepSeek =
+        request ->
+            new DeepSeekLyricsResponse(
+                "Song",
+                "Summary",
+                "[Verse]\nLyrics",
+                "cinematic folk",
+                "cover seed",
+                List.of(),
+                BigDecimal.valueOf(0.86));
+    DefaultLyricsGenerationService service =
+        new DefaultLyricsGenerationService(
+            knowledgeService(),
+            promptService(),
+            request -> {
+              briefRequests.add(request);
+              return new MockCreativeBriefAgent().generate(request);
+            },
+            deepSeek,
+            request ->
+                new QualityEvaluationResult(
+                    request.gate(), QualityDecision.PASS, 88, List.of(), "PASS", false, Map.of()),
+            new ArrayList<AgentRunRecord>()::add,
+            LyricsQualityGateMode.SELF_SCORE_ONLY,
+            LyricsFirstDraftMode.CONDITIONAL_BRIEF);
+
+    service.generate(
+        requestWithUserInput(LyricsOperation.INSPIRATION, "清河真的很像我的新手村，想写那种离开以后才想回去的感觉。"));
+    service.generate(requestWithUserInput(LyricsOperation.INSPIRATION, "寒香寻"));
+
+    assertEquals(1, briefRequests.size());
+    assertEquals("寒香寻", briefRequests.getFirst().userInput());
   }
 
   @Test

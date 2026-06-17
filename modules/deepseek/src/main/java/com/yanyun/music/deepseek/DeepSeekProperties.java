@@ -12,8 +12,12 @@ public class DeepSeekProperties {
   private String apiKey = "";
   private String modelName = "deepseek-v4-pro";
   private Duration requestTimeout = Duration.ofSeconds(30);
+  private Duration creativeBriefRequestTimeout = Duration.ofSeconds(20);
   private int maxAttempts = 1;
   private int responseMaxTokens = 4096;
+  private int creativeBriefResponseMaxTokens = 900;
+  private int creativeBriefSemanticAttempts = 1;
+  private int lyricsSemanticAttempts = 2;
   private BigDecimal temperature = BigDecimal.valueOf(0.7);
 
   public boolean isAgentRealCallsEnabled() {
@@ -68,6 +72,17 @@ public class DeepSeekProperties {
             : requestTimeout;
   }
 
+  public Duration getCreativeBriefRequestTimeout() {
+    return creativeBriefRequestTimeout;
+  }
+
+  public void setCreativeBriefRequestTimeout(Duration creativeBriefRequestTimeout) {
+    this.creativeBriefRequestTimeout =
+        creativeBriefRequestTimeout == null || creativeBriefRequestTimeout.isNegative()
+            ? Duration.ofSeconds(20)
+            : creativeBriefRequestTimeout;
+  }
+
   public int getMaxAttempts() {
     return maxAttempts;
   }
@@ -82,6 +97,30 @@ public class DeepSeekProperties {
 
   public void setResponseMaxTokens(int responseMaxTokens) {
     this.responseMaxTokens = Math.max(256, responseMaxTokens);
+  }
+
+  public int getCreativeBriefResponseMaxTokens() {
+    return creativeBriefResponseMaxTokens;
+  }
+
+  public void setCreativeBriefResponseMaxTokens(int creativeBriefResponseMaxTokens) {
+    this.creativeBriefResponseMaxTokens = Math.max(256, creativeBriefResponseMaxTokens);
+  }
+
+  public int getCreativeBriefSemanticAttempts() {
+    return creativeBriefSemanticAttempts;
+  }
+
+  public void setCreativeBriefSemanticAttempts(int creativeBriefSemanticAttempts) {
+    this.creativeBriefSemanticAttempts = Math.max(1, creativeBriefSemanticAttempts);
+  }
+
+  public int getLyricsSemanticAttempts() {
+    return lyricsSemanticAttempts;
+  }
+
+  public void setLyricsSemanticAttempts(int lyricsSemanticAttempts) {
+    this.lyricsSemanticAttempts = Math.max(1, lyricsSemanticAttempts);
   }
 
   public BigDecimal getTemperature() {

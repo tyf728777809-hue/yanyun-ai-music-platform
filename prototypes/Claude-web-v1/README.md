@@ -22,6 +22,8 @@ npm run dev      # 本地 http://localhost:5273
 - `5273`：前端开发默认端口。
 - `5274`：`npm run smoke:real-backend` 自动启动的临时验证端口。
 - `5275`：当前手动真实测试常用端口，可用 `npm run dev -- --host 127.0.0.1 --port 5275` 启动。
+- 公网临时测试使用 Cloudflare quick tunnel 时，Vite 默认允许 `*.trycloudflare.com` Host；如需额外白名单，
+  可设置 `VITE_ALLOWED_HOSTS=host1,host2`。
 
 ### 两种运行模式
 

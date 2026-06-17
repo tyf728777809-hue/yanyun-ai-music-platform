@@ -32,6 +32,7 @@ import com.yanyun.music.knowledge.KnowledgeService;
 import com.yanyun.music.knowledge.MockKnowledgeService;
 import com.yanyun.music.knowledge.NoopKnowledgeService;
 import com.yanyun.music.lyrics.DefaultLyricsGenerationService;
+import com.yanyun.music.lyrics.LyricsFirstDraftMode;
 import com.yanyun.music.lyrics.LyricsGenerationService;
 import com.yanyun.music.lyrics.LyricsQualityGateMode;
 import com.yanyun.music.minimax.MiniMaxMusicProvider;
@@ -229,7 +230,8 @@ public class WorkerProductionConfiguration {
       DeepSeekLyricsClient deepSeekLyricsClient,
       QualityEvaluationAgent qualityEvaluationAgent,
       AgentRunRecorder agentRunRecorder,
-      @Value("${yanyun.lyrics.quality-gate-mode:strict}") String lyricsQualityGateMode) {
+      @Value("${yanyun.lyrics.quality-gate-mode:self-score-only}") String lyricsQualityGateMode,
+      @Value("${yanyun.lyrics.first-draft-mode:conditional-brief}") String firstDraftMode) {
     return new DefaultLyricsGenerationService(
         knowledgeService,
         promptTemplateService,
@@ -237,7 +239,8 @@ public class WorkerProductionConfiguration {
         deepSeekLyricsClient,
         qualityEvaluationAgent,
         agentRunRecorder,
-        LyricsQualityGateMode.fromProperty(lyricsQualityGateMode));
+        LyricsQualityGateMode.fromProperty(lyricsQualityGateMode),
+        LyricsFirstDraftMode.fromProperty(firstDraftMode));
   }
 
   @Bean

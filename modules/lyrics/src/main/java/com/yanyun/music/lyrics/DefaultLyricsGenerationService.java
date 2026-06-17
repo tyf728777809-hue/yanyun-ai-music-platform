@@ -38,8 +38,8 @@ import java.util.Set;
 public final class DefaultLyricsGenerationService implements LyricsGenerationService {
 
   private static final BigDecimal QUALITY_REWRITE_THRESHOLD = BigDecimal.valueOf(0.80);
-  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v8";
-  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 8;
+  private static final String CREATIVE_BRIEF_TEMPLATE_KEY = "creative.brief.v12";
+  private static final int CREATIVE_BRIEF_TEMPLATE_VERSION = 12;
 
   private final KnowledgeService knowledgeService;
   private final PromptTemplateService promptTemplateService;
@@ -48,6 +48,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
   private final QualityEvaluationAgent qualityEvaluationAgent;
   private final AgentRunRecorder agentRunRecorder;
   private final LyricsQualityGateMode qualityGateMode;
+  private final LyricsFirstDraftMode firstDraftMode;
 
   public DefaultLyricsGenerationService(
       KnowledgeService knowledgeService,
@@ -60,7 +61,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(NoopAgentRunRecorder.INSTANCE),
         NoopAgentRunRecorder.INSTANCE,
-        LyricsQualityGateMode.STRICT);
+        LyricsQualityGateMode.STRICT,
+        LyricsFirstDraftMode.FULL_BRIEF);
   }
 
   public DefaultLyricsGenerationService(
@@ -75,7 +77,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
         agentRunRecorder,
-        LyricsQualityGateMode.STRICT);
+        LyricsQualityGateMode.STRICT,
+        LyricsFirstDraftMode.FULL_BRIEF);
   }
 
   public DefaultLyricsGenerationService(
@@ -91,7 +94,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         deepSeekLyricsClient,
         new MockQualityEvaluationAgent(agentRunRecorder),
         agentRunRecorder,
-        LyricsQualityGateMode.STRICT);
+        LyricsQualityGateMode.STRICT,
+        LyricsFirstDraftMode.FULL_BRIEF);
   }
 
   public DefaultLyricsGenerationService(
@@ -108,7 +112,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
         deepSeekLyricsClient,
         qualityEvaluationAgent,
         agentRunRecorder,
-        LyricsQualityGateMode.STRICT);
+        LyricsQualityGateMode.STRICT,
+        LyricsFirstDraftMode.FULL_BRIEF);
   }
 
   public DefaultLyricsGenerationService(
@@ -119,6 +124,26 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       QualityEvaluationAgent qualityEvaluationAgent,
       AgentRunRecorder agentRunRecorder,
       LyricsQualityGateMode qualityGateMode) {
+    this(
+        knowledgeService,
+        promptTemplateService,
+        creativeBriefAgent,
+        deepSeekLyricsClient,
+        qualityEvaluationAgent,
+        agentRunRecorder,
+        qualityGateMode,
+        LyricsFirstDraftMode.FULL_BRIEF);
+  }
+
+  public DefaultLyricsGenerationService(
+      KnowledgeService knowledgeService,
+      PromptTemplateService promptTemplateService,
+      CreativeBriefAgent creativeBriefAgent,
+      DeepSeekLyricsClient deepSeekLyricsClient,
+      QualityEvaluationAgent qualityEvaluationAgent,
+      AgentRunRecorder agentRunRecorder,
+      LyricsQualityGateMode qualityGateMode,
+      LyricsFirstDraftMode firstDraftMode) {
     this.knowledgeService = knowledgeService;
     this.promptTemplateService = promptTemplateService;
     this.creativeBriefAgent =
@@ -133,6 +158,7 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     this.agentRunRecorder =
         agentRunRecorder == null ? NoopAgentRunRecorder.INSTANCE : agentRunRecorder;
     this.qualityGateMode = qualityGateMode == null ? LyricsQualityGateMode.STRICT : qualityGateMode;
+    this.firstDraftMode = firstDraftMode == null ? LyricsFirstDraftMode.FULL_BRIEF : firstDraftMode;
   }
 
   @Override
@@ -142,7 +168,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
     if (lightweightEditOperation(request.operation())) {
       return generateLightweightEdit(request, knowledge);
     }
-    CreativeBriefResult creativeBrief = generateCreativeBrief(request, knowledge);
+    CreativeBriefSelection creativeBriefSelection = selectCreativeBrief(request, knowledge);
+    CreativeBriefResult creativeBrief = creativeBriefSelection.result();
     ensureCreativeDomainAllowed(creativeBrief);
     LyricsGenerationRequest briefedRequest = withCreativeBrief(request, creativeBrief, knowledge);
     PromptRenderResult prompt = renderPrompt(briefedRequest, knowledge);
@@ -159,7 +186,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       ensureSelfScoreLyricsAllowed(briefedRequest, response, knowledge);
     }
     ensureLyricsQualityAllowed(response, quality);
-    return toResult(response, creativeBrief, knowledge, prompt, true);
+    return toResult(
+        response, creativeBrief, knowledge, prompt, creativeBriefSelection.includePromptVersion());
   }
 
   private LyricsGenerationResult generateLightweightEdit(
@@ -197,6 +225,70 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
             knowledge.references().stream().map(KnowledgeReference::content).toList()));
   }
 
+  private CreativeBriefSelection selectCreativeBrief(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    if (firstDraftMode.neverUseBrief() || !shouldUseModelCreativeBrief(request, knowledge)) {
+      return new CreativeBriefSelection(fallbackCreativeBrief(request, knowledge), false);
+    }
+    CreativeBriefResult result = generateCreativeBrief(request, knowledge);
+    return new CreativeBriefSelection(result, true);
+  }
+
+  private boolean shouldUseModelCreativeBrief(
+      LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
+    if (request == null || request.operation() != LyricsOperation.INSPIRATION) {
+      return firstDraftMode.alwaysUseBrief();
+    }
+    if (firstDraftMode.alwaysUseBrief()) {
+      return true;
+    }
+    if (!firstDraftMode.conditionalBrief()) {
+      return false;
+    }
+    String seed =
+        compact(
+            String.join(
+                " ",
+                firstNonBlank(request.userInput(), ""),
+                firstNonBlank(request.instruction(), ""),
+                firstNonBlank(request.requestedTitle(), "")));
+    if (seed.length() <= 18) {
+      return true;
+    }
+    boolean hasResolvedEntity = knowledge != null && !knowledge.resolvedEntities().isEmpty();
+    boolean entityOnlyLikeInput = hasResolvedEntity && seed.length() <= 38 && !hasIntentCue(seed);
+    boolean scattered = seed.length() <= 32 && lacksEmotionalOrStoryCue(seed);
+    return entityOnlyLikeInput || scattered;
+  }
+
+  private String compact(String value) {
+    return value == null ? "" : value.replaceAll("\\s+", "");
+  }
+
+  private boolean hasIntentCue(String value) {
+    return containsAny(
+        value, "想", "希望", "不要", "但是", "却", "因为", "离开", "回去", "等", "守", "打不过", "还会", "写一个", "以",
+        "关于", "感觉", "表面", "后面", "故事", "经历", "人生", "遗憾", "开心", "难过", "自由", "热血");
+  }
+
+  private boolean lacksEmotionalOrStoryCue(String value) {
+    return !hasIntentCue(value)
+        && !containsAny(
+            value, "角色", "地点", "门派", "剧情", "任务", "玩家", "少侠", "游侠", "朋友", "师父", "旧人", "故乡");
+  }
+
+  private boolean containsAny(String value, String... needles) {
+    if (value == null || value.isBlank()) {
+      return false;
+    }
+    for (String needle : needles) {
+      if (needle != null && !needle.isBlank() && value.contains(needle)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private CreativeBriefResult generateCreativeBrief(
       LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
     CreativeBriefRequest briefRequest =
@@ -218,6 +310,8 @@ public final class DefaultLyricsGenerationService implements LyricsGenerationSer
       return fallbackCreativeBrief(request, knowledge);
     }
   }
+
+  private record CreativeBriefSelection(CreativeBriefResult result, boolean includePromptVersion) {}
 
   private CreativeBriefResult fallbackCreativeBrief(
       LyricsGenerationRequest request, KnowledgeRetrievalResult knowledge) {
