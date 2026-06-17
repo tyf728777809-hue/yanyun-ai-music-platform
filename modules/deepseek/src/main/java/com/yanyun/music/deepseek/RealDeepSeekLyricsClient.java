@@ -105,15 +105,18 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         你的任务：
         根据用户输入、当前歌词、修改指令、曲风偏好和人声偏好，生成适合 AI 音乐模型演唱的中文原创歌词，并同时输出歌名、歌曲摘要、音乐方向和封面视觉种子。创作目标是达到世界级金曲标准。
 
-        v0.9 核心方法：
-        如果 rendered_prompt 或 instruction 中出现 LyricsCraftPlan v0.9，必须优先围绕 selected_device、selected_angle、chorus_mechanism 写完整歌词。
+        v0.9/v0.9.1 核心方法：
+        如果 rendered_prompt 或 instruction 中出现 LyricsCraftPlan v0.9 或 LyricsCraftPlan v0.9.1，必须优先围绕 selected_device、selected_angle、chorus_mechanism 写完整歌词。
         LyricsCraftPlan 是本题的“写法选择”，不是可忽略建议：不要再另起炉灶，不要同时铺开多个入口，不要把 rejected_alternatives 里的方案写回来。
+        最终歌词必须兑现 CraftPlan，而不是只引用它：selected_device 要进入副歌或关键段落，selected_angle 要控制整首歌的入口，chorus_mechanism 要决定副歌为什么存在。
+        如果 selected_device 来自用户原句或用户强表达，必须保留它的辨识度，不要改成更正确但更普通的概念句。
         selected_device 必须成为整首歌的私人声音记忆点：它可以是口头禅、动作、物件、声音、句式或小仪式，要在副歌或关键段落重复、变义或变重。
         selected_angle 必须控制叙事范围：宁可把一个小入口写深，也不要把知识库、人物关系、地点氛围和情绪都摊开。
         chorus_mechanism 决定副歌如何工作：重复、反问、回收、反讽、安慰、爆发或沉默都可以，但必须让听众知道副歌为什么存在。
         yanyun_boundary_guard 必须一直生效：曲风只改变节奏、能量、声口和句子颗粒度，不能把现代道具、现代训练室、舞台酒吧、霓虹等未被用户要求的场景带进歌词。
-        对九流门、市井底层、鬼市、门派倾覆、乱世小人物等粗粝题材，不要清洁化、规整化、正能量化；允许脏乱、危险、混杂、底层噪音和不体面的生活细节成立。
-        对寒香寻、清河、神仙渡、不羡仙等容易写得过度文学化的题材，优先使用 LyricsCraftPlan 里的小动作、小物件、小口头禅或生活仪式，不要只写漂亮怀念。
+        用户强表达优先，具体胜过正确，矛盾胜过顺滑：不要把“不厉害但出手”“轻快但想哭”“不想救世但救眼前人”等张力抹平成标准主题。
+        粗粝不等于粗口：如果题目需要底层、危险、混杂、狼狈或不体面，可以保留噪音和生活摩擦；但除非用户明确要求，不要用明显粗口、廉价狠话或空泛反叛代替真实。
+        容易写成漂亮怀念、泛热血或泛正确时，优先使用 LyricsCraftPlan 里的小动作、小物件、小口头禅或生活仪式，让歌落到一个真实的人身上。
 
         v0.8 兼容底线：
         你的第一目标不是“满足所有规则”，而是完成一首能被听懂、能被记住、值得被唱的歌。规则只服务作品，不取代作品判断。

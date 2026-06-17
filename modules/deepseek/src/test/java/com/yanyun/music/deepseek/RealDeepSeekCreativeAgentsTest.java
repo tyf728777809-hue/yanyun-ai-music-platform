@@ -350,15 +350,23 @@ class RealDeepSeekCreativeAgentsTest {
     JsonNode userMessage = capturedBody.get().path("messages").get(1).path("content");
     assertTrue(systemMessage.asText().contains("LyricsCraftPlan 轻量写法选择 Agent"));
     assertTrue(systemMessage.asText().contains("不是写歌词"));
+    assertTrue(systemMessage.asText().contains("通用作词判断"));
+    assertTrue(systemMessage.asText().contains("不要写题材专属规则"));
+    assertTrue(systemMessage.asText().contains("用户强表达优先"));
+    assertTrue(systemMessage.asText().contains("具体胜过正确"));
+    assertTrue(systemMessage.asText().contains("矛盾胜过顺滑"));
     assertTrue(systemMessage.asText().contains("selected_device"));
     assertTrue(systemMessage.asText().contains("chorus_mechanism"));
+    assertTrue(systemMessage.asText().contains("副歌必须有功能"));
+    assertTrue(systemMessage.asText().contains("知识库服务歌曲"));
     assertTrue(systemMessage.asText().contains("不能导入现代道具"));
-    assertTrue(systemMessage.asText().contains("不要清洁化、规整化"));
-    assertTrue(systemMessage.asText().contains("过度文学化"));
+    assertTrue(systemMessage.asText().contains("粗粝不等于粗口"));
+    assertFalse(systemMessage.asText().contains("九流门"));
+    assertFalse(systemMessage.asText().contains("寒香寻"));
     assertTrue(userMessage.asText().contains("City Pop"));
     assertTrue(userMessage.asText().contains("region/清河"));
     assertEquals("LyricsCraftPlanner", records.getFirst().agentName());
-    assertEquals("v0.9", records.getFirst().agentVersion());
+    assertEquals("v0.9.1", records.getFirst().agentVersion());
   }
 
   @Test

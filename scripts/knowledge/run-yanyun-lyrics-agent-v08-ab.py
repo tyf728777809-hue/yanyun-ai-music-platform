@@ -14,7 +14,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-EVAL_CASES_PATH = ROOT / "knowledge-base/lyrics-agent-v0.8-eval-cases.json"
+_EVAL_CASES_PATH = Path(
+    os.environ.get(
+        "LYRICS_AGENT_AB_CASES_PATH",
+        str(ROOT / "knowledge-base/lyrics-agent-v0.8-eval-cases.json"),
+    )
+)
+EVAL_CASES_PATH = _EVAL_CASES_PATH if _EVAL_CASES_PATH.is_absolute() else ROOT / _EVAL_CASES_PATH
 KB_DIR = ROOT / "knowledge-base/commercial-final"
 REPORT_DIR = ROOT / "build/reports/lyrics-agent"
 MANUAL_REVIEW_MD = REPORT_DIR / "yanyun-lyrics-agent-v08-ab-manual-review.md"
@@ -31,7 +37,7 @@ CRAFT_PLANNER_PATH = (
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsCraftPlanner.java"
 )
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
-CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9.1")
 
 
 def sha256(value):
@@ -457,7 +463,7 @@ def craft_plan_instruction(craft_plan):
         return "lyrics_craft_plan_status=disabled_or_fallback"
     return "\n".join(
         [
-            "LyricsCraftPlan v0.9:",
+            "LyricsCraftPlan v0.9.1:",
             "song_thesis_guard="
             + first_non_blank(
                 craft_plan.get("song_thesis_guard"), craft_plan.get("songThesisGuard")
@@ -481,7 +487,7 @@ def craft_plan_instruction(craft_plan):
                 or [],
                 ensure_ascii=False,
             ),
-            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. If the topic is rough, low-level, factional, or street-side, do not clean it into safe pretty literature.",
+            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. If selected_device preserves a strong user phrase, keep it recognizable. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. Preserve useful contradiction instead of smoothing it away. If the selected angle is rough, low-level, dangerous, or street-side, keep texture without falling into obvious profanity or cheap rebellion.",
         ]
     )
 
@@ -535,21 +541,82 @@ def assert_gates(mode):
         raise RuntimeError("ALLOW_DEEPSEEK_REAL_AB=1 is required for execute mode")
 
 
+def percentile(values, ratio):
+    if not values:
+        return None
+    ordered = sorted(values)
+    index = int(round((len(ordered) - 1) * ratio))
+    return ordered[max(0, min(index, len(ordered) - 1))]
+
+
+def timing_stats(values):
+    clean = [int(value) for value in values if isinstance(value, (int, float))]
+    if not clean:
+        return {}
+    return {
+        "count": len(clean),
+        "min_ms": min(clean),
+        "p50_ms": percentile(clean, 0.50),
+        "avg_ms": round(sum(clean) / len(clean), 2),
+        "p95_ms": percentile(clean, 0.95),
+        "max_ms": max(clean),
+    }
+
+
+def latency_summary(results):
+    by_variant = {}
+    for result in results:
+        for variant in result.get("variants", []):
+            name = variant.get("variant", "unknown")
+            bucket = by_variant.setdefault(
+                name,
+                {
+                    "brief_elapsed_ms": [],
+                    "craft_plan_elapsed_ms": [],
+                    "lyrics_elapsed_ms": [],
+                    "total_elapsed_ms": [],
+                },
+            )
+            total = 0
+            for key in ("brief_elapsed_ms", "craft_plan_elapsed_ms", "lyrics_elapsed_ms"):
+                value = variant.get(key)
+                if isinstance(value, (int, float)):
+                    bucket[key].append(value)
+                    total += value
+            if total > 0:
+                bucket["total_elapsed_ms"].append(total)
+    return {
+        variant: {key: timing_stats(values) for key, values in timings.items()}
+        for variant, timings in by_variant.items()
+    }
+
+
 def write_reports(results):
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    timings = latency_summary(results)
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "baseline_revision": BASELINE_REV,
+        "current_variant": CURRENT_VARIANT_LABEL,
+        "eval_cases_path": str(EVAL_CASES_PATH),
+        "latency_summary": timings,
         "results": results,
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.9 A/B Manual Review",
+        "# LyricsAgent v0.9.1 A/B Manual Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
         f"- baseline_revision: `{BASELINE_REV}`",
         f"- current_variant: `{CURRENT_VARIANT_LABEL}`",
+        f"- eval_cases_path: `{EVAL_CASES_PATH}`",
         "- 注意：本文件包含完整 Prompt 和完整歌词，只保存在 ignored 的 build/ 目录，不要提交。",
+        "",
+        "## Latency Summary",
+        "",
+        "```json",
+        json.dumps(timings, ensure_ascii=False, indent=2),
+        "```",
         "",
     ]
     for result in results:
@@ -725,6 +792,8 @@ def main():
                     "mode": mode,
                     "sample_count": len(cases),
                     "sample_ids": [case["id"] for case in cases],
+                    "eval_cases_path": str(EVAL_CASES_PATH),
+                    "current_variant": CURRENT_VARIANT_LABEL,
                     "report_dir": str(REPORT_DIR),
                     "will_call_deepseek": False,
                     "will_call_music_or_image": False,
@@ -743,6 +812,8 @@ def main():
                     "deepseek_key_present": bool(os.environ.get("DEEPSEEK_API_KEY", "").strip()),
                     "knowledge_rows": len(knowledge_rows),
                     "baseline_revision": BASELINE_REV,
+                    "eval_cases_path": str(EVAL_CASES_PATH),
+                    "current_variant": CURRENT_VARIANT_LABEL,
                     "reports_ignored_path": str(REPORT_DIR),
                 },
                 ensure_ascii=False,
@@ -760,6 +831,7 @@ def main():
                 "sample_count": len(results),
                 "manual_review_md": str(MANUAL_REVIEW_MD),
                 "manual_review_json": str(MANUAL_REVIEW_JSON),
+                "latency_summary": latency_summary(results),
                 "lyric_hashes": [
                     {
                         "case_id": item["case"]["id"],

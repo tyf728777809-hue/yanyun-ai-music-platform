@@ -1,0 +1,134 @@
+{
+  "version": "lyrics-agent-v0.9.1-general-judgment",
+  "description": "Generic pressure cases for LyricsCraftPlan v0.9.1. These cases test whether the agent preserves user phrasing, chooses concrete devices, keeps contradictions, and avoids topic-specific prompt patches.",
+  "initial_batch_ids": [
+    "lyrics-v091-strong-phrase-still-act-001",
+    "lyrics-v091-conflicting-light-heavy-001",
+    "lyrics-v091-anti-savior-nearby-001",
+    "lyrics-v091-failure-not-waste-001",
+    "lyrics-v091-open-style-modern-boundary-001",
+    "lyrics-v091-rough-without-profanity-001"
+  ],
+  "cases": [
+    {
+      "id": "lyrics-v091-strong-phrase-still-act-001",
+      "category": "strong_user_phrase",
+      "user_input": "我就想写“还是会出手”这句话，不厉害也要出手。",
+      "mood": "倔强、热血",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["还是会出手", "不厉害", "普通少侠"],
+      "review_notes": "必须保留用户强表达，不要替换成更正确但更普通的英雄口号。"
+    },
+    {
+      "id": "lyrics-v091-failure-not-waste-001",
+      "category": "dignity_after_failure",
+      "user_input": "想写一个失败的人，但不是废物。",
+      "mood": "低烧、倔强",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["失败", "尊严", "不是废物"],
+      "review_notes": "核心矛盾是失败和尊严并存，不要洗成成功学，也不要空喊不服。"
+    },
+    {
+      "id": "lyrics-v091-anti-savior-nearby-001",
+      "category": "anti_grand_mission",
+      "user_input": "我不想当救世主，我只想把眼前的人救下来。",
+      "mood": "坚定、克制",
+      "music_style": "影视OST",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["不当救世主", "眼前的人", "小范围守护"],
+      "review_notes": "必须保留反宏大张力，不能自动升级成拯救天下或山河大义。"
+    },
+    {
+      "id": "lyrics-v091-ambiguous-soft-001",
+      "category": "ambiguous_emotion",
+      "user_input": "想写那种玩着玩着突然安静下来的感觉。",
+      "mood": "轻、空、后劲酸",
+      "music_style": "流行抒情",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["突然安静", "玩家日常", "后劲"],
+      "review_notes": "输入很轻，不能硬写大剧情；应找到一个安静下来的声音或动作。"
+    },
+    {
+      "id": "lyrics-v091-conflicting-light-heavy-001",
+      "category": "contradictory_energy",
+      "user_input": "要轻快一点，但听完又有点难受。",
+      "mood": "轻快、后劲酸",
+      "music_style": "City Pop",
+      "vocal_preference": "智能匹配",
+      "expected_focus": ["轻快", "难受", "反差"],
+      "review_notes": "不要把矛盾抹平；轻快应成为难受的外壳。"
+    },
+    {
+      "id": "lyrics-v091-character-material-not-generic-001",
+      "category": "character_grounding",
+      "user_input": "写寒姨，但不要把她写成普通等人的人。",
+      "mood": "克制、复杂",
+      "music_style": "流行抒情",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["寒香寻", "不羡仙", "复杂守护"],
+      "review_notes": "这是回归样本，不要求专属规则；关键是能否用角色独有材料，而不是通用等待。"
+    },
+    {
+      "id": "lyrics-v091-open-style-modern-boundary-001",
+      "category": "style_world_boundary",
+      "user_input": "R&B一点，写燕云里一个夜里喝酒的人，别太古风。",
+      "mood": "克制、孤独",
+      "music_style": "R&B",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["R&B声口", "燕云夜酒", "不默认国风"],
+      "review_notes": "音乐可以现代，歌词世界不能漂移到现代酒吧、霓虹或舞台。"
+    },
+    {
+      "id": "lyrics-v091-rough-without-profanity-001",
+      "category": "rough_texture",
+      "user_input": "写底层江湖，乱、脏、吵，但不要低俗。",
+      "mood": "粗粝、躁动",
+      "music_style": "说唱",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["底层江湖", "乱脏吵", "不低俗"],
+      "review_notes": "要有噪音和摩擦，但不能靠粗口和廉价狠话。"
+    },
+    {
+      "id": "lyrics-v091-ordinary-not-hero-001",
+      "category": "ordinary_person",
+      "user_input": "写一个小摊贩卷进局里，不要写成英雄。",
+      "mood": "紧张、市井",
+      "music_style": "说唱",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["小摊贩", "卷进局里", "普通人视角"],
+      "review_notes": "应保留普通人的胆怯、算计和求生，不要升级成救世英雄。"
+    },
+    {
+      "id": "lyrics-v091-place-small-device-001",
+      "category": "small_image",
+      "user_input": "清河下雨，有个旧铃声，我想一直听见它。",
+      "mood": "潮湿、安静",
+      "music_style": "电子",
+      "vocal_preference": "女声主唱",
+      "expected_focus": ["清河", "下雨", "旧铃声"],
+      "review_notes": "旧铃声就是强 device，不要另造更漂亮的主题。"
+    },
+    {
+      "id": "lyrics-v091-user-memory-friend-001",
+      "category": "player_relationship",
+      "user_input": "一起跑图的朋友退坑了，别写太煽情。",
+      "mood": "轻轻的遗憾",
+      "music_style": "民谣叙事",
+      "vocal_preference": "双人对唱",
+      "expected_focus": ["跑图朋友", "退坑", "克制遗憾"],
+      "review_notes": "这是玩家关系，不应强绑官方角色；不要煽过头。"
+    },
+    {
+      "id": "lyrics-v091-style-energy-no-props-001",
+      "category": "style_boundary",
+      "user_input": "想要摇滚一点，但歌词还是燕云里的普通少侠。",
+      "mood": "热、倔、笨拙",
+      "music_style": "摇滚",
+      "vocal_preference": "男声主唱",
+      "expected_focus": ["摇滚能量", "燕云少侠", "不现代道具"],
+      "review_notes": "摇滚只改变能量和句子颗粒度，不能自动出现现代训练室、麦克风或拳击叙事。"
+    }
+  ]
+}

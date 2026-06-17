@@ -10,10 +10,10 @@ import java.util.List;
 public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
 
   private static final String AGENT_NAME = "LyricsCraftPlanner";
-  private static final String AGENT_VERSION = "mock-v0.9";
+  private static final String AGENT_VERSION = "mock-v0.9.1";
   private static final String MODEL_NAME = "mock-lyrics-craft-planner";
-  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9";
-  private static final int TEMPLATE_VERSION = 9;
+  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9.1";
+  private static final int TEMPLATE_VERSION = 10;
 
   private final AgentRunRecorder agentRunRecorder;
 
@@ -33,11 +33,11 @@ public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
       LyricsCraftPlanResult result =
           new LyricsCraftPlanResult(
               "Keep one clear song thesis from the user's Yanyun inspiration.",
-              "one repeatable concrete sound, object, or spoken habit",
-              "enter through the user's smallest believable scene instead of a grand summary",
-              "let the chorus repeat the device once, then make it mean more the second time",
+              "preserve the user's strongest concrete phrase, sound, object, or spoken habit",
+              "enter through the user's smallest believable scene and keep its contradiction alive",
+              "let the chorus repeat the device once, then make it mean more or mean differently",
               "Keep lyrics inside the Yanyun world; music style must not import modern props.",
-              List.of("generic heroic slogan", "encyclopedia plot summary"));
+              List.of("generic heroic slogan", "encyclopedia plot summary", "cheap profanity"));
       record(request, result, startedAt, null);
       return result;
     } catch (RuntimeException exception) {
