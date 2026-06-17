@@ -1,0 +1,93 @@
+{
+  "version": "lyrics-agent-v0.11.2-full6-review",
+  "generated_at": "2026-06-17T21:51:00+08:00",
+  "source_report": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "contains_full_prompt_or_lyrics": false,
+  "judge": "Codex strict golden-lyrics review",
+  "baseline_variant": "A_v0.7",
+  "current_variant": "B_v0.11.2-minimal",
+  "latency_summary": {
+    "A_v0.7": {
+      "total_p50_ms": 61285,
+      "total_avg_ms": 63064.33,
+      "total_p95_ms": 78725,
+      "total_max_ms": 78725
+    },
+    "B_v0.11.2_minimal": {
+      "total_p50_ms": 66211,
+      "total_avg_ms": 84315.5,
+      "total_p95_ms": 160553,
+      "total_max_ms": 160553
+    }
+  },
+  "overall_result": {
+    "b_wins": 4,
+    "a_wins": 2,
+    "ties": 0,
+    "passed_6_case_gate": true,
+    "safe_to_expand_to_24": false,
+    "safe_as_incremental_production_baseline": true,
+    "judgment": "v0.11.2 is a low-risk incremental improvement over v0.11 direct-write. It improves private object progression and rough-topic concreteness without reintroducing CraftPlan, but it is not a decisive golden-lyrics breakthrough and should not be expanded to 24 cases yet. Keep it as the current production baseline and continue future quality work with a different strategy instead of more prompt patches."
+  },
+  "case_reviews": [
+    {
+      "case_id": "lyrics-v08-character-hanxiangxun-001",
+      "winner": "B_v0.11.2-minimal",
+      "a_score": 90,
+      "b_score": 91,
+      "review_note": "B's half-bowl-soup device gives the waiting relationship a clearer object progression and stronger title. A is warmer and simpler, but B better tests the v0.11.2 goal of making the object carry time and absence.",
+      "remaining_issue": "B introduces more lore names than needed; future versions should keep the emotional object without becoming reference-heavy."
+    },
+    {
+      "case_id": "lyrics-v08-region-qinghe-001",
+      "winner": "A_v0.7",
+      "a_score": 91,
+      "b_score": 87,
+      "review_note": "A has more Qinghe texture and a fuller return-home feeling. B has a cleaner repeating bridge image, but it becomes more generic and loses too much local warmth.",
+      "remaining_issue": "Place nostalgia still needs richer place-specific sensory detail without turning into scenery prose."
+    },
+    {
+      "case_id": "lyrics-v08-player-underdog-001",
+      "winner": "B_v0.11.2-minimal",
+      "a_score": 87,
+      "b_score": 89,
+      "review_note": "B is more concrete and human-scale: dirty shoes, shaking hands, a small person still standing forward. A has a more direct rock chant but feels more generic.",
+      "remaining_issue": "B's chorus is solid but not yet a truly unforgettable hook."
+    },
+    {
+      "case_id": "lyrics-v08-life-market-001",
+      "winner": "A_v0.7",
+      "a_score": 89,
+      "b_score": 86,
+      "review_note": "A is more coherent and naturally warm. B has a repeatable 'old lamp moved' device, but the refrain is too designed and a few images feel less organically connected.",
+      "remaining_issue": "Market-life songs need understated continuity; too much device repetition can flatten the smoke-and-fire texture."
+    },
+    {
+      "case_id": "lyrics-v08-contrast-light-sad-001",
+      "winner": "B_v0.11.2-minimal",
+      "a_score": 90,
+      "b_score": 93,
+      "review_note": "B's 'tomorrow I will teach you' is an excellent light-to-sad device: it starts as a joke and becomes an impossible promise. This is the strongest B case.",
+      "remaining_issue": "The final chorus should be tightened if used as a real production lyric."
+    },
+    {
+      "case_id": "lyrics-v08-faction-jiuliu-001",
+      "winner": "B_v0.11.2-minimal",
+      "a_score": 88,
+      "b_score": 91,
+      "review_note": "B fixes the hard-slogan problem better than A: more street noise, money, debt, dirty movement and survival texture. It still uses a forceful refrain, but the refrain is less empty than A's chant.",
+      "remaining_issue": "Some lines remain slightly over-written; rough songs should keep more bite and less literary polish."
+    }
+  ],
+  "decision": {
+    "keep_code_change": true,
+    "commit_recommended": true,
+    "do_not_expand_to_24_yet": true,
+    "next_quality_strategy": [
+      "Keep v0.11.2 as a minimal production prompt improvement.",
+      "Stop patching single weak sample types with more natural-language rules.",
+      "For the next major quality jump, evaluate either a small multi-candidate generation and judge pass, or a curated human-reviewed lyric exemplar bank.",
+      "Treat latency outliers as product risk: any future extra-call strategy must prove clear quality lift before becoming default."
+    ]
+  }
+}

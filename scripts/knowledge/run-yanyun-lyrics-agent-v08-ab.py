@@ -33,7 +33,7 @@ BRIEF_AGENT_PATH = (
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekCreativeBriefAgent.java"
 )
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
-CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.11-direct")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.11.2-minimal")
 
 
 def sha256(value):

@@ -57,6 +57,7 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("顶级中文作词 Agent"));
     assertTrue(systemPrompt.contains("世界级中文作词家"));
     assertTrue(systemPrompt.contains("v0.11 核心方法"));
+    assertTrue(systemPrompt.contains("v0.11.2 最小补强"));
     assertTrue(systemPrompt.contains("不再等待额外规划步骤"));
     assertTrue(systemPrompt.contains("选择最清楚的一条歌曲主线"));
     assertTrue(systemPrompt.contains("CreativeBrief 是辅助判断，不是剧情大纲"));
@@ -80,6 +81,9 @@ class RealDeepSeekLyricsClientTest {
     assertFalse(systemPrompt.contains("v0.8.3 调整"));
     assertFalse(systemPrompt.contains("v0.8.4 调整"));
     assertTrue(systemPrompt.contains("曲风不允许改变世界边界"));
+    assertTrue(systemPrompt.contains("不要只围绕一个漂亮物件打转"));
+    assertTrue(systemPrompt.contains("不要用“爷、规矩、命、热血”这类硬口号"));
+    assertTrue(systemPrompt.contains("脏乱环境、笨拙动作、交易声、羞耻和尊严并存"));
     assertTrue(systemPrompt.contains("知识库只服务歌曲主线"));
     assertTrue(systemPrompt.contains("不编造官方设定"));
     assertTrue(systemPrompt.contains("开放作词路径"));
@@ -105,6 +109,8 @@ class RealDeepSeekLyricsClientTest {
     assertTrue(systemPrompt.contains("3 个以上万能词"));
     assertTrue(systemPrompt.contains("禁止只靠“酒、剑、月、风”"));
     assertTrue(systemPrompt.contains("剧情解释太满"));
+    assertTrue(systemPrompt.contains("抒情怀旧是否只剩一个物件"));
+    assertTrue(systemPrompt.contains("粗粝题材是否硬口号化"));
     assertTrue(systemPrompt.contains("只输出 JSON object"));
     assertTrue(systemPrompt.contains("一票否决"));
     assertTrue(systemPrompt.contains("0.90-1.00"));
