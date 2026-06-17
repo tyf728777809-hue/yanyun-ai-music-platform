@@ -33,7 +33,7 @@ Decision: WellAPI is a temporary public-network validation backend only. DreamMa
 - NFR-2: Scripts MUST avoid command-line arguments containing secret values.
 - NFR-3: Stack startup SHOULD fail within 60 seconds if API health does not become ready.
 - NFR-4: Automated validation MUST NOT call WellAPI unless both `ALLOW_REAL_MODEL_SMOKE=1` and `ALLOW_WELLAPI_IMAGE2_REAL_SMOKE=1` are explicitly set by the operator.
-- NFR-5: The stack smoke SHOULD default `WELLAPI_REQUEST_TIMEOUT` to at least `180s` because public Image 2 generation can exceed the API default `30s` request timeout.
+- NFR-5: The stack smoke SHOULD default `WELLAPI_REQUEST_TIMEOUT` to at least `300s` because public Image 2 generation can exceed the API default `30s` request timeout.
 
 ## Acceptance Criteria
 

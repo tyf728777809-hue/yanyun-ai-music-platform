@@ -28,6 +28,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - FR-13: The publish package verification MUST require audio, cover, video, and lyrics timeline URL presence without printing the URLs.
 - FR-14: After a successful Yunwu Suno music sample, the smoke SHOULD verify timestamped lyrics via the gated `yunwu-suno-timestamped-lyrics-smoke.sh` subcheck using the paired `provider_task_id + provider_audio_id` stored on the platform `AUDIO` asset.
 - FR-15: Timestamped lyrics verification MUST NOT print or persist raw provider payloads, full aligned word arrays, full lyrics text, supplier media URLs, Bearer tokens, or signed URLs.
+- FR-16: The default public full-experience smoke MUST require the `COVER` media asset to come from `wellapi-image2`; platform fallback covers such as `default-cover` MUST fail the smoke unless an operator explicitly sets `ALLOW_COVER_FALLBACK_IN_PUBLIC_REAL_SMOKE=true`.
 
 ## Non-Functional Requirements
 
@@ -35,7 +36,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - NFR-2: The script MUST fail closed on missing credentials, failed readiness, provider failure, frontend failure, or unsafe port state.
 - NFR-3: The script SHOULD write raw application logs only under `build/smoke/...`, which is not a committed evidence location.
 - NFR-4: The script SHOULD complete with one real work sample unless external provider latency exceeds the configured polling window.
-- NFR-5: The script SHOULD default WellAPI Image 2 request timeout to at least `180s` so a synchronous public image generation call is not cut off by the API default `30s` timeout.
+- NFR-5: The script SHOULD default WellAPI Image 2 request timeout to at least `300s` so a synchronous public image generation call is not cut off by the API default `30s` timeout.
 - NFR-6: The script SHOULD default Yunwu request timeout to at least `300s`, `YUNWU_MAX_POLL_ATTEMPTS` to at least `180`, and `YUNWU_POLL_INTERVAL` to `2s`, so one public music task can wait roughly 6 minutes before being judged as timeout. The script SHOULD default `MAX_MUSIC_RETRY_ATTEMPTS=0` to avoid multiplying real music cost unless an operator explicitly enables product retries.
 - NFR-7: Timestamped lyrics verification SHOULD be disabled by default for public full experience while the current product path uses no-subtitle default videos; operators MAY enable it explicitly with `CHECK_YUNWU_TIMESTAMPED_LYRICS=true` when testing provider timestamp support.
 
@@ -51,6 +52,7 @@ DreamMaker music and DreamMaker Image 2 remain the production-target paths. This
 - AC-8: Given a public-network successful sample, when the smoke fetches the publish package, then sanitized output reports `audio`, `cover`, `video`, and `timeline` URL presence as true, and Claude Web v1 displays the audio, cover, and video handoff fields. Covers FR-9 and FR-13.
 - AC-9: Given Yunwu exposes a provider audio id, when timestamped lyrics verification runs, then the evidence file contains only `http_status`, provider code, aligned word count, waveform presence, and timestamp presence. Covers FR-14 and FR-15.
 - AC-10: Given Yunwu does not expose `provider_audio_id` or returns no aligned timestamps, when timestamped lyrics verification runs, then the smoke fails with a sanitized reason and the project must treat exact subtitles as not yet verified. Covers FR-14.
+- AC-11: Given the platform recovers from a WellAPI timeout by generating a fallback cover, when the public full-experience smoke validates media assets, then it exits non-zero with a sanitized fallback/provider summary instead of reporting a real full-experience pass. Covers FR-16.
 
 ## Edge Cases
 

@@ -24,6 +24,7 @@ LYRICS_POLL_INTERVAL_SECONDS="${LYRICS_POLL_INTERVAL_SECONDS:-3}"
 SMOKE_TIMEOUT_MS="${SMOKE_TIMEOUT_MS:-30000}"
 MAX_MUSIC_RETRY_ATTEMPTS="${MAX_MUSIC_RETRY_ATTEMPTS:-0}"
 CHECK_YUNWU_TIMESTAMPED_LYRICS="${CHECK_YUNWU_TIMESTAMPED_LYRICS:-false}"
+ALLOW_COVER_FALLBACK_IN_PUBLIC_REAL_SMOKE="${ALLOW_COVER_FALLBACK_IN_PUBLIC_REAL_SMOKE:-false}"
 IDEMPOTENCY_PREFIX="${IDEMPOTENCY_PREFIX:-public-real-full-$(date +%s)}"
 LOG_DIR="${LOG_DIR:-${REPO_ROOT}/build/smoke/public-real-full-experience-$(date +%Y%m%d%H%M%S)}"
 LOCAL_OBJECT_ROOTS="${LOCAL_OBJECT_ROOTS:-build/local-object-storage/yanyun-works-local:apps/music-worker/build/local-object-storage/yanyun-works-local:apps/music-api/build/local-object-storage/yanyun-works-local}"
@@ -293,7 +294,7 @@ start_worker() {
     export IMAGE2_SIZE="${IMAGE2_SIZE:-2048x1152}"
     export IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}"
     export IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}"
-    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-180s}"
+    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-300s}"
     export AGENT_REAL_CALLS_ENABLED=true
     export DEEPSEEK_REAL_CALLS_ENABLED=true
     export DEEPSEEK_BASE_URL="${DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
@@ -357,7 +358,7 @@ start_api() {
     export IMAGE2_SIZE="${IMAGE2_SIZE:-2048x1152}"
     export IMAGE2_QUALITY="${IMAGE2_QUALITY:-medium}"
     export IMAGE2_OUTPUT_FORMAT="${IMAGE2_OUTPUT_FORMAT:-jpeg}"
-    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-180s}"
+    export WELLAPI_REQUEST_TIMEOUT="${WELLAPI_REQUEST_TIMEOUT:-300s}"
     export DREAMMAKER_REAL_CALLS_ENABLED=false
     export MUSIC_WORKFLOW_DISPATCH_MODE=outbox
     export WORKFLOW_OUTBOX_DISPATCHER_ENABLED=true
@@ -543,6 +544,32 @@ verify_sanitized_db_evidence() {
   fi
   if [ "${missing_required_agent_count:-0}" != "0" ]; then
     fail "missing required DeepSeek agent evidence"
+  fi
+}
+
+assert_real_cover_asset() {
+  if ! command -v docker >/dev/null 2>&1; then
+    log "docker missing; skipping real cover provider assertion"
+    return
+  fi
+
+  local cover_evidence cover_provider cover_fallback
+  cover_evidence="$(
+    psql_query \
+      "select concat_ws(E'\\t', coalesce(metadata_json->>'provider',''), coalesce(metadata_json->>'fallback','false')) from media_assets where work_id = '$WORK_ID'::uuid and asset_type = 'COVER' order by created_at desc limit 1;"
+  )"
+  if [ -z "$cover_evidence" ]; then
+    fail "missing COVER media asset"
+  fi
+
+  IFS=$'\t' read -r cover_provider cover_fallback <<<"$cover_evidence"
+  if [ "$ALLOW_COVER_FALLBACK_IN_PUBLIC_REAL_SMOKE" = "true" ]; then
+    log "cover fallback assertion disabled by ALLOW_COVER_FALLBACK_IN_PUBLIC_REAL_SMOKE=true"
+    return
+  fi
+
+  if [ "$cover_provider" != "wellapi-image2" ] || [ "$cover_fallback" = "true" ]; then
+    fail "public real full smoke requires a real WellAPI cover; got provider=${cover_provider:-<empty>} fallback=${cover_fallback:-<empty>}"
   fi
 }
 
@@ -876,6 +903,7 @@ main() {
   confirm_real_music
   wait_for_package_ready
   verify_sanitized_db_evidence
+  assert_real_cover_asset
   fetch_publish_package
   verify_package_media_urls_and_streams
   verify_timestamped_lyrics
