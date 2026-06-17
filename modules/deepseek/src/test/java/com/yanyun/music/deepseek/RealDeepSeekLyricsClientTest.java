@@ -56,11 +56,13 @@ class RealDeepSeekLyricsClientTest {
     String systemPrompt = capturedBody.get().path("messages").get(0).path("content").asText();
     assertTrue(systemPrompt.contains("顶级中文作词 Agent"));
     assertTrue(systemPrompt.contains("世界级中文作词家"));
-    assertTrue(systemPrompt.contains("v0.9/v0.9.1 核心方法"));
+    assertTrue(systemPrompt.contains("v0.9/v0.9.1/v0.9.2 核心方法"));
     assertTrue(systemPrompt.contains("LyricsCraftPlan v0.9"));
     assertTrue(systemPrompt.contains("LyricsCraftPlan v0.9.1"));
+    assertTrue(systemPrompt.contains("LyricsCraftPlan v0.9.2"));
     assertTrue(systemPrompt.contains("最终歌词必须兑现 CraftPlan"));
-    assertTrue(systemPrompt.contains("用户强表达优先"));
+    assertTrue(systemPrompt.contains("原句或近似原句进入副歌"));
+    assertTrue(systemPrompt.contains("不要另造 device 抢走它"));
     assertTrue(systemPrompt.contains("具体胜过正确"));
     assertTrue(systemPrompt.contains("矛盾胜过顺滑"));
     assertTrue(systemPrompt.contains("selected_device"));

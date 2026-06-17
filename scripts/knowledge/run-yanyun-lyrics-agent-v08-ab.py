@@ -37,7 +37,7 @@ CRAFT_PLANNER_PATH = (
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsCraftPlanner.java"
 )
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
-CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9.1")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.9.2")
 
 
 def sha256(value):
@@ -463,7 +463,7 @@ def craft_plan_instruction(craft_plan):
         return "lyrics_craft_plan_status=disabled_or_fallback"
     return "\n".join(
         [
-            "LyricsCraftPlan v0.9.1:",
+            "LyricsCraftPlan v0.9.2:",
             "song_thesis_guard="
             + first_non_blank(
                 craft_plan.get("song_thesis_guard"), craft_plan.get("songThesisGuard")
@@ -487,7 +487,7 @@ def craft_plan_instruction(craft_plan):
                 or [],
                 ensure_ascii=False,
             ),
-            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. If selected_device preserves a strong user phrase, keep it recognizable. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. Preserve useful contradiction instead of smoothing it away. If the selected angle is rough, low-level, dangerous, or street-side, keep texture without falling into obvious profanity or cheap rebellion.",
+            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. If selected_device preserves a strong user phrase, keep it recognizable and use it in the chorus or key refrain. Do not replace strong user phrasing with a more cinematic but less singable device. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. Preserve useful contradiction instead of smoothing it away. If the selected angle is rough, low-level, dangerous, or street-side, keep texture without falling into obvious profanity or cheap rebellion.",
         ]
     )
 
@@ -604,7 +604,7 @@ def write_reports(results):
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.9.1 A/B Manual Review",
+        "# LyricsAgent v0.9.2 A/B Manual Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
         f"- baseline_revision: `{BASELINE_REV}`",

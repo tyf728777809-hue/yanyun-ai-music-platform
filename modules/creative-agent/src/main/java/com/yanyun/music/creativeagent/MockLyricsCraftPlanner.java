@@ -10,10 +10,10 @@ import java.util.List;
 public final class MockLyricsCraftPlanner implements LyricsCraftPlanner {
 
   private static final String AGENT_NAME = "LyricsCraftPlanner";
-  private static final String AGENT_VERSION = "mock-v0.9.1";
+  private static final String AGENT_VERSION = "mock-v0.9.2";
   private static final String MODEL_NAME = "mock-lyrics-craft-planner";
-  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9.1";
-  private static final int TEMPLATE_VERSION = 10;
+  private static final String TEMPLATE_KEY = "lyrics.craft.plan.v9.2";
+  private static final int TEMPLATE_VERSION = 11;
 
   private final AgentRunRecorder agentRunRecorder;
 

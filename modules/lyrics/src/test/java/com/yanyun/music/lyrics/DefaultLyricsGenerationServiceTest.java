@@ -200,10 +200,10 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
     assertEquals("Song", result.songTitle());
-    assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.9.1:"));
+    assertTrue(renderedInstructions.getFirst().contains("LyricsCraftPlan v0.9.2:"));
     assertTrue(renderedInstructions.getFirst().contains("selected_device=茶碗一响"));
     assertTrue(renderedInstructions.getFirst().contains("chorus_mechanism=副歌让茶碗声从日常变成回不去。"));
-    assertEquals(10, result.promptTemplateVersions().get("lyrics.craft.plan.v9.1"));
+    assertEquals(11, result.promptTemplateVersions().get("lyrics.craft.plan.v9.2"));
   }
 
   @Test
@@ -276,7 +276,7 @@ class DefaultLyricsGenerationServiceTest {
     LyricsGenerationResult result = service.generate(baseRequest(LyricsOperation.INSPIRATION));
 
     assertTrue(result.lyricsText().contains("lyrics_craft_plan_status=disabled_or_fallback"));
-    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v9.1"));
+    assertFalse(result.promptTemplateVersions().containsKey("lyrics.craft.plan.v9.2"));
     assertTrue(
         records.stream()
             .anyMatch(

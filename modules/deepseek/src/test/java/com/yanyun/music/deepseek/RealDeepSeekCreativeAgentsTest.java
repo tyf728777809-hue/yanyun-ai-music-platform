@@ -352,7 +352,9 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemMessage.asText().contains("不是写歌词"));
     assertTrue(systemMessage.asText().contains("通用作词判断"));
     assertTrue(systemMessage.asText().contains("不要写题材专属规则"));
-    assertTrue(systemMessage.asText().contains("用户强表达优先"));
+    assertTrue(systemMessage.asText().contains("第一判断必须先找用户强短语"));
+    assertTrue(systemMessage.asText().contains("原句或近似原句"));
+    assertTrue(systemMessage.asText().contains("更电影感但更不适合唱"));
     assertTrue(systemMessage.asText().contains("具体胜过正确"));
     assertTrue(systemMessage.asText().contains("矛盾胜过顺滑"));
     assertTrue(systemMessage.asText().contains("selected_device"));
@@ -366,7 +368,7 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(userMessage.asText().contains("City Pop"));
     assertTrue(userMessage.asText().contains("region/清河"));
     assertEquals("LyricsCraftPlanner", records.getFirst().agentName());
-    assertEquals("v0.9.1", records.getFirst().agentVersion());
+    assertEquals("v0.9.2", records.getFirst().agentVersion());
   }
 
   @Test

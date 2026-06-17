@@ -1,0 +1,111 @@
+{
+  "version": "lyrics-agent-v0.9.2-full6-review-summary",
+  "generated_at": "2026-06-17T16:16:00+08:00",
+  "source_reports": [
+    "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json"
+  ],
+  "contains_full_prompt_or_lyrics": false,
+  "baseline_variant": "A_v0.7",
+  "current_variant": "B_v0.9.2",
+  "execution_note": "The first 4 cases were evaluated in one targeted run and the remaining 2 initial-batch cases were evaluated in a second targeted run. The local report path is ignored and overwritten by each run, so this file is the durable de-identified merged judgment.",
+  "latency_summary": {
+    "targeted_lost_4": {
+      "A_v0.7": {
+        "total_p50_ms": 80834,
+        "total_avg_ms": 89405.5,
+        "total_p95_ms": 123197
+      },
+      "B_v0.9.2": {
+        "craft_plan_p50_ms": 26738,
+        "total_p50_ms": 132784,
+        "total_avg_ms": 139068.5,
+        "total_p95_ms": 199058
+      }
+    },
+    "remaining_initial_2": {
+      "A_v0.7": {
+        "total_p50_ms": 63186,
+        "total_avg_ms": 70715.5,
+        "total_p95_ms": 78245
+      },
+      "B_v0.9.2": {
+        "craft_plan_p50_ms": 23384,
+        "total_p50_ms": 145007,
+        "total_avg_ms": 178063,
+        "total_p95_ms": 211119
+      }
+    }
+  },
+  "overall_result": {
+    "b_wins": 4,
+    "a_wins": 2,
+    "borderline_cases": 2,
+    "passed_full6_gate": true,
+    "safe_to_expand_to_12": true,
+    "safe_as_default_production_prompt": false,
+    "judgment": "v0.9.2 fixes the most important v0.9.1 regression: strong user phrases such as '还是会出手' are now preserved instead of replaced by more cinematic devices. It reaches the 4/6 gate for expanding to a 12-case evaluation, but the latency cost is high and two case types still lose to v0.7, so it should not become the final default without a 12-case check."
+  },
+  "case_reviews": [
+    {
+      "case_id": "lyrics-v091-strong-phrase-still-act-001",
+      "winner": "B_v0.9.2",
+      "a_score": 82,
+      "b_score": 87,
+      "conclusion": "可用但不够顶",
+      "reason": "B preserves '还是会出手' as the repeating hook and makes it more physical and singable. A is clean and direct, but B better proves the strong-phrase-preservation fix.",
+      "remaining_issue": "The repeated chorus is effective but still closer to a strong demo hook than a true golden-song lyric."
+    },
+    {
+      "case_id": "lyrics-v091-conflicting-light-heavy-001",
+      "winner": "A_v0.7",
+      "a_score": 88,
+      "b_score": 84,
+      "conclusion": "A has stronger golden-song potential",
+      "reason": "A's light-running device feels more natural and emotionally precise. B's '数到三' device is coherent, but slightly over-designed and less surprising.",
+      "remaining_issue": "CraftPlan can choose a technically functional device while reducing lived-in naturalness."
+    },
+    {
+      "case_id": "lyrics-v091-anti-savior-nearby-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 82,
+      "conclusion": "A wins narrowly",
+      "reason": "A keeps the user's moral boundary sharper. B is more cinematic and emotional, but drifts toward a familiar rescue scene and softens the anti-grand thesis.",
+      "remaining_issue": "CraftPlan should distinguish a conceptual moral sentence from a scene device; not every strong phrase needs added melodrama."
+    },
+    {
+      "case_id": "lyrics-v091-failure-not-waste-001",
+      "winner": "B_v0.9.2",
+      "a_score": 81,
+      "b_score": 85,
+      "conclusion": "B is better but still not top-tier",
+      "reason": "B's '再来一次' repetition better turns failure dignity into a performable device and preserves the not-yet-waste idea via '还没废'. A is steadier but less immediate.",
+      "remaining_issue": "The result is powerful but still somewhat familiar; the phrase '不是废物' itself could be preserved more explicitly in a future pass."
+    },
+    {
+      "case_id": "lyrics-v091-ambiguous-soft-001",
+      "winner": "B_v0.9.2",
+      "a_score": 78,
+      "b_score": 82,
+      "conclusion": "B wins on boundary and refrain clarity",
+      "reason": "A has some more delicate emotional detail, but it leaks modern player/UI terms into the lyric. B stays inside the Yanyun world and has a clearer repeatable refrain.",
+      "remaining_issue": "B is valid and coherent, but still generic; it needs a more private small sound or action to reach golden-song level."
+    },
+    {
+      "case_id": "lyrics-v091-character-material-not-generic-001",
+      "winner": "B_v0.9.2",
+      "a_score": 84,
+      "b_score": 88,
+      "conclusion": "B has usable golden-song direction",
+      "reason": "B's '温酒不等人 / 点灯不指路' directly fights the user's concern that 寒姨 should not be reduced to ordinary waiting. It has a stronger conceptual turn than A.",
+      "remaining_issue": "It is still a little literary and long-lined; future polishing should make the refrain tighter and more singable."
+    }
+  ],
+  "next_prompt_direction": [
+    "Expand to 12 cases before considering v0.9.2 as the default inspiration prompt.",
+    "Keep strong user phrases verbatim or near-verbatim when they are already singable.",
+    "For conceptual contradiction inputs, avoid turning every thesis into a cinematic rescue scene.",
+    "For soft ambiguous inputs, keep the boundary against modern UI terms but seek a more private sound/action than a generic refrain.",
+    "Because v0.9.2 can add 50-100 seconds versus v0.7 in real runs, the next stage must evaluate latency as a first-class product cost."
+  ]
+}

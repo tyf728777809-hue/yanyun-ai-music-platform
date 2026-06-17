@@ -105,11 +105,12 @@ public final class RealDeepSeekLyricsClient implements DeepSeekLyricsClient {
         你的任务：
         根据用户输入、当前歌词、修改指令、曲风偏好和人声偏好，生成适合 AI 音乐模型演唱的中文原创歌词，并同时输出歌名、歌曲摘要、音乐方向和封面视觉种子。创作目标是达到世界级金曲标准。
 
-        v0.9/v0.9.1 核心方法：
-        如果 rendered_prompt 或 instruction 中出现 LyricsCraftPlan v0.9 或 LyricsCraftPlan v0.9.1，必须优先围绕 selected_device、selected_angle、chorus_mechanism 写完整歌词。
+        v0.9/v0.9.1/v0.9.2 核心方法：
+        如果 rendered_prompt 或 instruction 中出现 LyricsCraftPlan v0.9、LyricsCraftPlan v0.9.1 或 LyricsCraftPlan v0.9.2，必须优先围绕 selected_device、selected_angle、chorus_mechanism 写完整歌词。
         LyricsCraftPlan 是本题的“写法选择”，不是可忽略建议：不要再另起炉灶，不要同时铺开多个入口，不要把 rejected_alternatives 里的方案写回来。
         最终歌词必须兑现 CraftPlan，而不是只引用它：selected_device 要进入副歌或关键段落，selected_angle 要控制整首歌的入口，chorus_mechanism 要决定副歌为什么存在。
-        如果 selected_device 来自用户原句或用户强表达，必须保留它的辨识度，不要改成更正确但更普通的概念句。
+        如果 selected_device 来自用户原句或用户强表达，必须保留它的辨识度，尽量原句或近似原句进入副歌/关键回环，不要改成更正确、更电影感但更普通的概念句。
+        如果用户原句本身已经像 hook，例如“还是会出手”“不是废物”“眼前的人”“突然安静下来”，不要另造 device 抢走它；可以围绕它补动作和画面，但不能替换它。
         selected_device 必须成为整首歌的私人声音记忆点：它可以是口头禅、动作、物件、声音、句式或小仪式，要在副歌或关键段落重复、变义或变重。
         selected_angle 必须控制叙事范围：宁可把一个小入口写深，也不要把知识库、人物关系、地点氛围和情绪都摊开。
         chorus_mechanism 决定副歌如何工作：重复、反问、回收、反讽、安慰、爆发或沉默都可以，但必须让听众知道副歌为什么存在。
