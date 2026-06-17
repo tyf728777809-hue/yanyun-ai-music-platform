@@ -1,0 +1,149 @@
+{
+  "version": "lyrics-agent-v0.9.2-mid12-review-summary",
+  "generated_at": "2026-06-17T16:55:00+08:00",
+  "source_report": "build/reports/lyrics-agent/yanyun-lyrics-agent-v08-ab-manual-review.json",
+  "contains_full_prompt_or_lyrics": false,
+  "baseline_variant": "A_v0.7",
+  "current_variant": "B_v0.9.2",
+  "latency_summary": {
+    "A_v0.7": {
+      "total_p50_ms": 76558,
+      "total_avg_ms": 76959.25,
+      "total_p95_ms": 93826,
+      "total_max_ms": 114064
+    },
+    "B_v0.9.2": {
+      "craft_plan_p50_ms": 33937,
+      "total_p50_ms": 143868,
+      "total_avg_ms": 136914.17,
+      "total_p95_ms": 171429,
+      "total_max_ms": 206738
+    }
+  },
+  "overall_result": {
+    "b_wins": 5,
+    "a_wins": 7,
+    "borderline_cases": 2,
+    "passed_12_case_gate": false,
+    "safe_to_expand_to_24": false,
+    "safe_as_default_production_prompt": false,
+    "judgment": "v0.9.2 improves strong user phrase preservation, but the 12-case pressure set shows it does not justify the added CraftPlan latency as the default route. A_v0.7 remains stronger in several natural, concise, and emotionally direct cases. Stop expanding v0.9.2 as natural-language prompt tuning and switch to a structured CraftPlan decision if continuing this line."
+  },
+  "case_reviews": [
+    {
+      "case_id": "lyrics-v091-strong-phrase-still-act-001",
+      "winner": "B_v0.9.2",
+      "a_score": 82,
+      "b_score": 86,
+      "conclusion": "B fixes the strong-phrase regression",
+      "reason": "B keeps the user's phrase as the central refrain and gives it a more specific, ordinary-person texture.",
+      "remaining_issue": "The chorus is still demo-strong rather than golden-song strong."
+    },
+    {
+      "case_id": "lyrics-v091-conflicting-light-heavy-001",
+      "winner": "A_v0.7",
+      "a_score": 88,
+      "b_score": 84,
+      "conclusion": "A is more natural and emotionally precise",
+      "reason": "A has a more surprising tactile image and a cleaner light-to-sad turn. B's repeatable device works but feels more designed.",
+      "remaining_issue": "CraftPlan can over-design contradictions that should stay effortless."
+    },
+    {
+      "case_id": "lyrics-v091-anti-savior-nearby-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 82,
+      "conclusion": "A preserves the moral thesis better",
+      "reason": "A keeps the user's plain anti-grand sentence intact. B turns it into a familiar protection scene and loses some conceptual sharpness.",
+      "remaining_issue": "Conceptual user inputs should not always become cinematic action devices."
+    },
+    {
+      "case_id": "lyrics-v091-failure-not-waste-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 82,
+      "conclusion": "A is more singable and less gimmicky",
+      "reason": "A's repeated fire-not-out device is simple, chantable, and emotionally direct. B's concrete object device is distinctive but slightly forced.",
+      "remaining_issue": "Strong phrase preservation should not replace direct emotional clarity with a quirky prop."
+    },
+    {
+      "case_id": "lyrics-v091-open-style-modern-boundary-001",
+      "winner": "A_v0.7",
+      "a_score": 88,
+      "b_score": 82,
+      "conclusion": "A is cleaner R&B lyric writing",
+      "reason": "A's repeated drinking line is more effortless, less antique, and more singable. B's counting-device is technically coherent but stiffer.",
+      "remaining_issue": "CraftPlan can make R&B-like material too conceptual."
+    },
+    {
+      "case_id": "lyrics-v091-rough-without-profanity-001",
+      "winner": "B_v0.9.2",
+      "a_score": 83,
+      "b_score": 86,
+      "conclusion": "B has stronger bottom-level noise",
+      "reason": "B better captures dirty, noisy, bottom-level movement without relying on explicit vulgarity.",
+      "remaining_issue": "The texture is strong, but still risks drifting into slogan and toughness display."
+    },
+    {
+      "case_id": "lyrics-v091-ambiguous-soft-001",
+      "winner": "A_v0.7",
+      "a_score": 85,
+      "b_score": 78,
+      "conclusion": "A is more timeless and less UI-contaminated",
+      "reason": "A stays in a lyric space and uses quiet sensory details. B introduces game UI/social words that may fit a player story but weaken timeless song quality.",
+      "remaining_issue": "For player-experience inputs, the agent needs a clearer choice between in-world lyric and meta-player lyric."
+    },
+    {
+      "case_id": "lyrics-v091-character-material-not-generic-001",
+      "winner": "B_v0.9.2",
+      "a_score": 84,
+      "b_score": 87,
+      "conclusion": "B better resists generic waiting",
+      "reason": "B more directly answers the user's requirement not to reduce 寒姨 to ordinary waiting, and gives the character a more active interior posture.",
+      "remaining_issue": "The result is still somewhat literary and long-lined."
+    },
+    {
+      "case_id": "lyrics-v091-ordinary-not-hero-001",
+      "winner": "B_v0.9.2",
+      "a_score": 83,
+      "b_score": 88,
+      "conclusion": "B has a better ordinary-person device",
+      "reason": "B's small money-counting device keeps the protagonist ordinary and pressured without turning him into a hero.",
+      "remaining_issue": "It needs tighter chorus phrasing before reaching golden-song potential."
+    },
+    {
+      "case_id": "lyrics-v091-place-small-device-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 76,
+      "conclusion": "A handles the bell image more cleanly",
+      "reason": "A keeps the old bell as a direct emotional sound. B introduces technical/electronic stage language that damages the lyric world.",
+      "remaining_issue": "CraftPlan must not put production-tech instructions into the lyric surface."
+    },
+    {
+      "case_id": "lyrics-v091-user-memory-friend-001",
+      "winner": "B_v0.9.2",
+      "a_score": 84,
+      "b_score": 88,
+      "conclusion": "B is more restrained and player-true",
+      "reason": "B's repeated '再往前走走' is close to the player's memory and avoids over-mourning the friend leaving the game.",
+      "remaining_issue": "Some game-meta detail is acceptable here, but future policy should distinguish player-memory songs from in-world songs."
+    },
+    {
+      "case_id": "lyrics-v091-style-energy-no-props-001",
+      "winner": "A_v0.7",
+      "a_score": 86,
+      "b_score": 82,
+      "conclusion": "A is the stronger rock lyric",
+      "reason": "A's repeated knife-practice hook is more direct and energetic. B's dirt-patting device is grounded, but less musically forceful.",
+      "remaining_issue": "CraftPlan sometimes chooses a smaller concrete device when the better answer is a simple kinetic refrain."
+    }
+  ],
+  "next_prompt_direction": [
+    "Do not expand v0.9.2 to 24 cases yet.",
+    "Do not keep adding natural-language rules to the current CraftPlan prompt.",
+    "If continuing the planner approach, switch to structured output with explicit user_phrase_assessment, lyric_surface_mode, device_decision, and latency_budget.",
+    "Add a decision for player-meta inputs versus in-world lyrics so terms like UI, avatar, team, and channel do not appear accidentally.",
+    "Treat latency as a hard product constraint: the planner path must either clearly improve quality or become optional/offline."
+  ]
+}

@@ -386,6 +386,45 @@ knowledge-base/lyrics-agent-v0.9.2-full6-review-summary.json
 - 若 12 条不足 `8/12`，停止自然语言 Prompt 叠加，改成结构化 CraftPlan 输出：`user_phrase_assessment`、`device_decision`、`latency_budget`。
 - 评审必须继续把延迟作为产品成本；质量提升不明显时，不值得默认增加一次 DeepSeek 调用。
 
+## v0.9.2 十二条压力测试结论
+
+v0.9.2 已完成 12 条压力测试，完整 Prompt 与完整歌词仍只保存在 ignored 的 `build/reports/lyrics-agent/`；提交区只保留脱敏摘要：
+
+```text
+knowledge-base/lyrics-agent-v0.9.2-mid12-review-summary.json
+```
+
+结果未过 12 条门槛：
+
+- B 组 v0.9.2 胜出 `5/12`。
+- A 组 v0.7 胜出 `7/12`。
+- v0.9.2 在强用户原句、寒姨角色反等待、小摊贩普通人、跑图朋友退坑、底层江湖噪音等题上更好。
+- v0.7 在轻快后劲酸、反宏大守护、失败者尊严、R&B 夜酒、小铃声、摇滚普通少侠等题上更自然、更直接或更像歌。
+
+耗时不支持默认启用：
+
+- A 组 total P50 约 `76.6s`。
+- B 组 total P50 约 `143.9s`。
+- CraftPlan 自身 P50 约 `33.9s`。
+- v0.9.2 质量没有形成压倒性优势，却接近翻倍用户等待时间。
+
+产品决策：
+
+- 不扩大到 24 条。
+- 不把 v0.9.2 作为生产默认 Prompt。
+- 不继续在自然语言 Prompt 上堆规则。
+- 下一版如果继续 planner 路线，必须改为结构化决策，至少包含：
+  - `user_phrase_assessment`：用户原句是否已经是最佳 hook。
+  - `lyric_surface_mode`：玩家元叙事 / 燕云世界内叙事 / 角色歌 / 普通人故事。
+  - `device_decision`：选择或拒绝某个 device 的明确理由。
+  - `latency_budget`：若提升不明显，允许跳过 planner 走直写。
+
+关键教训：
+
+- CraftPlan 的价值不是“多想一步”，而是“做出更好的选择”。如果这一步只是把模型推向更设计化、更概念化，就不值得。
+- 玩家真实输入里既有燕云世界内故事，也有“跑图、退坑、队伍”等元叙事。下一版必须先决定歌词表面是否允许游戏 UI / 玩家元语言，否则会出现有些歌意外带出头像、频道、传送点等词。
+- 金曲级歌词不一定需要更复杂的 device；有时 v0.7 的简单重复更像歌。
+
 ## 通过标准
 
 第二批 24 条扩大评测时：
