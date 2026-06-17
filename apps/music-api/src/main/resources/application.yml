@@ -161,8 +161,6 @@ yanyun:
     poll-interval-ms: ${LYRICS_EDIT_POLL_INTERVAL_MS:2000}
     batch-size: ${LYRICS_EDIT_BATCH_SIZE:2}
     lock-timeout: ${LYRICS_EDIT_LOCK_TIMEOUT:10m}
-  lyrics:
-    craft-planner-enabled: ${LYRICS_CRAFT_PLANNER_ENABLED:true}
 ---
 spring:
   config:

@@ -32,12 +32,8 @@ BRIEF_AGENT_PATH = (
     ROOT
     / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekCreativeBriefAgent.java"
 )
-CRAFT_PLANNER_PATH = (
-    ROOT
-    / "modules/deepseek/src/main/java/com/yanyun/music/deepseek/RealDeepSeekLyricsCraftPlanner.java"
-)
 BASELINE_REV = os.environ.get("LYRICS_AGENT_V07_GIT_REV", "81703be4")
-CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.10")
+CURRENT_VARIANT_LABEL = os.environ.get("LYRICS_AGENT_CURRENT_VARIANT_LABEL", "B_v0.11-direct")
 
 
 def sha256(value):
@@ -259,79 +255,6 @@ def lyrics_system_prompt(version):
     )
 
 
-def craft_plan_enabled(version):
-    return version.startswith("B_v0.9") or version.startswith("B_v0.10")
-
-
-def story_input(case):
-    return (
-        case.get("story_input")
-        or case.get("input")
-        or case.get("user_input")
-        or case.get("prompt")
-        or ""
-    )
-
-
-def should_call_craft_plan(case, version):
-    if not craft_plan_enabled(version):
-        return False
-    text = "".join(str(story_input(case)).split())
-    if not text:
-        return False
-    meta_terms = [
-        "新手村",
-        "退坑",
-        "跑图",
-        "上线",
-        "下线",
-        "玩家",
-        "我的角色",
-        "主角",
-        "任务",
-        "截图",
-        "开荒",
-        "副本",
-    ]
-    vague_terms = ["说不清", "不知道", "没想好", "帮我想", "随便", "没灵感", "不知道写什么"]
-    return any(term in text for term in meta_terms + vague_terms)
-
-
-def craft_plan_usable(craft_plan):
-    if not craft_plan:
-        return False
-    planning_decision = first_non_blank(
-        craft_plan.get("planning_decision"), craft_plan.get("planningDecision")
-    ).upper()
-    latency_budget = first_non_blank(
-        craft_plan.get("latency_budget"), craft_plan.get("latencyBudget")
-    ).upper()
-    confidence = first_non_blank(craft_plan.get("confidence")).upper()
-    has_core = bool(
-        first_non_blank(
-            craft_plan.get("selected_device"),
-            craft_plan.get("selectedDevice"),
-            craft_plan.get("selected_angle"),
-            craft_plan.get("selectedAngle"),
-            craft_plan.get("chorus_mechanism"),
-            craft_plan.get("chorusMechanism"),
-        )
-    )
-    if planning_decision and planning_decision != "USE_PLAN":
-        return False
-    if latency_budget == "NOT_WORTH_EXTRA_CALL":
-        return False
-    if confidence == "LOW":
-        return False
-    return has_core
-
-
-def craft_plan_system_prompt(version):
-    if not craft_plan_enabled(version):
-        return ""
-    return production_prompt(CRAFT_PLANNER_PATH, "private String systemPrompt()")
-
-
 def flatten_knowledge():
     rows = []
     for path in sorted(KB_DIR.glob("*.json")):
@@ -493,83 +416,6 @@ def brief_instruction(version, brief, references):
     return "\n".join(lines)
 
 
-def craft_plan_user_prompt(case, brief, references):
-    return "\n".join(
-        [
-            "operation=INSPIRATION",
-            "user_input=" + case.get("user_input", ""),
-            "mood=" + case.get("mood", ""),
-            "music_style=" + case.get("music_style", ""),
-            "vocal_preference=" + case.get("vocal_preference", ""),
-            "requested_title=",
-            "creative_brief.song_core=" + first_non_blank(brief.get("song_core"), brief.get("songCore")),
-            "creative_brief.singer_voice="
-            + first_non_blank(brief.get("singer_voice"), brief.get("singerVoice")),
-            "creative_brief.emotional_engine="
-            + first_non_blank(brief.get("emotional_engine"), brief.get("emotionalEngine")),
-            "creative_brief.chorus_job="
-            + first_non_blank(brief.get("chorus_job"), brief.get("chorusJob")),
-            "creative_brief.avoid_direction="
-            + first_non_blank(brief.get("avoid_direction"), brief.get("avoidDirection")),
-            "creative_brief.memory_device="
-            + first_non_blank(brief.get("memory_device"), brief.get("memoryDevice")),
-            "resolved_entities=[]",
-            "yanyun_references=" + json.dumps([row.get("display_name") for row in references], ensure_ascii=False),
-            "knowledge_reference_summaries="
-            + json.dumps(reference_summaries(references), ensure_ascii=False),
-        ]
-    )
-
-
-def craft_plan_instruction(craft_plan):
-    if not craft_plan_usable(craft_plan):
-        return "lyrics_craft_plan_status=disabled_skipped_or_fallback"
-    return "\n".join(
-        [
-            "LyricsCraftPlan v0.10:",
-            "planning_decision="
-            + first_non_blank(
-                craft_plan.get("planning_decision"), craft_plan.get("planningDecision")
-            ),
-            "user_phrase_assessment="
-            + first_non_blank(
-                craft_plan.get("user_phrase_assessment"), craft_plan.get("userPhraseAssessment")
-            ),
-            "lyric_surface_mode="
-            + first_non_blank(craft_plan.get("lyric_surface_mode"), craft_plan.get("lyricSurfaceMode")),
-            "device_decision="
-            + first_non_blank(craft_plan.get("device_decision"), craft_plan.get("deviceDecision")),
-            "latency_budget="
-            + first_non_blank(craft_plan.get("latency_budget"), craft_plan.get("latencyBudget")),
-            "confidence=" + first_non_blank(craft_plan.get("confidence")),
-            "song_thesis_guard="
-            + first_non_blank(
-                craft_plan.get("song_thesis_guard"), craft_plan.get("songThesisGuard")
-            ),
-            "selected_device="
-            + first_non_blank(craft_plan.get("selected_device"), craft_plan.get("selectedDevice")),
-            "selected_angle="
-            + first_non_blank(craft_plan.get("selected_angle"), craft_plan.get("selectedAngle")),
-            "chorus_mechanism="
-            + first_non_blank(
-                craft_plan.get("chorus_mechanism"), craft_plan.get("chorusMechanism")
-            ),
-            "yanyun_boundary_guard="
-            + first_non_blank(
-                craft_plan.get("yanyun_boundary_guard"), craft_plan.get("yanyunBoundaryGuard")
-            ),
-            "rejected_alternatives="
-            + json.dumps(
-                craft_plan.get("rejected_alternatives")
-                or craft_plan.get("rejectedAlternatives")
-                or [],
-                ensure_ascii=False,
-            ),
-            "craft_plan_policy=For INSPIRATION, write the final lyrics around selected_device + selected_angle + chorus_mechanism. Do not add a second unrelated concept. Let selected_device become the song's private memory point. If selected_device preserves a strong user phrase, keep it recognizable and use it in the chorus or key refrain. Do not replace strong user phrasing with a more cinematic but less singable device. Keep yanyun_boundary_guard active: music style changes rhythm and voice, not world props. Preserve useful contradiction instead of smoothing it away. If the selected angle is rough, low-level, dangerous, or street-side, keep texture without falling into obvious profanity or cheap rebellion.",
-        ]
-    )
-
-
 def lyrics_user_prompt(case, brief_instruction_text):
     return "\n".join(
         [
@@ -650,13 +496,12 @@ def latency_summary(results):
                 name,
                 {
                     "brief_elapsed_ms": [],
-                    "craft_plan_elapsed_ms": [],
                     "lyrics_elapsed_ms": [],
                     "total_elapsed_ms": [],
                 },
             )
             total = 0
-            for key in ("brief_elapsed_ms", "craft_plan_elapsed_ms", "lyrics_elapsed_ms"):
+            for key in ("brief_elapsed_ms", "lyrics_elapsed_ms"):
                 value = variant.get(key)
                 if isinstance(value, (int, float)):
                     bucket[key].append(value)
@@ -682,7 +527,7 @@ def write_reports(results):
     }
     MANUAL_REVIEW_JSON.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
-        "# LyricsAgent v0.10 A/B Manual Review",
+        "# LyricsAgent v0.11 Direct A/B Manual Review",
         "",
         f"- generated_at: `{payload['generated_at']}`",
         f"- baseline_revision: `{BASELINE_REV}`",
@@ -722,7 +567,6 @@ def write_reports(results):
                     f"### {variant['variant']}",
                     "",
                     f"- CreativeBrief 耗时：{variant.get('brief_elapsed_ms', '')}ms",
-                    f"- CraftPlan 耗时：{variant.get('craft_plan_elapsed_ms', '')}ms",
                     f"- Lyrics 耗时：{variant.get('lyrics_elapsed_ms', '')}ms",
                     f"- song_title: {output.get('song_title', '')}",
                     f"- song_summary: {output.get('song_summary', '')}",
@@ -731,18 +575,6 @@ def write_reports(results):
                     "#### CreativeBrief",
                     "```json",
                     json.dumps(variant.get("creative_brief", {}), ensure_ascii=False, indent=2),
-                    "```",
-                    "",
-                    "#### LyricsCraftPlan",
-                    "```json",
-                    json.dumps(variant.get("lyrics_craft_plan", {}), ensure_ascii=False, indent=2),
-                    "```",
-                    f"- CraftPlan error: {variant.get('lyrics_craft_plan_error') or ''}",
-                    "",
-                    "",
-                    "#### CraftPlan Prompt",
-                    "```text",
-                    variant.get("craft_plan_user_prompt", ""),
                     "```",
                     "",
                     "#### System Prompt",
@@ -792,28 +624,7 @@ def run_execute(cases, knowledge_rows):
                 brief, brief_elapsed_ms = deepseek_chat_json(
                     brief_system, brief_user, temperature=0.35, max_tokens=3000
                 )
-                craft_plan = None
-                craft_plan_error = None
-                craft_plan_elapsed_ms = None
-                craft_system = ""
-                craft_user = ""
-                if should_call_craft_plan(case, variant):
-                    print(
-                        f"[case] {case['id']} [variant] {variant} craft-plan",
-                        file=sys.stderr,
-                        flush=True,
-                    )
-                    craft_system = craft_plan_system_prompt(variant)
-                    craft_user = craft_plan_user_prompt(case, brief, references)
-                    try:
-                        craft_plan, craft_plan_elapsed_ms = deepseek_chat_json(
-                            craft_system, craft_user, temperature=0.35, max_tokens=1600
-                        )
-                    except RuntimeError as error:
-                        craft_plan_error = str(error)
                 instruction = brief_instruction(variant, brief, references)
-                if craft_plan_enabled(variant):
-                    instruction = instruction + "\n" + craft_plan_instruction(craft_plan)
                 lyrics_system = lyrics_system_prompt(variant)
                 lyrics_user = lyrics_user_prompt(case, instruction)
                 print(f"[case] {case['id']} [variant] {variant} lyrics", file=sys.stderr, flush=True)
@@ -829,14 +640,9 @@ def run_execute(cases, knowledge_rows):
                         "lyrics_system_prompt_hash": sha256(lyrics_system),
                         "lyrics_user_prompt_hash": sha256(lyrics_user),
                         "creative_brief": brief,
-                        "lyrics_craft_plan": craft_plan or {},
-                        "lyrics_craft_plan_error": craft_plan_error,
                         "lyrics_output": lyrics,
                         "brief_elapsed_ms": brief_elapsed_ms,
-                        "craft_plan_elapsed_ms": craft_plan_elapsed_ms,
                         "lyrics_elapsed_ms": lyrics_elapsed_ms,
-                        "craft_plan_system_prompt": craft_system,
-                        "craft_plan_user_prompt": craft_user,
                         "lyrics_system_prompt": lyrics_system,
                         "lyrics_user_prompt": lyrics_user,
                     }

@@ -8,10 +8,8 @@ import com.yanyun.music.configcenter.CompanyIntegrationProperties;
 import com.yanyun.music.configcenter.IntegrationReadinessService;
 import com.yanyun.music.creativeagent.CoverPromptAgent;
 import com.yanyun.music.creativeagent.CreativeBriefAgent;
-import com.yanyun.music.creativeagent.LyricsCraftPlanner;
 import com.yanyun.music.creativeagent.MockCoverPromptAgent;
 import com.yanyun.music.creativeagent.MockCreativeBriefAgent;
-import com.yanyun.music.creativeagent.MockLyricsCraftPlanner;
 import com.yanyun.music.creativeagent.MockModerationAgent;
 import com.yanyun.music.creativeagent.MockMusicPromptAgent;
 import com.yanyun.music.creativeagent.MockQualityEvaluationAgent;
@@ -24,7 +22,6 @@ import com.yanyun.music.deepseek.MockDeepSeekLyricsClient;
 import com.yanyun.music.deepseek.RealDeepSeekCoverPromptAgent;
 import com.yanyun.music.deepseek.RealDeepSeekCreativeBriefAgent;
 import com.yanyun.music.deepseek.RealDeepSeekLyricsClient;
-import com.yanyun.music.deepseek.RealDeepSeekLyricsCraftPlanner;
 import com.yanyun.music.deepseek.RealDeepSeekMusicPromptAgent;
 import com.yanyun.music.deepseek.RealDeepSeekQualityEvaluationAgent;
 import com.yanyun.music.dreammaker.DreamMakerClient;
@@ -197,17 +194,6 @@ public class AdapterConfiguration {
   }
 
   @Bean
-  LyricsCraftPlanner lyricsCraftPlanner(
-      DeepSeekProperties deepSeekProperties,
-      ObjectMapper objectMapper,
-      AgentRunRecorder agentRunRecorder) {
-    if (deepSeekProperties.isRealCallsEnabled()) {
-      return new RealDeepSeekLyricsCraftPlanner(deepSeekProperties, objectMapper, agentRunRecorder);
-    }
-    return new MockLyricsCraftPlanner(agentRunRecorder);
-  }
-
-  @Bean
   CoverPromptAgent coverPromptAgent(
       DeepSeekProperties deepSeekProperties,
       ObjectMapper objectMapper,
@@ -235,18 +221,13 @@ public class AdapterConfiguration {
       KnowledgeService knowledgeService,
       PromptTemplateService promptTemplateService,
       CreativeBriefAgent creativeBriefAgent,
-      LyricsCraftPlanner lyricsCraftPlanner,
       DeepSeekLyricsClient deepSeekLyricsClient,
       QualityEvaluationAgent qualityEvaluationAgent,
-      AgentRunRecorder agentRunRecorder,
-      @Value("${yanyun.lyrics.craft-planner-enabled:${LYRICS_CRAFT_PLANNER_ENABLED:true}}")
-          boolean craftPlannerEnabled) {
+      AgentRunRecorder agentRunRecorder) {
     return new DefaultLyricsGenerationService(
         knowledgeService,
         promptTemplateService,
         creativeBriefAgent,
-        lyricsCraftPlanner,
-        craftPlannerEnabled,
         deepSeekLyricsClient,
         qualityEvaluationAgent,
         agentRunRecorder);

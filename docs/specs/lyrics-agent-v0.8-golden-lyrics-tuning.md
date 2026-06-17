@@ -479,3 +479,24 @@ v0.10.1 因此增加本地 pre-gate：
 - 至少 6 类输入都有胜出样本。
 - 不允许所有歌同一种结构、口吻或悲情套路。
 - 不牺牲燕云归属感和用户故事保真。
+
+## v0.11 生产回退：直接写词，不再使用 CraftPlan
+
+v0.10.1 的本地 pre-gate 证明了一件事：大多数真实玩家输入并不值得多一次规划调用。即使只有少量样本触发 CraftPlan，整体质量仍未稳定超过 v0.7，且用户等待时间会被额外 DeepSeek 调用放大。
+
+因此 v0.11 的生产决策是：
+
+- 删除 CraftPlan 作为生产链路步骤。
+- API / worker 不再注册 `LyricsCraftPlanner` Bean。
+- 首轮 `INSPIRATION` 回到直接写词：`KnowledgeRetrieve -> CreativeBriefAgent -> LyricsAgent -> QualityEvaluationAgent`。
+- LyricsAgent 保留 v0.8/v0.10 中有效的通用原则：一首歌必须有清楚歌核、稳定视角、真实声音、可唱韵律和燕云大世界归属感。
+- Knowledge 与 CreativeBrief 继续作为输入材料，但不再经过额外规划器二次筛选。
+- A/B 脚本默认当前变体改为 `B_v0.11-direct`，只比较 CreativeBrief + Lyrics 的直写效果。
+
+后续如果继续追求更高质量，不建议恢复单个 CraftPlan。更合理的路线是：
+
+- 小规模多候选歌词生成。
+- 轻量评审器或人工评审选择候选。
+- 对失败类型做数据归因，而不是继续堆自然语言规则或增加单个前置规划器。
+
+这不是否定 CraftPlan 的思想，而是承认它在当前供应商延迟、真实用户等待和 12 条压力测试结果下，性价比不够。

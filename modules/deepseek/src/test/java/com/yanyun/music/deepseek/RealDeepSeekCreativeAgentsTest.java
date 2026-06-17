@@ -13,8 +13,6 @@ import com.yanyun.music.creativeagent.CoverPromptResult;
 import com.yanyun.music.creativeagent.CreativeBriefRequest;
 import com.yanyun.music.creativeagent.CreativeBriefResult;
 import com.yanyun.music.creativeagent.CreativeDomainDecision;
-import com.yanyun.music.creativeagent.LyricsCraftPlanRequest;
-import com.yanyun.music.creativeagent.LyricsCraftPlanResult;
 import com.yanyun.music.creativeagent.MusicPromptRequest;
 import com.yanyun.music.creativeagent.MusicPromptResult;
 import com.yanyun.music.creativeagent.QualityDecision;
@@ -282,110 +280,6 @@ class RealDeepSeekCreativeAgentsTest {
     assertTrue(systemPrompt.contains("不要把轻量灵感放大成宏大家国命题"));
     assertTrue(systemPrompt.contains("不要把知识库资料摊成任务清单"));
     assertTrue(systemPrompt.contains("不强行改成官方角色歌"));
-  }
-
-  @Test
-  void lyricsCraftPlannerSelectsDeviceAndKeepsYanyunBoundary() throws IOException {
-    AtomicReference<JsonNode> capturedBody = new AtomicReference<>();
-    List<AgentRunRecord> records = new ArrayList<>();
-    server =
-        startServer(
-            exchange -> {
-              capturedBody.set(
-                  objectMapper.readTree(
-                      new String(
-                          exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8)));
-              respondJson(
-                  exchange,
-                  200,
-                  chatResponse(
-                      mapOf(
-                          "planning_decision",
-                          "USE_PLAN",
-                          "user_phrase_assessment",
-                          "WEAK_PHRASE",
-                          "lyric_surface_mode",
-                          "ORDINARY_STORY",
-                          "device_decision",
-                          "USE_SMALL_DEVICE",
-                          "latency_budget",
-                          "WORTH_EXTRA_CALL",
-                          "confidence",
-                          "HIGH",
-                          "song_thesis_guard",
-                          "一个清河旧游人离开后才明白自己想回去。",
-                          "selected_device",
-                          "茶碗轻轻一响",
-                          "selected_angle",
-                          "从清河茶摊上没人再递来的那一碗进入。",
-                          "chorus_mechanism",
-                          "副歌让茶碗声先像日常，后半首变成回不去的提示。",
-                          "yanyun_boundary_guard",
-                          "City Pop 只影响轻快节奏，不导入霓虹、酒吧或现代街景。",
-                          "rejected_alternatives",
-                          List.of("完整返乡叙事太满", "宏大家国命题会盖住用户怀念"))));
-            });
-    RealDeepSeekLyricsCraftPlanner planner =
-        new RealDeepSeekLyricsCraftPlanner(client(), records::add);
-
-    LyricsCraftPlanResult result =
-        planner.plan(
-            new LyricsCraftPlanRequest(
-                "user-1",
-                "work-1",
-                "INSPIRATION",
-                "清河真的很像我的新手村，想写那种离开以后才想回去的感觉",
-                null,
-                null,
-                null,
-                "轻快但有点酸",
-                "City Pop",
-                "女声主唱",
-                new CreativeBriefResult(
-                    "离开清河以后才知道自己想回去。",
-                    "清河旧游",
-                    List.of("怀念", "轻快转酸"),
-                    "旧游人第一人称",
-                    "City Pop",
-                    List.of("清河"),
-                    List.of(),
-                    List.of()),
-                List.of("清河"),
-                List.of("region/清河 matched=清河 kind=exact confidence=1.00"),
-                List.of("清河: 新手村、茶摊、江湖初见。")));
-
-    assertEquals("USE_PLAN", result.planningDecision());
-    assertEquals("WEAK_PHRASE", result.userPhraseAssessment());
-    assertEquals("ORDINARY_STORY", result.lyricSurfaceMode());
-    assertEquals("USE_SMALL_DEVICE", result.deviceDecision());
-    assertEquals("WORTH_EXTRA_CALL", result.latencyBudget());
-    assertEquals("HIGH", result.confidence());
-    assertEquals("茶碗轻轻一响", result.selectedDevice());
-    assertTrue(result.chorusMechanism().contains("变成回不去"));
-    assertTrue(result.yanyunBoundaryGuard().contains("不导入霓虹"));
-    assertFalse(result.rejectedAlternatives().isEmpty());
-    JsonNode systemMessage = capturedBody.get().path("messages").get(0).path("content");
-    JsonNode userMessage = capturedBody.get().path("messages").get(1).path("content");
-    assertTrue(systemMessage.asText().contains("LyricsCraftPlan v0.10 结构化决策 Agent"));
-    assertTrue(systemMessage.asText().contains("不是写歌词"));
-    assertTrue(systemMessage.asText().contains("是否值得多一次规划调用"));
-    assertTrue(systemMessage.asText().contains("不要为了填字段硬编"));
-    assertTrue(systemMessage.asText().contains("planning_decision"));
-    assertTrue(systemMessage.asText().contains("SKIP_PLAN"));
-    assertTrue(systemMessage.asText().contains("STRONG_HOOK"));
-    assertTrue(systemMessage.asText().contains("lyric_surface_mode"));
-    assertTrue(systemMessage.asText().contains("PLAYER_META"));
-    assertTrue(systemMessage.asText().contains("device_decision"));
-    assertTrue(systemMessage.asText().contains("latency_budget"));
-    assertTrue(systemMessage.asText().contains("selected_device"));
-    assertTrue(systemMessage.asText().contains("chorus_mechanism"));
-    assertTrue(systemMessage.asText().contains("不能导入现代道具"));
-    assertFalse(systemMessage.asText().contains("九流门"));
-    assertFalse(systemMessage.asText().contains("寒香寻"));
-    assertTrue(userMessage.asText().contains("City Pop"));
-    assertTrue(userMessage.asText().contains("region/清河"));
-    assertEquals("LyricsCraftPlanner", records.getFirst().agentName());
-    assertEquals("v0.10", records.getFirst().agentVersion());
   }
 
   @Test
